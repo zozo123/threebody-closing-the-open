@@ -100,19 +100,18 @@ function initial_reduced(row)
     ]
 end
 
-function verify(row; tol::BigFloat)
-    z0 = initial_reduced(row)
+function integrate_augmented(z0, masses, period; tol::BigFloat)
     phi0 = Matrix{BigFloat}(I,8,8)
     u0 = vcat(z0, vec(phi0))
-    masses = (row.m1,row.m2,row.m3)
-    prob = ODEProblem(augmented!, u0, (BigFloat(0),row.period), masses)
+    prob = ODEProblem(augmented!, u0, (BigFloat(0),period), masses)
     sol = solve(prob, Vern9(); reltol=tol, abstol=tol, save_everystep=false,
                 maxiters=10^8)
     SciMLBase.successful_retcode(sol) || error("integration failed: $(sol.retcode)")
     uf = sol.u[end]
-    zf = uf[1:8]
-    M = reshape(uf[9:72],8,8)
-    closure = norm(zf-z0)
+    return uf[1:8], reshape(uf[9:72],8,8), sol
+end
+
+function monodromy_invariants(M)
     alpha = tr(M)
     beta = (alpha^2 - tr(M*M))/2
     disc = (alpha-4)^2 - 4*(beta-4*alpha+8)
@@ -120,6 +119,15 @@ function verify(row; tol::BigFloat)
     t1 = ((alpha-4) + rootdisc)/2
     t2 = ((alpha-4) - rootdisc)/2
     score = min(disc, BigFloat(2)-abs(t1), BigFloat(2)-abs(t2))
+    return alpha, beta, disc, t1, t2, score
+end
+
+function verify(row; tol::BigFloat)
+    z0 = initial_reduced(row)
+    masses = (row.m1,row.m2,row.m3)
+    zf, M, sol = integrate_augmented(z0,masses,row.period;tol=tol)
+    closure = norm(zf-z0)
+    alpha,beta,disc,t1,t2,score = monodromy_invariants(M)
     stable = disc > 0 && abs(imag(t1)) < sqrt(tol) && abs(imag(t2)) < sqrt(tol) &&
              abs(t1) < 2 && abs(t2) < 2
     return (
@@ -177,4 +185,6 @@ function main()
     end
 end
 
-main()
+if abspath(PROGRAM_FILE) == @__FILE__
+    main()
+end
