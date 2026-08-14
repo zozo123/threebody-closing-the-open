@@ -9,8 +9,13 @@ from pathlib import Path
 import numpy as np
 
 from .dynamics import integrate_orbit
-from .schema import OrbitCandidate, VerificationRecord, VerificationStatus
-from .variational import compute_floquet
+from .reduced import compute_reduced_floquet
+from .schema import (
+    OrbitCandidate,
+    StabilityClass,
+    VerificationRecord,
+    VerificationStatus,
+)
 
 
 FIGURE_EIGHT = OrbitCandidate(
@@ -18,12 +23,18 @@ FIGURE_EIGHT = OrbitCandidate(
     masses=(1.0, 1.0, 1.0),
     period=6.32591398,
     initial_state=(
-        0.97000436, -0.24308753,
-        -0.97000436, 0.24308753,
-        0.0, 0.0,
-        0.4662036850, 0.4323657300,
-        0.4662036850, 0.4323657300,
-        -0.9324073700, -0.8647314600,
+        0.97000436,
+        -0.24308753,
+        -0.97000436,
+        0.24308753,
+        0.0,
+        0.0,
+        0.4662036850,
+        0.4323657300,
+        0.4662036850,
+        0.4323657300,
+        -0.9324073700,
+        -0.8647314600,
     ),
 )
 
@@ -33,37 +44,69 @@ def screen(candidate: OrbitCandidate, *, floquet: bool = False) -> VerificationR
     masses = np.asarray(candidate.masses, dtype=float)
     orbit = integrate_orbit(state, masses, candidate.period)
     multipliers: list[tuple[float, float]] = []
-    symplectic_defect = None
+    reduced_alpha = None
+    reduced_beta = None
+    reduced_discriminant = None
+    reduced_trace_roots: list[tuple[float, float]] = []
+    stability_margin = None
+    stability_class = StabilityClass.UNVERIFIED
+    notes = ["This record is screening evidence, not a high-precision publication claim."]
+
     if floquet:
-        result = compute_floquet(state, masses, candidate.period)
+        result = compute_reduced_floquet(state, masses, candidate.period)
         multipliers = [(float(z.real), float(z.imag)) for z in result.multipliers]
-        symplectic_defect = result.symplectic_defect
+        reduced_alpha = result.alpha
+        reduced_beta = result.beta
+        reduced_discriminant = result.discriminant
+        reduced_trace_roots = [(float(z.real), float(z.imag)) for z in result.trace_roots]
+        stability_margin = result.stability_margin
+        if result.linearly_stable is True:
+            stability_class = StabilityClass.ELLIPTIC
+        elif result.linearly_stable is None:
+            stability_class = StabilityClass.NUMERICALLY_AMBIGUOUS
+        else:
+            stability_class = StabilityClass.HYPERBOLIC
+        notes.append(
+            "Stability label is reduced float64 screening; release claims require precision escalation."
+        )
+
     return VerificationRecord(
         status=VerificationStatus.SCREENED,
+        stability_class=stability_class,
         candidate=candidate,
         closure_norm=orbit.closure_norm,
         energy_defect=abs(orbit.energy_final - orbit.energy_initial),
         angular_momentum_defect=abs(
             orbit.angular_momentum_final - orbit.angular_momentum_initial
         ),
-        symplectic_defect=symplectic_defect,
         floquet_multipliers=multipliers,
+        reduced_alpha=reduced_alpha,
+        reduced_beta=reduced_beta,
+        reduced_discriminant=reduced_discriminant,
+        reduced_trace_roots=reduced_trace_roots,
+        stability_margin=stability_margin,
         arithmetic="IEEE-754 float64 / scipy DOP853 (screening only)",
         precision_digits=15,
         code_revision=os.getenv("GITHUB_SHA"),
-        notes=["This record is screening evidence, not a high-precision publication claim."],
+        notes=notes,
     )
 
 
 def _write(record: VerificationRecord, output: Path) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(record.model_dump_json(indent=2), encoding="utf-8")
-    print(json.dumps({
-        "output": str(output),
-        "closure_norm": record.closure_norm,
-        "energy_defect": record.energy_defect,
-        "symplectic_defect": record.symplectic_defect,
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "output": str(output),
+                "closure_norm": record.closure_norm,
+                "energy_defect": record.energy_defect,
+                "stability_class": record.stability_class,
+                "stability_margin": record.stability_margin,
+            },
+            indent=2,
+        )
+    )
 
 
 def main() -> None:
