@@ -4,9 +4,10 @@
 #
 # This implementation intentionally does not import Python/NumPy/SciPy code. It
 # uses Julia BigFloat arithmetic and a high-order adaptive Vern9 integrator from
-# DifferentialEquations.jl.  Inputs come from the frozen Li-Li-Liao baseline.
+# the modular SciML solver stack. Inputs come from the frozen Li-Li-Liao baseline.
 
-using DifferentialEquations
+using SciMLBase
+using OrdinaryDiffEqVerner
 using LinearAlgebra
 
 function parse_baseline(path::String, wanted::Set{Int})
