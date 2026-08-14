@@ -3,7 +3,12 @@ name: Boundary experiment
 on:
   push:
     branches: ["agent/research-platform-v1"]
-    paths: [".github/workflows/boundary-experiment.yml"]
+    paths:
+      - ".github/workflows/boundary-experiment.yml"
+      - "src/threebody_atlas/liao_family.py"
+      - "src/threebody_atlas/boundary.py"
+      - "src/threebody_atlas/reduced.py"
+      - "scripts/refine_known_boundaries.py"
   workflow_dispatch:
     inputs:
       tolerance:
@@ -17,7 +22,7 @@ permissions:
 jobs:
   refine-m1-08:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -43,7 +48,7 @@ jobs:
           PY
       - name: Refine both published stability brackets
         env:
-          TOL: ${{ inputs.tolerance || '2e-7' }}
+          TOL: ${{ inputs.tolerance || '5e-7' }}
         run: |
           python scripts/refine_known_boundaries.py \
             data/raw/non-hierarchical-3b-supplementary_data.txt \
