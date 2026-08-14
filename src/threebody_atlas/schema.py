@@ -53,6 +53,11 @@ class VerificationRecord(BaseModel):
     angular_momentum_defect: float
     symplectic_defect: float | None = None
     floquet_multipliers: list[tuple[float, float]] = Field(default_factory=list)
+    reduced_alpha: float | None = None
+    reduced_beta: float | None = None
+    reduced_discriminant: float | None = None
+    reduced_trace_roots: list[tuple[float, float]] = Field(default_factory=list)
+    stability_margin: float | None = None
     arithmetic: str
     precision_digits: int
     code_revision: str | None = None
