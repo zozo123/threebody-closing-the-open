@@ -142,6 +142,7 @@ function json_complex(z)
 end
 
 function json_result(idx, row, r)
+    agrees = r.stable == (row.label == "S")
     "{" *
     "\"baseline_row\":$(idx)," *
     "\"published_stability\":\"$(row.label)\"," *
@@ -152,7 +153,7 @@ function json_result(idx, row, r)
     "\"trace_roots\":[$(json_complex(r.t1)),$(json_complex(r.t2))]," *
     "\"stability_score\":\"$(string(r.score))\"," *
     "\"computed_stable\":$(r.stable)," *
-    "\"agrees_with_published\":$(r.stable == (row.label == \"S\"))," *
+    "\"agrees_with_published\":$(agrees)," *
     "\"retcode\":\"$(r.retcode)\"" *
     "}"
 end
