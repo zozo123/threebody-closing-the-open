@@ -1,12 +1,6 @@
-name: Precision cross-check
+name: Experimental mpmath cross-check
 
 on:
-  push:
-    branches: ["agent/research-platform-v1"]
-    paths:
-      - ".github/workflows/precision-crosscheck.yml"
-      - "src/threebody_atlas/high_precision_reduced.py"
-      - "scripts/precision_crosscheck.py"
   workflow_dispatch:
     inputs:
       dps:
@@ -48,10 +42,10 @@ jobs:
               raise SystemExit(f'baseline source changed: {got}')
           print('source_git_blob=', got)
           PY
-      - name: Cross-check stable and unstable rows with independent mpmath tangent integration
+      - name: Experimental fixed-step mpmath tangent integration
         env:
-          DPS: ${{ inputs.dps || '35' }}
-          STEPS: ${{ inputs.steps || '64' }}
+          DPS: ${{ inputs.dps }}
+          STEPS: ${{ inputs.steps }}
         run: |
           python scripts/precision_crosscheck.py \
             data/raw/non-hierarchical-3b-supplementary_data.txt \
@@ -59,9 +53,10 @@ jobs:
             --dps "$DPS" \
             --steps "$STEPS" \
             --output artifacts/precision-crosscheck.json
+          echo "This workflow is an experimental convergence study, not the publication verifier."
       - uses: actions/upload-artifact@v4
         with:
-          name: precision-crosscheck-${{ github.sha }}
+          name: experimental-mpmath-${{ github.sha }}
           path: artifacts/precision-crosscheck.json
           if-no-files-found: error
           retention-days: 90
