@@ -1,6 +1,9 @@
 name: Baseline reproduction
 
 on:
+  push:
+    branches: ["agent/research-platform-v1"]
+    paths: [".github/workflows/baseline-reproduction.yml"]
   workflow_dispatch:
     inputs:
       start:
