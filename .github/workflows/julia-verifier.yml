@@ -35,7 +35,7 @@ jobs:
           version: "1.11"
       - uses: julia-actions/cache@v2
       - name: Install independent solver stack
-        run: julia -e 'using Pkg; Pkg.add("DifferentialEquations"); Pkg.precompile()'
+        run: julia -e 'using Pkg; Pkg.add(["SciMLBase", "OrdinaryDiffEqVerner"]); Pkg.precompile()'
       - name: Fetch frozen baseline
         run: |
           mkdir -p data/raw artifacts
