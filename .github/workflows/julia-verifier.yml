@@ -1,0 +1,70 @@
+name: Julia BigFloat verifier
+
+on:
+  workflow_dispatch:
+    inputs:
+      dps:
+        description: "BigFloat decimal precision"
+        required: true
+        default: "80"
+      tol_exp:
+        description: "Adaptive ODE tolerance exponent: 45 means 1e-45"
+        required: true
+        default: "45"
+      rows:
+        description: "Space-separated baseline row numbers"
+        required: true
+        default: "7 12"
+  push:
+    branches: ["agent/research-platform-v1"]
+    paths:
+      - ".github/workflows/julia-verifier.yml"
+      - "julia/verify_reduced.jl"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.11"
+      - uses: julia-actions/cache@v2
+      - name: Install independent solver stack
+        run: julia -e 'using Pkg; Pkg.add("DifferentialEquations"); Pkg.precompile()'
+      - name: Fetch frozen baseline
+        run: |
+          mkdir -p data/raw artifacts
+          curl -L --fail --retry 3 \
+            https://raw.githubusercontent.com/sjtu-liao/three-body/main/non-hierarchical-3b-supplementary_data.txt \
+            -o data/raw/non-hierarchical-3b-supplementary_data.txt
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          raw = Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
+          got = hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
+          expected = '79b2963df43e62201c35690bfc22bec166132427'
+          if got != expected:
+              raise SystemExit(f'baseline source changed: {got}')
+          print('source_git_blob=', got)
+          PY
+      - name: Verify stable/unstable reference rows with adaptive BigFloat Vern9
+        env:
+          DPS: ${{ inputs.dps || '50' }}
+          TOL_EXP: ${{ inputs.tol_exp || '25' }}
+          ROWS: ${{ inputs.rows || '7 12' }}
+        run: |
+          julia julia/verify_reduced.jl \
+            data/raw/non-hierarchical-3b-supplementary_data.txt \
+            artifacts/julia-bigfloat-baseline.json \
+            "$DPS" "$TOL_EXP" $ROWS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: julia-bigfloat-verifier-${{ github.sha }}
+          path: artifacts/julia-bigfloat-baseline.json
+          if-no-files-found: error
+          retention-days: 90
