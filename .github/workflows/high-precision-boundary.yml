@@ -20,7 +20,6 @@ on:
         required: true
         default: "12"
   push:
-    branches: ["agent/research-platform-v1"]
     paths:
       - ".github/workflows/high-precision-boundary.yml"
       - "julia/verify_reduced.jl"
@@ -42,16 +41,31 @@ jobs:
       - uses: julia-actions/cache@v2
       - name: Install independent solver stack
         run: julia -e 'using Pkg; Pkg.add(["SciMLBase", "OrdinaryDiffEqVerner"]); Pkg.precompile()'
-      - name: Correct screening seeds and refine both stability edges
+      - name: Fetch frozen Li-Li-Liao baseline
+        run: |
+          mkdir -p data/raw artifacts
+          curl -L --fail --retry 3 \
+            https://raw.githubusercontent.com/sjtu-liao/three-body/main/non-hierarchical-3b-supplementary_data.txt \
+            -o data/raw/non-hierarchical-3b-supplementary_data.txt
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          raw = Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
+          got = hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
+          expected = '79b2963df43e62201c35690bfc22bec166132427'
+          if got != expected:
+              raise SystemExit(f'baseline source changed: {got}')
+          print('source_git_blob=', got, 'sha256=', hashlib.sha256(raw).hexdigest())
+          PY
+      - name: Independently correct published brackets and refine both stability edges
         env:
           DPS: ${{ inputs.dps || '50' }}
           TOL_EXP: ${{ inputs.tol_exp || '25' }}
           CLOSURE_EXP: ${{ inputs.closure_exp || '15' }}
           WIDTH_EXP: ${{ inputs.width_exp || '8' }}
         run: |
-          mkdir -p artifacts
           julia julia/refine_boundaries.jl \
-            experiments/m1_0p8_boundary_seeds.tsv \
+            data/raw/non-hierarchical-3b-supplementary_data.txt \
             artifacts/m1-0.8-boundaries-bigfloat.json \
             "$DPS" "$TOL_EXP" "$CLOSURE_EXP" "$WIDTH_EXP"
       - uses: actions/upload-artifact@v4
