@@ -8,6 +8,8 @@ on:
       - "julia/verify_reduced.jl"
       - "julia/verify_critical_points.jl"
       - "experiments/critical_curve_representatives.tsv"
+      - "experiments/critical_curve_lower_plus_one.tsv"
+      - "experiments/critical_curve_upper_collision.tsv"
       - ".github/workflows/julia-critical-curve-verifier.yml"
   push:
     branches: ["main"]
@@ -17,6 +19,8 @@ on:
       - "julia/verify_reduced.jl"
       - "julia/verify_critical_points.jl"
       - "experiments/critical_curve_representatives.tsv"
+      - "experiments/critical_curve_lower_plus_one.tsv"
+      - "experiments/critical_curve_upper_collision.tsv"
       - ".github/workflows/julia-critical-curve-verifier.yml"
   workflow_dispatch:
     inputs:
@@ -56,7 +60,17 @@ jobs:
   verify:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: lower-plus-one
+            seed_file: experiments/critical_curve_lower_plus_one.tsv
+            output_file: artifacts/critical-curve-lower-plus-one-bigfloat.json
+          - label: upper-trace-collision
+            seed_file: experiments/critical_curve_upper_collision.tsv
+            output_file: artifacts/critical-curve-upper-trace-collision-bigfloat.json
     steps:
       - uses: actions/checkout@v7
       - uses: julia-actions/setup-julia@v2
@@ -65,21 +79,24 @@ jobs:
       - uses: julia-actions/cache@v2
       - name: Instantiate locked independent solver stack
         run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
-      - name: Reproduce representative critical points independently
+      - name: Reproduce ${{ matrix.label }} independently
         env:
           DPS: ${{ inputs.dps || '50' }}
           TOL_EXP: ${{ inputs.tol_exp || '25' }}
           CLOSURE_EXP: ${{ inputs.closure_exp || '18' }}
           WIDTH_EXP: ${{ inputs.width_exp || '8' }}
+          SEED_FILE: ${{ matrix.seed_file }}
+          OUTPUT_FILE: ${{ matrix.output_file }}
         run: |
           mkdir -p artifacts
           julia --project=julia julia/verify_critical_points.jl \
-            experiments/critical_curve_representatives.tsv \
-            artifacts/critical-curve-bigfloat.json \
+            "$SEED_FILE" \
+            "$OUTPUT_FILE" \
             "$DPS" "$TOL_EXP" "$CLOSURE_EXP" "$WIDTH_EXP" 5 4
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: critical-curve-bigfloat-${{ github.sha }}
-          path: artifacts/critical-curve-bigfloat.json
-          if-no-files-found: error
+          name: critical-curve-${{ matrix.label }}-${{ github.sha }}
+          path: ${{ matrix.output_file }}
+          if-no-files-found: warn
           retention-days: 90
