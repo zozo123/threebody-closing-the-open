@@ -46,6 +46,15 @@ def test_event_gate_is_unchanged() -> None:
     assert classify_localized_cell(closure=1e-10, event=2.1e-8, m2=0.75, lo=0.75, hi=0.751) == "missed_event"
 
 
+def test_hard_canary_seed_file_covers_failed_cells() -> None:
+    import csv
+
+    path = ROOT / "experiments/hard_canary_cells.tsv"
+    rows = list(csv.DictReader(path.open(encoding="utf-8"), delimiter="\t"))
+    ids = [int(row["cell_id"]) for row in rows]
+    assert ids == [0, 1, 2, 3, 4, 5, 10, 15, 20, 30, 50, 100, 148, 200, 610, 619]
+
+
 def test_localize_cli_refuses_to_loosen_gates() -> None:
     import subprocess
     import sys

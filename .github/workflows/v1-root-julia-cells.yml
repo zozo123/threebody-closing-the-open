@@ -1,0 +1,64 @@
+name: Julia BigFloat hard-cell SWAT
+
+# Python float64 DOP853 cannot evaluate shallow +1 events below its ~1e-7
+# monodromy noise floor. These jobs independently localize the failed canary
+# cells with Julia BigFloat + Vern9. Event 2e-8 stays frozen.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "julia/localize_published_cells.jl"
+      - "julia/verify_critical_points.jl"
+      - "julia/verify_reduced.jl"
+      - "experiments/hard_canary_cells.tsv"
+      - ".github/workflows/v1-root-julia-cells.yml"
+
+concurrency:
+  group: v1-root-julia-cells-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  localize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix:
+        cell: [0, 1, 2, 3, 4, 5, 10, 15, 20, 30, 50, 100, 148, 200, 610, 619]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.11.9"
+      - uses: julia-actions/cache@v2
+      - name: Instantiate locked independent solver stack
+        run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+      - name: Parse published-cell localizer
+        run: julia --project=julia -e 'Meta.parseall(read("julia/localize_published_cells.jl", String)); println("published-cell localizer syntax OK")'
+      - name: Extract cell ${{ matrix.cell }}
+        run: |
+          mkdir -p artifacts
+          awk -v id="${{ matrix.cell }}" 'NR==1 || $1==id' experiments/hard_canary_cells.tsv \
+            > "artifacts/hard-cell-${{ matrix.cell }}.tsv"
+          test "$(wc -l < artifacts/hard-cell-${{ matrix.cell }}.tsv)" -eq 2
+      - name: Independently localize cell ${{ matrix.cell }}
+        run: |
+          julia --project=julia julia/localize_published_cells.jl \
+            "artifacts/hard-cell-${{ matrix.cell }}.tsv" \
+            "artifacts/hard-cell-${{ matrix.cell }}-bigfloat.json" \
+            40 22 12 2e-8
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hard-cell-${{ matrix.cell }}-${{ github.sha }}
+          path: |
+            artifacts/hard-cell-${{ matrix.cell }}.tsv
+            artifacts/hard-cell-${{ matrix.cell }}-bigfloat.json
+          if-no-files-found: warn
+          retention-days: 90

@@ -165,6 +165,7 @@ def localize_critical_point(
         raise RuntimeError(f"{mode} does not bracket zero: {va:.6e}, {vb:.6e}")
 
     left, right = (a, b) if a.point.masses[1] < b.point.masses[1] else (b, a)
+    published_left, published_right = left, right
     lo0, hi0 = float(left.point.masses[1]), float(right.point.masses[1])
     vl = event_value(left.floquet, mode)
     vr = event_value(right.floquet, mode)
@@ -174,7 +175,11 @@ def localize_critical_point(
 
     for _ in range(max_iterations):
         width = right.point.masses[1] - left.point.masses[1]
-        if width <= m2_tolerance or abs(best_v) <= event_tolerance:
+        if abs(best_v) <= event_tolerance:
+            break
+        if width <= m2_tolerance:
+            # Width is not the scientific gate.  Cheap Illinois cannot split
+            # further; hand the published cell to the precise refiner.
             break
         denom = vr - vl
         if denom != 0.0:
@@ -236,13 +241,136 @@ def localize_critical_point(
         mode,
         event_tolerance=event_tolerance,
         max_closure=max_closure,
-        max_steps=2,
+        max_steps=8,
         m2_bounds=(lo0, hi0),
         precise=True,
     )
-    if abs(refined.event_value) <= abs(tight_v):
+    if abs(refined.event_value) <= event_tolerance:
         return LocalizedCriticalPoint(refined.sample, mode, float(refined.event_value), float(width))
-    return LocalizedCriticalPoint(tight, mode, float(tight_v), float(width))
+    recovered = _precise_bracket_search(
+        published_left,
+        published_right,
+        mode,
+        seed=refined.sample if abs(refined.event_value) <= abs(tight_v) else tight,
+        event_tolerance=event_tolerance,
+        max_closure=max_closure,
+    )
+    candidates = [
+        LocalizedCriticalPoint(tight, mode, float(tight_v), float(width)),
+        refined,
+        recovered,
+    ]
+    return min(candidates, key=lambda item: abs(item.event_value))
+
+
+def _evaluate_at_m2(
+    left: FamilyPoint,
+    right: FamilyPoint,
+    m2: float,
+    *,
+    max_closure: float,
+    precise: bool,
+) -> BoundarySample:
+    masses = (float(left.masses[0]), float(m2), float(left.masses[2]))
+    guess = _interpolate_guess(left, right, m2)
+    point = correct_family_point(masses, guess, max_nfev=50)
+    if not point.success or point.residual_norm > max_closure:
+        anchor = left if abs(m2 - left.masses[1]) <= abs(m2 - right.masses[1]) else right
+        point = correct_family_point(
+            (float(anchor.masses[0]), float(m2), float(anchor.masses[2])),
+            (anchor.x1, anchor.v1, anchor.v2, anchor.period),
+            max_nfev=60,
+        )
+    if not point.success or point.residual_norm > max_closure:
+        raise RuntimeError(f"periodic correction failed at m2={m2:.12g}")
+    return _precise_evaluate(point) if precise else evaluate(point)
+
+
+def _precise_bracket_search(
+    published_left: BoundarySample,
+    published_right: BoundarySample,
+    mode: EventMode,
+    *,
+    seed: BoundarySample,
+    event_tolerance: float,
+    max_closure: float,
+    max_steps: int = 12,
+) -> LocalizedCriticalPoint:
+    """Re-open the published cell and localize with tight Floquet only.
+
+    Cheap Illinois can collapse a 1e-3 mass cell to 1e-14 while the event is
+    still 1e-6.  The scientific object is the sign-changing published bracket,
+    so rebuild that bracket at tight tolerance and Illinois/bisect there.
+    """
+    left_pt, right_pt = published_left.point, published_right.point
+    lo = float(left_pt.masses[1])
+    hi = float(right_pt.masses[1])
+    left = _evaluate_at_m2(left_pt, right_pt, lo, max_closure=max_closure, precise=True)
+    right = _evaluate_at_m2(left_pt, right_pt, hi, max_closure=max_closure, precise=True)
+    vl = event_value(left.floquet, mode)
+    vr = event_value(right.floquet, mode)
+    seed_v = event_value(seed.floquet, mode)
+    if vl * vr > 0.0 and seed_v * vl <= 0.0:
+        right, vr = seed, seed_v
+        hi = float(seed.point.masses[1])
+        if hi < lo:
+            left, right = right, left
+            vl, vr = vr, vl
+            lo, hi = hi, lo
+    elif vl * vr > 0.0 and seed_v * vr <= 0.0:
+        left, vl = seed, seed_v
+        lo = float(seed.point.masses[1])
+        if hi < lo:
+            left, right = right, left
+            vl, vr = vr, vl
+            lo, hi = hi, lo
+    best = left if abs(vl) <= abs(vr) else right
+    best_v = vl if best is left else vr
+    if abs(seed_v) < abs(best_v):
+        best, best_v = seed, seed_v
+    if abs(best_v) <= event_tolerance:
+        return LocalizedCriticalPoint(best, mode, float(best_v), hi - lo)
+
+    for _ in range(max_steps):
+        width = float(right.point.masses[1] - left.point.masses[1])
+        if abs(best_v) <= event_tolerance:
+            break
+        if width <= 1e-14:
+            break
+        denom = vr - vl
+        if denom != 0.0 and width > 1e-10:
+            secant = left.point.masses[1] - vl * width / denom
+        else:
+            secant = 0.5 * (left.point.masses[1] + right.point.masses[1])
+        # No Illinois damping. Cheap-loop damping is what collapsed hard +1 cells.
+        guard = 0.05 * width if width > 1e-10 else 0.0
+        if guard > 0.0:
+            m2 = float(np.clip(secant, left.point.masses[1] + guard, right.point.masses[1] - guard))
+        else:
+            m2 = float(np.clip(secant, left.point.masses[1], right.point.masses[1]))
+        mid = _evaluate_at_m2(left.point, right.point, m2, max_closure=max_closure, precise=True)
+        vm = event_value(mid.floquet, mode)
+        if abs(vm) < abs(best_v):
+            best, best_v = mid, vm
+        if abs(best_v) <= event_tolerance:
+            break
+        if vl * vm <= 0.0:
+            right, vr = mid, vm
+        else:
+            left, vl = mid, vm
+
+    polished = _polish_event_root(
+        best,
+        mode,
+        event_tolerance=event_tolerance,
+        max_closure=max_closure,
+        max_steps=8,
+        m2_bounds=(float(published_left.point.masses[1]), float(published_right.point.masses[1])),
+        precise=True,
+    )
+    return polished if abs(polished.event_value) <= abs(best_v) else LocalizedCriticalPoint(
+        best, mode, float(best_v), float(right.point.masses[1] - left.point.masses[1])
+    )
 
 
 def _precise_evaluate(point: FamilyPoint) -> BoundarySample:
@@ -278,15 +406,30 @@ def _polish_event_root(
     lo, hi = m2_bounds if m2_bounds is not None else (m2 - 5e-4, m2 + 5e-4)
     for _ in range(max_steps):
         step = max(1e-10, 1e-8 * max(abs(m2), 1.0))
-        probe = correct_family_point(
-            (m1, m2 + step, m3),
+        plus = correct_family_point(
+            (m1, min(m2 + step, hi), m3),
             (current.point.x1, current.point.v1, current.point.v2, current.point.period),
             max_nfev=30,
         )
-        if not probe.success or probe.residual_norm > max_closure:
+        if not plus.success or plus.residual_norm > max_closure:
             break
-        probed = ev(probe)
-        slope = (event_value(probed.floquet, mode) - value) / step
+        plus_sample = ev(plus)
+        if precise and m2 - step >= lo:
+            minus = correct_family_point(
+                (m1, m2 - step, m3),
+                (current.point.x1, current.point.v1, current.point.v2, current.point.period),
+                max_nfev=30,
+            )
+            if minus.success and minus.residual_norm <= max_closure:
+                minus_sample = ev(minus)
+                slope = (
+                    event_value(plus_sample.floquet, mode)
+                    - event_value(minus_sample.floquet, mode)
+                ) / (2.0 * step)
+            else:
+                slope = (event_value(plus_sample.floquet, mode) - value) / step
+        else:
+            slope = (event_value(plus_sample.floquet, mode) - value) / step
         if slope == 0.0 or not np.isfinite(slope):
             break
         nxt_m2 = float(np.clip(m2 - value / slope, lo, hi))
