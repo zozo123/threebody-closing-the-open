@@ -22,6 +22,10 @@ struct Seed {
   double x1, v1, v2, period;
 };
 
+struct FloquetIntervals {
+  interval alpha, beta, discriminant, plusOne, minusOne;
+};
+
 std::vector<std::string> splitTabs(const std::string& line) {
   std::vector<std::string> out;
   std::stringstream ss(line);
@@ -64,7 +68,7 @@ void reducedField(Node /*t*/, Node in[], int /*dimIn*/, Node out[], int /*dimOut
   Node r1sq=q1x^2 + q1y^2;
   Node r2sq=q2x^2 + q2y^2;
   Node r12sq=d12x^2 + d12y^2;
-  // -1.5 is exactly representable in binary; CAPD's own rigorous PCR3BP
+  // -1.5 is exactly representable in binary; CAPD's official rigorous PCR3BP
   // example uses this same power convention for inverse-cube forces.
   Node inv1=r1sq^-1.5, inv2=r2sq^-1.5, inv12=r12sq^-1.5;
   Node g1x=q1x*inv1, g1y=q1y*inv1;
@@ -87,9 +91,22 @@ IVector chartState(const Seed& s) {
 }
 
 interval pairDistanceSquared(const IVector& z, int pair) {
-  if(pair==0) return sqr(z[0])+sqr(z[1]);               // |r1-r3|^2
-  if(pair==1) return sqr(z[2])+sqr(z[3]);               // |r2-r3|^2
-  return sqr(z[2]-z[0])+sqr(z[3]-z[1]);                 // |r2-r1|^2
+  if(pair==0) return sqr(z[0])+sqr(z[1]);
+  if(pair==1) return sqr(z[2])+sqr(z[3]);
+  return sqr(z[2]-z[0])+sqr(z[3]-z[1]);
+}
+
+FloquetIntervals floquetIntervals(const IMatrix& M) {
+  interval alpha=0., trM2=0.;
+  for(int i=0;i<8;++i) {
+    alpha += M[i][i];
+    for(int j=0;j<8;++j) trM2 += M[i][j]*M[j][i];
+  }
+  interval beta=(sqr(alpha)-trM2)/2.;
+  interval plusOne=beta-6.*alpha+20.;
+  interval minusOne=beta-2.*alpha+4.;
+  interval discriminant=sqr(alpha-4.)-4.*(beta-4.*alpha+8.);
+  return FloquetIntervals{alpha,beta,discriminant,plusOne,minusOne};
 }
 
 bool finiteInterval(const interval& x) {
@@ -106,6 +123,16 @@ std::string vectorJson(const IVector& v) {
   std::ostringstream os; os << "[";
   for(int i=0;i<v.dimension();++i) { if(i) os << ","; os << intervalJson(v[i]); }
   os << "]"; return os.str();
+}
+
+std::string floquetJson(const FloquetIntervals& f) {
+  std::ostringstream os;
+  os << "{\"alpha\":" << intervalJson(f.alpha)
+     << ",\"beta\":" << intervalJson(f.beta)
+     << ",\"discriminant\":" << intervalJson(f.discriminant)
+     << ",\"plus_one_event\":" << intervalJson(f.plusOne)
+     << ",\"minus_one_event\":" << intervalJson(f.minusOne) << "}";
+  return os.str();
 }
 
 } // namespace
@@ -134,6 +161,7 @@ int main(int argc, char** argv) {
     C1HORect2Set pointSet(center);
     const IVector finalPoint=timeMap(interval(s.period),pointSet);
     const IMatrix monodromy=(IMatrix)pointSet;
+    const FloquetIntervals pointFloquet=floquetIntervals(monodromy);
 
     IVector box=center;
     for(int i=0;i<box.dimension();++i) {
@@ -144,6 +172,7 @@ int main(int argc, char** argv) {
     C1HORect2Set boxSet(box);
     const IVector finalBox=timeMap(interval(s.period),boxSet);
     const IMatrix boxMonodromy=(IMatrix)boxSet;
+    const FloquetIntervals boxFloquet=floquetIntervals(boxMonodromy);
 
     IVector closure(8);
     double maxClosureWidth=0., maxMonodromyWidth=0., maxBoxMonodromyWidth=0.;
@@ -158,6 +187,12 @@ int main(int argc, char** argv) {
         maxBoxMonodromyWidth=std::max(maxBoxMonodromyWidth,width(boxMonodromy[i][j]));
       }
     }
+    finite = finite
+      && finiteInterval(pointFloquet.alpha) && finiteInterval(pointFloquet.beta)
+      && finiteInterval(pointFloquet.discriminant) && finiteInterval(pointFloquet.plusOne)
+      && finiteInterval(pointFloquet.minusOne) && finiteInterval(boxFloquet.alpha)
+      && finiteInterval(boxFloquet.beta) && finiteInterval(boxFloquet.discriminant)
+      && finiteInterval(boxFloquet.plusOne) && finiteInterval(boxFloquet.minusOne);
 
     interval pointD13=pairDistanceSquared(finalPoint,0);
     interval pointD23=pairDistanceSquared(finalPoint,1);
@@ -165,7 +200,7 @@ int main(int argc, char** argv) {
     interval boxD13=pairDistanceSquared(finalBox,0);
     interval boxD23=pairDistanceSquared(finalBox,1);
     interval boxD12=pairDistanceSquared(finalBox,2);
-    const bool collisionFreeFinal = pointD13.leftBound()>0. && pointD23.leftBound()>0. && pointD12.leftBound()>0.
+    const bool collisionFreeFinal = pointD13.leftBound()>0. && pointD23.leftBound()>0. && pointD12.leftBound()>0.;
     const bool boxCollisionFreeFinal = boxD13.leftBound()>0. && boxD23.leftBound()>0. && boxD12.leftBound()>0.;
     const bool passed = finite && collisionFreeFinal && boxCollisionFreeFinal;
 
@@ -174,13 +209,15 @@ int main(int argc, char** argv) {
     out << std::setprecision(17)
         << "{\n"
         << "  \"claim_status\": \"validated_flow_scaffolding\",\n"
-        << "  \"proof_scope\": \"rigorous CAPD full-period flow and C1 variational enclosure only; not a periodic-orbit existence proof and not an organizer certificate\",\n"
+        << "  \"proof_scope\": \"rigorous CAPD full-period flow, C1 variational and trace-invariant enclosure only; not a periodic-orbit existence proof and not an organizer certificate\",\n"
         << "  \"seed_name\": \"" << s.name << "\",\n"
         << "  \"masses\": [" << s.m1 << "," << s.m2 << "," << s.m3 << "],\n"
         << "  \"period\": " << s.period << ",\n"
         << "  \"input_box_relative_radius\": " << boxRadius << ",\n"
         << "  \"point_flow_final\": " << vectorJson(finalPoint) << ",\n"
         << "  \"point_flow_closure\": " << vectorJson(closure) << ",\n"
+        << "  \"point_floquet_intervals\": " << floquetJson(pointFloquet) << ",\n"
+        << "  \"box_floquet_intervals\": " << floquetJson(boxFloquet) << ",\n"
         << "  \"max_point_closure_interval_width\": " << maxClosureWidth << ",\n"
         << "  \"max_point_monodromy_interval_width\": " << maxMonodromyWidth << ",\n"
         << "  \"max_box_monodromy_interval_width\": " << maxBoxMonodromyWidth << ",\n"
@@ -196,7 +233,9 @@ int main(int argc, char** argv) {
               << " validated_flow=" << (passed?"PASS":"FAIL")
               << " closure_width=" << maxClosureWidth
               << " point_monodromy_width=" << maxMonodromyWidth
-              << " box_monodromy_width=" << maxBoxMonodromyWidth << "\n";
+              << " box_monodromy_width=" << maxBoxMonodromyWidth
+              << " G+=" << pointFloquet.plusOne
+              << " G-=" << pointFloquet.minusOne << "\n";
     return passed ? 0 : 1;
   } catch(const std::exception& e) {
     std::cerr << "CAPD validated-flow failure: " << e.what() << "\n";
