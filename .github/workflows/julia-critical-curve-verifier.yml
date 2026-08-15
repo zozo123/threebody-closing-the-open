@@ -1,0 +1,85 @@
+name: Julia critical-curve representative verifier
+
+on:
+  pull_request:
+    paths:
+      - "julia/Project.toml"
+      - "julia/Manifest.toml"
+      - "julia/verify_reduced.jl"
+      - "julia/verify_critical_points.jl"
+      - "experiments/critical_curve_representatives.tsv"
+      - ".github/workflows/julia-critical-curve-verifier.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - "julia/Project.toml"
+      - "julia/Manifest.toml"
+      - "julia/verify_reduced.jl"
+      - "julia/verify_critical_points.jl"
+      - "experiments/critical_curve_representatives.tsv"
+      - ".github/workflows/julia-critical-curve-verifier.yml"
+  workflow_dispatch:
+    inputs:
+      dps:
+        description: "BigFloat decimal precision"
+        required: true
+        default: "50"
+      tol_exp:
+        description: "Vern9 tolerance exponent"
+        required: true
+        default: "25"
+      closure_exp:
+        description: "Required corrected closure exponent"
+        required: true
+        default: "18"
+      width_exp:
+        description: "Final m2 event-bracket width exponent"
+        required: true
+        default: "8"
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.11.9"
+      - name: Parse independent verifier
+        run: julia -e 'Meta.parseall(read("julia/verify_critical_points.jl", String)); println("Julia critical verifier syntax OK")'
+
+  verify:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.11.9"
+      - uses: julia-actions/cache@v2
+      - name: Instantiate locked independent solver stack
+        run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+      - name: Reproduce representative critical points independently
+        env:
+          DPS: ${{ inputs.dps || '50' }}
+          TOL_EXP: ${{ inputs.tol_exp || '25' }}
+          CLOSURE_EXP: ${{ inputs.closure_exp || '18' }}
+          WIDTH_EXP: ${{ inputs.width_exp || '8' }}
+        run: |
+          mkdir -p artifacts
+          julia --project=julia julia/verify_critical_points.jl \
+            experiments/critical_curve_representatives.tsv \
+            artifacts/critical-curve-bigfloat.json \
+            "$DPS" "$TOL_EXP" "$CLOSURE_EXP" "$WIDTH_EXP" 5 4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: critical-curve-bigfloat-${{ github.sha }}
+          path: artifacts/critical-curve-bigfloat.json
+          if-no-files-found: error
+          retention-days: 90
