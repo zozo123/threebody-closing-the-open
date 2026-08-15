@@ -44,6 +44,27 @@ EventMode = Literal["plus_one", "minus_one", "trace_collision"]
 _EVENT_MODES: tuple[EventMode, ...] = ("plus_one", "minus_one", "trace_collision")
 
 
+def classify_localized_cell(
+    *,
+    closure: float,
+    event: float,
+    m2: float,
+    lo: float,
+    hi: float,
+    max_closure: float = 1e-7,
+    event_tolerance: float = 2e-8,
+    bracket_slop: float = 2e-9,
+) -> str:
+    """Classify one 1-D cell localization without aborting a 620-cell census."""
+    if not (lo - bracket_slop <= m2 <= hi + bracket_slop):
+        return "outside_bracket"
+    if closure > max_closure:
+        return "missed_closure"
+    if abs(event) > event_tolerance:
+        return "missed_event"
+    return "ok"
+
+
 @dataclass(frozen=True)
 class LocalizedCriticalPoint:
     sample: BoundarySample
@@ -191,11 +212,72 @@ def localize_critical_point(
             left, vl = mid, vm
 
     width = right.point.masses[1] - left.point.masses[1]
-    if abs(best_v) > event_tolerance and width > m2_tolerance:
+    # `best` can be an early iterate.  Prefer the final bracket endpoint, then
+    # polish with a 1-D event Newton so a tiny remaining width is not mistaken
+    # for a converged event residual.
+    final = left if abs(vl) <= abs(vr) else right
+    if abs(best_v) < abs(event_value(final.floquet, mode)):
+        final = best
+    polished = _polish_event_root(
+        final,
+        mode,
+        event_tolerance=event_tolerance,
+        max_closure=max_closure,
+    )
+    final_v = float(polished.event_value)
+    if abs(final_v) > event_tolerance and width > m2_tolerance:
         raise RuntimeError(
-            f"critical localization did not converge for {mode}: value={best_v:.3e}, width={width:.3e}"
+            f"critical localization did not converge for {mode}: value={final_v:.3e}, width={width:.3e}"
         )
-    return LocalizedCriticalPoint(best, mode, float(best_v), float(width))
+    return LocalizedCriticalPoint(polished.sample, mode, final_v, float(width))
+
+
+def _polish_event_root(
+    sample: BoundarySample,
+    mode: EventMode,
+    *,
+    event_tolerance: float,
+    max_closure: float,
+    max_steps: int = 8,
+) -> LocalizedCriticalPoint:
+    """One-dimensional Newton on m2 at fixed m1 after the bracket search."""
+    current = sample
+    value = event_value(current.floquet, mode)
+    if abs(value) <= event_tolerance:
+        width = 0.0
+        return LocalizedCriticalPoint(current, mode, float(value), width)
+
+    m1, m2, m3 = (float(x) for x in current.point.masses)
+    for _ in range(max_steps):
+        step = max(1e-10, 1e-8 * max(abs(m2), 1.0))
+        probe_m2 = m2 + step
+        probe = correct_family_point(
+            (m1, probe_m2, m3),
+            (current.point.x1, current.point.v1, current.point.v2, current.point.period),
+            max_nfev=80,
+        )
+        if not probe.success or probe.residual_norm > max_closure:
+            break
+        probed = evaluate(probe)
+        slope = (event_value(probed.floquet, mode) - value) / step
+        if slope == 0.0 or not np.isfinite(slope):
+            break
+        nxt_m2 = m2 - value / slope
+        if not np.isfinite(nxt_m2):
+            break
+        corrected = correct_family_point(
+            (m1, float(nxt_m2), m3),
+            (current.point.x1, current.point.v1, current.point.v2, current.point.period),
+            max_nfev=80,
+        )
+        if not corrected.success or corrected.residual_norm > max_closure:
+            break
+        current = evaluate(corrected)
+        m2 = float(current.point.masses[1])
+        value = event_value(current.floquet, mode)
+        if abs(value) <= event_tolerance:
+            break
+    return LocalizedCriticalPoint(current, mode, float(value), 0.0)
 
 
 def _flow_for_vector(

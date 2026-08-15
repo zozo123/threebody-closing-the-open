@@ -5,6 +5,7 @@
 - `SOLVE_LOOP.md` defines the execution/falsification loop.
 - `RESULT_LEDGER.md` is the permanent claim firewall.
 - `CLOSURE_STATUS_2026-08-15.md` is the current post-audit checkpoint while the live closure workflows finish.
+- `EXECUTION_DAG.md` is the live wave-ordered control graph for remaining closure work.
 - `NOVELTY_AUDIT.md` records the literature/precedence audit.
 
 The repository must not label the frozen v1 problem `SOLVED` until the permanent ledger and release manifest satisfy every gate in `OPEN_PROBLEM.md`.

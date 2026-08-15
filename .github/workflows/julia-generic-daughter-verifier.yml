@@ -25,6 +25,7 @@ on:
       - "julia/verify_critical_points.jl"
       - "julia/verify_generic_daughters.jl"
       - "experiments/daughter_d0_plus_reproduction.tsv"
+      - "experiments/daughter_d0_minus_reproduction.tsv"
       - "experiments/daughter_d1_plus_reproduction.tsv"
       - ".github/workflows/julia-generic-daughter-verifier.yml"
   push:
@@ -32,6 +33,7 @@ on:
     paths:
       - "julia/verify_generic_daughters.jl"
       - "experiments/daughter_d0_plus_reproduction.tsv"
+      - "experiments/daughter_d0_minus_reproduction.tsv"
       - "experiments/daughter_d1_plus_reproduction.tsv"
       - ".github/workflows/julia-generic-daughter-verifier.yml"
 
@@ -46,6 +48,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - label: d0-minus
+            seed_file: experiments/daughter_d0_minus_reproduction.tsv
+            output_file: artifacts/daughter-d0-minus-bigfloat.json
           - label: d0-plus
             seed_file: experiments/daughter_d0_plus_reproduction.tsv
             output_file: artifacts/daughter-d0-plus-bigfloat.json
