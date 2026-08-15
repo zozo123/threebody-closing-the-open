@@ -6,11 +6,20 @@ on:
       - "julia/verify_reduced.jl"
       - "julia/verify_critical_points.jl"
       - "julia/verify_mixed_vertices.jl"
+      - "experiments/mixed_vertex_candidates.tsv"
+      - "experiments/mixed_vertex_principal_lower_left.tsv"
+      - "experiments/mixed_vertex_secondary_lower_switch.tsv"
+      - "experiments/mixed_vertex_principal_lower_right.tsv"
       - ".github/workflows/julia-mixed-vertex-verifier.yml"
   push:
     branches: ["main"]
     paths:
       - "experiments/mixed_vertex_candidates.tsv"
+      - "experiments/mixed_vertex_principal_lower_left.tsv"
+      - "experiments/mixed_vertex_secondary_lower_switch.tsv"
+      - "experiments/mixed_vertex_principal_lower_right.tsv"
+      - "julia/verify_mixed_vertices.jl"
+      - ".github/workflows/julia-mixed-vertex-verifier.yml"
   workflow_dispatch:
     inputs:
       dps:
@@ -57,18 +66,31 @@ jobs:
   verify:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: principal-lower-left
+            seed_file: experiments/mixed_vertex_principal_lower_left.tsv
+            output_file: artifacts/mixed-vertex-principal-lower-left-bigfloat.json
+          - label: secondary-lower-switch
+            seed_file: experiments/mixed_vertex_secondary_lower_switch.tsv
+            output_file: artifacts/mixed-vertex-secondary-lower-switch-bigfloat.json
+          - label: principal-lower-right
+            seed_file: experiments/mixed_vertex_principal_lower_right.tsv
+            output_file: artifacts/mixed-vertex-principal-lower-right-bigfloat.json
     steps:
       - uses: actions/checkout@v7
       - name: Require frozen candidate seed file
-        run: test -s experiments/mixed_vertex_candidates.tsv
+        run: test -s "${{ matrix.seed_file }}"
       - uses: julia-actions/setup-julia@v2
         with:
           version: "1.11.9"
       - uses: julia-actions/cache@v2
       - name: Instantiate locked independent solver stack
         run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
-      - name: Independently solve both mixed Floquet event equations
+      - name: Independently solve both mixed Floquet event equations for ${{ matrix.label }}
         env:
           DPS: ${{ inputs.dps || '50' }}
           TOL_EXP: ${{ inputs.tol_exp || '25' }}
@@ -79,13 +101,13 @@ jobs:
         run: |
           mkdir -p artifacts
           julia --project=julia julia/verify_mixed_vertices.jl \
-            experiments/mixed_vertex_candidates.tsv \
-            artifacts/mixed-vertices-bigfloat.json \
+            "${{ matrix.seed_file }}" \
+            "${{ matrix.output_file }}" \
             "$DPS" "$TOL_EXP" "$CLOSURE_EXP" "$EVENT_EXP" "$FD_EXP" "$MAX_SHIFT_EXP"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mixed-vertices-bigfloat-${{ github.sha }}
-          path: artifacts/mixed-vertices-bigfloat.json
+          name: mixed-vertex-${{ matrix.label }}-${{ github.sha }}
+          path: ${{ matrix.output_file }}
           if-no-files-found: warn
           retention-days: 90
