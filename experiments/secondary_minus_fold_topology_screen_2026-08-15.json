@@ -1,0 +1,37 @@
+{
+  "claim_status": "screening_supported",
+  "scope": "Float64 root-count topology screen for the secondary -1 critical-curve fold; independent BigFloat/event-curve continuation remains required.",
+  "method": {
+    "description": "Independently reimplemented the 8D relative dynamics and variational monodromy, corrected the periodic orbit at each sampled mass pair, and evaluated G-=beta-2 alpha+4 across a narrow m2 slice on opposite sides of the candidate fold in m1. A generic fold should change the local slice from zero roots to two roots.",
+    "screening_integrator": "SciPy DOP853 float64, rtol=1e-10, atol=1e-12",
+    "reference_center": [0.99570498, 0.974261, 1.0]
+  },
+  "below_fold_slice": {
+    "m1": 0.99560498,
+    "samples": [
+      {"m2": 0.966261, "minus_one_event": -0.01119308, "closure_norm": 7.7e-11},
+      {"m2": 0.974261, "minus_one_event": -0.00278765554, "closure_norm": 5.01e-11},
+      {"m2": 0.982261, "minus_one_event": -0.00540456856, "closure_norm": 7.7e-11}
+    ],
+    "observed_sign_pattern": ["negative", "negative", "negative"]
+  },
+  "above_fold_slice": {
+    "m1": 0.99580498,
+    "samples": [
+      {"m2": 0.966261, "minus_one_event": -0.00378115716, "closure_norm": 7.54e-11},
+      {"m2": 0.974261, "minus_one_event": 0.00282129866, "closure_norm": 6.05e-11},
+      {"m2": 0.982261, "minus_one_event": -0.00176310372, "closure_norm": 7.59e-11}
+    ],
+    "observed_sign_pattern": ["negative", "positive", "negative"]
+  },
+  "additional_check": {
+    "m1": 0.99580498,
+    "left_newborn_root_screen": {
+      "m2": 0.96859872078939568,
+      "minus_one_event_at_tighter_recheck": -1.4157645056300794e-06,
+      "closure_norm": 2.2997745858909391e-09
+    },
+    "note": "The root localization was performed with a looser screening event tolerance than the sign-topology test and is retained only as an approximate branch seed."
+  },
+  "conclusion": "The local sign topology changes from no sampled -1 zero below the candidate m1 to two sign-change brackets above it, which is strong screening evidence for a -1 event-curve fold creating the secondary lobe. This fold is compatible with, and distinct from, the mixed -1/+1 vertex subsequently found on the secondary lower boundary near m1=0.9967682."
+}
