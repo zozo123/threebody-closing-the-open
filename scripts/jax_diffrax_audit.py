@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
 """Cross-check adaptive JAX/Diffrax continuation derivatives against SciPy.
 
-This audit is intentionally adversarial. JAX derivatives are not allowed to steer
-continuation merely because autodiff produced numbers. We require agreement with
-an independently integrated SciPy closure, converged central finite differences
-of that closure, and SciPy variational finite differences of the smooth Floquet
-critical event.
+The architecture under test is deliberately hybrid:
+
+* SciPy DOP853 + the existing variational implementation remains authoritative
+  for closure and Floquet-event *values*.
+* JAX x64 + Diffrax is eligible only as a derivative engine, after its closure
+  Jacobian and Floquet-event gradient agree with independently converged SciPy
+  finite differences.
+
+This distinction matters near marginal stability: two accurate adaptive solvers
+can differ enough in a tiny event scalar to move a screening zero, while their
+local derivatives can still agree extremely well. JAX values are therefore
+recorded as diagnostics, never used to certify a scientific residual.
 """
 from __future__ import annotations
 
@@ -136,7 +143,8 @@ def main() -> None:
         raise SystemExit("JAX x64 is required; set JAX_ENABLE_X64=1")
 
     records = []
-    all_eligible = True
+    all_derivatives_eligible = True
+    all_value_surrogates_close = True
     for name, y, m3 in read_points(args.seeds):
         mode = EVENT_BY_EDGE[name]
         scipy_c = scipy_closure(y, m3)
@@ -170,17 +178,22 @@ def main() -> None:
         event_value_diff = abs(jax_event_value - scipy_event_value)
         allowed_event_grad_rel = max(0.08, 10.0 * event_fd_self_rel)
 
-        eligible = bool(
+        derivatives_eligible = bool(
             np.isfinite(jax_j).all()
             and np.isfinite(jax_event_grad).all()
-            and closure_diff <= 5e-7
             and fd_self_rel <= 0.02
             and jax_rel <= allowed_jac_rel
-            and event_value_diff <= 2e-4
             and event_fd_self_rel <= 0.05
             and event_grad_rel <= allowed_event_grad_rel
         )
-        all_eligible &= eligible
+        # This is diagnostic only. The hybrid solver never substitutes JAX values
+        # for SciPy residual values, even when these tests happen to pass.
+        value_surrogates_close = bool(
+            closure_diff <= 5e-7
+            and event_value_diff <= 2e-4
+        )
+        all_derivatives_eligible &= derivatives_eligible
+        all_value_surrogates_close &= value_surrogates_close
         records.append(
             {
                 "edge": name,
@@ -188,7 +201,7 @@ def main() -> None:
                 "y": y.tolist(),
                 "scipy_closure_norm": float(np.linalg.norm(scipy_c)),
                 "jax_closure_norm": float(np.linalg.norm(jax_c)),
-                "closure_difference_norm": closure_diff,
+                "closure_value_difference_norm": closure_diff,
                 "closure_fd_self_relative_error": fd_self_rel,
                 "jax_vs_scipy_closure_fd_relative_error": jax_rel,
                 "allowed_closure_jacobian_relative_error": allowed_jac_rel,
@@ -198,30 +211,35 @@ def main() -> None:
                 "event_fd_self_relative_error": event_fd_self_rel,
                 "jax_vs_scipy_event_gradient_relative_error": event_grad_rel,
                 "allowed_event_gradient_relative_error": allowed_event_grad_rel,
-                "eligible_for_continuation": eligible,
+                "eligible_for_hybrid_jacobian": derivatives_eligible,
+                "jax_value_surrogates_close": value_surrogates_close,
             }
         )
         print(
             name,
-            "closure_diff=", closure_diff,
+            "closure_value_diff=", closure_diff,
             "closure_jac_rel=", jax_rel,
-            "event_diff=", event_value_diff,
+            "event_value_diff=", event_value_diff,
             "event_grad_rel=", event_grad_rel,
-            "eligible=", eligible,
+            "derivatives_eligible=", derivatives_eligible,
+            "value_surrogates_close=", value_surrogates_close,
         )
 
     payload = {
-        "implementation": "JAX x64 + Diffrax adaptive Dopri8 vs SciPy DOP853",
+        "implementation": "SciPy residual oracle + JAX x64/Diffrax derivative oracle",
         "jax_version": jax.__version__,
         "diffrax_version": getattr(diffrax, "__version__", "unknown"),
-        "all_eligible_for_continuation": all_eligible,
+        "all_eligible_for_hybrid_jacobian": all_derivatives_eligible,
+        "all_jax_value_surrogates_close": all_value_surrogates_close,
+        "authoritative_values": "SciPy DOP853 + existing variational path",
+        "accelerated_derivatives": "JAX x64 + Diffrax ForwardMode",
         "records": records,
-        "claim_status": "derivative QA only; not publication evidence",
+        "claim_status": "derivative QA only; JAX values are never publication evidence",
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-    if args.require_eligible and not all_eligible:
-        raise SystemExit("JAX/Diffrax derivative audit did not pass continuation gates")
+    if args.require_eligible and not all_derivatives_eligible:
+        raise SystemExit("JAX/Diffrax derivatives did not pass hybrid-Jacobian gates")
 
 
 if __name__ == "__main__":
