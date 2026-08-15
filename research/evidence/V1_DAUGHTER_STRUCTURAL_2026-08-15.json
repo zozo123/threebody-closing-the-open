@@ -1,0 +1,84 @@
+{
+  "schema": "atlas.v1.daughter-structural-evidence/1",
+  "frozen_at": "2026-08-15",
+  "scope": "float64 generic strict-periodic continuation from the lower physical +1 branch-switch neighborhood; independent BigFloat reproduction remains a release gate",
+  "workflow_run_id": 31878970974,
+  "workflow_head_sha": "82fc5aa24eabd49c9e645f81e301013fd26410eb",
+  "digest_semantics": "artifact_digest is the GitHub Actions artifact metadata SHA-256",
+  "physical_source": {
+    "singular_values_A_minus_I": [8.21138369523087, 5.821898884646543, 0.6116850007743296, 0.0000032453885374584724],
+    "interpretation": "only direction_index=0 (vh[-1]) is the soft physical +1 direction; direction_index=1 (vh[-2]) is an adversarial non-null seed direction"
+  },
+  "artifacts": [
+    {
+      "label": "d0-minus",
+      "direction_index": 0,
+      "sign": -1,
+      "artifact_id": 9247295039,
+      "artifact_digest": "sha256:6d483f422535cae8c860d953d8040cdc3bbf82e10da74ff424f6754c61941003",
+      "trace_point_count": 18,
+      "stopped_reason": "requested_steps_completed",
+      "m2_range": [0.7540192537003576, 0.7540752038368954],
+      "minimum_parent_distance": 0.0032535603639879435,
+      "maximum_parent_distance": 0.02874284846917137,
+      "maximum_off_li_norm": 0.011761926469152298,
+      "maximum_closure_norm": 4.9792362659584235e-8,
+      "reconnect_candidate_count": 0
+    },
+    {
+      "label": "d0-plus",
+      "direction_index": 0,
+      "sign": 1,
+      "artifact_id": 9246836083,
+      "artifact_digest": "sha256:ec18cde70805b347379f3bebabcf5e17d7d1a118c330c4e8bcc1e50c09183882",
+      "trace_point_count": 5,
+      "stopped_reason": "next pseudo-arclength candidate exceeded the fixed 3e-7 closure gate",
+      "m2_range": [0.7540192445791072, 0.7540296929752485],
+      "minimum_parent_distance": 0.0032532754087592347,
+      "maximum_parent_distance": 0.008503266957821541,
+      "maximum_off_li_norm": 0.0034802780546973598,
+      "maximum_closure_norm": 2.875355382719444e-7,
+      "reconnect_candidate_count": 0
+    },
+    {
+      "label": "d1-minus",
+      "direction_index": 1,
+      "sign": -1,
+      "artifact_id": 9247617747,
+      "artifact_digest": "sha256:1ba6e77089fba530fc7aa36518cdf0f4635278b222180f50b7636d40dbabcc10",
+      "trace_point_count": 18,
+      "stopped_reason": "requested_steps_completed",
+      "m2_range": [0.7540221853650794, 0.7540991240363902],
+      "minimum_parent_distance": 0.008824153879756725,
+      "maximum_parent_distance": 0.028315914744870312,
+      "maximum_off_li_norm": 0.011586632834187094,
+      "maximum_closure_norm": 1.045447269024237e-7,
+      "reconnect_candidate_count": 0
+    },
+    {
+      "label": "d1-plus",
+      "direction_index": 1,
+      "sign": 1,
+      "artifact_id": 9246843543,
+      "artifact_digest": "sha256:a0c9d32476c56b2b22b2d0871e487c6032dcd02201597af61335e5b546fc1ee7",
+      "trace_point_count": 2,
+      "stopped_reason": "next pseudo-arclength candidate exceeded the fixed 3e-7 closure gate",
+      "m2_range": [0.7540176661911504, 0.7540177458463987],
+      "minimum_parent_distance": 0.008679851843075992,
+      "maximum_parent_distance": 0.008867536447520653,
+      "maximum_off_li_norm": 0.0036294201954178477,
+      "maximum_closure_norm": 2.787072018281068e-7,
+      "reconnect_candidate_count": 0
+    }
+  ],
+  "symmetry_and_branch_identity_screens": {
+    "direction0_plus_minus_reversing_symmetry_best_normalized_chart_distance": 3.8779440720421647e-7,
+    "reversing_symmetry_state_diagonal": [1, -1, 1, -1, -1, 1, -1, 1],
+    "direction0_minus_vs_direction1_minus_overlap": {
+      "best_interpolated_normalized_chart_distance": 4.857996771073963e-6,
+      "typical_distances_after_immediate_switch_neighborhood": "order 1e-5",
+      "interpretation": "the adversarial direction-1 seeds converge onto the same structural daughter rather than defining a second daughter family"
+    }
+  },
+  "structural_conclusion": "The lower +1 screen supports one generic daughter branch with a reversible-symmetry partner. The physical soft direction continues for at least 18 fixed-gate pseudo-arclength steps and moves monotonically away from the same-mass Li parent over that tested segment. This is not yet a release branch claim because independent BigFloat reproduction and long-range genealogy remain pending."
+}
