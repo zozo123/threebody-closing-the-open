@@ -7,6 +7,9 @@ on:
 
 permissions:
   contents: write
+  id-token: write
+  attestations: write
+  artifact-metadata: write
 
 concurrency:
   group: discovery-release-${{ github.ref }}
@@ -61,6 +64,15 @@ jobs:
           find dist -maxdepth 1 -type f ! -name SHA256SUMS -print0 \
             | sort -z \
             | xargs -0 sha256sum > dist/SHA256SUMS
+      - name: Attest solved scientific release provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: |
+            dist/atlas-paper.pdf
+            dist/*.whl
+            dist/*.tar.gz
+            dist/SHA256SUMS
+            dist/discovery/discovery.json
       - uses: actions/upload-artifact@v4
         with:
           name: solved-discovery-${{ github.ref_name }}-${{ github.sha }}
