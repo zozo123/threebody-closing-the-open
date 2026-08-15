@@ -1,0 +1,66 @@
+name: uv lock
+
+on:
+  push:
+    paths:
+      - "pyproject.toml"
+      - ".python-version"
+      - ".github/workflows/uv-lock.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  lock:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.32"
+          enable-cache: true
+      - name: Install canonical Python
+        run: uv python install 3.13
+      - name: Resolve reproducible environment
+        env:
+          UV_PYTHON: "3.13"
+        run: |
+          uv --version
+          uv python find
+          uv lock
+          uv lock --check
+      - name: Commit lockfile if changed
+        env:
+          UV_PYTHON: "3.13"
+        run: |
+          if git diff --quiet -- uv.lock && git ls-files --error-unmatch uv.lock >/dev/null 2>&1; then
+            echo "uv.lock already current"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add uv.lock
+          git commit -m "lock Python environment with uv"
+
+          # Research branches may receive commits while dependency resolution runs.
+          # Rebase the generated lock commit onto the freshest branch, then resolve
+          # once more so the lockfile is guaranteed to describe the rebased tree.
+          for attempt in 1 2 3; do
+            git fetch origin "$GITHUB_REF_NAME"
+            git rebase "origin/$GITHUB_REF_NAME"
+            uv lock
+            uv lock --check
+            git add uv.lock
+            git commit --amend --no-edit
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              exit 0
+            fi
+            echo "branch advanced during lock push; retrying ($attempt/3)"
+          done
+          echo "could not publish uv.lock after three fast-forward retries" >&2
+          exit 1
