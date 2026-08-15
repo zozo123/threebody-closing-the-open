@@ -1,0 +1,86 @@
+name: CAPD validated flow and variational enclosure
+
+on:
+  workflow_dispatch:
+    inputs:
+      box_radius:
+        description: "Relative radius of the rigorous initial-state box"
+        required: true
+        default: "1e-14"
+  push:
+    branches: ["main"]
+    paths:
+      - "validated/capd/**"
+      - "experiments/mixed_vertex_principal_lower_left.tsv"
+      - "experiments/mixed_vertex_secondary_lower_switch.tsv"
+      - "experiments/mixed_vertex_principal_lower_right.tsv"
+      - ".github/workflows/capd-validated-flow.yml"
+  pull_request:
+    paths:
+      - "validated/capd/**"
+      - ".github/workflows/capd-validated-flow.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validated-flow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: principal-lower-left
+            seed_file: experiments/mixed_vertex_principal_lower_left.tsv
+          - label: secondary-lower-switch
+            seed_file: experiments/mixed_vertex_secondary_lower_switch.tsv
+          - label: principal-lower-right
+            seed_file: experiments/mixed_vertex_principal_lower_right.tsv
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install CAPD build prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake libboost-all-dev libgmp-dev libmpfr-dev
+      - name: Fetch current CAPD master at frozen 2026-06-19 commit
+        run: |
+          git clone --filter=blob:none https://github.com/CAPDGroup/CAPD.git third_party/CAPD
+          git -C third_party/CAPD checkout 731079217a9254ea2948d742df2b170895effe7f
+          test "$(git -C third_party/CAPD rev-parse HEAD)" = "731079217a9254ea2948d742df2b170895effe7f"
+      - name: Build CAPD rigorous ODE stack
+        run: |
+          cmake -S third_party/CAPD -B third_party/CAPD/build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCAPD_ENABLE_MULTIPRECISION=false
+          cmake --build third_party/CAPD/build --parallel 2
+      - name: Build three-body validated-flow probe
+        run: |
+          g++ -O2 -std=c++17 validated/capd/validated_flow.cpp \
+            $(third_party/CAPD/build/bin/capd-config --cflags --libs) \
+            -o artifacts-capd-validated-flow
+      - name: Rigorous full-period flow and C1 variational enclosure
+        env:
+          BOX_RADIUS: ${{ inputs.box_radius || '1e-14' }}
+        run: |
+          mkdir -p artifacts
+          ./artifacts-capd-validated-flow \
+            "${{ matrix.seed_file }}" \
+            "artifacts/capd-validated-flow-${{ matrix.label }}.json" \
+            "$BOX_RADIUS"
+      - name: Freeze CAPD provenance
+        if: always()
+        run: |
+          mkdir -p artifacts
+          printf '%s\n' '731079217a9254ea2948d742df2b170895effe7f' > artifacts/CAPD_COMMIT.txt
+          third_party/CAPD/build/bin/capd-config --cflags --libs > artifacts/CAPD_BUILD_FLAGS.txt || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: capd-validated-flow-${{ matrix.label }}-${{ github.sha }}
+          path: |
+            artifacts/capd-validated-flow-${{ matrix.label }}.json
+            artifacts/CAPD_COMMIT.txt
+            artifacts/CAPD_BUILD_FLAGS.txt
+          if-no-files-found: warn
+          retention-days: 90
