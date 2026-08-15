@@ -12,66 +12,52 @@ The target is **not** a solution of the general three-body problem. It is a fini
 
 ### Gate A -- independent critical-point truth
 
-For every headline mechanism used in the paper:
+**Status: PASS for every mechanism label the manuscript is allowed to use.**
 
-1. correct the periodic orbit independently in Julia BigFloat;
-2. localize the same smooth Floquet event without importing Python dynamics;
-3. demonstrate precision/tolerance convergence;
-4. evaluate canonical Jacobi monodromy;
-5. report closure, event, symplectic, reciprocal-pairing, and parameter uncertainty;
-6. withhold the release claim if the independent root moves outside the declared tolerance.
+A mechanism word (`+1`, `-1`, mixed `(+1,-1)`, Hamiltonian--Hopf/Krein) may appear as an ATLAS result only if:
+
+1. the periodic orbit is independently corrected in Julia BigFloat;
+2. the same smooth event is localized without importing Python dynamics;
+3. precision/tolerance convergence is recorded;
+4. canonical Jacobi monodromy and the physical `E^omega/E` quotient are evaluated at the exact bracket;
+5. closure, event, symplectic defect, reciprocal pairing, leakage, and parameter uncertainty are stored;
+6. the independent root stays inside the declared tolerance.
+
+Currently bound: principal lower `+1`; principal upper opposite-Krein Hamiltonian--Hopf; three mixed `(alpha,beta)=(4,4)` organizers.
+
+Still Gate-A objects if the paper wants to use them: secondary-left fold, any fourth mixed organizer, daughter nondegeneracy. Until those exist, the paper must not use those labels as established.
 
 A float64/JAX point is a proposal. It is never publication truth by itself.
 
 ### Gate B -- exact Floquet organizer/network geometry
 
-The sampled U/S boundary already contains `+1`, `-1`, and trace-collision mechanisms. The decisive question is whether apparent mechanism switches are true intersections/vertices of critical arcs or unresolved multiple zeros in coarse cells.
+**Status: PENDING. This is the remaining theorem.**
 
-Use the augmented continuation state
+The final object is a graph, not a cloud. State `y=(x1,v1,v2,T,m1,m2)`. Mixed organizers are preimages of `(alpha,beta)=(4,4)`.
 
-`y=(x1,v1,v2,T,m1,m2)`
+Pass only when:
 
-and solve periodic closure plus smooth event equations directly. In particular, the mixed `+1/-1` organizer is the preimage of
-
-`(alpha,beta)=(4,4)`,
-
-or equivalently
-
-`P(+2)=0`, `P(-2)=0`.
-
-The final critical object must be a graph, not a cloud of boundary samples. Every edge stores mechanism, continuation-sheet identity, uncertainty, and physical canonical evidence. Every apparent endpoint must be explained by a physical/domain boundary, fold, branch point, cusp, collision/symmetry stratum, or connection to another critical edge. "Newton failed" is not an endpoint classification.
+- all 620 catalog S/U cells are localized and assigned to mechanism-labeled edges;
+- every mixed node has incoming and outgoing event arcs;
+- secondary-left birth and secondary-right death are classified (fold, mixed, domain boundary);
+- no endpoint is `Newton failed`;
+- `research/evidence/V1_CRITICAL_GRAPH.json` reports `release_ready: true`.
 
 ### Gate C -- family/sheet connectivity
 
-Family identity is continuation connectivity, not clustering and not coincidence in an invariant plot.
+**Status: PASS in the declared catalog domain.**
 
-Already passed evidence:
+Family identity is continuation connectivity. The catalog is one continuation-connected component. Certificate: `research/V1_CONNECTIVITY_CERTIFICATE_2026-08-15.md`.
 
-- the corrected `(T_si,L_si)` projection is folded/non-injective;
-- five macroscopic sampled bottlenecks were crossed forward/reverse;
-- a deliberately far-mass, invariant-near-duplicate pair was crossed in 80 steps in both directions with terminal chart mismatch of order `1e-13`.
-
-Still required:
-
-1. census the scaled shooting-Jacobian singular spectrum, including the full `m2=m3=1` zero-angular-momentum spine;
-2. attack every serious rank-loss candidate with smaller steps and reverse continuation;
-3. repeat the worst connection with a less symmetry-specialized formulation (generic gauge-fixed shooting, multiple shooting, or collocation BVP);
-4. use path diversity/loop lifting where needed to distinguish an ordinary projection fold from nontrivial sheet monodromy;
-5. do not promote topology words or projected invariant branches to family identifiers.
+The corrected `(T_si,L_si)` projection is folded and non-injective. Projected two-set structure is not a dynamical split.
 
 A chart singularity is not a moduli-space disconnection.
 
 ### Gate D -- release closure
 
-The result is release-ready only when:
+**Status: PENDING.**
 
-1. all declared critical components have been traced and connected into the mechanism graph;
-2. representative points on every mechanism class pass independent high-precision/canonical checks;
-3. family connectivity has survived the rank and chart-independence attacks;
-4. adversarial searches find no hidden stability pocket/component in the declared domain;
-5. a frozen manifest hashes every source dataset, solver environment, evidence artifact, figure, and table;
-6. the manuscript is regenerated from that manifest;
-7. a fresh literature search is run immediately before the novelty freeze.
+Pass only when Gate B is ready, the assembler has flipped `release_ready`, the novelty search is same-day, the manuscript is regenerated from `release_claim` records, and `--require-solved` passes on the tagged commit.
 
 ## Mathematical contract
 

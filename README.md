@@ -2,7 +2,7 @@
 
 Reproducible research infrastructure for systematically mapping stable periodic-orbit **families** in the non-hierarchical, unequal-mass planar Newtonian three-body problem.
 
-> **Scientific status:** research code. This repository does not claim to have solved the general three-body problem. A numerical statement becomes an ATLAS scientific claim only after the verification and release gates in `research/PROTOCOL.md` pass.
+> **Scientific status: OPEN.** Gate C passed (one continuation-connected family). Gate A passed for the mechanism words the paper is allowed to use (physical `+1`, opposite-Krein Hamiltonian–Hopf, three mixed organizers). Gate B (connected critical graph) and Gate D (solved freeze) are pending. This is not a solution of the general three-body problem. See `research/OPEN_PROBLEM.md` and `paper/main.tex`.
 
 ## Scientific target
 

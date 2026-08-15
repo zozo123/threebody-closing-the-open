@@ -1,54 +1,203 @@
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,booktabs,graphicx,hyperref}
-\title{Toward a Reproducible Computational Atlas of Stable Periodic-Orbit Families in the Unequal-Mass Planar Three-Body Problem}
-\author{Yossi Eliaz et al.}
+\title{One continuation family, three mixed organizers, and two bound Floquet events\\
+in the Li--Li--Liao unequal-mass catalog\\
+\large (claim-gated atlas; scientific status OPEN)}
+\author{Yossi Eliaz}
 \date{\today}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-We develop a reproducible computational pipeline for continuation, topological classification and Floquet verification of periodic-orbit families in the planar Newtonian general three-body problem. The first validation target is the unequal-mass, non-hierarchical family reported by Li, Li and Liao. This manuscript is intentionally claim-gated: numerical discoveries are inserted only from frozen verification manifests produced by the accompanying software.
+The Li--Li--Liao 2021 catalog reports $135{,}445$ unequal-mass non-hierarchical
+periodic orbits and $13{,}315$ linearly stable samples on a $0.001$ mass grid.
+A 2023 analysis of the same table argued that the set is two families.
+We treat family identity as continuation connectivity, not as a plot of
+scale-invariant invariants, and we treat the linear-stability boundary as the
+preimage of a universal Floquet domain rather than as a rectangular S/U mask.
+
+\textbf{Earned results.}
+(i)~The frozen catalog is one continuation-connected component in the declared
+gauge.
+(ii)~The principal lower transition at $m_1\approx0.80234$ is an independently
+reproduced physical $+1$ crossing with $m_2$ uncertainty $1.58\times10^{-9}$.
+(iii)~The principal upper transition at $m_1\approx0.80229$ is an independently
+reproduced opposite-Krein Hamiltonian--Hopf event with $m_2$ uncertainty
+$6.27\times10^{-9}$.
+(iv)~The three coarse $+1/-1$ switches are independently reproduced mixed
+organizers at $(\alpha,\beta)=(4,4)$.
+
+\textbf{Not earned.}
+The connected critical graph is unfinished: $0/620$ catalog cells are frozen as
+graph edges; the secondary-lobe birth and death are unclassified; the lower
+$+1$ daughter is unclassified.
+Scientific status remains OPEN.
+This is not a solution of the general three-body problem, and ``stable'' here
+means planar linear Floquet stability only.
 \end{abstract}
 
-\section{Research objective}
-The objective is to map connected families rather than accumulate isolated periodic initial conditions. We treat mass ratios, energy/scale and angular momentum as continuation coordinates; attach linear stability through monodromy/Floquet data; attach symbolic topology through syzygy and free-group/braid invariants; and represent bifurcations as verified relations between continuation branches.
+\section{The problem, and what it is not}
 
-\section{Published baseline}
-Li, Li and Liao reported one family containing 135,445 non-hierarchical unequal-mass periodic orbits, including 13,315 linearly stable examples \cite{li2021stable}. Their public supplementary data provide the baseline against which the ATLAS pipeline is validated. The numbers in this paragraph are literature facts and are not presented as independent ATLAS reproductions.
+The general Newtonian three-body problem is not being solved.
+The v1 question is finite \cite{li2021stable,stancevic2023moth,li2025review}:
 
-\section{Equations and numerical formulation}
-For planar positions $\mathbf r_i\in\mathbb R^2$ and masses $m_i>0$ with $G=1$,
+\begin{quote}
+Is the Li--Li--Liao unequal-mass non-hierarchical catalog one
+continuation-connected family or several?
+On each component, what is the planar linear-Floquet critical graph in the
+$(m_1,m_2)$ plane at $m_3=1$?
+\end{quote}
+
+Li, Li and Liao continued one family on $m_3=1$, $m_1\in[0.8,1.1]$,
+$m_2\in[0.7,1.2]$, spacing $0.001$, and plotted a stable domain
+\cite{li2021stable}.
+Those $135{,}445$ orbits and $13{,}315$ stable labels are literature facts.
+ATLAS may not claim them.
+
+Stan\v{c}evi\'c, Vasiljevi\'c and Dmitra\v{s}inovi\'c argued that the same
+table is two independent sets, using mass-corrected period and angular-momentum
+relations \cite{stancevic2023moth}.
+That is the sharpest competing reading of the exact catalog.
+We accept their diagnostic as a plot, and reject it as a definition of a
+dynamical family.
+
+A later review confirms that unequal-mass continuation, topology, and
+high-precision linear stability remain active \cite{li2025review}.
+Equal-mass stable-orbit searches \cite{hristov2025stable} and restricted-problem
+continuation papers are methodological neighbors, not this catalog.
+
+\section{Evidence ladder}
+
+A record may move only forward:
+candidate $\to$ screened $\to$ closure verified $\to$
+variational verified $\to$ independently reproduced $\to$ release claim.
+Machine-learning output stops at \texttt{candidate}.
+Float64 output stops at \texttt{screened}.
+A manuscript sentence may use \emph{new}, \emph{discovered}, \emph{first},
+\emph{stable} (as an ATLAS result), or a bifurcation name only from a
+\texttt{release\_claim}.
+The four gates are:
+
+\begin{description}
+\item[A] Independent BigFloat plus physical $E^\omega/E$ bind for every
+mechanism word the paper uses.
+\item[B] Connected critical graph: $620$ edges, classified endpoints, no
+``Newton failed''.
+\item[C] Family identity by continuation, not by $(T,L)$ clusters.
+\item[D] Assembler \texttt{release\_ready}, same-day novelty,
+\texttt{--require-solved}.
+\end{description}
+Gate~C has passed.
+Gate~A has passed for the mechanism words used below.
+Gates~B and~D are open, so the project is OPEN.
+
+\section{Equations and the universal Floquet domain}
+
+Planar Newtonian motion with $G=1$ is
 \begin{equation}
-\ddot{\mathbf r}_i = \sum_{j\ne i}m_j\frac{\mathbf r_j-\mathbf r_i}{\lVert\mathbf r_j-\mathbf r_i\rVert^3}.
+\ddot{\mathbf r}_i=\sum_{j\ne i}m_j\frac{\mathbf r_j-\mathbf r_i}{\lVert\mathbf r_j-\mathbf r_i\rVert^3}.
 \end{equation}
-A periodic candidate satisfies $\mathbf x(T)-\mathbf x(0)=0$. Screening uses adaptive DOP853 in IEEE binary64. Scientific verification re-integrates candidates independently using arbitrary-precision arithmetic and precision/step refinement.
+Screening uses DOP853 in IEEE binary64.
+Publication truth uses an independent Julia BigFloat Vern9 stack and the
+physical symplectic quotient $E^\omega/E$ in canonical Jacobi coordinates,
+$E=\mathrm{span}\{X_H,X_L\}$, not deletion of four raw multipliers.
 
-\section{Variational stability}
-The fundamental matrix $\Phi$ obeys
-\begin{equation}
-\dot\Phi(t)=D f(\mathbf x(t))\Phi(t),\qquad \Phi(0)=I,
-\end{equation}
-and the monodromy matrix is $M=\Phi(T)$. Floquet multipliers are the eigenvalues of $M$. We report numerical pairing, trivial-mode and symplectic-consistency diagnostics together with the spectrum. Near critical crossings, classifications remain numerically ambiguous until resolved by precision escalation.
+After center-of-mass reduction the monodromy has four trivial/symmetry unit
+multipliers.
+The remaining four form two reciprocal pairs.
+With $t=\lambda+\lambda^{-1}$,
+\[
+P(t)=t^2-(\alpha-4)t+\beta-4\alpha+8,
+\]
+where $\alpha=\mathrm{tr}\,M$ and
+$\beta=((\mathrm{tr}\,M)^2-\mathrm{tr}(M^2))/2$.
+Spectral stability of both pairs is equivalent to both roots of $P$ lying in
+$[-2,2]$.
+The three walls are
+\begin{align}
+P(+2)&=\beta-6\alpha+20=0,\\
+P(-2)&=\beta-2\alpha+4=0,\\
+\Delta&=\alpha^2+8\alpha-16-4\beta=0.
+\end{align}
+The exact spectral vertices are
+$(0,-4)$ (double $-1$), $(4,4)$ (mixed $+1/-1$), and $(8,28)$ (double $+1$).
+A smooth $+1/-1$ switch on one continuation sheet must pass through $(4,4)$
+unless a coarse cell aliases several roots.
+The mass-space critical set is the preimage of this universal boundary under
+the continuation-sheet map $(m_1,m_2)\mapsto(\alpha,\beta)$.
 
-\section{Family continuation and topology}
-Family identity is defined by connected numerical continuation, not by topology alone. Free-group words are stored raw, freely reduced, cyclically reduced and canonicalized under cyclic conjugacy; time reversal, inverse words and body permutations are retained as explicit transformations rather than silently quotiented.
-
-\section{Reproduction study}
+\section{Reproduction of the published table}
 \IfFileExists{generated/reproduction.tex}{\input{generated/reproduction.tex}}{No frozen reproduction results have yet been inserted.}
 
-\section{New continuation results}
+\section{Authorized ATLAS results}
 \IfFileExists{generated/discoveries.tex}{\input{generated/discoveries.tex}}{No new scientific claims have yet passed the release gate.}
+
+\begin{table}[ht]
+\centering
+\caption{Independently bound critical objects.
+Masses have $m_3=1$.
+Uncertainties are independent-bracket widths, not formal theorems.}
+\label{tab:bound}
+{\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+Object & $m_1$ & $m_2$ & Mechanism \\
+\midrule
+Lower $+1$ & $0.8023446114$ & $0.7540187220$ & physical $+1$, width $1.58\times10^{-9}$ \\
+Upper HH & $0.8022889781$ & $0.7592347066$ & opposite-Krein, width $6.27\times10^{-9}$ \\
+Mixed L & $0.9292391921$ & $0.8853664625$ & $(\alpha,\beta)=(4,4)$ \\
+Mixed S & $0.9967681995$ & $0.9560193602$ & $(\alpha,\beta)=(4,4)$ \\
+Mixed R & $1.0495531867$ & $1.1294758073$ & $(\alpha,\beta)=(4,4)$ \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\section{Screening picture, not a release graph}
+
+On the published $0.001$ grid every one of the $620$ adjacent S/U cells has
+exactly one endpoint-sign-changing smooth event:
+$198$ of type $+1$, $168$ of type $-1$, $254$ trace collisions.
+Coarse tracks:
+principal lower $+1\to-1\to+1$,
+principal upper $\Delta=0$,
+secondary lower $-1\to+1$,
+secondary upper $-1$.
+That census is a seed, not the graph.
+An off-grid active-learning screen of $12$ proposals all corrected onto the
+known sheet and none were screening-stable: no hidden island in that sample.
+
+\section{What remains, and why the status is OPEN}
+
+\begin{enumerate}
+\item Localize all $620$ cells to event residual $\le 2\times10^{-8}$ and
+assign them to edges.
+\item Classify the secondary-left $G_-$ birth (fold candidate near
+$(0.9957,0.9743)$) and the secondary-right death between $m_1=1.042$ and
+$1.043$.
+\item Attach event arcs through the three mixed roots.
+\item Classify the physical-soft $+1$ daughter, or falsify it.
+\item Flip \texttt{release\_ready} only with
+\texttt{scripts/assemble\_critical\_graph.py}.
+\item Rerun the novelty search on the freeze day and run
+\texttt{--require-solved}.
+\end{enumerate}
+Until those close, a sentence of the form ``we computed the connected
+stability-boundary manifold'' is false.
 
 \section{Discovery release status}
 \IfFileExists{generated/discovery-release.tex}{\input{generated/discovery-release.tex}}{No machine-readable discovery status was injected into this manuscript build.}
 
-\section{Discussion}
-The publishable contribution of ATLAS is a traceable chain from candidate generation through independent numerical verification to family-level structure and bifurcation evidence. Machine learning is used to prioritize expensive verification, not to replace it.
-
 \section{Reproducibility}
-Every released figure and table is generated from a frozen manifest containing source-data hashes, code revision, arithmetic precision, solver configuration and per-orbit verification status. Screening artifacts are never used as discovery evidence.
+
+The Python screening stack is CPython~3.13, locked with \texttt{uv}.
+The independent verifier is Julia~$1.11.9$ + BigFloat + Vern9 + GenericSchur.
+JAX is optional discovery infrastructure and is not a publication dependency.
+Every released number in Table~\ref{tab:bound} is backed by a frozen JSON
+record under \texttt{research/evidence/}.
+GitHub Actions run identifiers are stored in
+\texttt{research/DISCOVERY\_RELEASE.json}.
 
 \bibliographystyle{plain}
 \bibliography{references}

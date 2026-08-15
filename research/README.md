@@ -8,4 +8,5 @@
 - `EXECUTION_DAG.md` is the live wave-ordered control graph for remaining closure work.
 - `NOVELTY_AUDIT.md` records the literature/precedence audit.
 
-The repository must not label the frozen v1 problem `SOLVED` until the permanent ledger and release manifest satisfy every gate in `OPEN_PROBLEM.md`.
+Gates: A pass (mechanism words the paper is allowed to use), B pending (critical graph), C pass (one family), D pending (solved freeze).
+The repository must not label the frozen v1 problem `SOLVED` until `V1_CRITICAL_GRAPH.json` is `release_ready` and `--require-solved` passes.
