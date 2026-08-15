@@ -5,6 +5,7 @@ This file is the claim firewall for the current open-problem attack.  It records
 Status vocabulary:
 
 - **VERIFIED-ARTIFACT**: reproduced by a frozen-data GitHub Actions workflow with explicit acceptance gates and retained artifact digest.
+- **FLOAT64-STRUCTURAL**: a frozen, gated structural calculation in the screening implementation; stronger than a heuristic but not a substitute for independent arbitrary-precision reproduction of a publication-critical event.
 - **INDEPENDENT-STRUCTURAL**: independently implemented numerical structure check (for example canonical BigFloat symplectic verification), but not yet an exact critical-point localization.
 - **SCREENING-SUPPORTED**: reproducible float64 evidence that determines the next experiment but is not a release claim by itself.
 - **CANDIDATE**: plausible interpretation awaiting a decisive numerical test.
@@ -101,6 +102,55 @@ A first pseudo-arclength loop attempt assumed that the visually adjacent seconda
 
 This failure is evidence against the simple-loop model and motivated the all-event network audit and exact Floquet-vertex search.
 
+## Physical transverse Floquet reduction
+
+### The regular physical return map is constructed on `E^omega/E`, not by deleting four eigenvalues
+
+**Status: FLOAT64-STRUCTURAL / VERIFIED-ARTIFACT**
+
+In canonical translation-reduced Jacobi coordinates let
+
+`E = span{X_H, X_L}`,
+
+where `X_H` is the time/energy generator and `X_L` is the planar rotation/angular-momentum generator.  At regular points `E` is a two-dimensional isotropic subspace and the physical transverse return map acts on the four-dimensional symplectic quotient `E^omega/E`.
+
+A direct numerical quotient construction was checked on three published S/U anchors and the frozen lower-`+1` / upper-collision representatives.  An initial run at ordinary screening tolerances failed the invariant, symplectic-defect and reciprocal-pairing gates.  The gates were **not** loosened.  Repeating the same construction with tighter float64 orbit and tangent integration made every original gate pass, showing that the first discrepancy was numerical variational sensitivity rather than a contradiction in the quotient geometry.
+
+Tightened frozen run `31875065636`:
+
+- maximum mismatch between physical quotient invariants and the neutral-factor-reduced 8D invariants: `3.977020372580853e-06`;
+- maximum full canonical monodromy symplectic defect: `7.023079489471507e-07`;
+- maximum physical quotient symplectic defect: `1.58823032635551e-07`;
+- maximum quotient leakage out of the representative of `E^omega/E`: `6.884656678085577e-09`;
+- maximum reciprocal-pairing error: `1.7566592746399308e-05` (at the upper trace-collision representative, where the spectrum is ill-conditioned);
+- maximum neutral-subspace invariance defect: `3.954324934163367e-08`;
+- neutral isotropy defect: `0.0`;
+- artifact `9244514392`;
+- artifact ZIP SHA-256: `83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7`.
+
+The physical characteristic polynomial is
+
+`lambda^4-a lambda^3+b lambda^2-a lambda+1`,
+
+with reciprocal-pair trace roots satisfying
+
+`t^2-a t+(b-2)=0`.
+
+The physical event equations are therefore
+
+- `+1`: `b-2a+2=0`;
+- `-1`: `b+2a+2=0`;
+- collision: `a^2-4b+8=0`.
+
+They agree with the existing 8D trace algebra through
+
+- `a=alpha-4`;
+- `b=beta-4alpha+10`.
+
+Interpretation: the project now has an explicit physical four-dimensional symplectic return map, its physical eigendirections, and a structural cross-check against the older reduced-trace representation.  This closes the conceptual loophole of identifying physical stability by simply discarding four raw neutral multipliers.
+
+This result is still float64 structural evidence.  Publication-critical event locations and Krein classifications remain gated on the independent Julia BigFloat/canonical path.
+
 ## Upper-boundary mechanism
 
 ### Coarse upper transition is consistent with a Krein / Hamiltonian--Hopf loss of stability
@@ -166,5 +216,6 @@ The project is **not yet entitled to say the stated open problem is solved**.  T
 2. complete connected critical-arc continuation, including the secondary lobe/network;
 3. finish BigFloat exact boundary roots and canonical evaluation at representative critical points;
 4. finish the shooting-rank census and generic/path-diverse family-connectivity adversarial gates;
-5. freeze evidence manifests and regenerate the manuscript from them;
-6. rerun the current literature novelty audit immediately before release.
+5. resolve the lower `+1` branch-switch experiment and classify any genuine daughter/reconnection;
+6. freeze evidence manifests and regenerate the manuscript from them;
+7. rerun the current literature novelty audit immediately before release.
