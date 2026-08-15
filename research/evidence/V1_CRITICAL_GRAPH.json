@@ -2011,6 +2011,34 @@
       "status": "traced"
     },
     {
+      "mixed_node": "mixed_secondary_left",
+      "event_mode": "minus_one",
+      "direction": "+",
+      "ends_on": "mixed_secondary_left",
+      "status": "traced"
+    },
+    {
+      "mixed_node": "mixed_secondary_left",
+      "event_mode": "minus_one",
+      "direction": "-",
+      "ends_on": "mixed_secondary_left",
+      "status": "traced"
+    },
+    {
+      "mixed_node": "mixed_secondary_left",
+      "event_mode": "plus_one",
+      "direction": "+",
+      "ends_on": "mixed_secondary_left",
+      "status": "traced"
+    },
+    {
+      "mixed_node": "mixed_secondary_left",
+      "event_mode": "plus_one",
+      "direction": "-",
+      "ends_on": "mixed_secondary_left",
+      "status": "traced"
+    },
+    {
       "mixed_node": "mixed_principal_right",
       "event_mode": "minus_one",
       "direction": "+",
@@ -2047,12 +2075,7 @@
     "edge_count": 79,
     "cells_on_edges": 620,
     "duplicate_cell_ids": [],
-    "missing_mixed_germs": [
-      "mixed_secondary_left:plus_one:+",
-      "mixed_secondary_left:plus_one:-",
-      "mixed_secondary_left:minus_one:+",
-      "mixed_secondary_left:minus_one:-"
-    ],
+    "missing_mixed_germs": [],
     "newton_failed": 0,
     "completeness_passed": false
   },
