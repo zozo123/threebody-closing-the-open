@@ -9,6 +9,7 @@ This note records the post-audit state of the frozen v1 open problem. It is a st
 - Five macroscopic MST cuts passed bidirectional Li-chart continuation.
 - A deliberately far-mass / near-invariant-duplicate pair passed bidirectional continuation both in the Li chart and in the generic translation-reduced strict-periodic chart.
 - The second-stage shooting-Jacobian audit re-corrected the 28 lowest-rank samples from the first census. The minimum corrected scaled rank ratio was `1.0803738448664921e-05`, the maximum corrected closure was `1.8017261738074185e-08`, and no candidate remained below the fixed `1e-6` suspicion threshold.
+- The previously failing global-rank-3 MST edge `(0.839,0.721,1)<->(0.838,0.721,1)` has now passed a 12-substep bidirectional continuation in an independently reimplemented float64 relative-dynamics/shooting formulation without relaxing the frozen gates. Forward max residual was `2.224e-08` with terminal normalized mismatch `1.381e-09`; reverse max residual was `4.69844763e-08` with terminal mismatch `4.375e-10`. The exact old reverse failure location `theta=1/3` passed at residual `1.83048098e-09`.
 - All 620 published S/U transition cells have exactly one endpoint-sign-changing smooth reduced-Floquet event: 198 `+1`, 168 `-1`, and 254 trace-collision cells. The coarse topology consists of four macroscopic tracks and three cross-mechanism adjacency junctions.
 - The physical four-dimensional symplectic quotient on `E^omega/E` has passed its float64 structural audit without loosening its acceptance gates.
 - The lower `+1` generic branch probe produced ten distinct float64 periodic-orbit daughter candidates at the tested signed amplitudes. Their closures range from about `8.15e-9` to `1.55e-7`. True generic pseudo-arclength daughter continuation is now implemented on `main`, but scientific branch-continuation evidence still requires an executed run and independent reproduction.
@@ -51,11 +52,13 @@ The first monolithic Julia BigFloat verifier corrected the lower `+1` representa
 
 This was a compute-architecture failure, not a detected numerical disagreement. The verifier is split into independent lower and upper jobs so neither event can consume the other's execution budget.
 
-### The strengthened worst-MST audit exposed a hard edge
+### The previously hard rank-3 MST edge is resolved; the full worst-edge matrix is not
 
-The five balanced cuts and the first two globally largest MST chart jumps passed. The third globally largest edge, connecting masses `(0.839,0.721,1)` and `(0.838,0.721,1)`, failed the reverse six-substep Li-chart walk at `theta=1/3` with shooting residual about `7.609e-05` against a fixed `2e-7` gate.
+The original strengthened audit found that the third globally largest MST edge, `(0.839,0.721,1)<->(0.838,0.721,1)`, failed the reverse six-substep Li-chart walk at `theta=1/3` with residual about `7.609e-05` against the frozen `2e-7` gate.
 
-This is not yet evidence of disconnection: it is a branch-basin/conditioning challenge until smaller substeps and an independent generic chart are attempted. The rank-parallel adversarial workflow retries each of the twenty largest MST edges at 6, 12, 24, and 48 substeps without loosening residual or terminal-match thresholds.
+A new independent float64 reimplementation repeated that exact edge with 12 equal mass substeps and an analytic shooting corrector. Both directions passed. The old failure fraction `theta=1/3` passed at `1.83e-09`; terminal normalized chart mismatches were below `1.4e-09`. The frozen record is `experiments/hard_mst_rank3_12step_screen_2026-08-15.json`.
+
+This removes the only currently observed continuation failure as evidence for disconnection and strongly supports a Newton-basin/step-size explanation. Gate C nevertheless remains pending because the remaining globally worst MST edges have not all completed the adaptive matrix, and any future survivor must still be repeated in the generic/path-diverse formulation.
 
 ### Daughter genealogy remains incomplete
 
@@ -74,7 +77,7 @@ The shortest closure path is now more specific:
 1. independently reproduce the lower `+1` and upper collision representatives in Julia BigFloat and complete exact canonical mechanism checks;
 2. independently reproduce all three mixed organizer candidates in the split Julia BigFloat verifier, then trace the `+1` and `-1` event arcs through each organizer;
 3. independently verify the secondary `-1` root-birth fold with event-specific pseudo-arclength geometry and BigFloat evidence;
-4. resolve all twenty worst MST links under adaptive continuation, then attack every survivor in the generic chart/path-diverse formulation;
+4. finish the remaining globally worst MST links under adaptive continuation and attack every survivor in the generic chart/path-diverse formulation; the formerly failing rank-3 edge itself is now resolved;
 5. execute generic daughter pseudo-arclength continuation, independently reproduce a clean daughter segment, and determine whether it reconnects to the catalog sheet;
 6. assemble the exact critical graph, run hidden-pocket/component adversarial searches, freeze uncertainties/evidence hashes/component decomposition, rerun the release-date literature audit, and regenerate the manuscript from `release_claim` records only.
 
