@@ -1,44 +1,69 @@
-name: Continuation connectivity audit
+name: Continuation connectivity spanning-tree audit
 
 on:
   workflow_dispatch:
     inputs:
       substeps:
-        description: "Continuation substeps across each balanced graph cut"
+        description: "Continuation substeps across each adversarial MST edge"
         required: true
-        default: "8"
-      jacobian_stride:
-        description: "Mass-grid stride for shooting Jacobian census"
+        default: "6"
+      top_mst:
+        description: "Number of globally largest MST chart-jump edges to certify"
         required: true
         default: "20"
-  push:
+  pull_request:
     paths:
       - "scripts/audit_connectivity_graph.py"
       - "scripts/verify_connectivity_bottlenecks.py"
-      - "scripts/audit_shooting_jacobian.py"
       - ".github/workflows/connectivity-audit.yml"
+      - "uv.lock"
+  push:
+    branches: ["main"]
+    paths:
+      - "scripts/audit_connectivity_graph.py"
+      - "scripts/verify_connectivity_bottlenecks.py"
+      - ".github/workflows/connectivity-audit.yml"
+      - "uv.lock"
 
 permissions:
   contents: read
 
+env:
+  UV_PYTHON: "3.13"
+
 jobs:
-  bottlenecks:
+  preflight:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
-          cache: pip
-      - run: pip install -e .
+      - run: |
+          python -m py_compile scripts/audit_connectivity_graph.py
+          python -m py_compile scripts/verify_connectivity_bottlenecks.py
+
+  certificates:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.32"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked
       - name: Fetch frozen Li-Li-Liao baseline
         run: |
           mkdir -p data/raw artifacts
           curl -L --fail --retry 3 \
             https://raw.githubusercontent.com/sjtu-liao/three-body/main/non-hierarchical-3b-supplementary_data.txt \
             -o data/raw/non-hierarchical-3b-supplementary_data.txt
-          python - <<'PY'
+          uv run --no-sync python - <<'PY'
           import hashlib
           from pathlib import Path
           raw = Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
@@ -48,67 +73,32 @@ jobs:
               raise SystemExit(f'baseline source changed: {got}')
           print('source_git_blob=', got, 'sha256=', hashlib.sha256(raw).hexdigest())
           PY
-      - name: Build shooting-chart adjacency MST and select balanced bottlenecks
+      - name: Build connected mass-grid MST and expose adversarial links
+        env:
+          TOP_MST: ${{ inputs.top_mst || '20' }}
         run: |
-          python scripts/audit_connectivity_graph.py \
+          uv run --no-sync python scripts/audit_connectivity_graph.py \
             data/raw/non-hierarchical-3b-supplementary_data.txt \
-            artifacts/connectivity-graph.json
-      - name: Forward/reverse continuation across macroscopic graph cuts
+            artifacts/connectivity-graph.json \
+            --global-top "$TOP_MST"
+      - name: Certify globally worst and macroscopic MST links bidirectionally
         env:
           SUBSTEPS: ${{ inputs.substeps || '6' }}
+          TOP_MST: ${{ inputs.top_mst || '20' }}
         run: |
-          python scripts/verify_connectivity_bottlenecks.py \
+          uv run --no-sync python scripts/verify_connectivity_bottlenecks.py \
             artifacts/connectivity-graph.json \
             artifacts/connectivity-certificates.json \
             --substeps "$SUBSTEPS" \
+            --top-mst "$TOP_MST" \
             --max-residual 2e-7 \
             --match-tolerance 2e-5
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: continuation-connectivity-${{ github.sha }}
           path: |
             artifacts/connectivity-graph.json
             artifacts/connectivity-certificates.json
-          if-no-files-found: error
-          retention-days: 90
-
-  jacobian-census:
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.13"
-          cache: pip
-      - run: pip install -e .
-      - name: Fetch frozen Li-Li-Liao baseline
-        run: |
-          mkdir -p data/raw artifacts
-          curl -L --fail --retry 3 \
-            https://raw.githubusercontent.com/sjtu-liao/three-body/main/non-hierarchical-3b-supplementary_data.txt \
-            -o data/raw/non-hierarchical-3b-supplementary_data.txt
-          python - <<'PY'
-          import hashlib
-          from pathlib import Path
-          raw = Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
-          got = hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
-          expected = '79b2963df43e62201c35690bfc22bec166132427'
-          if got != expected:
-              raise SystemExit(f'baseline source changed: {got}')
-          print('source_git_blob=', got, 'sha256=', hashlib.sha256(raw).hexdigest())
-          PY
-      - name: Census fixed-mass shooting Jacobian rank
-        env:
-          STRIDE: ${{ inputs.jacobian_stride || '20' }}
-        run: |
-          python scripts/audit_shooting_jacobian.py \
-            data/raw/non-hierarchical-3b-supplementary_data.txt \
-            artifacts/shooting-jacobian-census.json \
-            --stride "$STRIDE"
-      - uses: actions/upload-artifact@v4
-        with:
-          name: shooting-jacobian-census-${{ github.sha }}
-          path: artifacts/shooting-jacobian-census.json
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 90

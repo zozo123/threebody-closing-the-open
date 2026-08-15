@@ -1,15 +1,23 @@
 #!/usr/bin/env python3
-"""Find macroscopic bottlenecks in the published shooting-chart adjacency graph.
+"""Find global and macroscopic bottlenecks in the published chart-adjacency graph.
 
-This is a *diagnostic* for continuation connectivity, not a proof.  Every public
-mass-grid row is a node.  Existing +/-0.001 mass-grid neighbors are connected by
-an edge weighted by the scale-normalized change in (x1,v1,v2,T).  A minimum
-spanning tree exposes the weakest links needed to connect the sampled catalog.
+Every public mass-grid row is a node. Existing +/-0.001 mass-grid neighbors are
+connected by an edge weighted by the scale-normalized change in
+``(x1,v1,v2,T)``. A minimum spanning tree (MST) provides a finite connection of
+all 135,445 sampled rows whenever the mass-grid adjacency graph is connected.
 
-If a catalog is made from two macroscopically separated solution sheets, one
-expects a large-weight MST edge whose removal separates two large subtrees.  We
-emit those balanced bottleneck edges so that a real shooting continuation can
-attack them directly in both directions.
+The graph calculation itself is only kinematic: a large or small chart jump does
+not prove two endpoint rows belong to the same periodic-orbit branch. We
+therefore emit two complementary finite sets for real continuation attacks:
+
+* globally largest MST edges -- the worst chart jumps anywhere in the spanning
+  connection;
+* balanced bottlenecks -- edges whose removal separates macroscopic fractions
+  of the catalog.
+
+Passing continuation certificates across these edges plus local rank and
+cross-chart audits is strong computational evidence for the sampled component
+structure, not a theorem about the entire unsampled moduli space.
 """
 from __future__ import annotations
 
@@ -44,12 +52,18 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("dataset")
     parser.add_argument("output")
+    parser.add_argument("--global-top", type=int, default=20)
     args = parser.parse_args()
+    if args.global_top < 1:
+        raise SystemExit("global-top must be positive")
 
     rows = list(iter_baseline(args.dataset))
     n = len(rows)
     X = np.asarray([chart(r) for r in rows])
-    key = {(round(r.m1 * 1000), round(r.m2 * 1000), round(r.m3 * 1000)): i for i, r in enumerate(rows)}
+    key = {
+        (round(r.m1 * 1000), round(r.m2 * 1000), round(r.m3 * 1000)): i
+        for i, r in enumerate(rows)
+    }
 
     pairs: list[tuple[int, int]] = []
     raw_deltas: list[np.ndarray] = []
@@ -134,16 +148,21 @@ def main() -> None:
 
     global_top = [
         {
+            "rank": rank,
             "weight": w,
             "smaller_partition_size": small,
-            "left_masses": [rows[u].m1, rows[u].m2, rows[u].m3],
-            "right_masses": [rows[v].m1, rows[v].m2, rows[v].m3],
+            "smaller_partition_fraction": small / n,
+            "left": serialize_row(rows[u]),
+            "right": serialize_row(rows[v]),
         }
-        for w, small, u, v in cuts[:20]
+        for rank, (w, small, u, v) in enumerate(cuts[: args.global_top], start=1)
     ]
+
     payload = {
         "rows": n,
         "adjacency_edges": len(pairs),
+        "mass_grid_adjacency_connected": True,
+        "mst_edges": int(len(mst.data)),
         "chart_delta_scales": {
             "x1": float(scales[0]),
             "v1": float(scales[1]),
@@ -159,20 +178,29 @@ def main() -> None:
         "global_top_mst_edges": global_top,
         "balanced_bottlenecks": selected,
         "interpretation": (
-            "diagnostic only: macroscopic family identity requires actual continuation across "
-            "the emitted balanced bottleneck edges"
+            "the sampled mass-grid adjacency graph is connected; dynamical family identity still "
+            "requires actual continuation across adversarial MST edges and chart/rank checks"
         ),
     }
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)
     Path(args.output).write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({
-        "rows": n,
-        "adjacency_edges": len(pairs),
-        "mst_max": float(np.max(mst.data)),
-        "balanced_bottlenecks": [
-            {"weight": x["weight"], "split": x["smaller_partition_size"]} for x in selected
-        ],
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "rows": n,
+                "adjacency_edges": len(pairs),
+                "mass_grid_adjacency_connected": True,
+                "mst_edges": int(len(mst.data)),
+                "mst_max": float(np.max(mst.data)),
+                "global_top_count": len(global_top),
+                "balanced_bottlenecks": [
+                    {"weight": x["weight"], "split": x["smaller_partition_size"]}
+                    for x in selected
+                ],
+            },
+            indent=2,
+        )
+    )
 
 
 if __name__ == "__main__":
