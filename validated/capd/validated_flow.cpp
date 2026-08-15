@@ -65,9 +65,12 @@ void reducedField(Node /*t*/, Node in[], int /*dimIn*/, Node out[], int /*dimOut
   Node m1=params[0], m2=params[1], m3=params[2];
   Node q1x=in[0], q1y=in[1], q2x=in[2], q2y=in[3];
   Node d12x=q2x-q1x, d12y=q2y-q1y;
-  Node r1sq=q1x^2 + q1y^2;
-  Node r2sq=q2x^2 + q2y^2;
-  Node r12sq=d12x^2 + d12y^2;
+  // Explicit products are used rather than x^2 because CAPD's autodiff parser
+  // overloads operator^ for a scalar exponent, while an integer literal can be
+  // promoted to a Node in this callback signature.
+  Node r1sq=q1x*q1x + q1y*q1y;
+  Node r2sq=q2x*q2x + q2y*q2y;
+  Node r12sq=d12x*d12x + d12y*d12y;
   // -1.5 is exactly representable in binary; CAPD's official rigorous PCR3BP
   // example uses this same power convention for inverse-cube forces.
   Node inv1=r1sq^-1.5, inv2=r2sq^-1.5, inv12=r12sq^-1.5;
