@@ -1,0 +1,84 @@
+name: Discovery release
+
+on:
+  push:
+    tags: ["solved-v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: discovery-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: pip install -e '.[dev]' build
+      - name: Lint
+        run: ruff check src tests scripts/build_discovery_release.py
+      - name: Test
+        run: pytest
+      - name: Validate scientific state before manuscript build
+        run: python scripts/build_discovery_release.py --validate-only
+      - name: Inject discovery status into manuscript
+        run: >-
+          python scripts/build_discovery_release.py
+          --validate-only
+          --emit-paper-status paper/generated/discovery-release.tex
+      - name: Install TeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y latexmk texlive-latex-base texlive-latex-recommended texlive-latex-extra
+      - name: Build manuscript
+        working-directory: paper
+        run: latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
+      - name: Enforce solved release gate
+        run: python scripts/build_discovery_release.py --validate-only --require-solved
+      - name: Build Python distributions
+        run: python -m build
+      - name: Build discovery dossier
+        run: >-
+          python scripts/build_discovery_release.py
+          --output-dir dist/discovery
+          --require-solved
+      - name: Package release artifacts
+        shell: bash
+        run: |
+          cp paper/main.pdf dist/atlas-paper.pdf
+          (cd dist && tar -czf "atlas-discovery-dossier-${GITHUB_REF_NAME:-manual}.tar.gz" discovery)
+          find dist -maxdepth 1 -type f ! -name SHA256SUMS -print0 \
+            | sort -z \
+            | xargs -0 sha256sum > dist/SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: solved-discovery-${{ github.ref_name }}-${{ github.sha }}
+          path: |
+            dist/*
+          if-no-files-found: error
+          retention-days: 365
+      - name: Publish solved discovery release
+        if: startsWith(github.ref, 'refs/tags/solved-v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            dist/atlas-paper.pdf \
+            dist/*.whl \
+            dist/*.tar.gz \
+            dist/SHA256SUMS \
+            dist/discovery/discovery.json \
+            --title "ATLAS solved discovery ${GITHUB_REF_NAME}" \
+            --notes-file dist/discovery/DISCOVERY_SUMMARY.md \
+            --verify-tag

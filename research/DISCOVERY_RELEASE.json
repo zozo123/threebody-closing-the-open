@@ -1,0 +1,91 @@
+{
+  "schema_version": "atlas.discovery-release.v1",
+  "release_id": "atlas-v1-open-problem",
+  "status": "open",
+  "problem": {
+    "id": "atlas-v1-li-liao-critical-manifold",
+    "title": "Continuation-connected family decomposition and stability critical manifold",
+    "question": "Determine the continuation-connected family decomposition of the Li--Li--Liao unequal-mass non-hierarchical periodic-orbit catalog and, for each connected family, compute the connected planar linear-stability critical manifold in mass space, classify its Floquet mechanisms and branch connections, and independently verify the qualitative critical events.",
+    "scope": "Planar linear Floquet stability for the frozen Li--Li--Liao unequal-mass non-hierarchical catalog and its branch-preserving continuations; not the general three-body problem, spatial stability, KAM stability, or a theorem of nonlinear stability.",
+    "success_criterion": "A solved release must support a new, continuation-resolved statement about family decomposition and/or the connected stability critical manifold, with mechanism-level classification, independent high-precision verification, adversarial falsification, frozen provenance, and a fresh novelty audit.",
+    "baseline": "Li, Li & Liao (2021), arXiv:2007.10184 / Science China Physics, Mechanics & Astronomy 64, 219511. The published 135,445-orbit catalog and its 13,315 stable labels are baseline facts, not ATLAS discoveries."
+  },
+  "decision": {
+    "summary": "The stated v1 open problem is not solved yet. The result ledger still withholds the publication-level claim pending exact critical-point verification, connected critical-network closure, stronger family-connectivity attacks, evidence freeze, and final novelty freeze.",
+    "solved_at": null
+  },
+  "gates": [
+    {
+      "id": "A",
+      "title": "Independent critical-point truth",
+      "status": "pending",
+      "criterion": "Every headline Floquet mechanism must be independently localized and canonically verified at arbitrary precision with convergence and uncertainty evidence.",
+      "evidence": ["result-ledger", "physical-sp4-artifact"]
+    },
+    {
+      "id": "B",
+      "title": "Exact Floquet organizer/network geometry",
+      "status": "pending",
+      "criterion": "The full declared critical object must be a connected mechanism graph whose edges and organizers have explained geometry, uncertainty, and physical Floquet evidence.",
+      "evidence": ["result-ledger", "v1-closure"]
+    },
+    {
+      "id": "C",
+      "title": "Family/sheet connectivity",
+      "status": "pending",
+      "criterion": "Family identity must survive rank-loss, reverse-continuation, path-diversity, and less-specialized chart attacks rather than relying on projected invariants or topology words.",
+      "evidence": ["result-ledger", "family-bridge-artifact", "v1-closure"]
+    },
+    {
+      "id": "D",
+      "title": "Release closure",
+      "status": "pending",
+      "criterion": "All declared components, verification classes, adversarial searches, hashes, paper inputs, and the release-date novelty audit must be frozen together before a solved release is authorized.",
+      "evidence": ["open-problem", "protocol", "solve-loop", "result-ledger", "v1-closure", "novelty-audit"]
+    }
+  ],
+  "claims": [],
+  "blockers": [
+    "Locate and independently reproduce the mechanism-switch vertices/folds.",
+    "Complete connected critical-arc continuation, including the secondary lobe/network.",
+    "Finish BigFloat exact boundary roots and canonical evaluation at representative critical points.",
+    "Finish the shooting-rank census and generic/path-diverse family-connectivity adversarial gates.",
+    "Resolve the lower +1 branch-switch experiment and classify any genuine daughter/reconnection.",
+    "Freeze evidence manifests and regenerate the manuscript only from release-claim records.",
+    "Rerun the literature novelty audit immediately before the solved release."
+  ],
+  "known_limitations": [
+    "Current critical-event and connectivity evidence is incomplete and therefore cannot support the solved claim.",
+    "The v1 stability scope is planar linear Floquet stability only; it does not imply spatial or nonlinear/KAM stability.",
+    "Negative literature searches are not proofs of novelty; the novelty audit is a release-time search firewall."
+  ],
+  "novelty": {
+    "status": "pending",
+    "last_search_date": "2026-08-15",
+    "max_age_days": 7,
+    "source": "research/NOVELTY_AUDIT.md",
+    "search_scope": [
+      "Exact Li--Li--Liao catalog/title/DOI and citing/cited-by chains",
+      "2023 competing two-set/family interpretation",
+      "2025 review citation tree",
+      "2026+ unequal-mass general-three-body continuation and Floquet critical-manifold work"
+    ]
+  },
+  "evidence": [
+    {"id":"open-problem","kind":"repository_file","role":"open_problem","path":"research/OPEN_PROBLEM.md","description":"Frozen statement of the claim, prior-work boundary, decisive deliverables, and success criterion."},
+    {"id":"protocol","kind":"repository_file","role":"protocol","path":"research/PROTOCOL.md","description":"Evidence ladder and publication rules separating screening, verification, reproduction, and release claims."},
+    {"id":"solve-loop","kind":"repository_file","role":"method","path":"research/SOLVE_LOOP.md","description":"Closed-loop falsification workflow from question freeze through publishable success."},
+    {"id":"result-ledger","kind":"repository_file","role":"result_ledger","path":"research/RESULT_LEDGER.md","description":"Claim firewall recording verified, structural, screening, candidate, and invalidated findings plus the current publication threshold."},
+    {"id":"v1-closure","kind":"repository_file","role":"closure_contract","path":"research/V1_CLOSURE.md","description":"Gate A-D execution contract and explicit v1 stop rule."},
+    {"id":"novelty-audit","kind":"repository_file","role":"novelty_audit","path":"research/NOVELTY_AUDIT.md","description":"Working novelty and family-identity audit, to be refreshed immediately before release."},
+    {"id":"family-bridge-artifact","kind":"actions_artifact","role":"family_connectivity","run_id":31873131455,"artifact_id":9244246378,"sha256":"279895e090b44cb692a6da6f1a749433ae18635289dc291a52daadbd9bc5c5fe","description":"Frozen bidirectional continuation evidence for a deliberately adversarial far-mass, invariant-near-duplicate pair."},
+    {"id":"physical-sp4-artifact","kind":"actions_artifact","role":"independent_verification","run_id":31875065636,"artifact_id":9244514392,"sha256":"83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7","description":"Frozen physical transverse Sp(4) quotient and symplectic diagnostic evidence."},
+    {"id":"paper","kind":"generated_artifact","role":"paper","path":"paper/main.pdf","description":"Manuscript built after injecting the machine-readable discovery status."}
+  ],
+  "release": {
+    "include_paths": [
+      "README.md", ".github/workflows", "research", "experiments", "src", "scripts", "tests", "julia",
+      "paper/main.tex", "paper/references.bib", "db/schema.sql", "pyproject.toml", "uv.lock"
+    ]
+  }
+}
