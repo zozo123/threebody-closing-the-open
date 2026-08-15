@@ -9,10 +9,11 @@ coefficients agree with the neutral-factor removal formulas
     a = alpha - 4,
     b = beta - 4 alpha + 10.
 
-It tests published stable/unstable anchors plus the two frozen screening
-representatives used by the independent Julia critical-point verifier.  The
-result is a structural/chart-independent float64 cross-check; exact critical
-claims remain gated on Julia BigFloat reproduction.
+It deliberately uses tighter float64 orbit/tangent tolerances than the discovery
+stack.  The scientific acceptance thresholds are not relaxed when a run fails.
+Published stable/unstable anchors and the two frozen critical representatives
+are reported individually so a precision-sensitive point cannot hide inside a
+single maximum statistic.
 """
 from __future__ import annotations
 
@@ -28,15 +29,38 @@ from threebody_atlas.liao_family import correct_family_point, state_from_chart
 from threebody_atlas.physical_floquet import compute_physical_floquet
 from threebody_atlas.reduced import compute_reduced_floquet
 
+CORRECT_RTOL = 2e-12
+CORRECT_ATOL = 2e-14
+FLOQUET_RTOL = 5e-13
+FLOQUET_ATOL = 5e-15
+
 
 def record_point(name: str, masses, chart, *, max_closure: float) -> dict:
-    point = correct_family_point(tuple(masses), tuple(chart), max_nfev=90)
+    point = correct_family_point(
+        tuple(masses),
+        tuple(chart),
+        max_nfev=120,
+        screening_rtol=CORRECT_RTOL,
+        screening_atol=CORRECT_ATOL,
+    )
     if not point.success or point.residual_norm > max_closure:
         raise RuntimeError(f"periodic correction failed for {name}: {point.residual_norm:.3e}")
     state0 = state_from_chart(point.masses, point.x1, point.v1, point.v2)
     mass_array = np.asarray(point.masses, dtype=float)
-    reduced = compute_reduced_floquet(state0, mass_array, point.period)
-    physical = compute_physical_floquet(state0, mass_array, point.period)
+    reduced = compute_reduced_floquet(
+        state0,
+        mass_array,
+        point.period,
+        rtol=FLOQUET_RTOL,
+        atol=FLOQUET_ATOL,
+    )
+    physical = compute_physical_floquet(
+        state0,
+        mass_array,
+        point.period,
+        rtol=FLOQUET_RTOL,
+        atol=FLOQUET_ATOL,
+    )
 
     expected_a = reduced.alpha - 4.0
     expected_b = reduced.beta - 4.0 * reduced.alpha + 10.0
@@ -50,7 +74,7 @@ def record_point(name: str, masses, chart, *, max_closure: float) -> dict:
         "minus_one": float(physical.minus_one_event - expected_minus),
         "collision": float(physical.collision_event - expected_collision),
     }
-    return {
+    record = {
         "name": name,
         "masses": [float(x) for x in point.masses],
         "chart": {
@@ -89,6 +113,23 @@ def record_point(name: str, masses, chart, *, max_closure: float) -> dict:
         },
         "invariant_mismatches": mismatches,
     }
+    print(
+        json.dumps(
+            {
+                "name": name,
+                "shooting_residual": record["shooting_residual"],
+                "canonical_closure": record["canonical_closure"],
+                "canonical_symplectic_defect": record["canonical_symplectic_defect"],
+                "physical_symplectic_defect": record["physical_symplectic_defect"],
+                "quotient_leakage": record["quotient_leakage"],
+                "pairing": record["physical_pairing_error"],
+                "neutral_invariance": record["neutral_invariance_defect"],
+                "max_invariant_mismatch": max(abs(v) for v in mismatches.values()),
+            }
+        ),
+        flush=True,
+    )
+    return record
 
 
 def main() -> None:
@@ -144,6 +185,7 @@ def main() -> None:
         for record in records
         for value in record["invariant_mismatches"].values()
     )
+    max_canonical_defect = max(record["canonical_symplectic_defect"] for record in records)
     max_physical_defect = max(record["physical_symplectic_defect"] for record in records)
     max_leakage = max(record["quotient_leakage"] for record in records)
     max_pairing = max(record["physical_pairing_error"] for record in records)
@@ -161,6 +203,12 @@ def main() -> None:
     payload = {
         "method": "canonical Jacobi monodromy -> E^omega/E physical 4D quotient",
         "neutral_subspace": "E=span{X_H,X_L}",
+        "float64_tolerances": {
+            "correct_rtol": CORRECT_RTOL,
+            "correct_atol": CORRECT_ATOL,
+            "floquet_rtol": FLOQUET_RTOL,
+            "floquet_atol": FLOQUET_ATOL,
+        },
         "coefficient_relation": {
             "a": "alpha-4",
             "b": "beta-4*alpha+10",
@@ -173,6 +221,7 @@ def main() -> None:
         "records": records,
         "summary": {
             "max_invariant_mismatch": max_mismatch,
+            "max_canonical_symplectic_defect": max_canonical_defect,
             "max_physical_symplectic_defect": max_physical_defect,
             "max_quotient_leakage": max_leakage,
             "max_reciprocal_pairing_error": max_pairing,
@@ -182,13 +231,13 @@ def main() -> None:
             "passed": all(gates.values()),
         },
         "claim_status": (
-            "float64 structural cross-check of the physical Sp(4) quotient; exact critical "
+            "tight-float64 structural cross-check of the physical Sp(4) quotient; exact critical "
             "mechanisms still require independent BigFloat/canonical reproduction"
         ),
     }
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)
     Path(args.output).write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps(payload["summary"], indent=2))
+    print(json.dumps(payload["summary"], indent=2), flush=True)
     if not payload["summary"]["passed"]:
         raise SystemExit("physical Sp(4) cross-check failed one or more structural gates")
 
