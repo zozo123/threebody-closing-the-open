@@ -1,18 +1,16 @@
 {
   "schema": "atlas.v1.julia-hard-canary-harvest/1",
-  "harvested_at": "2026-08-15T17:12:32Z",
+  "harvested_at": "2026-08-15T17:42:08Z",
   "source_run": 31896441018,
   "source_url": "https://github.com/zozo123/threebody-yossi/actions/runs/31896441018",
   "source_sha": "a9f5a57f31cacfeedd5fc92c07f7d5ea517fa0d1",
-  "claim_status": "independent Julia BigFloat+Vern9 localization of 15/16 float64-failed canary cells; event 2e-8 and closure 1e-7 held; remaining cells [50] still running; not a 620-edge release and not a SOLVED claim",
-  "localized_cells": 15,
-  "pending_cells": [
-    50
-  ],
+  "claim_status": "independent Julia BigFloat+Vern9 localization of all 16 float64-failed canary cells; event 2e-8 and closure 1e-7 held; not a 620-edge release and not a SOLVED claim",
+  "localized_cells": 16,
+  "pending_cells": [],
   "max_abs_event": 1.6565206582261882e-08,
   "max_closure": 5.873125488594423e-13,
   "event_mode_counts": {
-    "plus_one": 11,
+    "plus_one": 12,
     "trace_collision": 4
   },
   "cells": [
@@ -275,6 +273,32 @@
       "alpha": "5.63811326463296118323200059677389593317611868862536",
       "beta": "13.8286795910805595251713764592592285775731553075964",
       "discriminant": "5.57850893757159874712609270448634392814343971503861"
+    },
+    {
+      "schema": "atlas.v1.julia-published-cell/1",
+      "source_run": 31896441018,
+      "source_sha": "a9f5a57f31cacfeedd5fc92c07f7d5ea517fa0d1",
+      "implementation": "independent Julia BigFloat + Vern9 published-cell localizer",
+      "dps": 40,
+      "ode_tolerance": "1e-22",
+      "closure_target": "1e-12",
+      "event_tolerance": "2e-8",
+      "cell_id": 50,
+      "event_mode": "plus_one",
+      "passed": true,
+      "event_value": "3.30990376429904228864969685655186315304441635106978e-10",
+      "closure_norm": "4.8670640512077464112781122372577883579951347664881e-13",
+      "refinement_iterations": 7,
+      "m1": "0.824999999999999999999999999999999999999999999999991",
+      "m2": "0.739697228268526550044362800196889400948736513022259",
+      "m3": "1.0",
+      "x1": "-0.142389661121181735606580666075356138530216338093393",
+      "v1": "2.41325649271798304795914763199492551510922663233512",
+      "v2": "0.342114210757145378715679226809637968054711128711516",
+      "period": "5.28373942298025537936256849164114582230749963116872",
+      "alpha": "5.68854346196427559853074579360307762250124732710972",
+      "beta": "14.1312607721166439676143789904834354206626702779627",
+      "discriminant": "5.34283132590413474096614820012079301457596699455728"
     },
     {
       "schema": "atlas.v1.julia-published-cell/1",
