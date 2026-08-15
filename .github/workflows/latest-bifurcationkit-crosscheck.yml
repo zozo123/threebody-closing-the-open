@@ -21,6 +21,9 @@ on:
 permissions:
   contents: read
 
+env:
+  BIFURCATIONKIT_COMMIT: a31e4866db3aff1e982c9ef7609cdb7098bd98df
+
 jobs:
   crosscheck:
     runs-on: ubuntu-latest
@@ -44,10 +47,13 @@ jobs:
         with:
           version: "1.12.6"
       - uses: julia-actions/cache@v2
-      - name: Bootstrap General registry, resolve, and freeze latest-stack environment
+      - name: Bootstrap General and pin unreleased BifurcationKit 0.8.2 from GitHub
+        env:
+          BK_COMMIT: ${{ env.BIFURCATIONKIT_COMMIT }}
         run: |
-          julia --project=julia-latest -e 'using Pkg; isempty(Pkg.Registry.reachable_registries()) && Pkg.Registry.add("General"); Pkg.resolve(); Pkg.instantiate(); Pkg.precompile(); Pkg.status()'
+          julia --project=julia-latest -e 'using Pkg; isempty(Pkg.Registry.reachable_registries()) && Pkg.Registry.add("General"); Pkg.add(PackageSpec(url="https://github.com/bifurcationkit/BifurcationKit.jl.git", rev=ENV["BK_COMMIT"])); Pkg.resolve(); Pkg.instantiate(); Pkg.precompile(); Pkg.status()'
           test -s julia-latest/Manifest.toml
+          grep -q "$BK_COMMIT" julia-latest/Manifest.toml
       - name: Parse latest-stack cross-check
         run: julia --project=julia-latest -e 'Meta.parseall(read("julia-latest/crosscheck_mixed_vertex.jl", String)); println("latest-stack cross-check syntax OK")'
       - name: Cross-check ${{ matrix.label }} independently
@@ -62,6 +68,7 @@ jobs:
           mkdir -p artifacts
           cp julia-latest/Project.toml artifacts/latest-bk-Project.toml
           if test -f julia-latest/Manifest.toml; then cp julia-latest/Manifest.toml artifacts/latest-bk-Manifest.toml; fi
+          printf '%s\n' "$BIFURCATIONKIT_COMMIT" > artifacts/BIFURCATIONKIT_COMMIT.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -70,5 +77,6 @@ jobs:
             ${{ matrix.output_file }}
             artifacts/latest-bk-Project.toml
             artifacts/latest-bk-Manifest.toml
+            artifacts/BIFURCATIONKIT_COMMIT.txt
           if-no-files-found: warn
           retention-days: 90
