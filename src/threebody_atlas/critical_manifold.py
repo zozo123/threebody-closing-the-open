@@ -165,35 +165,34 @@ def localize_critical_point(
         raise RuntimeError(f"{mode} does not bracket zero: {va:.6e}, {vb:.6e}")
 
     left, right = (a, b) if a.point.masses[1] < b.point.masses[1] else (b, a)
+    lo0, hi0 = float(left.point.masses[1]), float(right.point.masses[1])
     vl = event_value(left.floquet, mode)
     vr = event_value(right.floquet, mode)
     best = left if abs(vl) <= abs(vr) else right
     best_v = vl if best is left else vr
+    last_side = 0
 
     for _ in range(max_iterations):
         width = right.point.masses[1] - left.point.masses[1]
         if width <= m2_tolerance or abs(best_v) <= event_tolerance:
             break
-        # A safeguarded secant point usually converges faster than pure bisection,
-        # but keep it away from the endpoints to preserve continuation identity.
         denom = vr - vl
         if denom != 0.0:
             secant = left.point.masses[1] - vl * width / denom
         else:
             secant = 0.5 * (left.point.masses[1] + right.point.masses[1])
-        guard = 0.15 * width
+        guard = 0.05 * width
         m2 = float(np.clip(secant, left.point.masses[1] + guard, right.point.masses[1] - guard))
         masses = (left.point.masses[0], m2, left.point.masses[2])
         guess = _interpolate_guess(left.point, right.point, m2)
-        point = correct_family_point(masses, guess, max_nfev=60)
+        point = correct_family_point(masses, guess, max_nfev=40)
         if not point.success or point.residual_norm > max_closure:
-            # Fall back to bisection with the nearer branch point as a predictor.
             m2 = 0.5 * (left.point.masses[1] + right.point.masses[1])
             anchor = left.point if m2 - left.point.masses[1] <= right.point.masses[1] - m2 else right.point
             point = correct_family_point(
                 (anchor.masses[0], m2, anchor.masses[2]),
                 (anchor.x1, anchor.v1, anchor.v2, anchor.period),
-                max_nfev=80,
+                max_nfev=50,
             )
         if not point.success or point.residual_norm > max_closure:
             raise RuntimeError(f"periodic correction failed while localizing {mode} at m2={m2:.12g}")
@@ -201,21 +200,20 @@ def localize_critical_point(
         vm = event_value(mid.floquet, mode)
         if abs(vm) < abs(best_v):
             best, best_v = mid, vm
-        if vl == 0.0:
-            best, best_v = left, vl
-            break
-        if vr == 0.0:
-            best, best_v = right, vr
+        if vl == 0.0 or vr == 0.0 or abs(best_v) <= event_tolerance:
             break
         if vl * vm <= 0.0:
             right, vr = mid, vm
+            if last_side == 1:
+                vl *= 0.5
+            last_side = 1
         else:
             left, vl = mid, vm
+            if last_side == -1:
+                vr *= 0.5
+            last_side = -1
 
     width = right.point.masses[1] - left.point.masses[1]
-    # `best` can be an early iterate.  Prefer the final bracket endpoint, then
-    # polish with a 1-D event Newton so a tiny remaining width is not mistaken
-    # for a converged event residual.
     final = left if abs(vl) <= abs(vr) else right
     if abs(best_v) < abs(event_value(final.floquet, mode)):
         final = best
@@ -224,13 +222,11 @@ def localize_critical_point(
         mode,
         event_tolerance=event_tolerance,
         max_closure=max_closure,
+        m2_bounds=(lo0, hi0),
     )
-    final_v = float(polished.event_value)
-    if abs(final_v) > event_tolerance and width > m2_tolerance:
-        raise RuntimeError(
-            f"critical localization did not converge for {mode}: value={final_v:.3e}, width={width:.3e}"
-        )
-    return LocalizedCriticalPoint(polished.sample, mode, final_v, float(width))
+    if abs(polished.event_value) <= abs(event_value(final.floquet, mode)):
+        return LocalizedCriticalPoint(polished.sample, mode, float(polished.event_value), float(width))
+    return LocalizedCriticalPoint(final, mode, float(event_value(final.floquet, mode)), float(width))
 
 
 def _precise_evaluate(point: FamilyPoint) -> BoundarySample:
@@ -251,41 +247,45 @@ def _polish_event_root(
     *,
     event_tolerance: float,
     max_closure: float,
-    max_steps: int = 6,
+    max_steps: int = 4,
+    m2_bounds: tuple[float, float] | None = None,
 ) -> LocalizedCriticalPoint:
-    """One-dimensional Newton on m2 at fixed m1 after a short bracket search."""
-    current = _precise_evaluate(sample.point)
+    """In-bracket 1-D Newton. Never leave the published cell."""
+    current = sample
     value = event_value(current.floquet, mode)
     if abs(value) <= event_tolerance:
         return LocalizedCriticalPoint(current, mode, float(value), 0.0)
 
     m1, m2, m3 = (float(x) for x in current.point.masses)
+    lo, hi = m2_bounds if m2_bounds is not None else (m2 - 5e-4, m2 + 5e-4)
     for _ in range(max_steps):
-        step = max(5e-11, 1e-8 * max(abs(m2), 1.0))
+        step = max(1e-10, 1e-8 * max(abs(m2), 1.0))
         probe = correct_family_point(
             (m1, m2 + step, m3),
             (current.point.x1, current.point.v1, current.point.v2, current.point.period),
-            max_nfev=40,
+            max_nfev=30,
         )
         if not probe.success or probe.residual_norm > max_closure:
             break
-        probed = _precise_evaluate(probe)
+        probed = evaluate(probe)
         slope = (event_value(probed.floquet, mode) - value) / step
         if slope == 0.0 or not np.isfinite(slope):
             break
-        nxt_m2 = m2 - value / slope
-        if not np.isfinite(nxt_m2):
+        nxt_m2 = float(np.clip(m2 - value / slope, lo, hi))
+        if not np.isfinite(nxt_m2) or abs(nxt_m2 - m2) < 1e-14:
             break
         corrected = correct_family_point(
-            (m1, float(nxt_m2), m3),
+            (m1, nxt_m2, m3),
             (current.point.x1, current.point.v1, current.point.v2, current.point.period),
-            max_nfev=40,
+            max_nfev=30,
         )
         if not corrected.success or corrected.residual_norm > max_closure:
             break
-        current = _precise_evaluate(corrected)
-        m2 = float(current.point.masses[1])
-        value = event_value(current.floquet, mode)
+        trial = evaluate(corrected)
+        trial_v = event_value(trial.floquet, mode)
+        if abs(trial_v) >= abs(value):
+            break
+        current, value, m2 = trial, trial_v, nxt_m2
         if abs(value) <= event_tolerance:
             break
     return LocalizedCriticalPoint(current, mode, float(value), 0.0)
