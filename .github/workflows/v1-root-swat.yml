@@ -1,0 +1,51 @@
+name: Critical-root persist SWAT
+
+# Issue #126: after a 620-cell farm misses the event gate, refine only the
+# persisted missed cells. Event 2e-8 and closure 1e-7 stay frozen.
+
+on:
+  workflow_dispatch:
+    inputs:
+      cell_ids:
+        description: "Comma-separated published S/U cell ids to refine"
+        required: true
+        default: "0,1,15"
+      max_iterations:
+        description: "Illinois iterations (event/closure gates stay frozen)"
+        required: true
+        default: "40"
+
+concurrency:
+  group: v1-root-swat-${{ github.ref }}-${{ inputs.cell_ids }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON: "3.13"
+
+jobs:
+  swat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/atlas-uv-baseline
+        with:
+          extract_brackets: "true"
+      - name: Refine persisted missed cells
+        run: |
+          uv run --no-sync python scripts/localize_full_critical_network.py \
+            artifacts/published-transition-brackets.tsv \
+            artifacts/swat-cells.json \
+            --cell-ids "${{ inputs.cell_ids }}" \
+            --max-iterations "${{ inputs.max_iterations }}" \
+            --m2-tolerance 1e-13
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: swat-cells-${{ github.sha }}
+          path: artifacts/swat-cells.json
+          if-no-files-found: warn
+          retention-days: 90

@@ -48,7 +48,15 @@ def orientation(row: dict[str, str]) -> str:
     return f'{row["left_label"]}->{row["right_label"]}'
 
 
-def solve_cell(cell_id: int, row: dict[str, str]) -> dict[str, Any]:
+def solve_cell(
+    cell_id: int,
+    row: dict[str, str],
+    *,
+    max_iterations: int = 14,
+    m2_tolerance: float = 1e-12,
+    event_tolerance: float = 2e-8,
+    max_closure: float = 1e-7,
+) -> dict[str, Any]:
     left_point, right_point = point(row, "left"), point(row, "right")
     left, right = evaluate(left_point), evaluate(right_point)
     values = {
@@ -87,10 +95,10 @@ def solve_cell(cell_id: int, row: dict[str, str]) -> dict[str, Any]:
             # A 2e-9 width stop was coarse enough to return residuals above 2e-8
             # (for example cells 0 and 1 in run 31887432802), so refine the mass
             # bracket further instead of weakening the event acceptance criterion.
-            m2_tolerance=1e-12,
-            event_tolerance=2e-8,
-            max_iterations=14,
-            max_closure=1e-7,
+            m2_tolerance=m2_tolerance,
+            event_tolerance=event_tolerance,
+            max_iterations=max_iterations,
+            max_closure=max_closure,
         )
     except Exception as exc:
         return {
@@ -107,6 +115,8 @@ def solve_cell(cell_id: int, row: dict[str, str]) -> dict[str, Any]:
         m2=m2,
         lo=lo,
         hi=hi,
+        max_closure=max_closure,
+        event_tolerance=event_tolerance,
     )
     return {
         **base,
@@ -135,22 +145,56 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("brackets_tsv")
     parser.add_argument("output")
-    parser.add_argument("--chunk-index", type=int, required=True)
-    parser.add_argument("--chunks", type=int, required=True)
+    parser.add_argument("--chunk-index", type=int, default=0)
+    parser.add_argument("--chunks", type=int, default=1)
+    parser.add_argument("--cell-ids", default="")
+    parser.add_argument("--max-iterations", type=int, default=14)
+    parser.add_argument("--m2-tolerance", type=float, default=1e-12)
+    parser.add_argument("--event-tolerance", type=float, default=2e-8)
+    parser.add_argument("--max-closure", type=float, default=1e-7)
     args = parser.parse_args()
     if args.chunks < 1 or not (0 <= args.chunk_index < args.chunks):
         raise SystemExit("invalid chunk partition")
+    if args.max_iterations < 1:
+        raise SystemExit("max-iterations must be positive")
+    if args.event_tolerance > 2e-8:
+        raise SystemExit("refusing to loosen the 2e-8 event gate")
+    if args.max_closure > 1e-7:
+        raise SystemExit("refusing to loosen the 1e-7 closure gate")
+    if args.m2_tolerance <= 0.0:
+        raise SystemExit("m2-tolerance must be positive")
 
     with Path(args.brackets_tsv).open(encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle, delimiter="\t"))
     if not rows:
         raise RuntimeError("no transition brackets supplied")
 
-    selected = [(i, row) for i, row in enumerate(rows) if i % args.chunks == args.chunk_index]
+    if args.cell_ids.strip():
+        wanted: list[int] = []
+        for part in args.cell_ids.split(","):
+            token = part.strip()
+            if not token:
+                continue
+            wanted.append(int(token))
+        bad = [cell for cell in wanted if not (0 <= cell < len(rows))]
+        if bad:
+            raise SystemExit(f"cell ids out of range: {bad[:20]}")
+        selected = [(cell, rows[cell]) for cell in wanted]
+    else:
+        selected = [(i, row) for i, row in enumerate(rows) if i % args.chunks == args.chunk_index]
     attempts = []
     for ordinal, (cell_id, row) in enumerate(selected, start=1):
         print(f"chunk={args.chunk_index}/{args.chunks} root={ordinal}/{len(selected)} cell={cell_id}")
-        attempts.append(solve_cell(cell_id, row))
+        attempts.append(
+            solve_cell(
+                cell_id,
+                row,
+                max_iterations=args.max_iterations,
+                m2_tolerance=args.m2_tolerance,
+                event_tolerance=args.event_tolerance,
+                max_closure=args.max_closure,
+            )
+        )
 
     roots = [item for item in attempts if item.get("status") == "ok"]
     missed = [item for item in attempts if item.get("status") != "ok"]
@@ -158,6 +202,13 @@ def main() -> None:
         "claim_status": "float64 structural localization of every assigned unique-event S/U cell; independent headline verification remains separate",
         "chunk_index": args.chunk_index,
         "chunks": args.chunks,
+        "solver": {
+            "max_iterations": args.max_iterations,
+            "m2_tolerance": args.m2_tolerance,
+            "event_tolerance": args.event_tolerance,
+            "max_closure": args.max_closure,
+            "cell_ids": args.cell_ids,
+        },
         "total_input_cells": len(rows),
         "attempted_cells": len(attempts),
         "localized_cells": len(roots),

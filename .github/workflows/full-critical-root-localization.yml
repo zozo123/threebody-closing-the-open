@@ -45,7 +45,7 @@ jobs:
     timeout-minutes: 90
     strategy:
       fail-fast: false
-      max-parallel: 20
+      max-parallel: 62
       matrix:
         chunk: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61]
     steps:
@@ -78,13 +78,15 @@ jobs:
           uv run --no-sync python scripts/extract_mass_slice_brackets.py \
             data/raw/non-hierarchical-3b-supplementary_data.txt \
             artifacts/published-transition-brackets.tsv
-      - name: Localize chunk ${{ matrix.chunk }} of 20
+      - name: Localize chunk ${{ matrix.chunk }} of 62
         run: |
           uv run --no-sync python scripts/localize_full_critical_network.py \
             artifacts/published-transition-brackets.tsv \
             "artifacts/critical-root-chunk-${{ matrix.chunk }}.json" \
             --chunk-index "${{ matrix.chunk }}" \
-            --chunks "$CHUNKS"
+            --chunks "$CHUNKS" \
+            --max-iterations 20 \
+            --m2-tolerance 1e-12
       - uses: actions/upload-artifact@v4
         if: always()
         with:

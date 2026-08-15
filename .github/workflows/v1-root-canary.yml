@@ -1,0 +1,55 @@
+name: Critical-root 20-cell canary
+
+# Fast independent one-cell jobs on historically hard or spread-out cells.
+# These finish long before the 62-way and 124-way farms and tell us whether
+# the Illinois + tight Floquet polish can hit the frozen 2e-8 event gate.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "scripts/localize_full_critical_network.py"
+      - "src/threebody_atlas/critical_manifold.py"
+      - ".github/workflows/v1-root-canary.yml"
+      - ".github/actions/atlas-uv-baseline/action.yml"
+
+concurrency:
+  group: v1-root-canary-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON: "3.13"
+
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        cell: [0, 1, 2, 3, 4, 5, 10, 15, 20, 30, 50, 100, 148, 200, 300, 400, 500, 600, 610, 619]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/atlas-uv-baseline
+        with:
+          extract_brackets: "true"
+      - name: Localize canary cell ${{ matrix.cell }}
+        run: |
+          uv run --no-sync python scripts/localize_full_critical_network.py \
+            artifacts/published-transition-brackets.tsv \
+            "artifacts/canary-cell-${{ matrix.cell }}.json" \
+            --cell-ids "${{ matrix.cell }}" \
+            --max-iterations 28 \
+            --m2-tolerance 1e-13
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: canary-cell-${{ matrix.cell }}-${{ github.sha }}
+          path: artifacts/canary-cell-${{ matrix.cell }}.json
+          if-no-files-found: warn
+          retention-days: 90

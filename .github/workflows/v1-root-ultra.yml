@@ -1,0 +1,147 @@
+name: Ultra 124-way critical-root SWAT
+
+# Parallel 124-chunk attack on the same 620 cells with more Illinois
+# iterations. Event 2e-8 and closure 1e-7 stay frozen. This does not
+# replace the official 62-way farm; it is a second independent substrate.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "scripts/localize_full_critical_network.py"
+      - "src/threebody_atlas/critical_manifold.py"
+      - ".github/workflows/v1-root-ultra.yml"
+      - ".github/actions/atlas-uv-baseline/action.yml"
+
+concurrency:
+  group: v1-root-ultra-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON: "3.13"
+  CHUNKS: "124"
+
+jobs:
+  localize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 62
+      matrix:
+        chunk: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/atlas-uv-baseline
+        with:
+          extract_brackets: "true"
+      - name: Localize ultra chunk ${{ matrix.chunk }} of 124
+        run: |
+          uv run --no-sync python scripts/localize_full_critical_network.py \
+            artifacts/published-transition-brackets.tsv \
+            "artifacts/ultra-root-chunk-${{ matrix.chunk }}.json" \
+            --chunk-index "${{ matrix.chunk }}" \
+            --chunks "$CHUNKS" \
+            --max-iterations 28 \
+            --m2-tolerance 1e-13
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ultra-root-chunk-${{ matrix.chunk }}-${{ github.sha }}
+          path: artifacts/ultra-root-chunk-${{ matrix.chunk }}.json
+          if-no-files-found: warn
+          retention-days: 90
+
+  aggregate:
+    if: github.event_name != 'pull_request'
+    needs: localize
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ultra-root-chunk-*-${{ github.sha }}
+          path: artifacts/root-chunks
+          merge-multiple: true
+      - name: Merge and enforce the 620-cell gates
+        run: |
+          python - <<'PY'
+          import json
+          from collections import Counter
+          from pathlib import Path
+
+          files = sorted(Path("artifacts/root-chunks").glob("ultra-root-chunk-*.json"))
+          if len(files) != 124:
+              raise SystemExit(f"expected 124 chunk files, found {len(files)}")
+
+          roots = []
+          chunks = set()
+          max_closure = 0.0
+          max_event = 0.0
+          for path in files:
+              payload = json.loads(path.read_text())
+              if payload.get("chunks") != 124:
+                  raise SystemExit(f"{path}: wrong partition count {payload.get('chunks')}")
+              chunks.add(int(payload["chunk_index"]))
+              roots.extend(payload["roots"])
+              max_closure = max(max_closure, float(payload["max_closure"]))
+              max_event = max(max_event, float(payload["max_abs_event"]))
+
+          if chunks != set(range(124)):
+              raise SystemExit(f"missing/duplicate chunks: {sorted(chunks)}")
+          ids = [int(root["cell_id"]) for root in roots]
+          counts = Counter(ids)
+          duplicated = sorted(cell for cell, count in counts.items() if count != 1)
+          expected = set(range(620))
+          observed = set(ids)
+          if len(roots) != 620 or observed != expected or duplicated:
+              raise SystemExit(
+                  f"root coverage failed: roots={len(roots)} missing={sorted(expected-observed)[:20]} "
+                  f"extra={sorted(observed-expected)[:20]} duplicated={duplicated[:20]}"
+              )
+          if max_closure > 1e-7:
+              raise SystemExit(f"closure gate failed: {max_closure:.6e}")
+          if max_event > 2e-8:
+              raise SystemExit(f"event gate failed: {max_event:.6e}")
+
+          roots.sort(key=lambda root: int(root["cell_id"]))
+          payload = {
+              "schema": "atlas.v1.full-critical-root-network/1",
+              "claim_status": (
+                  "ultra 124-way float64 localization of all 620 unique endpoint-sign-changing "
+                  "catalog S/U cells; organizer/fold/headline mechanism release claims remain "
+                  "independently BigFloat/canonical gated"
+              ),
+              "source_transition_cells": 620,
+              "localized_roots": len(roots),
+              "event_mode_counts": dict(sorted(Counter(root["event_mode"] for root in roots).items())),
+              "orientation_counts": dict(sorted(Counter(root["orientation"] for root in roots).items())),
+              "max_closure": max_closure,
+              "max_abs_event": max_event,
+              "coverage": {
+                  "minimum_cell_id": min(ids),
+                  "maximum_cell_id": max(ids),
+                  "unique_cell_ids": len(observed),
+                  "chunks": 124,
+              },
+              "roots": roots,
+          }
+          out = Path("artifacts/ultra-critical-roots.json")
+          out.write_text(json.dumps(payload, indent=2) + "\n")
+          print(json.dumps({
+              "localized_roots": len(roots),
+              "event_mode_counts": payload["event_mode_counts"],
+              "max_closure": max_closure,
+              "max_abs_event": max_event,
+          }, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ultra-critical-roots-${{ github.sha }}
+          path: artifacts/ultra-critical-roots.json
+          if-no-files-found: error
+          retention-days: 90

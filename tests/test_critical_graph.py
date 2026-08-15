@@ -44,3 +44,42 @@ def test_assemble_critical_graph_stays_unready_without_endpoints(tmp_path, capsy
 def test_event_gate_is_unchanged() -> None:
     assert classify_localized_cell(closure=1e-10, event=1.9e-8, m2=0.75, lo=0.75, hi=0.751) == "ok"
     assert classify_localized_cell(closure=1e-10, event=2.1e-8, m2=0.75, lo=0.75, hi=0.751) == "missed_event"
+
+
+def test_localize_cli_refuses_to_loosen_gates() -> None:
+    import subprocess
+    import sys
+
+    script = ROOT / "scripts/localize_full_critical_network.py"
+    loosened = subprocess.run(
+        [
+            sys.executable,
+            str(script),
+            "missing.tsv",
+            "out.json",
+            "--event-tolerance",
+            "1e-6",
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert loosened.returncode != 0
+    blob = loosened.stdout + loosened.stderr
+    assert "2e-8" in blob
+
+    closure = subprocess.run(
+        [
+            sys.executable,
+            str(script),
+            "missing.tsv",
+            "out.json",
+            "--max-closure",
+            "1e-5",
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert closure.returncode != 0
+    assert "1e-7" in (closure.stdout + closure.stderr)
