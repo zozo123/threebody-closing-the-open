@@ -4,7 +4,7 @@
   "release_ready": false,
   "family_component": "one continuation-connected Li-Li-Liao catalog sheet",
   "source_transition_cells": 620,
-  "localized_roots": 583,
+  "localized_roots": 586,
   "nodes": [
     {
       "id": "mixed_principal_left",
@@ -1497,6 +1497,7 @@
         56,
         58,
         60,
+        62,
         64,
         66,
         68,
@@ -1528,6 +1529,7 @@
         120,
         122,
         124,
+        126,
         128,
         130,
         132,
@@ -1595,7 +1597,7 @@
         256,
         258
       ],
-      "source_cell_count": 128,
+      "source_cell_count": 130,
       "estimators": [
         "float64",
         "julia_bigfloat"
@@ -1724,6 +1726,7 @@
         19,
         21,
         23,
+        25,
         29,
         33,
         35,
@@ -1932,7 +1935,7 @@
         595,
         597
       ],
-      "source_cell_count": 219,
+      "source_cell_count": 220,
       "estimators": [
         "float64",
         "julia_bigfloat"
@@ -1976,11 +1979,11 @@
   ],
   "root_coverage": {
     "source_transition_cells": 620,
-    "localized_roots": 583,
+    "localized_roots": 586,
     "required_cells": 620,
     "complete": false,
     "edge_count": 79,
-    "cells_on_edges": 583,
+    "cells_on_edges": 586,
     "duplicate_cell_ids": [],
     "missing_mixed_germs": [
       "mixed_secondary_left:plus_one:+",
