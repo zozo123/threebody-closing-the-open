@@ -1,0 +1,51 @@
+name: JAX Diffrax derivative audit
+
+on:
+  push:
+    paths:
+      - "pyproject.toml"
+      - "uv.lock"
+      - "src/threebody_atlas/jax_diffrax.py"
+      - "scripts/jax_diffrax_audit.py"
+      - "tests/test_jax_diffrax.py"
+      - ".github/workflows/jax-diffrax-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      JAX_ENABLE_X64: "1"
+      JAX_COMPILATION_CACHE_DIR: "${{ github.workspace }}/.jax-cache"
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.32"
+          enable-cache: true
+      - name: Install canonical Python
+        run: uv python install 3.13
+      - name: Sync accelerated environment
+        env:
+          UV_PYTHON: "3.13"
+        run: uv sync --extra accelerated --extra dev
+      - name: Cross-check local JAX dynamics
+        run: uv run --no-sync pytest -q tests/test_jax_diffrax.py
+      - name: Audit adaptive closure sensitivities against SciPy
+        run: |
+          mkdir -p artifacts
+          uv run --no-sync python scripts/jax_diffrax_audit.py \
+            experiments/m1_0p8_boundary_seeds.tsv \
+            artifacts/jax-diffrax-derivative-audit.json \
+            --require-eligible
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jax-diffrax-audit-${{ github.sha }}
+          path: artifacts/jax-diffrax-derivative-audit.json
+          if-no-files-found: error
+          retention-days: 90
