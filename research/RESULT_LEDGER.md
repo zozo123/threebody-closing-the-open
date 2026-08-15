@@ -230,9 +230,14 @@ An earlier BigFloat run started from a TSV whose shooting parameters did not mat
 
 ### Lower `+1` and upper collision exact roots
 
-**Status: CANDIDATE / COMPUTE-READY**
+**Status: INDEPENDENT-STRUCTURAL / physical mechanism bound**
 
-The first monolithic Julia verifier reached roughly `1e-26` periodic closure on both representative searches; it localized the lower event near `m2=0.75401872...` and found a sign-changing upper-collision bracket. The workflow timed out before final upper refinement/artifact emission. It is now split into independent lower and upper jobs.
+QR-fixed canonical matrix run `31886247498` (commit `f24e14b`) independently refined both headline brackets and evaluated the physical `E^omega/E` map on both flanks. Frozen copies:
+
+- `research/evidence/V1_CANONICAL_LOWER_PLUS_ONE_2026-08-15.json` — `passed: true`, mechanism `generic_physical_plus_one_crossing`, `m2` bracket width `1.58e-9`. Smaller-`m2` flank has a real reciprocal pair off the unit circle; larger-`m2` flank is elliptic. This is a physical `+1` U→S crossing, not a Krein collision.
+- `research/evidence/V1_CANONICAL_UPPER_COLLISION_2026-08-15.json` — `passed: true`, mechanism `opposite_krein_hamiltonian_hopf_collision`, `m2` bracket width `6.27e-9`. Stable flank has two nondegenerate upper-half unit modes of **opposite Krein sign**; unstable flank opens a reciprocal complex quartet off the circle (radius deviation `1.83e-2`). Hamiltonian–Hopf language is now attached to the exact collision bracket, not to neighboring catalog rows.
+
+These close the representative Gate A bind for the two principal-track headline mechanisms. They do **not** freeze the global critical graph.
 
 ### Three mixed organizers
 

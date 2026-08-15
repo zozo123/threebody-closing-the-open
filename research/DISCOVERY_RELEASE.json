@@ -11,7 +11,7 @@
     "baseline": "Li, Li & Liao (2021), arXiv:2007.10184 / Science China Physics, Mechanics & Astronomy 64, 219511. The published 135,445-orbit catalog and its 13,315 stable labels are baseline facts, not ATLAS discoveries."
   },
   "decision": {
-    "summary": "The stated v1 open problem is not solved. Gate C has passed: the frozen catalog is supported as one continuation-connected component. Independent Julia BigFloat roots exist for the lower +1 slice, the upper collision slice, and all three mixed (+1,-1) organizers. The three mixed roots now also have independent physical E^omega/E canonical records with passed:true (run 31886247456). Release is withheld because the exact critical graph is unfinished (620-cell edge substrate, secondary-left fold geometry, secondary-right death, event-arc attachment), the lower +1 daughter still lacks independent BigFloat reproduction of the physical-soft minus branch, the upper collision still needs QR-fixed physical binding at the exact bracket, and Gate D has not frozen a solved manuscript.",
+    "summary": "The stated v1 open problem is not solved. Gate C has passed. Gate A is now strong at the representative level: lower +1 is an independently bound physical plus-one crossing, the upper collision is an independently bound opposite-Krein Hamiltonian-Hopf event, and all three mixed organizers have physical-canonical passed:true records. Release is withheld because the exact connected critical graph is unfinished (620-cell edges, secondary-left fold, secondary-right death, event-arc attachment), the daughter genealogy is not independently reproduced, completeness attacks are not frozen, and Gate D has not authorized a solved manuscript.",
     "solved_at": null
   },
   "gates": [
@@ -20,7 +20,7 @@
       "title": "Independent critical-point truth",
       "status": "pending",
       "criterion": "Every headline Floquet mechanism must be independently localized and canonically verified at arbitrary precision with convergence and uncertainty evidence.",
-      "evidence": ["result-ledger", "physical-sp4-artifact", "mixed-vertex-screening-file", "mixed-canonical-principal-left", "mixed-canonical-secondary-left", "mixed-canonical-principal-right", "closure-status"]
+      "evidence": ["result-ledger", "physical-sp4-artifact", "mixed-vertex-screening-file", "mixed-canonical-principal-left", "mixed-canonical-secondary-left", "mixed-canonical-principal-right", "canonical-lower-plus-one", "canonical-upper-collision", "closure-status"]
     },
     {
       "id": "B",
@@ -87,7 +87,7 @@
     }
   ],
   "blockers": [
-    "Bind physical Sp(4) mechanism labels to the independently corrected lower +1 and upper-collision brackets; the three mixed organizers already have passed physical-canonical records.",
+    "The two principal headline mechanisms are independently bound; keep those records frozen. Remaining Gate A objects are the secondary-left fold, any fourth mixed organizer, and the physical-soft daughter.",
     "Persist-and-refine all 620 catalog S/U cells onto event residuals <= 2e-8 and assemble them as graph edges.",
     "Resolve the secondary-left G- birth as a verified m1-projection fold or a documented alternative, with event-specific geometry and BigFloat nondegeneracy.",
     "Classify the secondary-right death as a fourth mixed organizer or separate folds; Newton-failed is not an endpoint class.",
@@ -140,6 +140,8 @@
     {"id":"mixed-canonical-principal-left","kind":"repository_file","role":"independent_verification","path":"research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_LEFT_2026-08-15.json","description":"Independent BigFloat + physical E^omega/E record for the principal-left mixed organizer; passed true."},
     {"id":"mixed-canonical-secondary-left","kind":"repository_file","role":"independent_verification","path":"research/evidence/V1_MIXED_CANONICAL_SECONDARY_LEFT_2026-08-15.json","description":"Independent BigFloat + physical E^omega/E record for the secondary-left mixed organizer; passed true."},
     {"id":"mixed-canonical-principal-right","kind":"repository_file","role":"independent_verification","path":"research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_RIGHT_2026-08-15.json","description":"Independent BigFloat + physical E^omega/E record for the principal-right mixed organizer; passed true."},
+    {"id":"canonical-lower-plus-one","kind":"repository_file","role":"independent_verification","path":"research/evidence/V1_CANONICAL_LOWER_PLUS_ONE_2026-08-15.json","description":"Independent BigFloat + physical E^omega/E bind of the lower +1 representative as a generic plus-one crossing; passed true."},
+    {"id":"canonical-upper-collision","kind":"repository_file","role":"independent_verification","path":"research/evidence/V1_CANONICAL_UPPER_COLLISION_2026-08-15.json","description":"Independent BigFloat + physical E^omega/E bind of the upper collision as an opposite-Krein Hamiltonian-Hopf event; passed true."},
     {"id":"execution-dag","kind":"repository_file","role":"method","path":"research/EXECUTION_DAG.md","description":"Control-plane execution DAG for remaining v1 closure waves."},
     {"id":"paper","kind":"generated_artifact","role":"paper","path":"paper/main.pdf","description":"Manuscript built after injecting the machine-readable discovery status."}
   ],
