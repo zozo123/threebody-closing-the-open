@@ -44,9 +44,9 @@ jobs:
         with:
           version: "1.12.6"
       - uses: julia-actions/cache@v2
-      - name: Instantiate and freeze resolved latest-stack environment
+      - name: Bootstrap General registry, resolve, and freeze latest-stack environment
         run: |
-          julia --project=julia-latest -e 'using Pkg; Pkg.resolve(); Pkg.instantiate(); Pkg.precompile(); Pkg.status()'
+          julia --project=julia-latest -e 'using Pkg; isempty(Pkg.Registry.reachable_registries()) && Pkg.Registry.add("General"); Pkg.resolve(); Pkg.instantiate(); Pkg.precompile(); Pkg.status()'
           test -s julia-latest/Manifest.toml
       - name: Parse latest-stack cross-check
         run: julia --project=julia-latest -e 'Meta.parseall(read("julia-latest/crosscheck_mixed_vertex.jl", String)); println("latest-stack cross-check syntax OK")'
