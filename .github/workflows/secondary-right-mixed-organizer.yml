@@ -13,6 +13,10 @@ on:
       - "uv.lock"
       - "julia/Manifest.toml"
 
+concurrency:
+  group: secondary-right-mixed-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -64,7 +68,7 @@ jobs:
           uv run --no-sync python scripts/extract_mass_slice_brackets.py \
             data/raw/non-hierarchical-3b-supplementary_data.txt \
             artifacts/published-transition-brackets.tsv
-      - name: Continue both secondary walls into their hidden right endpoint
+      - name: Continue both secondary walls through their hidden right endpoint
         run: |
           uv run --no-sync python scripts/locate_secondary_right_mixed.py \
             artifacts/published-transition-brackets.tsv \
@@ -72,7 +76,7 @@ jobs:
             artifacts/secondary-right-mixed-seed.tsv \
             --seed-m1 1.042 \
             --m1-step 0.00002 \
-            --steps 50 \
+            --steps 75 \
             --m2-min 1.0 --m2-max 1.07 \
             --max-m2-jump 0.004
       - name: Independently reproduce simultaneous mixed root
