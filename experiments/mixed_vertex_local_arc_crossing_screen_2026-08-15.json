@@ -1,0 +1,76 @@
+{
+  "claim_status": "screening_supported",
+  "scope": "Local float64 event-arc crossing screen around the three frozen mixed (+1,-1) spectral-vertex candidates; independent BigFloat and full pseudo-arclength continuation remain required.",
+  "method": {
+    "description": "Using the same independently reimplemented 8D COM-relative dynamics and analytic variational shooting corrector as the mixed-vertex screening, evaluate the mass Jacobian of (G+,G-) near each candidate. At fixed m1=m1* +/- 2e-4, predict and correct nearby +1 and -1 event roots in m2. A transverse mixed organizer should reverse the relative m2 ordering of the two event roots across m1*.",
+    "events": {"plus_one":"G+=beta-6 alpha+20", "minus_one":"G-=beta-2 alpha+4"},
+    "integrator": "SciPy DOP853 float64",
+    "note": "This is a local crossing/topology screen, not a substitute for exact event-specific pseudo-arclength continuation. Some secondary/right scalar event roots are only first-order corrected and are retained for ordering evidence, not high-precision event localization."
+  },
+  "organizers": [
+    {
+      "name": "principal_lower_left",
+      "vertex_masses": [0.929239204149524,0.8853664936499904,1.0],
+      "mass_event_jacobian": [[-194.9766315613388,162.76128467360707],[-110.55364263743427,43.110196561890746]],
+      "jacobian_condition_number": 8.072267454482258,
+      "below_m1": {
+        "m1": 0.929039204149524,
+        "plus_one_root": {"m2":0.8851271494832073,"closure":3.2219352535949687e-10,"G+":-1.1726279680601692e-07,"G-":0.011832464073049387},
+        "minus_one_root": {"m2":0.884852683622775,"closure":1.1500875089506577e-09,"G+":-0.04471478969905718,"G-":-4.493047267573047e-08},
+        "ordering": "minus_one_below_plus_one",
+        "m2_separation": 0.000274465860432227
+      },
+      "above_m1": {
+        "m1": 0.929439204149524,
+        "plus_one_root": {"m2":0.8856057893778018,"closure":3.67933247596026e-10,"G+":5.696123047016499e-06,"G-":-0.011756350071046917},
+        "minus_one_root": {"m2":0.8858784594691641,"closure":1.1679206528077966e-09,"G+":0.04435182492541401,"G-":3.836508088994606e-08},
+        "ordering": "plus_one_below_minus_one",
+        "m2_separation": 0.000272670091362337
+      },
+      "ordering_reverses": true
+    },
+    {
+      "name": "secondary_lower_switch",
+      "vertex_masses": [0.9967681989288031,0.9560193632122531,1.0],
+      "mass_event_jacobian": [[-135.43516912797315,134.92107249390983],[51.052450039268386,5.880303483651871]],
+      "jacobian_condition_number": 4.895280501792541,
+      "below_m1": {
+        "m1": 0.9965681989288031,
+        "plus_one_root": {"m2":0.9558182903712157,"closure":1.727083694312004e-10,"G+":2.396633789203406e-07,"G-":-0.011392035581557103},
+        "minus_one_root_approx": {"m2":0.9577926460220879,"closure":1.7738590680364114e-10,"G+":0.26210861124529217,"G-":-2.6025991873623866e-05},
+        "ordering": "plus_one_below_minus_one",
+        "m2_separation": 0.001974355650872228
+      },
+      "above_m1": {
+        "m1": 0.9969681989288031,
+        "plus_one_root": {"m2":0.9562205985055442,"closure":2.469720726827137e-10,"G+":-1.9933353456735858e-07,"G-":0.011444571392926761},
+        "minus_one_root_approx": {"m2":0.9544282659329683,"closure":2.0437217922258697e-10,"G+":-0.24446376598451636,"G-":0.00015060384854326259},
+        "ordering": "minus_one_below_plus_one",
+        "m2_separation": 0.0017923325725759387
+      },
+      "ordering_reverses": true
+    },
+    {
+      "name": "principal_lower_right",
+      "vertex_masses": [1.0495531760259145,1.1294757891873943,1.0],
+      "mass_event_jacobian": [[-172.0045102624468,33.11494723430286],[-97.69460124910977,57.37163250700838]],
+      "jacobian_condition_number": 6.404651508489229,
+      "below_m1": {
+        "m1": 1.0493531760259145,
+        "plus_one_root_approx": {"m2":1.1284104669377715,"closure":2.38704970741868e-10,"G+":3.23453767308024e-05,"G-":-0.04088091789905146},
+        "minus_one_root": {"m2":1.129133142021902,"closure":2.9453422836548077e-09,"G+":0.023297392264101546,"G-":-5.522245265510151e-07},
+        "ordering": "plus_one_below_minus_one",
+        "m2_separation": 0.0007226750841304863
+      },
+      "above_m1": {
+        "m1": 1.0497531760259144,
+        "plus_one_root_approx": {"m2":1.1305231984741895,"closure":2.446682460223168e-10,"G+":3.6439037565116905e-06,"G-":0.04071905797704112},
+        "minus_one_root": {"m2":1.1298180723830615,"closure":2.019999358351117e-09,"G+":-0.02332144543280279,"G-":-9.671252430010213e-07},
+        "ordering": "minus_one_below_plus_one",
+        "m2_separation": 0.0007051260911279389
+      },
+      "ordering_reverses": true
+    }
+  ],
+  "conclusion": "All three frozen mixed-vertex candidates exhibit the expected local event-arc crossing signature: the relative m2 ordering of the +1 and -1 event roots reverses across the candidate in m1. Together with the near-(4,4) corrected vertex solves, this strongly supports three genuine mixed organizers at screening level. Exact pseudo-arclength connection, BigFloat reproduction, and canonical/Jordan/nondegeneracy evidence are still required for a release claim."
+}
