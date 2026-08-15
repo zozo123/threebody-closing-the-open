@@ -66,6 +66,16 @@ function pq_trace_invariants(A::AbstractMatrix{T}) where {T<:Real}
     (;a,b,disc,plus,minus)
 end
 
+function pq_full_q(F, ::Type{T}, n::Int) where {T<:Real}
+    # `Matrix(F.Q)` materializes only the economy-size columns for a tall
+    # n x k factorization in current Julia.  The packed Householder object is
+    # nevertheless an n x n orthogonal operator.  Apply it to I explicitly to
+    # recover the full complement without LAPACK/Float64 demotion.
+    Q=Matrix(F.Q * Matrix{T}(I,n,n))
+    size(Q)==(n,n) || error("expected full $(n)x$(n) QR basis, got $(size(Q))")
+    Q
+end
+
 function physical_quotient_bigfloat(M::AbstractMatrix{T}, z0::AbstractVector{T}, masses;
                                     rank_tolerance::T=sqrt(eps(T))) where {T<:Real}
     size(M)==(8,8) || error("canonical monodromy must be 8x8")
@@ -78,10 +88,11 @@ function physical_quotient_bigfloat(M::AbstractMatrix{T}, z0::AbstractVector{T},
 
     constraints=vcat(transpose(E)*J,transpose(E)) # 4x8
     # QR of the transposed constraints gives an orthogonal basis whose first
-    # four columns span the constraint row-space; the last four span W.
+    # four columns span the constraint row-space; the last four span W. Julia's
+    # dense materialization of Q is economy-size for this tall factorization,
+    # so explicitly apply the packed Householder operator to the 8x8 identity.
     F=qr(transpose(constraints))
-    Q=Matrix(F.Q)
-    size(Q)==(8,8) || error("expected full 8x8 QR basis, got $(size(Q))")
+    Q=pq_full_q(F,T,8)
     R=Matrix(F.R)
     diagR=[abs(R[i,i]) for i in 1:4]
     minimum(diagR)>rank_tolerance || error("physical quotient constraints lost rank: diagR=$diagR")
