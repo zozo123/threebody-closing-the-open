@@ -65,18 +65,20 @@ An intentionally independent mpmath fixed-step RK4 tangent implementation was al
 
 ## Install
 
+The supported Python runtime is **CPython 3.13**. The Python environment, lockfile, development tools, and package build are managed with `uv`.
+
 ```bash
-python -m venv .venv
-. .venv/bin/activate
-python -m pip install --upgrade pip
-pip install -e '.[dev]'
-pytest
+uv python install 3.13
+uv sync --locked --group dev
+uv run --no-sync pytest
+uv run --no-sync ruff check src tests
 ```
 
-For the active-learning tools:
+Development-only tools (`pytest`, `ruff`) live in the standardized `dev` dependency group instead of a published package extra. Runtime features remain opt-in extras:
 
 ```bash
-pip install -e '.[ml]'
+uv sync --locked --group dev --extra ml
+uv sync --locked --group dev --extra accelerated
 ```
 
 ## Deterministic numerical smoke test
@@ -141,7 +143,7 @@ paper/                        # claim-gated LaTeX manuscript
 
 ## GitHub Actions as research compute
 
-- **CI**: Python 3.11–3.13 tests plus a deterministic Floquet smoke artifact.
+- **CI**: uv-locked Python 3.13 tests plus a deterministic Floquet smoke artifact.
 - **Baseline reproduction**: four-way sharded comparisons against frozen upstream data; also schedulable/manual.
 - **Boundary experiment**: refines known grid brackets to generate candidate critical points.
 - **Precision cross-check**: exercises the independent arbitrary-precision tangent implementation; convergence diagnostics decide whether an output is admissible.

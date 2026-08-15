@@ -43,7 +43,7 @@ jobs:
             output_file: artifacts/selfhosted-critical-upper-trace-collision-bigfloat.json
     steps:
       - uses: actions/checkout@v7
-      - uses: julia-actions/setup-julia@v2
+      - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
         with:
           version: "1.11.9"
       - name: Instantiate exact frozen independent stack
@@ -84,7 +84,7 @@ jobs:
             output_file: artifacts/selfhosted-mixed-principal-lower-right-bigfloat.json
     steps:
       - uses: actions/checkout@v7
-      - uses: julia-actions/setup-julia@v2
+      - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
         with:
           version: "1.11.9"
       - name: Instantiate exact frozen independent stack
@@ -125,7 +125,7 @@ jobs:
             output_file: artifacts/selfhosted-latest-bk-principal-lower-right.json
     steps:
       - uses: actions/checkout@v7
-      - uses: julia-actions/setup-julia@v2
+      - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
         with:
           version: "1.12.6"
       - name: Resolve latest independent stack and freeze manifest
