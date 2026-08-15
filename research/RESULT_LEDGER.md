@@ -243,7 +243,7 @@ These close the representative Gate A bind for the two principal-track headline 
 
 **Status: INDEPENDENT-STRUCTURAL**
 
-Actions run `31896441018` on `a9f5a57` independently localized 12 of the 16 float64-failed canary cells with Julia BigFloat + Vern9. Every harvested residual is below the frozen `2e-8` event gate and far below the `1e-7` closure gate. Cell 2, which float64 could not take below `5.6e-8` and whose `P(+2)` sign flipped under DOP853 `rtol`, is at event `1.16e-11`. Several cells Python labeled `plus_one` are independently `trace_collision`. Frozen harvest: `research/evidence/V1_JULIA_HARD_CANARY_2026-08-15.json`. Cells 0, 30, 50, 619 were still running at harvest. This is not 620-edge coverage and not SOLVED.
+Actions run `31896441018` on `a9f5a57` independently localized 15 of the 16 float64-failed canary cells with Julia BigFloat + Vern9. Every harvested residual is below the frozen `2e-8` event gate and far below the `1e-7` closure gate. Cell 2, which float64 could not take below `5.6e-8` and whose `P(+2)` sign flipped under DOP853 `rtol`, is at event `1.16e-11`. Cell 619 is at `6.5e-13`. Several cells Python labeled `plus_one` are independently `trace_collision`. Frozen harvest: `research/evidence/V1_JULIA_HARD_CANARY_2026-08-15.json`. Cell 50 was still running at this harvest. This is not 620-edge coverage and not SOLVED.
 
 ### Three mixed organizers
 

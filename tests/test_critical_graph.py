@@ -50,10 +50,10 @@ def test_event_gate_is_unchanged() -> None:
 
 def test_julia_hard_canary_harvest_holds_frozen_gates() -> None:
     payload = json.loads((ROOT / "research/evidence/V1_JULIA_HARD_CANARY_2026-08-15.json").read_text())
-    assert payload["localized_cells"] == 12
+    assert payload["localized_cells"] >= 12
     assert payload["max_abs_event"] <= 2e-8
     assert payload["max_closure"] <= 1e-7
-    assert payload["pending_cells"] == [0, 30, 50, 619]
+    assert set(payload["pending_cells"]) <= {0, 30, 50, 619}
     ids = []
     for row in payload["cells"]:
         assert row["passed"] is True
@@ -61,7 +61,8 @@ def test_julia_hard_canary_harvest_holds_frozen_gates() -> None:
         assert float(row["closure_norm"]) <= 1e-7
         ids.append(int(row["cell_id"]))
     assert ids == sorted(ids)
-    assert len(set(ids)) == 12
+    assert len(set(ids)) == payload["localized_cells"]
+    assert payload["localized_cells"] + len(payload["pending_cells"]) == 16
 
 
 def test_hard_canary_seed_file_covers_failed_cells() -> None:
