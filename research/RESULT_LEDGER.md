@@ -39,11 +39,31 @@ Five minimum-spanning-tree cuts chosen to separate progressively larger fraction
 
 Interpretation: no branch hysteresis was detected across the strongest tested macroscopic sampled bottlenecks.
 
-Pending gates:
+### A deliberately pathological invariant-near-duplicate pair continues bidirectionally
 
-- shooting-Jacobian rank census;
-- direct bridge across an explicit far-mass/non-injective invariant pair;
-- denser adversarial checks around worst-conditioned points.
+**Status: VERIFIED-ARTIFACT**
+
+A frozen-data adversarial bridge selected two catalog orbits that are far apart in mass space while almost coincident in the corrected invariant projection.  Direct continuation was then run independently forward and backward between them rather than inferring connectivity from the invariant plot.
+
+Retained workflow evidence:
+
+- mass-space endpoint distance: `0.06171709649683785`;
+- raw endpoint invariant deltas: `7.184312256214298e-09` and `4.201694727361911e-09`;
+- 80 continuation steps in each direction;
+- maximum forward shooting residual: `2.2420019759413978e-10`;
+- maximum reverse shooting residual: `2.2450937481501935e-10`;
+- forward terminal chart mismatch: `4.4474218549777483e-13`;
+- reverse terminal chart mismatch: `5.768013173040878e-13`;
+- workflow run `31873131455`, artifact `9244246378`;
+- artifact ZIP SHA-256: `279895e090b44cb692a6da6f1a749433ae18635289dc291a52daadbd9bc5c5fe`.
+
+Interpretation: at least one of the strongest concrete counterexamples to using the invariant plot as a family separator is explicitly joined by branch-preserving forward/reverse continuation.  This substantially weakens a naive two-family interpretation based only on the projected invariant branches, but it is still not a global connectedness proof for all 135,445 rows.
+
+Pending family-connectivity gates:
+
+- shooting-Jacobian rank census, including the complete `m2=m3=1` zero-angular-momentum spine;
+- path-diverse or generic-BVP repetition at the worst-conditioned continuation locations;
+- denser adversarial checks around any sampled rank-loss candidates.
 
 ## Stability critical set
 
@@ -145,6 +165,6 @@ The project is **not yet entitled to say the stated open problem is solved**.  T
 1. locate and independently reproduce the mechanism-switch vertices/folds;
 2. complete connected critical-arc continuation, including the secondary lobe/network;
 3. finish BigFloat exact boundary roots and canonical evaluation at representative critical points;
-4. finish family-sheet rank/bridge adversarial gates;
+4. finish the shooting-rank census and generic/path-diverse family-connectivity adversarial gates;
 5. freeze evidence manifests and regenerate the manuscript from them;
 6. rerun the current literature novelty audit immediately before release.
