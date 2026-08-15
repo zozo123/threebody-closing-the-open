@@ -1,8 +1,11 @@
-from pathlib import Path
 import importlib.util
+from pathlib import Path
+import sys
 
 
-SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "verify_single_connectivity_edge.py"
+SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
+SCRIPT = SCRIPTS / "verify_single_connectivity_edge.py"
+sys.path.insert(0, str(SCRIPTS))
 SPEC = importlib.util.spec_from_file_location("verify_single_connectivity_edge", SCRIPT)
 MODULE = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader is not None
