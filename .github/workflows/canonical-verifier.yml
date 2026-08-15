@@ -48,7 +48,7 @@ jobs:
               raise SystemExit(f'baseline source changed: {got}')
           print('source_git_blob=', got, 'sha256=', hashlib.sha256(raw).hexdigest())
           PY
-      - name: Verify canonical Hamiltonian structure and Floquet pairing
+      - name: Verify canonical Hamiltonian structure, spectral labels, and pairing
         env:
           DPS: ${{ inputs.dps || '50' }}
           TOL_EXP: ${{ inputs.tol_exp || '25' }}
@@ -56,7 +56,7 @@ jobs:
           julia julia/verify_canonical_rows.jl \
             data/raw/non-hierarchical-3b-supplementary_data.txt \
             artifacts/canonical-bigfloat.json \
-            "$DPS" "$TOL_EXP" 7 12
+            "$DPS" "$TOL_EXP" 7 11 12
       - uses: actions/upload-artifact@v4
         with:
           name: canonical-bigfloat-${{ github.sha }}
