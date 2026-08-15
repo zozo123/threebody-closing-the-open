@@ -11,7 +11,7 @@
     "baseline": "Li, Li & Liao (2021), arXiv:2007.10184 / Science China Physics, Mechanics & Astronomy 64, 219511. The published 135,445-orbit catalog and its 13,315 stable labels are baseline facts, not ATLAS discoveries."
   },
   "decision": {
-    "summary": "The stated v1 open problem is not solved. Post-audit and new independent-float64 screening evidence now constrain the geometry much more tightly: the 620 coarse S/U cells form four mechanism-labeled tracks; all three coarse +1/-1 switches have corrected mixed spectral-vertex candidates with closure around 1e-11 and (alpha,beta) within about 1e-8 of (4,4); the secondary lobe separately shows a 0-to-2 -1 root-birth pattern consistent with an event-curve fold; rank-refinement found no surviving <1e-6 shooting singularity; a generic-chart adversarial bridge passed; and ten lower +1 daughter candidates exist. Release is withheld because Julia BigFloat/canonical organizer truth, exact event-arc connections, the hardest connectivity edges, daughter-branch topology, and final release closure remain unresolved.",
+    "summary": "The stated v1 open problem is not solved. Post-audit and new independent-float64 screening evidence now constrain the geometry much more tightly: the 620 coarse S/U cells form four mechanism-labeled tracks; all three coarse +1/-1 switches have corrected mixed spectral-vertex candidates with closure around 1e-11 and (alpha,beta) within about 1e-8 of (4,4); the secondary lobe separately shows a 0-to-2 -1 root-birth pattern consistent with an event-curve fold; rank-refinement found no surviving <1e-6 shooting singularity; a generic-chart adversarial bridge passed; the previously failing global-rank-3 MST edge now passes 12-substep continuation in both directions under unchanged gates; and ten lower +1 daughter candidates exist. Release is withheld because Julia BigFloat/canonical organizer truth, exact event-arc connections, the remaining worst-edge connectivity matrix, daughter-branch topology, and final release closure remain unresolved.",
     "solved_at": null
   },
   "gates": [
@@ -34,7 +34,7 @@
       "title": "Family/sheet connectivity",
       "status": "pending",
       "criterion": "Family identity must survive rank-loss, reverse-continuation, path-diversity, and less-specialized chart attacks rather than relying on projected invariants or topology words.",
-      "evidence": ["result-ledger", "family-bridge-artifact", "generic-bridge-artifact", "refined-rank-artifact", "hard-connectivity-partial-artifact", "v1-closure", "closure-status"]
+      "evidence": ["result-ledger", "family-bridge-artifact", "generic-bridge-artifact", "refined-rank-artifact", "hard-connectivity-partial-artifact", "hard-mst-rank3-screen", "v1-closure", "closure-status"]
     },
     {
       "id": "D",
@@ -64,10 +64,10 @@
     {
       "id": "family-connectivity-strengthening",
       "status": "candidate",
-      "statement": "The strongest tested projected-invariant ambiguity is continuation-connected in both the Li shooting chart and an independent generic translation-reduced strict-periodic chart, while the 28 lowest first-stage shooting-rank candidates all move above the fixed 1e-6 suspicion ratio after tight correction.",
-      "method": "Bidirectional continuation in two formulations plus second-stage shooting-Jacobian singular-spectrum audit.",
-      "evidence": ["family-bridge-artifact", "generic-bridge-artifact", "refined-rank-artifact", "closure-status"],
-      "limitations": ["The globally worst MST links are not all certified; one hard edge remains unresolved and the full catalog connectedness claim is withheld."]
+      "statement": "The strongest tested projected-invariant ambiguity is continuation-connected in both the Li shooting chart and an independent generic translation-reduced strict-periodic chart; the 28 lowest first-stage shooting-rank candidates all move above the fixed 1e-6 suspicion ratio after tight correction; and the formerly failing global-rank-3 MST edge passes 12-substep continuation in both directions under unchanged residual and terminal-match gates.",
+      "method": "Bidirectional continuation in two formulations plus second-stage shooting-Jacobian singular-spectrum audit and an independent float64 12-substep certification of the former rank-3 hard edge.",
+      "evidence": ["family-bridge-artifact", "generic-bridge-artifact", "refined-rank-artifact", "hard-connectivity-partial-artifact", "hard-mst-rank3-screen", "closure-status"],
+      "limitations": ["The remaining globally worst MST links are not all certified; the full catalog connectedness claim remains withheld until the matrix and any generic/path-diverse fallbacks close."]
     },
     {
       "id": "secondary-minus-one-fold",
@@ -90,7 +90,7 @@
     "Complete independent Julia BigFloat reproduction of the lower +1 and upper trace-collision critical representatives, then evaluate the corrected points canonically with convergence and uncertainty records.",
     "Independently reproduce all three frozen mixed (+1,-1) organizer candidates with the split Julia BigFloat verifier and connect the +1/-1 event arcs through each organizer with event-specific pseudo-arclength continuation.",
     "Independently verify the secondary -1 root-birth fold using event-specific continuation geometry and BigFloat evidence rather than relying on the numerically sensitive nested finite-difference curvature estimate.",
-    "Certify the twenty globally worst MST links with adaptive continuation and attack every survivor with the generic chart/path diversity; the known hard edge (0.839,0.721,1)<->(0.838,0.721,1) is unresolved.",
+    "Finish the remaining globally worst MST links with adaptive continuation and attack every survivor with the generic chart/path diversity; the formerly failing global-rank-3 edge itself is now resolved at 12 substeps under unchanged gates.",
     "Execute at least one lower +1 generic daughter pseudo-arclength continuation and independently reproduce enough of it to determine whether it reconnects to the catalog sheet or forms a distinct branch.",
     "Trace and freeze the exact connected critical graph with mechanism labels, organizer/end-point classifications, uncertainties, and physical canonical evidence.",
     "Restore GitHub Actions runner availability: current main-branch scientific/CI jobs are not starting because the account reports a payment/spending-limit block.",
@@ -99,6 +99,7 @@
   "known_limitations": [
     "Current critical-event and connectivity evidence is incomplete and therefore cannot support the solved claim.",
     "The three mixed organizer candidates and secondary fold root-birth screen are float64 screening evidence; they are deliberately withheld from release_claim status until independent arbitrary-precision and canonical gates pass.",
+    "The former global-rank-3 MST failure is resolved at 12 substeps, but the rest of the globally worst-edge matrix has not all completed.",
     "The split BigFloat verifiers, adaptive connectivity matrix, junction continuation matrix, daughter continuation matrix, and ordinary CI currently contain no new scientific result because GitHub Actions did not allocate runners under the account billing/spending block.",
     "The v1 stability scope is planar linear Floquet stability only; it does not imply spatial or nonlinear/KAM stability.",
     "Negative literature searches are not proofs of novelty; the novelty audit is a release-time search firewall."
@@ -121,14 +122,15 @@
     {"id":"solve-loop","kind":"repository_file","role":"method","path":"research/SOLVE_LOOP.md","description":"Closed-loop falsification workflow from question freeze through publishable success."},
     {"id":"result-ledger","kind":"repository_file","role":"result_ledger","path":"research/RESULT_LEDGER.md","description":"Claim firewall recording verified, structural, screening, candidate, and invalidated findings plus the current publication threshold."},
     {"id":"v1-closure","kind":"repository_file","role":"closure_contract","path":"research/V1_CLOSURE.md","description":"Gate A-D execution contract and explicit v1 stop rule."},
-    {"id":"closure-status","kind":"repository_file","role":"closure_status","path":"research/CLOSURE_STATUS_2026-08-15.md","description":"Current checkpoint including the three mixed organizer screening candidates, secondary fold root-birth topology, hard MST edge, independent-verification blockers, and current Actions compute block."},
+    {"id":"closure-status","kind":"repository_file","role":"closure_status","path":"research/CLOSURE_STATUS_2026-08-15.md","description":"Current checkpoint including the three mixed organizer screening candidates, secondary fold root-birth topology, resolution of the former rank-3 hard MST edge, remaining verification blockers, and current Actions compute block."},
     {"id":"novelty-audit","kind":"repository_file","role":"novelty_audit","path":"research/NOVELTY_AUDIT.md","description":"Working novelty and family-identity audit, to be refreshed immediately before release."},
     {"id":"mixed-vertex-screening-file","kind":"repository_file","role":"critical_graph","path":"experiments/mixed_vertex_screening_2026-08-15.json","description":"Independent float64 screening reimplementation yielding corrected mixed (+1,-1) spectral-vertex candidates for all three coarse mechanism switches."},
     {"id":"secondary-fold-topology-screen","kind":"repository_file","role":"critical_graph","path":"experiments/secondary_minus_fold_topology_screen_2026-08-15.json","description":"Independent float64 corrected-orbit sign-topology screen showing a local zero-to-two -1 root birth across the secondary-lobe fold neighborhood."},
+    {"id":"hard-mst-rank3-screen","kind":"repository_file","role":"adversarial_search","path":"experiments/hard_mst_rank3_12step_screen_2026-08-15.json","description":"Independent float64 12-substep bidirectional continuation certification of the formerly failing global-rank-3 MST edge under the unchanged residual and terminal-match gates."},
     {"id":"family-bridge-artifact","kind":"actions_artifact","role":"family_connectivity","run_id":31873131455,"artifact_id":9244246378,"sha256":"279895e090b44cb692a6da6f1a749433ae18635289dc291a52daadbd9bc5c5fe","description":"Frozen bidirectional continuation evidence for a deliberately adversarial far-mass, invariant-near-duplicate pair."},
     {"id":"generic-bridge-artifact","kind":"actions_artifact","role":"family_connectivity","run_id":31874677257,"artifact_id":9244686938,"sha256":"d2b76fa7e0a73791a662a54202f7e50202b7ade6c67e4d21f2816dde328748dd","description":"Independent generic translation-reduced strict-periodic repetition of the adversarial invariant bridge; passed in both directions."},
     {"id":"refined-rank-artifact","kind":"actions_artifact","role":"adversarial_search","run_id":31875617952,"artifact_id":9244717474,"sha256":"14bd77f18fd80df85b5bcbc4b1625ace361d8a287b8f553fbaf565c5ced0d238","description":"Tight correction and shooting-Jacobian rerank of the 28 lowest-rank first-stage candidates; zero remained below the 1e-6 suspicion threshold."},
-    {"id":"hard-connectivity-partial-artifact","kind":"actions_artifact","role":"adversarial_search","run_id":31875780737,"artifact_id":9245082356,"sha256":"5d5c8ac13699fed6d121679e5d715ee7eedc5a53ad823f75a58088dc3db58707","description":"Partial strengthened MST connectivity run: five balanced cuts and two worst global links passed before the third global edge failed a reverse six-substep Li-chart continuation."},
+    {"id":"hard-connectivity-partial-artifact","kind":"actions_artifact","role":"adversarial_search","run_id":31875780737,"artifact_id":9245082356,"sha256":"5d5c8ac13699fed6d121679e5d715ee7eedc5a53ad823f75a58088dc3db58707","description":"Historical partial strengthened MST run: five balanced cuts and two worst global links passed before the third global edge failed a reverse six-substep Li-chart continuation. The third edge is subsequently resolved by hard-mst-rank3-screen."},
     {"id":"global-event-network-artifact","kind":"actions_artifact","role":"critical_graph","run_id":31875491684,"artifact_id":9245087230,"sha256":"c1921c9334d5282a112f3b73c8264baa181cd2456ddd7ad374225b54741da163","description":"Frozen global coarse Floquet event-network census across all 620 published S/U transition cells."},
     {"id":"mixed-vertex-search-artifact","kind":"actions_artifact","role":"adversarial_search","run_id":31874535671,"artifact_id":9244764587,"sha256":"9f6baa53cf6af758d13e6e185774add4566df4041fb1eb0acb668aa3018abcd8","description":"Earlier direct six-variable mixed +1/-1 organizer search; ten closest seeds attempted and no (alpha,beta)=(4,4) vertex was accepted. Superseded as a discovery search by the later mass-eliminated screening candidates, but retained as negative solver evidence."},
     {"id":"secondary-minus-fold-artifact","kind":"actions_artifact","role":"critical_graph","run_id":31871994666,"artifact_id":9243922339,"sha256":"f3a9a4721bffabfa0fa8c1bdc55cffe39f3353d4e43c270429dbcb12e5733718","description":"Float64 candidate for a generic quadratic -1 event-curve fold at the secondary-lobe birth."},
