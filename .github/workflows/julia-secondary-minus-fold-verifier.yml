@@ -1,0 +1,50 @@
+name: Julia BigFloat secondary minus-one fold verifier
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "julia/verify_secondary_minus_fold.jl"
+      - "julia/verify_critical_points.jl"
+      - "julia/verify_reduced.jl"
+      - "experiments/secondary_minus_fold_bigfloat.tsv"
+      - "julia/Project.toml"
+      - "julia/Manifest.toml"
+      - ".github/workflows/julia-secondary-minus-fold-verifier.yml"
+
+concurrency:
+  group: julia-secondary-minus-fold-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v7
+      - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32
+        with:
+          version: "1.11.9"
+      - uses: julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8
+      - name: Instantiate locked independent solver stack
+        run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+      - name: Parse independent fold verifier
+        run: julia --project=julia -e 'Meta.parseall(read("julia/verify_secondary_minus_fold.jl", String)); println("secondary fold verifier syntax OK")'
+      - name: Solve and verify secondary minus-one fold/nondegeneracy
+        run: |
+          mkdir -p artifacts
+          julia --project=julia julia/verify_secondary_minus_fold.jl \
+            experiments/secondary_minus_fold_bigfloat.tsv \
+            artifacts/secondary-minus-fold-bigfloat.json \
+            60 28 18 12 8
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: secondary-minus-fold-bigfloat-${{ github.sha }}
+          path: artifacts/secondary-minus-fold-bigfloat.json
+          if-no-files-found: warn
+          retention-days: 90
