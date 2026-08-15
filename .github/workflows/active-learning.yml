@@ -16,31 +16,40 @@ on:
         required: true
         default: "12"
   push:
-    branches: ["agent/research-platform-v1"]
+    branches: ["main"]
     paths:
       - ".github/workflows/active-learning.yml"
+      - "scripts/active_learning_round.py"
+      - "src/threebody_atlas/**"
+      - "pyproject.toml"
+      - "uv.lock"
 
 permissions:
   contents: read
 
+env:
+  UV_PYTHON: "3.13"
+
 jobs:
   propose-and-screen:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          python-version: "3.12"
-          cache: pip
-      - run: pip install -e '.[ml]'
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked --extra ml
       - name: Fetch frozen baseline
         run: |
           mkdir -p data/raw artifacts
           curl -L --fail --retry 3 \
             https://raw.githubusercontent.com/sjtu-liao/three-body/main/non-hierarchical-3b-supplementary_data.txt \
             -o data/raw/non-hierarchical-3b-supplementary_data.txt
-          python - <<'PY'
+          uv run --no-sync python - <<'PY'
           import hashlib
           from pathlib import Path
           raw = Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
@@ -48,23 +57,24 @@ jobs:
           expected = '79b2963df43e62201c35690bfc22bec166132427'
           if got != expected:
               raise SystemExit(f'baseline source changed: {got}')
-          print('source_git_blob=', got)
+          print('source_git_blob=', got, 'sha256=', hashlib.sha256(raw).hexdigest())
           PY
       - name: Train proposal ensemble and send off-grid candidates to shooting/Floquet screening
         env:
-          MAX_TRAINING: ${{ inputs.max_training || '1500' }}
-          TREES: ${{ inputs.trees || '24' }}
-          CANDIDATES: ${{ inputs.candidates || '3' }}
+          MAX_TRAINING: ${{ inputs.max_training || '10000' }}
+          TREES: ${{ inputs.trees || '128' }}
+          CANDIDATES: ${{ inputs.candidates || '12' }}
         run: |
-          python scripts/active_learning_round.py \
+          uv run --no-sync python scripts/active_learning_round.py \
             data/raw/non-hierarchical-3b-supplementary_data.txt \
             --max-training "$MAX_TRAINING" \
             --trees "$TREES" \
             --candidates "$CANDIDATES" \
             --output artifacts/active-learning-round.json
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: active-learning-${{ github.sha }}
           path: artifacts/active-learning-round.json
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 90
