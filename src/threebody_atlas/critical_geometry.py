@@ -1,12 +1,12 @@
 """Differential geometry utilities for critical curves in continuation space.
 
-A mass-plane stability boundary is not fundamentally a graph m2(m1).  It is a
+A mass-plane stability boundary is not fundamentally a graph m2(m1). It is a
 one-dimensional curve embedded in the six-dimensional continuation chart
 
     y = (x1, v1, v2, T, m1, m2),
 
-cut out by periodic closure plus one smooth Floquet event.  If J = dG/dy has
-rank five, the curve tangent spans null(J).  Working with this nullspace makes
+cut out by periodic closure plus one smooth Floquet event. If J = dG/dy has
+rank five, the curve tangent spans null(J). Working with this nullspace makes
 folds and branch geometry coordinate-aware and avoids nested finite differences
 of a re-solved mass-plane graph.
 """
@@ -53,32 +53,46 @@ def critical_tangent(
     scales: Array | None = None,
     reference: Array | None = None,
 ) -> CriticalTangent:
-    """Extract the one-dimensional null direction of a critical residual Jacobian.
+    """Extract the numerical one-dimensional null direction of dG/dy.
 
-    ``jacobian`` is dG/dy.  We compute the SVD after changing variables to
-    z=y/scales, i.e. dG/dz = (dG/dy) diag(scales).  This keeps the nullspace from
-    being dominated by the very different natural magnitudes of T and masses.
-    ``reference`` is a physical tangent used only to choose orientation.
+    We change variables to z=y/scales, so dG/dz=(dG/dy)diag(scales), and take
+    the final right-singular vector of that scaled Jacobian. ``full_matrices``
+    is essential here: for an underdetermined 5x6 matrix, reduced SVD omits the
+    sixth right-singular vector, which is precisely the structural nullspace.
+
+    For tall systems such as the real closure+event Jacobian (9x6), the final
+    vector is the smallest-singular direction. The reported spectral gap tells
+    us how cleanly it is separated from the next direction; the SciPy residual
+    remains authoritative regardless of this derivative diagnostic.
     """
     j = np.asarray(jacobian, dtype=float)
     if j.ndim != 2 or j.shape[1] != 6:
         raise ValueError("critical Jacobian must have six columns")
+    if not np.isfinite(j).all():
+        raise ValueError("critical Jacobian contains non-finite entries")
+
     if scales is None:
         scale = np.ones(6, dtype=float)
     else:
         scale = np.asarray(scales, dtype=float)
-        if scale.shape != (6,) or np.any(scale <= 0.0):
-            raise ValueError("scales must contain six positive entries")
+        if scale.shape != (6,) or np.any(scale <= 0.0) or not np.isfinite(scale).all():
+            raise ValueError("scales must contain six finite positive entries")
 
     j_scaled = j * scale[None, :]
-    _u, singular, vh = np.linalg.svd(j_scaled, full_matrices=False)
+    _u, singular, vh = np.linalg.svd(j_scaled, full_matrices=True)
+    # full_matrices=True guarantees vh has six rows because the continuation
+    # chart has six coordinates, including the structural null vector when m<6.
     t_scaled = vh[-1].copy()
+    t_scaled_norm = float(np.linalg.norm(t_scaled))
+    if t_scaled_norm == 0.0:
+        raise RuntimeError("critical scaled null vector collapsed to zero")
+    t_scaled /= t_scaled_norm
+
     t_physical = scale * t_scaled
     physical_norm = float(np.linalg.norm(t_physical))
     if physical_norm == 0.0:
-        raise RuntimeError("critical null vector collapsed to zero")
+        raise RuntimeError("critical physical null vector collapsed to zero")
     t_physical /= physical_norm
-    t_scaled /= float(np.linalg.norm(t_scaled))
 
     if reference is not None:
         ref = np.asarray(reference, dtype=float)
@@ -89,10 +103,16 @@ def critical_tangent(
             t_scaled *= -1.0
 
     null_residual = float(np.linalg.norm(j @ t_physical))
-    if singular.size >= 2:
+    rows, cols = j_scaled.shape
+    if rows < cols:
+        # The missing singular values of an underdetermined full-row-rank matrix
+        # are exact structural zeros; the explicit null vector lives in vh.
+        spectral_gap = float("inf")
+    elif singular.size >= 2:
         spectral_gap = float(singular[-2] / max(singular[-1], np.finfo(float).tiny))
     else:
         spectral_gap = float("inf")
+
     return CriticalTangent(
         physical=t_physical,
         scaled=t_scaled,
@@ -120,7 +140,7 @@ def generic_projection_fold(
 ) -> bool:
     """Screen a fold by an oriented sign change and nonzero transverse motion.
 
-    This is a geometric *screen*, not a proof.  High-precision localization must
+    This is a geometric *screen*, not a proof. High-precision localization must
     additionally verify the critical equations and nondegenerate curvature.
     """
     a = projection_fold_indicator(before, parameter)
