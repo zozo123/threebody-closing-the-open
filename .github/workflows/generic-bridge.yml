@@ -1,0 +1,80 @@
+name: Generic cross-chart continuation bridge
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "src/threebody_atlas/generic_periodic.py"
+      - "scripts/verify_generic_noninjective_bridge.py"
+      - "tests/test_generic_periodic.py"
+      - ".github/workflows/generic-bridge.yml"
+      - "uv.lock"
+  push:
+    branches: ["main"]
+    paths:
+      - "src/threebody_atlas/generic_periodic.py"
+      - "scripts/verify_generic_noninjective_bridge.py"
+      - "tests/test_generic_periodic.py"
+      - ".github/workflows/generic-bridge.yml"
+      - "uv.lock"
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON: "3.13"
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: |
+          python -m py_compile src/threebody_atlas/generic_periodic.py
+          python -m py_compile scripts/verify_generic_noninjective_bridge.py
+
+  bridge:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.32"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked
+      - name: Fetch frozen Li-Li-Liao baseline
+        run: |
+          mkdir -p data/raw artifacts
+          curl -L --fail --retry 3 \
+            https://raw.githubusercontent.com/sjtu-liao/three-body/main/non-hierarchical-3b-supplementary_data.txt \
+            -o data/raw/non-hierarchical-3b-supplementary_data.txt
+          uv run --no-sync python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          raw = Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
+          got = hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
+          expected = '79b2963df43e62201c35690bfc22bec166132427'
+          if got != expected:
+              raise SystemExit(f'baseline source changed: {got}')
+          print('source_git_blob=', got, 'sha256=', hashlib.sha256(raw).hexdigest())
+          PY
+      - name: Repeat pathological bridge without Li ansatz constraints
+        run: |
+          uv run --no-sync python scripts/verify_generic_noninjective_bridge.py \
+            data/raw/non-hierarchical-3b-supplementary_data.txt \
+            artifacts/generic-invariant-bridge.json \
+            --steps 48 --max-residual 2e-7 --match-tolerance 5e-5
+      - uses: actions/upload-artifact@v4
+        with:
+          name: generic-invariant-bridge-${{ github.sha }}
+          path: artifacts/generic-invariant-bridge.json
+          if-no-files-found: error
+          retention-days: 90
