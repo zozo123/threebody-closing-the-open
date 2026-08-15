@@ -109,7 +109,7 @@ def main() -> None:
         if index in {7, 11, 12}:
             published.append(
                 record_point(
-                    f"published_row_{index}_{row.label}",
+                    f"published_row_{index}_{row.published_stability}",
                     (row.m1, row.m2, row.m3),
                     (row.x1, row.v1, row.v2, row.period),
                     max_closure=args.max_closure,
