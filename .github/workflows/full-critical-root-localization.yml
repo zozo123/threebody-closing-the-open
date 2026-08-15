@@ -1,0 +1,187 @@
+name: Full critical-root localization
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "scripts/localize_full_critical_network.py"
+      - "scripts/extract_mass_slice_brackets.py"
+      - "src/threebody_atlas/critical_manifold.py"
+      - "src/threebody_atlas/boundary.py"
+      - "src/threebody_atlas/liao_family.py"
+      - "src/threebody_atlas/reduced.py"
+      - "src/threebody_atlas/variational.py"
+      - ".github/workflows/full-critical-root-localization.yml"
+      - "pyproject.toml"
+      - "uv.lock"
+
+concurrency:
+  group: full-critical-root-localization-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON: "3.13"
+  CHUNKS: "20"
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: python -m py_compile scripts/localize_full_critical_network.py
+
+  localize:
+    if: github.event_name != 'pull_request'
+    needs: preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        chunk: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked
+      - name: Fetch frozen Li-Li-Liao baseline
+        run: |
+          mkdir -p data/raw artifacts
+          curl -L --fail --retry 3 \
+            https://raw.githubusercontent.com/sjtu-liao/three-body/main/non-hierarchical-3b-supplementary_data.txt \
+            -o data/raw/non-hierarchical-3b-supplementary_data.txt
+          uv run --no-sync python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          raw = Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
+          got = hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
+          expected = '79b2963df43e62201c35690bfc22bec166132427'
+          if got != expected:
+              raise SystemExit(f'baseline source changed: {got}')
+          print('source_git_blob=', got, 'sha256=', hashlib.sha256(raw).hexdigest())
+          PY
+      - name: Extract all published transition brackets
+        run: |
+          uv run --no-sync python scripts/extract_mass_slice_brackets.py \
+            data/raw/non-hierarchical-3b-supplementary_data.txt \
+            artifacts/published-transition-brackets.tsv
+      - name: Localize chunk ${{ matrix.chunk }} of 20
+        run: |
+          uv run --no-sync python scripts/localize_full_critical_network.py \
+            artifacts/published-transition-brackets.tsv \
+            "artifacts/critical-root-chunk-${{ matrix.chunk }}.json" \
+            --chunk-index "${{ matrix.chunk }}" \
+            --chunks "$CHUNKS"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: critical-root-chunk-${{ matrix.chunk }}-${{ github.sha }}
+          path: artifacts/critical-root-chunk-${{ matrix.chunk }}.json
+          if-no-files-found: warn
+          retention-days: 90
+
+  aggregate:
+    if: github.event_name != 'pull_request'
+    needs: localize
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: critical-root-chunk-*-${{ github.sha }}
+          path: artifacts/root-chunks
+          merge-multiple: true
+      - name: Merge and enforce the 620-cell graph substrate gates
+        run: |
+          python - <<'PY'
+          import json
+          from collections import Counter
+          from pathlib import Path
+
+          files = sorted(Path('artifacts/root-chunks').glob('critical-root-chunk-*.json'))
+          if len(files) != 20:
+              raise SystemExit(f'expected 20 chunk files, found {len(files)}')
+
+          roots = []
+          chunks = set()
+          max_closure = 0.0
+          max_event = 0.0
+          for path in files:
+              payload = json.loads(path.read_text())
+              if payload.get('chunks') != 20:
+                  raise SystemExit(f'{path}: wrong partition count {payload.get("chunks")}')
+              chunks.add(int(payload['chunk_index']))
+              roots.extend(payload['roots'])
+              max_closure = max(max_closure, float(payload['max_closure']))
+              max_event = max(max_event, float(payload['max_abs_event']))
+
+          if chunks != set(range(20)):
+              raise SystemExit(f'missing/duplicate chunks: {sorted(chunks)}')
+          ids = [int(root['cell_id']) for root in roots]
+          counts = Counter(ids)
+          duplicated = sorted(cell for cell, count in counts.items() if count != 1)
+          expected = set(range(620))
+          observed = set(ids)
+          if len(roots) != 620 or observed != expected or duplicated:
+              raise SystemExit(
+                  f'root coverage failed: roots={len(roots)} missing={sorted(expected-observed)[:20]} '
+                  f'extra={sorted(observed-expected)[:20]} duplicated={duplicated[:20]}'
+              )
+          if max_closure > 1e-7:
+              raise SystemExit(f'closure gate failed: {max_closure:.6e}')
+          if max_event > 2e-8:
+              raise SystemExit(f'event gate failed: {max_event:.6e}')
+
+          roots.sort(key=lambda root: int(root['cell_id']))
+          mode_counts = Counter(root['event_mode'] for root in roots)
+          orientation_counts = Counter(root['orientation'] for root in roots)
+          payload = {
+              'schema': 'atlas.v1.full-critical-root-network/1',
+              'claim_status': (
+                  'float64 structural localization of all 620 unique endpoint-sign-changing '
+                  'catalog S/U cells; organizer/fold/headline mechanism release claims remain '
+                  'independently BigFloat/canonical gated'
+              ),
+              'source_transition_cells': 620,
+              'localized_roots': len(roots),
+              'event_mode_counts': dict(sorted(mode_counts.items())),
+              'orientation_counts': dict(sorted(orientation_counts.items())),
+              'max_closure': max_closure,
+              'max_abs_event': max_event,
+              'coverage': {
+                  'minimum_cell_id': min(ids),
+                  'maximum_cell_id': max(ids),
+                  'unique_cell_ids': len(observed),
+                  'chunks': 20,
+              },
+              'roots': roots,
+          }
+          out = Path('artifacts/full-critical-roots.json')
+          out.write_text(json.dumps(payload, indent=2) + '\n')
+          print(json.dumps({
+              'localized_roots': len(roots),
+              'event_mode_counts': payload['event_mode_counts'],
+              'orientation_counts': payload['orientation_counts'],
+              'max_closure': max_closure,
+              'max_abs_event': max_event,
+          }, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: full-critical-roots-${{ github.sha }}
+          path: artifacts/full-critical-roots.json
+          if-no-files-found: error
+          retention-days: 90
