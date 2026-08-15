@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from threebody_atlas.critical_manifold import event_value, infer_event_mode
+from threebody_atlas.critical_manifold import classify_localized_cell, event_value, infer_event_mode
 
 
 def invariants_from_trace_roots(t1: float, t2: float):
@@ -45,6 +45,13 @@ def test_infer_plus_one_from_sign_change() -> None:
     a = sample(1.98, -0.2)
     b = sample(2.02, -0.2)
     assert infer_event_mode(a, b) == "plus_one"
+
+
+def test_classify_localized_cell_keeps_scientific_event_gate() -> None:
+    assert classify_localized_cell(closure=6e-10, event=1e-8, m2=0.75, lo=0.75, hi=0.751) == "ok"
+    assert classify_localized_cell(closure=6e-10, event=3e-8, m2=0.75, lo=0.75, hi=0.751) == "missed_event"
+    assert classify_localized_cell(closure=2e-7, event=1e-9, m2=0.75, lo=0.75, hi=0.751) == "missed_closure"
+    assert classify_localized_cell(closure=6e-10, event=1e-9, m2=0.74, lo=0.75, hi=0.751) == "outside_bracket"
 
 
 def test_infer_trace_collision_from_discriminant_sign_change() -> None:

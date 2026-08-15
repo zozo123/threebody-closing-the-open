@@ -60,15 +60,13 @@ The same deliberately pathological bridge was subsequently repeated in the gener
 
 The 28 lowest-rank candidates from the first shooting-Jacobian census were tightly re-corrected. The minimum corrected scaled rank ratio was `1.0803738448664921e-05`, maximum corrected closure `1.8017261738074185e-08`, and zero candidates remained below the fixed `1e-6` suspicion threshold. Workflow run `31875617952`, artifact `9244717474`.
 
-### Global worst-edge connectivity is not closed
+### Global worst-edge connectivity is closed in the declared catalog domain
 
-**Status: CANDIDATE / ADVERSARIAL TEST ACTIVE**
+**Status: VERIFIED-ARTIFACT / Gate C passed**
 
-Five balanced cuts and the first two globally largest MST chart jumps passed. The third globally largest edge, `(0.839,0.721,1)<->(0.838,0.721,1)`, failed the reverse six-substep Li-chart walk at residual about `7.609e-05` against the frozen `2e-7` gate.
+GitHub Actions run `31877974928` completed with all 20 globally worst MST edges passing under fixed gates and 6→12→24→48 refinement. The former rank-3 hard edge also has an independent 12-substep float64 reproduction. Certificate: `research/V1_CONNECTIVITY_CERTIFICATE_2026-08-15.md`.
 
-This is not evidence of physical disconnection yet. The adaptive top-20 workflow retries each edge at `6 -> 12 -> 24 -> 48` substeps without relaxing thresholds; any survivor must be attacked in the generic chart and, if required, by path diversity/loop lifting.
-
-**Family claim remains withheld until that adversarial closure completes.**
+The frozen catalog is supported as **one continuation-connected component**. This is a numerical continuation statement for the declared v1 domain, not a theorem about the full planar three-body moduli space.
 
 ## Stability critical set
 
@@ -123,6 +121,18 @@ The frozen record is `experiments/mixed_vertex_screening_2026-08-15.json`. One-r
 Interpretation: organizer **discovery** is no longer the main blocker. The remaining organizer gate is independent arbitrary-precision reproduction, event-arc connection, canonical physical/Jordan structure, and nondegeneracy classification.
 
 These points remain screening results, not release claims.
+
+### Three mixed organizers now have independent physical-canonical records
+
+**Status: INDEPENDENT-STRUCTURAL**
+
+Julia mixed-canonical matrix run `31886247456` on commit `f24e14b` completed successfully for all three seeds. Frozen copies:
+
+- `research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_LEFT_2026-08-15.json`
+- `research/evidence/V1_MIXED_CANONICAL_SECONDARY_LEFT_2026-08-15.json`
+- `research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_RIGHT_2026-08-15.json`
+
+Each record reports `passed: true`, physical events at the mixed vertex, and symplectic/leakage/reciprocal defects far below float64 screening noise. Event-arc attachment and the assembled graph remain separate gates.
 
 ### The secondary lobe is consistent with a `-1` fold followed by a distinct mixed switch
 

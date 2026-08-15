@@ -21,7 +21,11 @@ from pathlib import Path
 from typing import Any
 
 from threebody_atlas.boundary import evaluate
-from threebody_atlas.critical_manifold import event_value, localize_critical_point
+from threebody_atlas.critical_manifold import (
+    classify_localized_cell,
+    event_value,
+    localize_critical_point,
+)
 from threebody_atlas.liao_family import FamilyPoint
 
 MODES = ("plus_one", "minus_one", "trace_collision")
@@ -56,41 +60,58 @@ def solve_cell(cell_id: int, row: dict[str, str]) -> dict[str, Any]:
         for mode, (a, b) in values.items()
         if a == 0.0 or b == 0.0 or a * b < 0.0
     ]
-    if len(modes) != 1:
-        raise RuntimeError(
-            f"cell {cell_id} lost unique-event invariant: modes={modes} values={values}"
-        )
-    mode = modes[0]
-    stable = left_point if row["left_label"] == "S" else right_point
-    unstable = left_point if row["left_label"] == "U" else right_point
-    critical = localize_critical_point(
-        stable,
-        unstable,
-        event_mode=mode,
-        # The scientific gate is the event residual below, not bracket width.
-        # A 2e-9 width stop was coarse enough to return residuals above 2e-8
-        # (for example cells 0 and 1 in run 31887432802), so refine the mass
-        # bracket further instead of weakening the event acceptance criterion.
-        m2_tolerance=1e-12,
-        event_tolerance=2e-8,
-        max_iterations=60,
-        max_closure=1e-7,
-    )
-    q, f = critical.sample.point, critical.sample.floquet
     lo, hi = sorted((float(row["left_m2"]), float(row["right_m2"])))
-    m2 = float(q.masses[1])
-    if not (lo - 2e-9 <= m2 <= hi + 2e-9):
-        raise RuntimeError(f"cell {cell_id} localized outside source bracket: {m2} not in [{lo},{hi}]")
-    if q.residual_norm > 1e-7 or abs(critical.event_value) > 2e-8:
-        raise RuntimeError(
-            f"cell {cell_id} missed gates: closure={q.residual_norm:.3e} event={critical.event_value:.3e}"
-        )
-    return {
+    base = {
         "cell_id": cell_id,
         "orientation": orientation(row),
         "published_labels": [row["left_label"], row["right_label"]],
-        "event_mode": mode,
         "source_m2_bracket": [lo, hi],
+        "source_event_endpoint_values": values,
+    }
+    if len(modes) != 1:
+        return {
+            **base,
+            "status": "lost_unique_event",
+            "event_mode": None,
+            "error": f"modes={modes}",
+        }
+    mode = modes[0]
+    stable = left_point if row["left_label"] == "S" else right_point
+    unstable = left_point if row["left_label"] == "U" else right_point
+    try:
+        critical = localize_critical_point(
+            stable,
+            unstable,
+            event_mode=mode,
+            # The scientific gate is the event residual below, not bracket width.
+            # A 2e-9 width stop was coarse enough to return residuals above 2e-8
+            # (for example cells 0 and 1 in run 31887432802), so refine the mass
+            # bracket further instead of weakening the event acceptance criterion.
+            m2_tolerance=1e-12,
+            event_tolerance=2e-8,
+            max_iterations=60,
+            max_closure=1e-7,
+        )
+    except Exception as exc:
+        return {
+            **base,
+            "status": "localize_failed",
+            "event_mode": mode,
+            "error": f"{type(exc).__name__}: {exc}",
+        }
+    q, f = critical.sample.point, critical.sample.floquet
+    m2 = float(q.masses[1])
+    status = classify_localized_cell(
+        closure=float(q.residual_norm),
+        event=float(critical.event_value),
+        m2=m2,
+        lo=lo,
+        hi=hi,
+    )
+    return {
+        **base,
+        "status": status,
+        "event_mode": mode,
         "source_event_endpoint_values": values[mode],
         "masses": [float(x) for x in q.masses],
         "x1": float(q.x1),
@@ -126,24 +147,56 @@ def main() -> None:
         raise RuntimeError("no transition brackets supplied")
 
     selected = [(i, row) for i, row in enumerate(rows) if i % args.chunks == args.chunk_index]
-    roots = []
+    attempts = []
     for ordinal, (cell_id, row) in enumerate(selected, start=1):
         print(f"chunk={args.chunk_index}/{args.chunks} root={ordinal}/{len(selected)} cell={cell_id}")
-        roots.append(solve_cell(cell_id, row))
+        attempts.append(solve_cell(cell_id, row))
 
+    roots = [item for item in attempts if item.get("status") == "ok"]
+    missed = [item for item in attempts if item.get("status") != "ok"]
     payload = {
         "claim_status": "float64 structural localization of every assigned unique-event S/U cell; independent headline verification remains separate",
         "chunk_index": args.chunk_index,
         "chunks": args.chunks,
         "total_input_cells": len(rows),
+        "attempted_cells": len(attempts),
         "localized_cells": len(roots),
-        "max_closure": max((x["closure"] for x in roots), default=0.0),
-        "max_abs_event": max((abs(x["event"]) for x in roots), default=0.0),
+        "missed_cells": len(missed),
+        "missed_status_counts": {
+            status: sum(1 for item in missed if item.get("status") == status)
+            for status in sorted({str(item.get("status")) for item in missed})
+        },
+        "max_closure": max((float(x["closure"]) for x in roots), default=0.0),
+        "max_abs_event": max((abs(float(x["event"])) for x in roots), default=0.0),
+        "attempts": attempts,
         "roots": roots,
     }
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)
     Path(args.output).write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({k: payload[k] for k in ("chunk_index", "localized_cells", "max_closure", "max_abs_event")}, indent=2))
+    print(
+        json.dumps(
+            {
+                k: payload[k]
+                for k in (
+                    "chunk_index",
+                    "attempted_cells",
+                    "localized_cells",
+                    "missed_cells",
+                    "missed_status_counts",
+                    "max_closure",
+                    "max_abs_event",
+                )
+            },
+            indent=2,
+        )
+    )
+    if missed:
+        first = missed[0]
+        raise SystemExit(
+            f"{len(missed)} cell(s) missed gates; first cell={first.get('cell_id')} "
+            f"status={first.get('status')} event={first.get('event')} "
+            f"closure={first.get('closure')} error={first.get('error')}"
+        )
 
 
 if __name__ == "__main__":

@@ -253,6 +253,7 @@ def main() -> None:
     parser.add_argument("brackets_tsv")
     parser.add_argument("output")
     parser.add_argument("--seed-m1", type=float, default=0.996)
+    parser.add_argument("--orientation-m1", type=float, default=0.997)
     parser.add_argument("--m1-step", type=float, default=2e-5)
     parser.add_argument("--descent-steps", type=int, default=20)
     parser.add_argument("--arclength-steps", type=int, default=40)
@@ -264,19 +265,27 @@ def main() -> None:
 
     with Path(args.brackets_tsv).open(encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle, delimiter="\t"))
-    seed_rows: list[tuple[str, dict[str, str], LocalizedCriticalPoint]] = []
-    for row in rows:
-        if abs(float(row["m1"]) - args.seed_m1) > 5e-10:
-            continue
-        left, right = evaluate(family_point(row, "left")), evaluate(family_point(row, "right"))
-        va, vb = event_value(left.floquet, MODE), event_value(right.floquet, MODE)
-        if va == 0.0 or vb == 0.0 or va * vb < 0.0:
-            seed_rows.append((orientation(row), row, localize_minus(row)))
+
+    def minus_roots_at(target_m1: float) -> list[tuple[str, dict[str, str], LocalizedCriticalPoint]]:
+        found: list[tuple[str, dict[str, str], LocalizedCriticalPoint]] = []
+        for row in rows:
+            if abs(float(row["m1"]) - target_m1) > 5e-10:
+                continue
+            left, right = evaluate(family_point(row, "left")), evaluate(family_point(row, "right"))
+            va, vb = event_value(left.floquet, MODE), event_value(right.floquet, MODE)
+            if va == 0.0 or vb == 0.0 or va * vb < 0.0:
+                found.append((orientation(row), row, localize_minus(row)))
+        found.sort(key=lambda item: item[2].sample.point.masses[1])
+        return found
+
+    seed_rows = minus_roots_at(args.seed_m1)
+    orientation_rows = minus_roots_at(args.orientation_m1)
     if len(seed_rows) < 2:
         raise RuntimeError(f"expected two secondary minus-one roots at m1={args.seed_m1}, found {len(seed_rows)}")
-    seed_rows.sort(key=lambda item: item[2].sample.point.masses[1])
     lower_seed = seed_rows[0][2]
     upper_seed = seed_rows[-1][2]
+    lower_orient = orientation_rows[0][2] if len(orientation_rows) >= 2 else None
+    upper_orient = orientation_rows[-1][2] if len(orientation_rows) >= 2 else None
 
     lower_branch, lower_reason = descend_branch(
         lower_seed,
@@ -290,52 +299,73 @@ def main() -> None:
         max_steps=args.descent_steps,
         max_m2_jump=args.max_m2_jump,
     )
-    if len(lower_branch) < 3 or len(upper_branch) < 3:
-        raise RuntimeError(
-            f"insufficient fixed-m1 approach to fold: lower={len(lower_branch)} upper={len(upper_branch)}"
-        )
+    if len(lower_branch) < 2 and lower_orient is not None:
+        lower_branch = [lower_orient, lower_seed]
+        lower_reason = "used orientation-m1 seed because fixed-m1 descent was short"
+    if len(upper_branch) < 2 and upper_orient is not None:
+        upper_branch = [upper_orient, upper_seed]
+        upper_reason = "used orientation-m1 seed because fixed-m1 descent was short"
 
     # Start each hybrid trace from the last two branch points so its orientation
-    # is explicitly toward the suspected fold.  Pseudo-arclength is then free to
-    # reverse m1 and emerge on the opposite side.
-    lower_trace, lower_diag = trace_hybrid_critical(
-        lower_branch[-2],
-        lower_branch[-1],
-        steps=args.arclength_steps,
-        normalized_step=args.arclength_step,
-    )
-    upper_trace, upper_diag = trace_hybrid_critical(
-        upper_branch[-2],
-        upper_branch[-1],
-        steps=args.arclength_steps,
-        normalized_step=args.arclength_step,
-    )
-    lower_serialized = serialize_trace(lower_trace, lower_diag)
-    upper_serialized = serialize_trace(upper_trace, upper_diag)
-
-    lower_to_upper = closest_gap(list(lower_trace.points), upper_branch)
-    upper_to_lower = closest_gap(list(upper_trace.points), lower_branch)
-    lower_fold = any(x["generic_fold_screen"] for x in lower_serialized["fold_pairs"])
-    upper_fold = any(x["generic_fold_screen"] for x in upper_serialized["fold_pairs"])
-    reconnect = bool(
-        (
-            lower_to_upper["mass_gap"] is not None
-            and lower_to_upper["mass_gap"] <= args.reconnect_mass_gap
-            and lower_to_upper["normalized_chart_gap"] <= args.reconnect_chart_gap
+    # is explicitly toward the suspected fold.  If descent failed, the published
+    # 0.997 -> 0.996 pair points decreasing m1 into the birth neighborhood.
+    trace_error = None
+    lower_serialized: dict[str, Any] = {"points": [], "stopped_reason": "not_started", "fold_pairs": []}
+    upper_serialized: dict[str, Any] = {"points": [], "stopped_reason": "not_started", "fold_pairs": []}
+    lower_to_upper = {"mass_gap": None, "normalized_chart_gap": None}
+    upper_to_lower = {"mass_gap": None, "normalized_chart_gap": None}
+    lower_fold = False
+    upper_fold = False
+    reconnect = False
+    if len(lower_branch) < 2 or len(upper_branch) < 2:
+        trace_error = (
+            f"insufficient points to start hybrid traces: lower={len(lower_branch)} "
+            f"upper={len(upper_branch)} lower_reason={lower_reason} upper_reason={upper_reason}"
         )
-        or (
-            upper_to_lower["mass_gap"] is not None
-            and upper_to_lower["mass_gap"] <= args.reconnect_mass_gap
-            and upper_to_lower["normalized_chart_gap"] <= args.reconnect_chart_gap
-        )
-    )
-    passed = bool((lower_fold or upper_fold) and reconnect)
+    else:
+        try:
+            lower_trace, lower_diag = trace_hybrid_critical(
+                lower_branch[-2],
+                lower_branch[-1],
+                steps=args.arclength_steps,
+                normalized_step=args.arclength_step,
+            )
+            upper_trace, upper_diag = trace_hybrid_critical(
+                upper_branch[-2],
+                upper_branch[-1],
+                steps=args.arclength_steps,
+                normalized_step=args.arclength_step,
+            )
+            lower_serialized = serialize_trace(lower_trace, lower_diag)
+            upper_serialized = serialize_trace(upper_trace, upper_diag)
+            lower_to_upper = closest_gap(list(lower_trace.points), upper_branch)
+            upper_to_lower = closest_gap(list(upper_trace.points), lower_branch)
+            lower_fold = any(x["generic_fold_screen"] for x in lower_serialized["fold_pairs"])
+            upper_fold = any(x["generic_fold_screen"] for x in upper_serialized["fold_pairs"])
+            reconnect = bool(
+                (
+                    lower_to_upper["mass_gap"] is not None
+                    and lower_to_upper["mass_gap"] <= args.reconnect_mass_gap
+                    and lower_to_upper["normalized_chart_gap"] <= args.reconnect_chart_gap
+                )
+                or (
+                    upper_to_lower["mass_gap"] is not None
+                    and upper_to_lower["mass_gap"] <= args.reconnect_mass_gap
+                    and upper_to_lower["normalized_chart_gap"] <= args.reconnect_chart_gap
+                )
+            )
+        except Exception as exc:
+            trace_error = f"{type(exc).__name__}: {exc}"
+    passed = bool(trace_error is None and (lower_fold or upper_fold) and reconnect)
 
     output = {
         "claim_status": "event-specific float64/JAX-derivative geometry screen; independent BigFloat fold/nondegeneracy verification required",
         "event_mode": MODE,
         "seed_m1": args.seed_m1,
+        "orientation_m1": args.orientation_m1,
         "seed_orientations": [x[0] for x in seed_rows],
+        "orientation_seed_count": len(orientation_rows),
+        "trace_error": trace_error,
         "localized_seeds": [record(lower_seed), record(upper_seed)],
         "fixed_m1_descent": {
             "m1_step": args.m1_step,
