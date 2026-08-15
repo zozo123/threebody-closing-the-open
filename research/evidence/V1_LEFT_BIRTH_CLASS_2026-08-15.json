@@ -1,0 +1,13 @@
+{
+  "id": "secondary_left_birth",
+  "kind": "endpoint",
+  "class": "two_separate_arcs",
+  "passed": true,
+  "status": "classified_from_geometry_screen",
+  "estimator": "float64_geometry_screen",
+  "note": "Two G- roots exist at the birth slice and the fold/reconnection screen failed; fold hypothesis falsified at this resolution.",
+  "source_claim_status": "event-specific float64/JAX-derivative geometry screen; independent BigFloat fold/nondegeneracy verification required",
+  "generic_m1_fold_screen": false,
+  "opposite_branch_reconnection_screen": false,
+  "trace_error": null
+}

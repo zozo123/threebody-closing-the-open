@@ -265,6 +265,13 @@ def test_assembler_groups_cells_into_polylines_not_one_edge_per_cell(tmp_path) -
     assert graph["release_ready"] is False
 
 
+def test_frozen_left_birth_class_is_an_allowed_xor() -> None:
+    payload = json.loads((ROOT / "research/evidence/V1_LEFT_BIRTH_CLASS_2026-08-15.json").read_text())
+    assert payload["class"] in {"projection_fold", "two_separate_arcs", "mixed_organizer", "domain_boundary"}
+    assert payload["passed"] is True
+    assert "newton" not in payload["class"]
+
+
 def test_daughter_is_deferred_and_not_a_v1_blocker(tmp_path) -> None:
     daughter = tmp_path / "daughter.json"
     daughter.write_text(json.dumps({"class": "no_branch_attachment", "passed": True}))
