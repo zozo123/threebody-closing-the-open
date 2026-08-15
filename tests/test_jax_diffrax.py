@@ -6,9 +6,11 @@ import pytest
 jax = pytest.importorskip("jax")
 pytest.importorskip("diffrax")
 
-from threebody_atlas.jax_diffrax import chart_state_jax, reduced_rhs_jax, rhs_jacobian
-from threebody_atlas.liao_family import state_from_chart
-from threebody_atlas.reduced import full_to_reduced, reduced_jacobian, reduced_rhs
+# These imports intentionally follow importorskip: the accelerated package imports
+# JAX/Diffrax, so optional-dependency absence must skip the module before import.
+from threebody_atlas.jax_diffrax import chart_state_jax, reduced_rhs_jax, rhs_jacobian  # noqa: E402
+from threebody_atlas.liao_family import state_from_chart  # noqa: E402
+from threebody_atlas.reduced import full_to_reduced, reduced_jacobian, reduced_rhs  # noqa: E402
 
 
 @pytest.fixture(autouse=True)
