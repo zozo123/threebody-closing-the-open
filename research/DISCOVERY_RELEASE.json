@@ -11,7 +11,7 @@
     "baseline": "Li, Li & Liao (2021), arXiv:2007.10184 / Science China Physics, Mechanics & Astronomy 64, 219511. The published 135,445-orbit catalog and its 13,315 stable labels are baseline facts, not ATLAS discoveries."
   },
   "decision": {
-    "summary": "The stated v1 open problem is not solved. Post-audit evidence strongly constrains the geometry: the 620 coarse S/U cells form four mechanism-labeled tracks; rank-refinement found no surviving <1e-6 shooting singularity; a generic-chart adversarial bridge passed; ten lower +1 daughter candidates were found; and a secondary -1 fold candidate exists. Release is withheld because independent BigFloat critical-point truth, the exact organizer/critical graph, the hardest connectivity edges, daughter-branch topology, and final canonical/release closure remain unresolved.",
+    "summary": "The stated v1 open problem is not solved. Post-audit and new independent-float64 screening evidence now constrain the geometry much more tightly: the 620 coarse S/U cells form four mechanism-labeled tracks; all three coarse +1/-1 switches have corrected mixed spectral-vertex candidates with closure around 1e-11 and (alpha,beta) within about 1e-8 of (4,4); the secondary lobe separately shows a 0-to-2 -1 root-birth pattern consistent with an event-curve fold; rank-refinement found no surviving <1e-6 shooting singularity; a generic-chart adversarial bridge passed; and ten lower +1 daughter candidates exist. Release is withheld because Julia BigFloat/canonical organizer truth, exact event-arc connections, the hardest connectivity edges, daughter-branch topology, and final release closure remain unresolved.",
     "solved_at": null
   },
   "gates": [
@@ -20,14 +20,14 @@
       "title": "Independent critical-point truth",
       "status": "pending",
       "criterion": "Every headline Floquet mechanism must be independently localized and canonically verified at arbitrary precision with convergence and uncertainty evidence.",
-      "evidence": ["result-ledger", "physical-sp4-artifact", "closure-status"]
+      "evidence": ["result-ledger", "physical-sp4-artifact", "mixed-vertex-screening-file", "closure-status"]
     },
     {
       "id": "B",
       "title": "Exact Floquet organizer/network geometry",
       "status": "pending",
       "criterion": "The full declared critical object must be a connected mechanism graph whose edges and organizers have explained geometry, uncertainty, and physical Floquet evidence.",
-      "evidence": ["result-ledger", "v1-closure", "global-event-network-artifact", "mixed-vertex-search-artifact", "secondary-minus-fold-artifact", "closure-status"]
+      "evidence": ["result-ledger", "v1-closure", "global-event-network-artifact", "mixed-vertex-search-artifact", "mixed-vertex-screening-file", "secondary-minus-fold-artifact", "secondary-fold-topology-screen", "closure-status"]
     },
     {
       "id": "C",
@@ -54,6 +54,14 @@
       "limitations": ["This is coarse-grid screening topology, not the final exact connected critical graph."]
     },
     {
+      "id": "three-mixed-organizers",
+      "status": "candidate",
+      "statement": "All three coarse +1/-1 mechanism switches have corrected float64 candidates at the exact universal mixed spectral vertex (alpha,beta)=(4,4): principal-lower-left near (m1,m2)=(0.9292392041,0.8853664936), secondary-lower near (0.9967681989,0.9560193632), and principal-lower-right near (1.0495531760,1.1294757892).",
+      "method": "Independent float64 reimplementation of the 8D relative dynamics and analytic variational equations, fixed-mass shooting elimination, and two-dimensional mass Newton solve of G+=0 and G-=0 seeded only from retained junction localizations.",
+      "evidence": ["global-event-network-artifact", "mixed-vertex-screening-file", "closure-status"],
+      "limitations": ["The three organizers are screening candidates until independently reproduced by Julia BigFloat, connected to their event arcs by continuation, and classified canonically/nondegenerately."]
+    },
+    {
       "id": "family-connectivity-strengthening",
       "status": "candidate",
       "statement": "The strongest tested projected-invariant ambiguity is continuation-connected in both the Li shooting chart and an independent generic translation-reduced strict-periodic chart, while the 28 lowest first-stage shooting-rank candidates all move above the fixed 1e-6 suspicion ratio after tight correction.",
@@ -64,10 +72,10 @@
     {
       "id": "secondary-minus-one-fold",
       "status": "candidate",
-      "statement": "The birth of the secondary stable lobe is consistent with a generic quadratic fold of the -1 event curve near masses (0.9957049987, 0.9742436529, 1), rather than necessarily a mixed +1/-1 spectral vertex.",
-      "method": "Float64 solve of P(-2)=0 and dP(-2)/dm2=0 with finite-derivative transversality/curvature checks.",
-      "evidence": ["secondary-minus-fold-artifact", "global-event-network-artifact", "mixed-vertex-search-artifact", "closure-status"],
-      "limitations": ["The fold candidate has not been independently reproduced at BigFloat precision and a later high-level rerun missed its fixed float64 gate."]
+      "statement": "The birth of the secondary stable lobe is consistent with a -1 event-curve fold near m1 about 0.9957 and m2 about 0.9743, while a distinct mixed -1/+1 organizer occurs later on the secondary lower boundary near (0.9967682,0.9560194).",
+      "method": "Earlier float64 fold solve plus an independent corrected-orbit root-count topology screen: below the fold neighborhood sampled G- values remain negative, while above it the sign pattern becomes negative/positive/negative, producing two root brackets.",
+      "evidence": ["secondary-minus-fold-artifact", "secondary-fold-topology-screen", "mixed-vertex-screening-file", "global-event-network-artifact", "closure-status"],
+      "limitations": ["Finite-difference curvature estimates at the old fold coordinates are numerically sensitive; event-specific pseudo-arclength geometry and independent BigFloat verification are required before a fold release claim."]
     },
     {
       "id": "lower-plus-one-daughter",
@@ -75,21 +83,23 @@
       "statement": "The lower +1 event admits ten distinct same-period generic periodic-orbit daughter candidates across the tested signed transverse amplitudes.",
       "method": "Amplitude-constrained generic branch-switch solves using physical transverse Floquet directions with same-mass Li-parent comparison.",
       "evidence": ["lower-plus-one-branch-artifact", "closure-status"],
-      "limitations": ["These are float64 screening candidates; a daughter family is not established until branch continuation and independent reproduction succeed."]
+      "limitations": ["These are float64 screening candidates; a daughter family is not established until branch continuation and independent reproduction succeed. True generic pseudo-arclength daughter continuation is implemented but has not yet produced a three-body artifact because Actions runners are not starting."]
     }
   ],
   "blockers": [
     "Complete independent Julia BigFloat reproduction of the lower +1 and upper trace-collision critical representatives, then evaluate the corrected points canonically with convergence and uncertainty records.",
-    "Resolve the three coarse mechanism-junction neighborhoods by event-specific continuation; test the secondary -1 fold hypothesis and the two principal-lower +1/-1 junctions without assuming mixed vertices.",
+    "Independently reproduce all three frozen mixed (+1,-1) organizer candidates with the split Julia BigFloat verifier and connect the +1/-1 event arcs through each organizer with event-specific pseudo-arclength continuation.",
+    "Independently verify the secondary -1 root-birth fold using event-specific continuation geometry and BigFloat evidence rather than relying on the numerically sensitive nested finite-difference curvature estimate.",
     "Certify the twenty globally worst MST links with adaptive continuation and attack every survivor with the generic chart/path diversity; the known hard edge (0.839,0.721,1)<->(0.838,0.721,1) is unresolved.",
-    "Continue at least one lower +1 daughter candidate into a branch and independently reproduce enough of it to determine whether it reconnects to the catalog sheet or forms a distinct branch.",
+    "Execute at least one lower +1 generic daughter pseudo-arclength continuation and independently reproduce enough of it to determine whether it reconnects to the catalog sheet or forms a distinct branch.",
     "Trace and freeze the exact connected critical graph with mechanism labels, organizer/end-point classifications, uncertainties, and physical canonical evidence.",
     "Restore GitHub Actions runner availability: current main-branch scientific/CI jobs are not starting because the account reports a payment/spending-limit block.",
     "Freeze the final evidence manifest, regenerate the manuscript from release claims, run adversarial hidden-component searches, and rerun the literature novelty audit immediately before any solved release."
   ],
   "known_limitations": [
     "Current critical-event and connectivity evidence is incomplete and therefore cannot support the solved claim.",
-    "The split BigFloat verifier and adaptive connectivity matrix are on main but their latest runs contain no scientific result because GitHub Actions did not allocate runners under the account billing/spending block.",
+    "The three mixed organizer candidates and secondary fold root-birth screen are float64 screening evidence; they are deliberately withheld from release_claim status until independent arbitrary-precision and canonical gates pass.",
+    "The split BigFloat verifiers, adaptive connectivity matrix, junction continuation matrix, daughter continuation matrix, and ordinary CI currently contain no new scientific result because GitHub Actions did not allocate runners under the account billing/spending block.",
     "The v1 stability scope is planar linear Floquet stability only; it does not imply spatial or nonlinear/KAM stability.",
     "Negative literature searches are not proofs of novelty; the novelty audit is a release-time search firewall."
   ],
@@ -111,14 +121,16 @@
     {"id":"solve-loop","kind":"repository_file","role":"method","path":"research/SOLVE_LOOP.md","description":"Closed-loop falsification workflow from question freeze through publishable success."},
     {"id":"result-ledger","kind":"repository_file","role":"result_ledger","path":"research/RESULT_LEDGER.md","description":"Claim firewall recording verified, structural, screening, candidate, and invalidated findings plus the current publication threshold."},
     {"id":"v1-closure","kind":"repository_file","role":"closure_contract","path":"research/V1_CLOSURE.md","description":"Gate A-D execution contract and explicit v1 stop rule."},
-    {"id":"closure-status","kind":"repository_file","role":"closure_status","path":"research/CLOSURE_STATUS_2026-08-15.md","description":"Post-audit checkpoint recording completed evidence, negative results, the hard MST edge, the Julia timeout, and the current Actions compute block."},
+    {"id":"closure-status","kind":"repository_file","role":"closure_status","path":"research/CLOSURE_STATUS_2026-08-15.md","description":"Current checkpoint including the three mixed organizer screening candidates, secondary fold root-birth topology, hard MST edge, independent-verification blockers, and current Actions compute block."},
     {"id":"novelty-audit","kind":"repository_file","role":"novelty_audit","path":"research/NOVELTY_AUDIT.md","description":"Working novelty and family-identity audit, to be refreshed immediately before release."},
+    {"id":"mixed-vertex-screening-file","kind":"repository_file","role":"critical_graph","path":"experiments/mixed_vertex_screening_2026-08-15.json","description":"Independent float64 screening reimplementation yielding corrected mixed (+1,-1) spectral-vertex candidates for all three coarse mechanism switches."},
+    {"id":"secondary-fold-topology-screen","kind":"repository_file","role":"critical_graph","path":"experiments/secondary_minus_fold_topology_screen_2026-08-15.json","description":"Independent float64 corrected-orbit sign-topology screen showing a local zero-to-two -1 root birth across the secondary-lobe fold neighborhood."},
     {"id":"family-bridge-artifact","kind":"actions_artifact","role":"family_connectivity","run_id":31873131455,"artifact_id":9244246378,"sha256":"279895e090b44cb692a6da6f1a749433ae18635289dc291a52daadbd9bc5c5fe","description":"Frozen bidirectional continuation evidence for a deliberately adversarial far-mass, invariant-near-duplicate pair."},
     {"id":"generic-bridge-artifact","kind":"actions_artifact","role":"family_connectivity","run_id":31874677257,"artifact_id":9244686938,"sha256":"d2b76fa7e0a73791a662a54202f7e50202b7ade6c67e4d21f2816dde328748dd","description":"Independent generic translation-reduced strict-periodic repetition of the adversarial invariant bridge; passed in both directions."},
     {"id":"refined-rank-artifact","kind":"actions_artifact","role":"adversarial_search","run_id":31875617952,"artifact_id":9244717474,"sha256":"14bd77f18fd80df85b5bcbc4b1625ace361d8a287b8f553fbaf565c5ced0d238","description":"Tight correction and shooting-Jacobian rerank of the 28 lowest-rank first-stage candidates; zero remained below the 1e-6 suspicion threshold."},
     {"id":"hard-connectivity-partial-artifact","kind":"actions_artifact","role":"adversarial_search","run_id":31875780737,"artifact_id":9245082356,"sha256":"5d5c8ac13699fed6d121679e5d715ee7eedc5a53ad823f75a58088dc3db58707","description":"Partial strengthened MST connectivity run: five balanced cuts and two worst global links passed before the third global edge failed a reverse six-substep Li-chart continuation."},
     {"id":"global-event-network-artifact","kind":"actions_artifact","role":"critical_graph","run_id":31875491684,"artifact_id":9245087230,"sha256":"c1921c9334d5282a112f3b73c8264baa181cd2456ddd7ad374225b54741da163","description":"Frozen global coarse Floquet event-network census across all 620 published S/U transition cells."},
-    {"id":"mixed-vertex-search-artifact","kind":"actions_artifact","role":"adversarial_search","run_id":31874535671,"artifact_id":9244764587,"sha256":"9f6baa53cf6af758d13e6e185774add4566df4041fb1eb0acb668aa3018abcd8","description":"Direct six-variable mixed +1/-1 organizer search; ten closest seeds attempted and no (alpha,beta)=(4,4) vertex was accepted."},
+    {"id":"mixed-vertex-search-artifact","kind":"actions_artifact","role":"adversarial_search","run_id":31874535671,"artifact_id":9244764587,"sha256":"9f6baa53cf6af758d13e6e185774add4566df4041fb1eb0acb668aa3018abcd8","description":"Earlier direct six-variable mixed +1/-1 organizer search; ten closest seeds attempted and no (alpha,beta)=(4,4) vertex was accepted. Superseded as a discovery search by the later mass-eliminated screening candidates, but retained as negative solver evidence."},
     {"id":"secondary-minus-fold-artifact","kind":"actions_artifact","role":"critical_graph","run_id":31871994666,"artifact_id":9243922339,"sha256":"f3a9a4721bffabfa0fa8c1bdc55cffe39f3353d4e43c270429dbcb12e5733718","description":"Float64 candidate for a generic quadratic -1 event-curve fold at the secondary-lobe birth."},
     {"id":"lower-plus-one-branch-artifact","kind":"actions_artifact","role":"critical_graph","run_id":31875194461,"artifact_id":9244851399,"sha256":"5fad07b3a7f08f1d2dcef5850b3665cb5a7eec3e40a77e59fd4952416fedf5bb","description":"Ten distinct float64 generic daughter candidates from the lower +1 physical transverse directions."},
     {"id":"physical-sp4-artifact","kind":"actions_artifact","role":"independent_verification","run_id":31875065636,"artifact_id":9244514392,"sha256":"83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7","description":"Frozen physical transverse Sp(4) quotient and symplectic diagnostic evidence."},
