@@ -1,0 +1,56 @@
+name: Global mixed Floquet vertex search
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "scripts/locate_global_mixed_vertices.py"
+      - ".github/workflows/global-mixed-vertex-search.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -e .
+      - name: Fetch frozen Li-Li-Liao baseline
+        run: |
+          mkdir -p data/raw artifacts
+          curl -L --fail --retry 3 \
+            https://raw.githubusercontent.com/sjtu-liao/three-body/main/non-hierarchical-3b-supplementary_data.txt \
+            -o data/raw/non-hierarchical-3b-supplementary_data.txt
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          raw=Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
+          got=hashlib.sha1(f"blob {len(raw)}\0".encode()+raw).hexdigest()
+          expected='79b2963df43e62201c35690bfc22bec166132427'
+          if got != expected:
+              raise SystemExit(f'baseline source changed: {got}')
+          print('source_git_blob=',got,'sha256=',hashlib.sha256(raw).hexdigest())
+          PY
+      - name: Extract all published transition brackets
+        run: |
+          python scripts/extract_mass_slice_brackets.py \
+            data/raw/non-hierarchical-3b-supplementary_data.txt \
+            artifacts/published-transition-brackets.tsv
+      - name: Coarse-scan and solve exact alpha=4 beta=4 preimages
+        run: |
+          python scripts/locate_global_mixed_vertices.py \
+            artifacts/published-transition-brackets.tsv \
+            artifacts/global-mixed-vertices.json \
+            --stride 8
+      - uses: actions/upload-artifact@v4
+        with:
+          name: global-mixed-vertices-${{ github.sha }}
+          path: artifacts/global-mixed-vertices.json
+          if-no-files-found: error
+          retention-days: 90
