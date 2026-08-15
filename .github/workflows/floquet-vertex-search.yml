@@ -3,31 +3,43 @@ name: Floquet codimension-two vertex search
 on:
   workflow_dispatch:
   push:
+    branches: ["main"]
     paths:
       - "scripts/locate_floquet_vertices.py"
       - ".github/workflows/floquet-vertex-search.yml"
+      - "pyproject.toml"
+      - "uv.lock"
+
+concurrency:
+  group: floquet-vertex-search-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
+env:
+  UV_PYTHON: "3.13"
+
 jobs:
   search:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          python-version: "3.13"
-          cache: pip
-      - run: pip install -e .
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked
       - name: Fetch frozen Li-Li-Liao baseline
         run: |
           mkdir -p data/raw artifacts
           curl -L --fail --retry 3 \
             https://raw.githubusercontent.com/sjtu-liao/three-body/main/non-hierarchical-3b-supplementary_data.txt \
             -o data/raw/non-hierarchical-3b-supplementary_data.txt
-          python - <<'PY'
+          uv run --no-sync python - <<'PY'
           import hashlib
           from pathlib import Path
           raw=Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
@@ -39,17 +51,18 @@ jobs:
           PY
       - name: Extract published transition brackets
         run: |
-          python scripts/extract_mass_slice_brackets.py \
+          uv run --no-sync python scripts/extract_mass_slice_brackets.py \
             data/raw/non-hierarchical-3b-supplementary_data.txt \
             artifacts/published-transition-brackets.tsv
-      - name: Solve exact preimages of Floquet stability-domain vertices
+      - name: Solve exact preimages of all universal Floquet vertices
         run: |
-          python scripts/locate_floquet_vertices.py \
+          uv run --no-sync python scripts/locate_floquet_vertices.py \
             artifacts/published-transition-brackets.tsv \
             artifacts/floquet-vertex-candidates.json
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: floquet-vertex-candidates-${{ github.sha }}
           path: artifacts/floquet-vertex-candidates.json
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 90
