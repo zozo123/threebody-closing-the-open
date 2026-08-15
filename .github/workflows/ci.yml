@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: pip install -e '.[dev]'
+      - run: python --version
+      - run: ruff check src tests --output-format github
+      - run: pytest
+
+  science-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -e .
+      - run: threebody-atlas smoke --floquet --output artifacts/figure-eight.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: figure-eight-screening-${{ github.sha }}
+          path: artifacts/figure-eight.json
+          if-no-files-found: error
+          retention-days: 30
+
+  jax-x64-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -e '.[accelerated]'
+      - name: Require JAX x64 when acceleration is used
+        run: |
+          JAX_ENABLE_X64=1 python - <<'PY'
+          import jax
+          import jax.numpy as jnp
+          assert jax.config.x64_enabled
+          x = jnp.asarray([1.0, 2.0], dtype=jnp.float64)
+          assert x.dtype == jnp.float64
+          print("jax", jax.__version__, "backend", jax.default_backend(), "x64", jax.config.x64_enabled)
+          PY

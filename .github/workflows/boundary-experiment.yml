@@ -1,0 +1,62 @@
+name: Boundary experiment
+
+on:
+  push:
+    branches: ["agent/research-platform-v1"]
+    paths:
+      - ".github/workflows/boundary-experiment.yml"
+      - "src/threebody_atlas/liao_family.py"
+      - "src/threebody_atlas/boundary.py"
+      - "src/threebody_atlas/reduced.py"
+      - "scripts/refine_known_boundaries.py"
+  workflow_dispatch:
+    inputs:
+      tolerance:
+        description: "m2 bracket width for float64 screening"
+        required: true
+        default: "2e-7"
+
+permissions:
+  contents: read
+
+jobs:
+  refine-m1-08:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e .
+      - name: Fetch and verify published baseline
+        run: |
+          mkdir -p data/raw artifacts
+          curl -L --fail --retry 3 \
+            https://raw.githubusercontent.com/sjtu-liao/three-body/main/non-hierarchical-3b-supplementary_data.txt \
+            -o data/raw/non-hierarchical-3b-supplementary_data.txt
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          raw = Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
+          got = hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
+          expected = '79b2963df43e62201c35690bfc22bec166132427'
+          if got != expected:
+              raise SystemExit(f'baseline source changed: {got}')
+          print('source_git_blob=', got, 'sha256=', hashlib.sha256(raw).hexdigest())
+          PY
+      - name: Refine both published stability brackets
+        env:
+          TOL: ${{ inputs.tolerance || '5e-7' }}
+        run: |
+          python scripts/refine_known_boundaries.py \
+            data/raw/non-hierarchical-3b-supplementary_data.txt \
+            --tolerance "$TOL" \
+            --output artifacts/m1-0.8-boundaries.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m1-0.8-boundary-screening-${{ github.sha }}
+          path: artifacts/m1-0.8-boundaries.json
+          if-no-files-found: error
+          retention-days: 90

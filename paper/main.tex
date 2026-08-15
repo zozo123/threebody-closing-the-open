@@ -1,0 +1,52 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,graphicx,hyperref}
+\title{Toward a Reproducible Computational Atlas of Stable Periodic-Orbit Families in the Unequal-Mass Planar Three-Body Problem}
+\author{Yossi Eliaz et al.}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We develop a reproducible computational pipeline for continuation, topological classification and Floquet verification of periodic-orbit families in the planar Newtonian general three-body problem. The first validation target is the unequal-mass, non-hierarchical family reported by Li, Li and Liao. This manuscript is intentionally claim-gated: numerical discoveries are inserted only from frozen verification manifests produced by the accompanying software.
+\end{abstract}
+
+\section{Research objective}
+The objective is to map connected families rather than accumulate isolated periodic initial conditions. We treat mass ratios, energy/scale and angular momentum as continuation coordinates; attach linear stability through monodromy/Floquet data; attach symbolic topology through syzygy and free-group/braid invariants; and represent bifurcations as verified relations between continuation branches.
+
+\section{Published baseline}
+Li, Li and Liao reported one family containing 135,445 non-hierarchical unequal-mass periodic orbits, including 13,315 linearly stable examples \cite{li2021stable}. Their public supplementary data provide the baseline against which the ATLAS pipeline is validated. The numbers in this paragraph are literature facts and are not presented as independent ATLAS reproductions.
+
+\section{Equations and numerical formulation}
+For planar positions $\mathbf r_i\in\mathbb R^2$ and masses $m_i>0$ with $G=1$,
+\begin{equation}
+\ddot{\mathbf r}_i = \sum_{j\ne i}m_j\frac{\mathbf r_j-\mathbf r_i}{\lVert\mathbf r_j-\mathbf r_i\rVert^3}.
+\end{equation}
+A periodic candidate satisfies $\mathbf x(T)-\mathbf x(0)=0$. Screening uses adaptive DOP853 in IEEE binary64. Scientific verification re-integrates candidates independently using arbitrary-precision arithmetic and precision/step refinement.
+
+\section{Variational stability}
+The fundamental matrix $\Phi$ obeys
+\begin{equation}
+\dot\Phi(t)=D f(\mathbf x(t))\Phi(t),\qquad \Phi(0)=I,
+\end{equation}
+and the monodromy matrix is $M=\Phi(T)$. Floquet multipliers are the eigenvalues of $M$. We report numerical pairing, trivial-mode and symplectic-consistency diagnostics together with the spectrum. Near critical crossings, classifications remain numerically ambiguous until resolved by precision escalation.
+
+\section{Family continuation and topology}
+Family identity is defined by connected numerical continuation, not by topology alone. Free-group words are stored raw, freely reduced, cyclically reduced and canonicalized under cyclic conjugacy; time reversal, inverse words and body permutations are retained as explicit transformations rather than silently quotiented.
+
+\section{Reproduction study}
+\IfFileExists{generated/reproduction.tex}{\input{generated/reproduction.tex}}{No frozen reproduction results have yet been inserted.}
+
+\section{New continuation results}
+\IfFileExists{generated/discoveries.tex}{\input{generated/discoveries.tex}}{No new scientific claims have yet passed the release gate.}
+
+\section{Discussion}
+The publishable contribution of ATLAS is a traceable chain from candidate generation through independent numerical verification to family-level structure and bifurcation evidence. Machine learning is used to prioritize expensive verification, not to replace it.
+
+\section{Reproducibility}
+Every released figure and table is generated from a frozen manifest containing source-data hashes, code revision, arithmetic precision, solver configuration and per-orbit verification status. Screening artifacts are never used as discovery evidence.
+
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}

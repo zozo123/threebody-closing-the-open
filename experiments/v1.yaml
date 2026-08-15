@@ -1,0 +1,39 @@
+experiment_id: atlas-v1
+baseline:
+  paper: arXiv:2007.10184
+  source_repository: https://github.com/sjtu-liao/three-body
+  supplementary_file: non-hierarchical-3b-supplementary_data.txt
+  reported_orbits: 135445
+  reported_stable: 13315
+
+screening:
+  integrator: DOP853
+  rtol: 1.0e-11
+  atol: 1.0e-13
+  closure_reject: 1.0e-7
+
+verification:
+  decimal_dps: 80
+  rk4_steps: 8192
+  max_closure_norm: 1.0e-25
+  max_step_convergence_norm: 1.0e-25
+  require_variational_rerun: true
+  require_independent_rerun_for_release_claim: true
+
+continuation:
+  primary_parameters: [m1, m2]
+  normalization: "G=1; center of mass fixed; release must state mass/energy scaling convention"
+  initial_step: 1.0e-4
+  min_step: 1.0e-8
+  max_step: 5.0e-3
+  target_regions:
+    - name: published-stable-window
+      m1: [0.87, 0.93]
+      m2: [0.80, 0.89]
+      m3: 1.0
+
+publication:
+  claim_policy: verified-only
+  freeze_inputs: true
+  generate_tables_from_manifest: true
+  generate_figures_from_manifest: true

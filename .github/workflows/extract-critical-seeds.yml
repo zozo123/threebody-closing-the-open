@@ -1,0 +1,60 @@
+name: Extract critical-curve seeds
+
+on:
+  workflow_dispatch:
+    inputs:
+      stride:
+        description: "Keep every Nth m1 slice"
+        required: true
+        default: "1"
+  push:
+    branches: ["agent/research-platform-v1"]
+    paths:
+      - "scripts/extract_mass_slice_brackets.py"
+      - "src/threebody_atlas/baseline.py"
+      - ".github/workflows/extract-critical-seeds.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -e .
+      - name: Fetch and hash frozen baseline
+        run: |
+          mkdir -p data/raw artifacts
+          curl -L --fail --retry 3 \
+            https://raw.githubusercontent.com/sjtu-liao/three-body/main/non-hierarchical-3b-supplementary_data.txt \
+            -o data/raw/non-hierarchical-3b-supplementary_data.txt
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          raw = Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
+          got = hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
+          expected = '79b2963df43e62201c35690bfc22bec166132427'
+          if got != expected:
+              raise SystemExit(f'baseline source changed: {got}')
+          print('source_git_blob=', got)
+          PY
+      - name: Extract all published S/U brackets by m1 slice
+        env:
+          STRIDE: ${{ inputs.stride || '1' }}
+        run: |
+          python scripts/extract_mass_slice_brackets.py \
+            data/raw/non-hierarchical-3b-supplementary_data.txt \
+            artifacts/published-transition-brackets.tsv \
+            --stride "$STRIDE"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: critical-seeds-${{ github.sha }}
+          path: artifacts/published-transition-brackets.tsv
+          if-no-files-found: error
+          retention-days: 90
