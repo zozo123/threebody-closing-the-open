@@ -79,14 +79,14 @@ jobs:
           cp paper/generated/discovery-release.tex \
             "${stage}/paper/generated/discovery-release.tex"
 
-          cat > "${stage}/BUNDLE_CONTENTS.md" <<EOF
+          cat > "${stage}/BUNDLE_CONTENTS.md" <<'EOF'
           # Three-Body Orbit Atlas paper release bundle
 
           This archive is a self-contained snapshot for the manuscript release.
 
           It contains:
           - the compiled manuscript at `paper/main.pdf`;
-          - the complete tracked repository snapshot at commit `${GITHUB_SHA}`;
+          - the complete tracked repository snapshot (exact commit in `RELEASE_PROVENANCE.txt`);
           - the LaTeX source and bibliography under `paper/`;
           - the generated discovery-release status injected into the PDF build;
           - the frozen scientific protocol and release records under `research/`;
