@@ -11,8 +11,18 @@ on:
         description: "Vern9 tolerance exponent"
         required: true
         default: "35"
-  push:
+  pull_request:
     paths:
+      - "julia/Project.toml"
+      - "julia/Manifest.toml"
+      - "julia/canonical_jacobi.jl"
+      - "julia/verify_canonical_rows.jl"
+      - ".github/workflows/canonical-verifier.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - "julia/Project.toml"
+      - "julia/Manifest.toml"
       - "julia/canonical_jacobi.jl"
       - "julia/verify_canonical_rows.jl"
       - ".github/workflows/canonical-verifier.yml"
@@ -25,13 +35,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: julia-actions/setup-julia@v2
         with:
-          version: "1.11"
+          version: "1.11.9"
       - uses: julia-actions/cache@v2
-      - name: Install independent canonical solver stack
-        run: julia -e 'using Pkg; Pkg.add(["SciMLBase","OrdinaryDiffEqVerner","GenericSchur"]); Pkg.precompile()'
+      - name: Instantiate locked canonical solver stack
+        run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
       - name: Fetch frozen Li-Li-Liao baseline
         run: |
           mkdir -p data/raw artifacts
@@ -53,7 +63,7 @@ jobs:
           DPS: ${{ inputs.dps || '50' }}
           TOL_EXP: ${{ inputs.tol_exp || '25' }}
         run: |
-          julia julia/verify_canonical_rows.jl \
+          julia --project=julia julia/verify_canonical_rows.jl \
             data/raw/non-hierarchical-3b-supplementary_data.txt \
             artifacts/canonical-bigfloat.json \
             "$DPS" "$TOL_EXP" 7 11 12
