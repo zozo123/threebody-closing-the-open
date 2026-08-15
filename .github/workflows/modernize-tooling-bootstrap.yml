@@ -1,0 +1,249 @@
+name: Modernize tooling bootstrap
+
+on:
+  push:
+    branches: ["agent/modernize-python-julia-tooling"]
+
+permissions:
+  contents: write
+
+jobs:
+  modernize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Install current uv action
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - name: Apply tooling modernization
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          root = Path('.')
+
+          pyproject = root / 'pyproject.toml'
+          text = pyproject.read_text()
+          text = text.replace(
+              '[build-system]\nrequires = ["setuptools>=75", "wheel"]\nbuild-backend = "setuptools.build_meta"\n',
+              '[build-system]\nrequires = ["uv_build>=0.11.32,<0.13"]\nbuild-backend = "uv_build"\n',
+          )
+          if 'readme = "README.md"' not in text:
+              text = text.replace(
+                  'description = "Reproducible computation of periodic-orbit families in the planar Newtonian three-body problem"\n',
+                  'description = "Reproducible computation of periodic-orbit families in the planar Newtonian three-body problem"\nreadme = "README.md"\n',
+              )
+          text = text.replace('dev = ["pytest>=8.3,<9", "ruff>=0.8,<1"]\n', '')
+          if '[dependency-groups]' not in text:
+              text = text.replace(
+                  '[project.scripts]\n',
+                  '[dependency-groups]\ndev = ["pytest>=8.3,<9", "ruff>=0.8,<1"]\n\n[project.scripts]\n',
+              )
+          text = text.replace('[tool.setuptools.packages.find]\nwhere = ["src"]\n\n', '')
+          text = text.replace('[tool.ruff]\nline-length = 100\n', '[tool.ruff]\nline-length = 100\ntarget-version = "py313"\n')
+          text = re.sub(
+              r'\[tool\.uv\]\nrequired-version = "[^"]+"(?:\ndefault-groups = \[[^\n]*\])?',
+              '[tool.uv]\nrequired-version = ">=0.12.5,<0.13"\ndefault-groups = []',
+              text,
+          )
+          pyproject.write_text(text)
+
+          for path in (root / '.github' / 'workflows').glob('*.yml'):
+              if path.name == 'modernize-tooling-bootstrap.yml':
+                  continue
+              wf = path.read_text()
+              wf = wf.replace(
+                  'astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0',
+                  'astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1',
+              )
+              wf = wf.replace('version: "0.11.32"', 'version: "0.12.5"')
+              wf = wf.replace(
+                  'julia-actions/setup-julia@v2',
+                  'julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2',
+              )
+              wf = wf.replace(
+                  'julia-actions/cache@v2',
+                  'julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8 # v3.3.0',
+              )
+              wf = wf.replace('--extra dev', '--group dev')
+              path.write_text(wf)
+
+          release = root / '.github' / 'workflows' / 'release.yml'
+          text = release.read_text()
+          old = (
+              '      - uses: actions/checkout@v5\n'
+              '        with:\n'
+              '          fetch-depth: 0\n'
+              '      - uses: actions/setup-python@v6\n'
+              '        with:\n'
+              '          python-version: "3.12"\n'
+              '          cache: pip\n'
+              '      - run: python -m pip install --upgrade pip\n'
+              "      - run: pip install -e '.[dev]' build\n"
+              '      - run: ruff check src tests\n'
+              '      - run: pytest\n'
+              '      - name: Build Python distributions\n'
+              '        run: python -m build\n'
+          )
+          new = (
+              '      - uses: actions/checkout@v7\n'
+              '        with:\n'
+              '          fetch-depth: 0\n'
+              '      - name: Install uv\n'
+              '        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1\n'
+              '        with:\n'
+              '          version: "0.12.5"\n'
+              '          enable-cache: true\n'
+              '      - run: uv python install 3.13\n'
+              '      - run: uv sync --locked --group dev\n'
+              '      - run: uv run --no-sync ruff check src tests --output-format github\n'
+              '      - run: uv run --no-sync pytest\n'
+              '      - name: Build Python distributions\n'
+              '        run: uv build --no-sources\n'
+          )
+          if old not in text:
+              raise SystemExit('release.yml setup block no longer matches expected main')
+          release.write_text(text.replace(old, new))
+
+          discovery = root / '.github' / 'workflows' / 'discovery-release.yml'
+          text = discovery.read_text()
+          old = (
+              '      - uses: actions/checkout@v5\n'
+              '        with:\n'
+              '          fetch-depth: 0\n'
+              '      - uses: actions/setup-python@v6\n'
+              '        with:\n'
+              '          python-version: "3.13"\n'
+              '          cache: pip\n'
+              '      - run: python -m pip install --upgrade pip\n'
+              "      - run: pip install -e '.[dev]' build\n"
+              '      - name: Lint\n'
+              '        run: ruff check src tests scripts/build_discovery_release.py\n'
+              '      - name: Test\n'
+              '        run: pytest\n'
+          )
+          new = (
+              '      - uses: actions/checkout@v7\n'
+              '        with:\n'
+              '          fetch-depth: 0\n'
+              '      - name: Install uv\n'
+              '        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1\n'
+              '        with:\n'
+              '          version: "0.12.5"\n'
+              '          enable-cache: true\n'
+              '      - run: uv python install 3.13\n'
+              '      - run: uv sync --locked --group dev\n'
+              '      - name: Lint\n'
+              '        run: uv run --no-sync ruff check src tests scripts/build_discovery_release.py --output-format github\n'
+              '      - name: Test\n'
+              '        run: uv run --no-sync pytest\n'
+          )
+          if old not in text:
+              raise SystemExit('discovery-release.yml setup block no longer matches expected main')
+          text = text.replace(old, new)
+          text = text.replace(
+              'run: python scripts/build_discovery_release.py --validate-only',
+              'run: uv run --no-sync python scripts/build_discovery_release.py --validate-only',
+          )
+          text = text.replace(
+              '          python scripts/build_discovery_release.py\n',
+              '          uv run --no-sync python scripts/build_discovery_release.py\n',
+          )
+          text = text.replace('run: python -m build', 'run: uv build --no-sources')
+          discovery.write_text(text)
+
+          ci = root / '.github' / 'workflows' / 'ci.yml'
+          text = ci.read_text()
+          marker = '      - run: uv run --no-sync pytest\n'
+          if 'uv build --no-sources' not in text:
+              if marker not in text:
+                  raise SystemExit('ci.yml pytest marker not found')
+              text = text.replace(marker, marker + '      - run: uv build --no-sources\n', 1)
+          ci.write_text(text)
+
+          readme = root / 'README.md'
+          text = readme.read_text()
+          install = (
+              '## Install\n\n'
+              'The supported Python runtime is **CPython 3.13**. The Python environment, lockfile, development tools, and package build are managed with `uv`.\n\n'
+              '```bash\n'
+              'uv python install 3.13\n'
+              'uv sync --locked --group dev\n'
+              'uv run --no-sync pytest\n'
+              'uv run --no-sync ruff check src tests\n'
+              '```\n\n'
+              'Development-only tools (`pytest`, `ruff`) live in the standardized `dev` dependency group instead of a published package extra. Runtime features remain opt-in extras:\n\n'
+              '```bash\n'
+              'uv sync --locked --group dev --extra ml\n'
+              'uv sync --locked --group dev --extra accelerated\n'
+              '```\n\n'
+          )
+          text, count = re.subn(
+              r'## Install\n.*?(?=## Deterministic numerical smoke test\n)',
+              install,
+              text,
+              flags=re.S,
+          )
+          if count != 1:
+              raise SystemExit(f'expected one README install section, replaced {count}')
+          text = text.replace(
+              '- **CI**: Python 3.11–3.13 tests plus a deterministic Floquet smoke artifact.',
+              '- **CI**: uv-locked Python 3.13 tests plus a deterministic Floquet smoke artifact.',
+          )
+          readme.write_text(text)
+
+          dependabot = root / '.github' / 'dependabot.yml'
+          if dependabot.exists():
+              raise SystemExit('.github/dependabot.yml already exists; merge it manually')
+          dependabot.write_text(
+              'version: 2\n'
+              'updates:\n'
+              '  - package-ecosystem: "uv"\n'
+              '    directory: "/"\n'
+              '    schedule:\n'
+              '      interval: "weekly"\n'
+              '    open-pull-requests-limit: 5\n\n'
+              '  - package-ecosystem: "github-actions"\n'
+              '    directory: "/"\n'
+              '    schedule:\n'
+              '      interval: "weekly"\n'
+              '    open-pull-requests-limit: 5\n'
+          )
+          PY
+      - name: Refresh locked Python environment
+        run: |
+          uv python install 3.13
+          uv lock
+          uv sync --locked --group dev
+      - name: Validate Python quality gates
+        run: |
+          uv run --no-sync ruff check src tests --output-format github
+          uv run --no-sync pytest
+          uv build --no-sources
+      - name: Validate tooling migration
+        shell: bash
+        run: |
+          ! grep -R 'version: "0.11.32"' .github/workflows
+          ! grep -R 'julia-actions/setup-julia@v2' .github/workflows
+          ! grep -R 'julia-actions/cache@v2' .github/workflows
+          ! grep -R -- '--extra dev' .github/workflows README.md
+          ! grep -R -F ".[dev]" .github/workflows README.md
+          git diff --check
+      - name: Commit modernization
+        shell: bash
+        run: |
+          rm .github/workflows/modernize-tooling-bootstrap.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git status --short
+          git commit -m "Modernize Python and Julia tooling"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
