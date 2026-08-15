@@ -1,0 +1,58 @@
+{
+  "claim_status": "screening_supported",
+  "scope": "Independent float64 screening reimplementation of the 8D relative dynamics and variational monodromy; not publication truth and not a substitute for Julia BigFloat/canonical verification.",
+  "method": {
+    "description": "Starting from the six retained junction localizations in the frozen global event-network artifact, independently reimplemented the COM-relative 8D Newtonian equations and analytic variational Jacobian, eliminated the four fixed-mass shooting variables with the monodromy shooting Jacobian, and applied a two-dimensional Newton solve in (m1,m2) to G+=0 and G-=0.",
+    "event_equations": {
+      "plus_one": "beta - 6 alpha + 20",
+      "minus_one": "beta - 2 alpha + 4"
+    },
+    "screening_integrator": "SciPy DOP853 float64, final evaluations at rtol=2e-11, atol=2e-13",
+    "acceptance_interpretation": "The values below establish high-quality screening seeds for the independent BigFloat verifier. They do not by themselves establish a release-claim organizer."
+  },
+  "candidates": [
+    {
+      "name": "principal_lower_left",
+      "masses": [0.92923920414952399, 0.88536649364999043, 1.0],
+      "x1": -0.25840154406448984,
+      "v1": 1.5993305739818411,
+      "v2": 0.43086976212161177,
+      "period": 6.6633141762370593,
+      "closure_norm": 2.192929200962762e-11,
+      "alpha": 4.0000000062292056,
+      "beta": 4.000000013328596,
+      "plus_one_event": -2.4046638458230518e-08,
+      "minus_one_event": 8.701848130954204e-10,
+      "spectral_vertex_error": 1.471239184532093e-08
+    },
+    {
+      "name": "secondary_lower_switch",
+      "masses": [0.99676819892880308, 0.95601936321225311, 1.0],
+      "x1": -0.35188599058231013,
+      "v1": 1.2638233957546643,
+      "v2": 0.46298464539392375,
+      "period": 7.4255309518410115,
+      "closure_norm": 1.2478280610697091e-11,
+      "alpha": 4.0000000005636283,
+      "beta": 4.0000000017197053,
+      "plus_one_event": -1.6620660403532383e-09,
+      "minus_one_event": 5.9244875671993213e-10,
+      "spectral_vertex_error": 1.8097135175635862e-09
+    },
+    {
+      "name": "principal_lower_right",
+      "masses": [1.0495531760259145, 1.1294757891873943, 1.0],
+      "x1": -0.43962638665809844,
+      "v1": 1.0742734036297952,
+      "v2": 0.4417965155868453,
+      "period": 7.9892188152162174,
+      "closure_norm": 1.3712860518714078e-11,
+      "alpha": 4.0000000055834377,
+      "beta": 4.0000000068175865,
+      "plus_one_event": -2.6683039777708473e-08,
+      "minus_one_event": -4.349288929006434e-09,
+      "spectral_vertex_error": 8.81216558555549e-09
+    }
+  ],
+  "conclusion": "All three coarse +1/-1 mechanism switches now have high-quality mixed spectral-vertex screening candidates. Independent Julia BigFloat reproduction and canonical physical/Jordan/nondegeneracy classification are still mandatory before promotion."
+}
