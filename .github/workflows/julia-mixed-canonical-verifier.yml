@@ -1,0 +1,87 @@
+name: Julia mixed organizer canonical verifier
+
+on:
+  workflow_dispatch:
+    inputs:
+      dps:
+        description: "BigFloat decimal precision"
+        required: true
+        default: "60"
+      tol_exp:
+        description: "Vern9 tolerance exponent"
+        required: true
+        default: "28"
+      closure_exp:
+        description: "Required relative shooting closure exponent"
+        required: true
+        default: "18"
+      event_exp:
+        description: "Required mixed-event norm exponent"
+        required: true
+        default: "12"
+  pull_request:
+    paths:
+      - "julia/verify_mixed_vertices.jl"
+      - "julia/canonical_jacobi.jl"
+      - "julia/physical_quotient_bigfloat.jl"
+      - "julia/verify_mixed_vertices_canonical.jl"
+      - "experiments/mixed_vertex_principal_lower_left.tsv"
+      - "experiments/mixed_vertex_secondary_lower_switch.tsv"
+      - "experiments/mixed_vertex_principal_lower_right.tsv"
+      - ".github/workflows/julia-mixed-canonical-verifier.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - "julia/physical_quotient_bigfloat.jl"
+      - "julia/verify_mixed_vertices_canonical.jl"
+      - ".github/workflows/julia-mixed-canonical-verifier.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: principal-lower-left
+            seed_file: experiments/mixed_vertex_principal_lower_left.tsv
+            output_file: artifacts/mixed-canonical-principal-lower-left.json
+          - label: secondary-lower-switch
+            seed_file: experiments/mixed_vertex_secondary_lower_switch.tsv
+            output_file: artifacts/mixed-canonical-secondary-lower-switch.json
+          - label: principal-lower-right
+            seed_file: experiments/mixed_vertex_principal_lower_right.tsv
+            output_file: artifacts/mixed-canonical-principal-lower-right.json
+    steps:
+      - uses: actions/checkout@v7
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.11.9"
+      - uses: julia-actions/cache@v2
+      - name: Instantiate locked independent solver stack
+        run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+      - name: Parse canonical organizer verifier
+        run: julia --project=julia -e 'Meta.parseall(read("julia/verify_mixed_vertices_canonical.jl", String)); Meta.parseall(read("julia/physical_quotient_bigfloat.jl", String)); println("canonical mixed verifier syntax OK")'
+      - name: Solve and canonically classify ${{ matrix.label }}
+        env:
+          DPS: ${{ inputs.dps || '60' }}
+          TOL_EXP: ${{ inputs.tol_exp || '28' }}
+          CLOSURE_EXP: ${{ inputs.closure_exp || '18' }}
+          EVENT_EXP: ${{ inputs.event_exp || '12' }}
+        run: |
+          mkdir -p artifacts
+          julia --project=julia julia/verify_mixed_vertices_canonical.jl \
+            "${{ matrix.seed_file }}" \
+            "${{ matrix.output_file }}" \
+            "$DPS" "$TOL_EXP" "$CLOSURE_EXP" "$EVENT_EXP"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mixed-canonical-${{ matrix.label }}-${{ github.sha }}
+          path: ${{ matrix.output_file }}
+          if-no-files-found: warn
+          retention-days: 90
