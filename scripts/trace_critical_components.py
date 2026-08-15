@@ -10,6 +10,7 @@ from threebody_atlas.critical_manifold import (
     localize_critical_point,
     trace_augmented_critical,
 )
+from threebody_atlas.hybrid_critical import trace_hybrid_critical
 from threebody_atlas.liao_family import FamilyPoint
 
 
@@ -58,9 +59,9 @@ def serialize_localized(point) -> dict:
     }
 
 
-def serialize_point(point) -> dict:
+def serialize_point(point, diagnostic=None) -> dict:
     p, f = point.sample.point, point.sample.floquet
-    return {
+    out = {
         "masses": p.masses,
         "x1": p.x1,
         "v1": p.v1,
@@ -79,6 +80,11 @@ def serialize_point(point) -> dict:
         "normalized_step": point.normalized_step,
         "nfev": point.nfev,
     }
+    if diagnostic is not None:
+        out["jacobian_null_residual"] = diagnostic.null_residual
+        out["jacobian_spectral_gap"] = diagnostic.spectral_gap
+        out["jacobian_singular_values"] = diagnostic.singular_values
+    return out
 
 
 def main() -> None:
@@ -87,6 +93,12 @@ def main() -> None:
     parser.add_argument("output")
     parser.add_argument("--steps", type=int, default=4)
     parser.add_argument("--arclength-step", type=float, default=4e-3)
+    parser.add_argument(
+        "--derivatives",
+        choices=("finite-difference", "jax-hybrid"),
+        default="finite-difference",
+        help="Residual values are always SciPy; jax-hybrid changes only Jacobians/predictor tangents.",
+    )
     args = parser.parse_args()
 
     payload = json.loads(Path(args.refined_json).read_text(encoding="utf-8"))
@@ -104,24 +116,40 @@ def main() -> None:
 
         first = localize_record(records[0])
         second = localize_record(records[1], event_mode=first.event_mode)
-        trace = trace_augmented_critical(
-            first,
-            second,
-            steps=args.steps,
-            normalized_step=args.arclength_step,
-        )
+        diagnostics = ()
+        if args.derivatives == "jax-hybrid":
+            trace, diagnostics = trace_hybrid_critical(
+                first,
+                second,
+                steps=args.steps,
+                normalized_step=args.arclength_step,
+            )
+        else:
+            trace = trace_augmented_critical(
+                first,
+                second,
+                steps=args.steps,
+                normalized_step=args.arclength_step,
+            )
+
         components[orientation] = {
             "event_mode": first.event_mode,
+            "derivative_backend": args.derivatives,
+            "residual_backend": "SciPy DOP853 + analytic variational equations",
             "seed_m1": [records[0]["m1"], records[1]["m1"]],
             "localized_seeds": [serialize_localized(first), serialize_localized(second)],
-            "points": [serialize_point(p) for p in trace.points],
+            "points": [
+                serialize_point(point, diagnostics[i] if i < len(diagnostics) else None)
+                for i, point in enumerate(trace.points)
+            ],
             "stopped_reason": trace.stopped_reason,
         }
 
     out = {
         "claim_status": (
             "screening-only augmented pseudo-arclength critical curves; "
-            "independent BigFloat and canonical mechanism verification required"
+            "SciPy residual values remain authoritative; independent BigFloat and "
+            "canonical mechanism verification required"
         ),
         "components": components,
     }
@@ -132,6 +160,7 @@ def main() -> None:
             {
                 k: {
                     "event_mode": v["event_mode"],
+                    "derivative_backend": v["derivative_backend"],
                     "points": len(v["points"]),
                     "stopped_reason": v["stopped_reason"],
                 }
