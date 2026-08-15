@@ -1,0 +1,22 @@
+name: Closure checkpoint preflight
+
+on:
+  pull_request:
+    paths:
+      - "research/CLOSURE_STATUS_2026-08-15.md"
+      - "research/README_CLOSURE_POINTER.md"
+      - ".github/workflows/closure-status-preflight.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Require checkpoint and claim firewall
+        run: |
+          test -f research/CLOSURE_STATUS_2026-08-15.md
+          test -f research/RESULT_LEDGER.md
