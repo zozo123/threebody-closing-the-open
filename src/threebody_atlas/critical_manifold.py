@@ -224,9 +224,25 @@ def localize_critical_point(
         max_closure=max_closure,
         m2_bounds=(lo0, hi0),
     )
-    if abs(polished.event_value) <= abs(event_value(final.floquet, mode)):
-        return LocalizedCriticalPoint(polished.sample, mode, float(polished.event_value), float(width))
-    return LocalizedCriticalPoint(final, mode, float(event_value(final.floquet, mode)), float(width))
+    chosen = polished.sample if abs(polished.event_value) <= abs(event_value(final.floquet, mode)) else final
+    # One tight Floquet re-evaluation so a 5e-8 screening residual can still
+    # fall under the 2e-8 gate without paying that cost on every Illinois step.
+    tight = _precise_evaluate(chosen.point if hasattr(chosen, "point") else chosen)
+    tight_v = event_value(tight.floquet, mode)
+    if abs(tight_v) <= event_tolerance:
+        return LocalizedCriticalPoint(tight, mode, float(tight_v), float(width))
+    refined = _polish_event_root(
+        tight,
+        mode,
+        event_tolerance=event_tolerance,
+        max_closure=max_closure,
+        max_steps=2,
+        m2_bounds=(lo0, hi0),
+        precise=True,
+    )
+    if abs(refined.event_value) <= abs(tight_v):
+        return LocalizedCriticalPoint(refined.sample, mode, float(refined.event_value), float(width))
+    return LocalizedCriticalPoint(tight, mode, float(tight_v), float(width))
 
 
 def _precise_evaluate(point: FamilyPoint) -> BoundarySample:
@@ -249,8 +265,10 @@ def _polish_event_root(
     max_closure: float,
     max_steps: int = 4,
     m2_bounds: tuple[float, float] | None = None,
+    precise: bool = False,
 ) -> LocalizedCriticalPoint:
     """In-bracket 1-D Newton. Never leave the published cell."""
+    ev = _precise_evaluate if precise else evaluate
     current = sample
     value = event_value(current.floquet, mode)
     if abs(value) <= event_tolerance:
@@ -267,7 +285,7 @@ def _polish_event_root(
         )
         if not probe.success or probe.residual_norm > max_closure:
             break
-        probed = evaluate(probe)
+        probed = ev(probe)
         slope = (event_value(probed.floquet, mode) - value) / step
         if slope == 0.0 or not np.isfinite(slope):
             break
@@ -281,7 +299,7 @@ def _polish_event_root(
         )
         if not corrected.success or corrected.residual_norm > max_closure:
             break
-        trial = evaluate(corrected)
+        trial = ev(corrected)
         trial_v = event_value(trial.floquet, mode)
         if abs(trial_v) >= abs(value):
             break
