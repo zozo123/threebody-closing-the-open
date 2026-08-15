@@ -1,0 +1,38 @@
+{
+  "claim_status": "screening_supported",
+  "edge": {
+    "global_mst_rank": 3,
+    "left_masses": [0.839, 0.721, 1.0],
+    "right_masses": [0.838, 0.721, 1.0],
+    "previous_failure": {
+      "direction": "reverse",
+      "substeps": 6,
+      "theta": 0.3333333333333333,
+      "shooting_residual": 7.609e-05,
+      "fixed_max_residual_gate": 2e-07
+    }
+  },
+  "method": {
+    "description": "Independent float64 reimplementation of the 8D COM-relative Newtonian dynamics and analytic variational equations. Both catalog endpoints were independently shooting-corrected, then the edge was walked with 12 equal mass substeps in each direction using a secant chart predictor and analytic monodromy shooting corrector.",
+    "integrator": "SciPy DOP853 float64",
+    "rtol": 3e-10,
+    "atol": 3e-12,
+    "fixed_max_residual_gate": 2e-07,
+    "fixed_terminal_normalized_chart_match_gate": 2e-05,
+    "chart_scales": [0.0005339833645880143, 0.0027768518080319993, 0.0005850818648139855, 0.007368419204159871]
+  },
+  "forward": {
+    "substeps": 12,
+    "max_shooting_residual": 2.224e-08,
+    "terminal_normalized_chart_mismatch": 1.3810306627921938e-09,
+    "passed": true
+  },
+  "reverse": {
+    "substeps": 12,
+    "max_shooting_residual": 4.69844763e-08,
+    "theta_one_third_residual": 1.83048098e-09,
+    "terminal_normalized_chart_mismatch": 4.374732284021892e-10,
+    "passed": true
+  },
+  "conclusion": "The previously failing global-rank-3 MST edge is continuation-connected in both directions at 12 substeps without relaxing either scientific acceptance threshold. The earlier six-substep failure is therefore consistent with branch-basin/chart-conditioning sensitivity rather than evidence of a moduli-space disconnection. Gate C remains pending until the rest of the globally worst-edge matrix and required generic/path-diverse fallbacks close."
+}
