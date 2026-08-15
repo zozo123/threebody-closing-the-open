@@ -76,7 +76,7 @@ def test_trace_generic_branch_accepts_multiple_steps(monkeypatch):
     assert trace.stopped_reason == "requested_steps_completed"
     assert all(
         a.masses[1] < b.masses[1]
-        for a, b in zip(trace.points, trace.points[1:], strict=True)
+        for a, b in zip(trace.points, trace.points[1:], strict=False)
     )
 
 
