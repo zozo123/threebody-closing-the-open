@@ -1,0 +1,71 @@
+name: Lower plus-one generic branch probe
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "src/threebody_atlas/branch_switch.py"
+      - "src/threebody_atlas/generic_periodic.py"
+      - "src/threebody_atlas/physical_floquet.py"
+      - "scripts/probe_lower_plus_one_daughters.py"
+      - "tests/test_branch_switch.py"
+      - ".github/workflows/lower-plus-one-branch-probe.yml"
+      - "uv.lock"
+  push:
+    branches: ["main"]
+    paths:
+      - "src/threebody_atlas/branch_switch.py"
+      - "src/threebody_atlas/generic_periodic.py"
+      - "src/threebody_atlas/physical_floquet.py"
+      - "scripts/probe_lower_plus_one_daughters.py"
+      - "tests/test_branch_switch.py"
+      - ".github/workflows/lower-plus-one-branch-probe.yml"
+      - "uv.lock"
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON: "3.13"
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: |
+          python -m py_compile src/threebody_atlas/branch_switch.py
+          python -m py_compile scripts/probe_lower_plus_one_daughters.py
+
+  probe:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.32"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked
+      - name: Probe signed physical plus-one directions
+        run: |
+          mkdir -p artifacts
+          uv run --no-sync python scripts/probe_lower_plus_one_daughters.py \
+            experiments/critical_curve_representatives.tsv \
+            artifacts/lower-plus-one-branch-probe.json \
+            --amplitudes 0.0005,0.0015,0.004 \
+            --m2-halfwidth 0.004
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lower-plus-one-branch-probe-${{ github.sha }}
+          path: artifacts/lower-plus-one-branch-probe.json
+          if-no-files-found: warn
+          retention-days: 90
