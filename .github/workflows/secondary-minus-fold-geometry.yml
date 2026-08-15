@@ -1,0 +1,107 @@
+name: Secondary minus-one fold geometry
+
+on:
+  workflow_dispatch:
+    inputs:
+      m1_step:
+        description: "Fixed-m1 approach step before pseudo-arclength turn"
+        required: true
+        default: "0.00002"
+      descent_steps:
+        description: "Maximum fixed-m1 approach steps on each branch"
+        required: true
+        default: "20"
+      arclength_steps:
+        description: "Hybrid pseudo-arclength steps launched from each side"
+        required: true
+        default: "40"
+  push:
+    branches: ["main"]
+    paths:
+      - "scripts/trace_secondary_minus_fold_geometry.py"
+      - "src/threebody_atlas/critical_manifold.py"
+      - "src/threebody_atlas/critical_geometry.py"
+      - "src/threebody_atlas/hybrid_critical.py"
+      - "src/threebody_atlas/jax_diffrax.py"
+      - ".github/workflows/secondary-minus-fold-geometry.yml"
+      - "uv.lock"
+  pull_request:
+    paths:
+      - "scripts/trace_secondary_minus_fold_geometry.py"
+      - ".github/workflows/secondary-minus-fold-geometry.yml"
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON: "3.13"
+  JAX_ENABLE_X64: "true"
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: python -m py_compile scripts/trace_secondary_minus_fold_geometry.py
+
+  trace-fold:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked --extra accelerated
+      - name: Fetch frozen Li-Li-Liao baseline
+        run: |
+          mkdir -p data/raw artifacts
+          curl -L --fail --retry 3 \
+            https://raw.githubusercontent.com/sjtu-liao/three-body/main/non-hierarchical-3b-supplementary_data.txt \
+            -o data/raw/non-hierarchical-3b-supplementary_data.txt
+          uv run --no-sync python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          raw = Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
+          got = hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
+          expected = '79b2963df43e62201c35690bfc22bec166132427'
+          if got != expected:
+              raise SystemExit(f'baseline source changed: {got}')
+          print('source_git_blob=', got, 'sha256=', hashlib.sha256(raw).hexdigest())
+          PY
+      - name: Extract all published transition brackets
+        run: |
+          uv run --no-sync python scripts/extract_mass_slice_brackets.py \
+            data/raw/non-hierarchical-3b-supplementary_data.txt \
+            artifacts/published-transition-brackets.tsv
+      - name: Trace the secondary minus-one fold from both sides
+        env:
+          M1_STEP: ${{ inputs.m1_step || '0.00002' }}
+          DESCENT_STEPS: ${{ inputs.descent_steps || '20' }}
+          ARC_STEPS: ${{ inputs.arclength_steps || '40' }}
+        run: |
+          uv run --no-sync python scripts/trace_secondary_minus_fold_geometry.py \
+            artifacts/published-transition-brackets.tsv \
+            artifacts/secondary-minus-fold-geometry.json \
+            --m1-step "$M1_STEP" \
+            --descent-steps "$DESCENT_STEPS" \
+            --arclength-steps "$ARC_STEPS" \
+            --arclength-step 0.0005 \
+            --max-m2-jump 0.004 \
+            --reconnect-mass-gap 0.0015 \
+            --reconnect-chart-gap 0.02
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: secondary-minus-fold-geometry-${{ github.sha }}
+          path: artifacts/secondary-minus-fold-geometry.json
+          if-no-files-found: warn
+          retention-days: 90
