@@ -33,7 +33,7 @@ jobs:
         with:
           python-version: "3.13"
           cache: pip
-      - run: pip install -e .
+      - run: pip install -e '.[dev]'
       - name: Algebraic critical-event tests
         run: python -m pytest -q tests/test_critical_manifold.py
       - name: Fetch frozen baseline
