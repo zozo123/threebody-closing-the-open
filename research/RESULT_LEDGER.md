@@ -1,12 +1,12 @@
 # Research result ledger
 
-This file is the claim firewall for the current open-problem attack.  It records what the computations presently support and, equally importantly, what they do **not** support.
+This file is the claim firewall for the current open-problem attack. It records what the computations presently support and, equally importantly, what they do **not** support.
 
 Status vocabulary:
 
 - **VERIFIED-ARTIFACT**: reproduced by a frozen-data GitHub Actions workflow with explicit acceptance gates and retained artifact digest.
 - **FLOAT64-STRUCTURAL**: a frozen, gated structural calculation in the screening implementation; stronger than a heuristic but not a substitute for independent arbitrary-precision reproduction of a publication-critical event.
-- **INDEPENDENT-STRUCTURAL**: independently implemented numerical structure check (for example canonical BigFloat symplectic verification), but not yet an exact critical-point localization.
+- **INDEPENDENT-STRUCTURAL**: independently implemented numerical structure check, but not yet an exact publication-critical localization.
 - **SCREENING-SUPPORTED**: reproducible float64 evidence that determines the next experiment but is not a release claim by itself.
 - **CANDIDATE**: plausible interpretation awaiting a decisive numerical test.
 - **INVALIDATED**: a previous interpretation or computation that failed an evidence gate.
@@ -28,7 +28,7 @@ Frozen-data full-catalog audit:
 - 27,111 rows have a nearest invariant-space neighbor at least `0.05` away in mass space;
 - 86 such far-mass matches have standardized invariant distance below `1e-4`.
 
-Interpretation: the invariant plane is a many-to-one folded projection of the sampled orbit sheet.  Therefore invariant functional branches alone are not a topological certificate of disconnected dynamical families.
+Interpretation: the invariant plane is a many-to-one folded projection of the sampled orbit sheet. Therefore invariant functional branches alone are not a topological certificate of disconnected dynamical families.
 
 This does **not** by itself prove that the full catalog is one continuation-connected family.
 
@@ -36,35 +36,39 @@ This does **not** by itself prove that the full catalog is one continuation-conn
 
 **Status: SCREENING-SUPPORTED**
 
-Five minimum-spanning-tree cuts chosen to separate progressively larger fractions of the full sampled catalog were crossed by independent endpoint correction plus forward and reverse shooting continuation.  All five passed.  The hardest retained cut separates about 40% of the spanning tree and has terminal normalized chart mismatch below `1e-12` in both directions.
-
-Interpretation: no branch hysteresis was detected across the strongest tested macroscopic sampled bottlenecks.
+Five minimum-spanning-tree cuts chosen to separate progressively larger fractions of the full sampled catalog were crossed by independent endpoint correction plus forward and reverse shooting continuation. All five passed. The hardest retained cut separates about 40% of the spanning tree and has terminal normalized chart mismatch below `1e-12` in both directions.
 
 ### A deliberately pathological invariant-near-duplicate pair continues bidirectionally
 
 **Status: VERIFIED-ARTIFACT**
 
-A frozen-data adversarial bridge selected two catalog orbits that are far apart in mass space while almost coincident in the corrected invariant projection.  Direct continuation was then run independently forward and backward between them rather than inferring connectivity from the invariant plot.
+A frozen-data adversarial bridge selected two catalog orbits that are far apart in mass space while almost coincident in the corrected invariant projection. Direct continuation was then run independently forward and backward between them rather than inferring connectivity from the invariant plot.
 
-Retained workflow evidence:
+Retained evidence:
 
 - mass-space endpoint distance: `0.06171709649683785`;
-- raw endpoint invariant deltas: `7.184312256214298e-09` and `4.201694727361911e-09`;
 - 80 continuation steps in each direction;
-- maximum forward shooting residual: `2.2420019759413978e-10`;
-- maximum reverse shooting residual: `2.2450937481501935e-10`;
-- forward terminal chart mismatch: `4.4474218549777483e-13`;
-- reverse terminal chart mismatch: `5.768013173040878e-13`;
-- workflow run `31873131455`, artifact `9244246378`;
-- artifact ZIP SHA-256: `279895e090b44cb692a6da6f1a749433ae18635289dc291a52daadbd9bc5c5fe`.
+- maximum forward/reverse shooting residual about `2.25e-10`;
+- forward/reverse terminal chart mismatch below `6e-13`;
+- workflow run `31873131455`, artifact `9244246378`.
 
-Interpretation: at least one of the strongest concrete counterexamples to using the invariant plot as a family separator is explicitly joined by branch-preserving forward/reverse continuation.  This substantially weakens a naive two-family interpretation based only on the projected invariant branches, but it is still not a global connectedness proof for all 135,445 rows.
+The same deliberately pathological bridge was subsequently repeated in the generic translation-reduced strict-periodic formulation and passed in both directions.
 
-Pending family-connectivity gates:
+### Shooting-rank refinement found no surviving singularity below the fixed threshold
 
-- shooting-Jacobian rank census, including the complete `m2=m3=1` zero-angular-momentum spine;
-- path-diverse or generic-BVP repetition at the worst-conditioned continuation locations;
-- denser adversarial checks around any sampled rank-loss candidates.
+**Status: VERIFIED-ARTIFACT**
+
+The 28 lowest-rank candidates from the first shooting-Jacobian census were tightly re-corrected. The minimum corrected scaled rank ratio was `1.0803738448664921e-05`, maximum corrected closure `1.8017261738074185e-08`, and zero candidates remained below the fixed `1e-6` suspicion threshold. Workflow run `31875617952`, artifact `9244717474`.
+
+### Global worst-edge connectivity is not closed
+
+**Status: CANDIDATE / ADVERSARIAL TEST ACTIVE**
+
+Five balanced cuts and the first two globally largest MST chart jumps passed. The third globally largest edge, `(0.839,0.721,1)<->(0.838,0.721,1)`, failed the reverse six-substep Li-chart walk at residual about `7.609e-05` against the frozen `2e-7` gate.
+
+This is not evidence of physical disconnection yet. The adaptive top-20 workflow retries each edge at `6 -> 12 -> 24 -> 48` substeps without relaxing thresholds; any survivor must be attacked in the generic chart and, if required, by path diversity/loop lifting.
+
+**Family claim remains withheld until that adversarial closure completes.**
 
 ## Stability critical set
 
@@ -72,35 +76,76 @@ Pending family-connectivity gates:
 
 **Status: SCREENING-SUPPORTED**
 
-The frozen `0.001` mass grid contains 620 adjacent S/U transition brackets.  Continuity in mass space resolves four macroscopic tracks:
+The frozen `0.001` mass grid contains 620 adjacent S/U transition brackets. Continuity in mass space resolves four macroscopic tracks:
 
 1. principal `U->S`, `m1=0.800..1.071`;
 2. principal `S->U`, `m1=0.800..1.053`;
 3. secondary `U->S`, `m1=0.996..1.042`;
 4. secondary `S->U`, `m1=0.996..1.042`.
 
-This falsifies a globally adequate description of the sampled stability boundary as only two monotone edges.
+All 620 cells exhibit exactly one endpoint-sign-changing smooth reduced-Floquet event: 198 `+1`, 168 `-1`, and 254 trace collisions. The coarse network contains three cross-mechanism adjacency junctions.
 
 ### The critical set is a Floquet event network, not four single-mechanism curves
 
 **Status: SCREENING-SUPPORTED**
 
-Representative smooth-event localization shows:
+The coarse mechanism assignment is:
 
-- principal upper `S->U`: trace-root collision (`Delta=0`) at all sampled representatives;
-- secondary upper `S->U`: multiplier `-1` event at all sampled representatives;
-- secondary lower `U->S`: changes from `-1` near its left end to `+1` in its interior/right end;
-- principal lower `U->S`: changes `+1 -> -1 -> +1` across the sampled mass range.
+- principal upper `S->U`: trace-root collision (`Delta=0`);
+- secondary upper `S->U`: `-1`;
+- secondary lower `U->S`: `-1 -> +1`;
+- principal lower `U->S`: `+1 -> -1 -> +1`.
 
-The universal trace polynomial implies that a genuine mechanism switch between `+1` and `-1` arcs must pass through the exact mixed spectral vertex `(alpha,beta)=(4,4)`, unless a coarse S/U cell contains multiple distinct event zeros.  Both alternatives are now being tested directly.
+The universal trace polynomial implies that a genuine smooth `+1/-1` mechanism switch on one continuation sheet must pass through `(alpha,beta)=(4,4)`, unless the coarse association aliases multiple nearby roots.
+
+### All three coarse `+1/-1` switches have mixed spectral-vertex candidates
+
+**Status: SCREENING-SUPPORTED**
+
+An earlier direct six-variable JAX-assisted solve exhausted its evaluation budget for the ten closest seeds and accepted no mixed vertex. That negative result is retained as solver evidence; it is **not** a nonexistence result.
+
+A fresh independent float64 screening implementation then reimplemented the eight-dimensional relative dynamics, analytic variational equations, fixed-mass shooting correction, and reduced trace invariants. The four orbit variables were eliminated with the analytic shooting Jacobian and a two-dimensional mass Newton solve targeted
+
+`G+ = beta - 6 alpha + 20 = 0`,
+
+`G- = beta - 2 alpha + 4 = 0`.
+
+Starting only from the six retained coarse-junction localizations, the solver converged to:
+
+| organizer | `(m1,m2,m3)` | closure | `alpha` | `beta` | `G+` | `G-` |
+|---|---|---:|---:|---:|---:|---:|
+| principal lower left | `(0.9292392041495240, 0.8853664936499904, 1)` | `2.19e-11` | `4.0000000062292056` | `4.000000013328596` | `-2.40e-8` | `8.70e-10` |
+| secondary lower switch | `(0.9967681989288031, 0.9560193632122531, 1)` | `1.25e-11` | `4.0000000005636283` | `4.0000000017197053` | `-1.66e-9` | `5.92e-10` |
+| principal lower right | `(1.0495531760259145, 1.1294757891873943, 1)` | `1.37e-11` | `4.0000000055834377` | `4.0000000068175865` | `-2.67e-8` | `-4.35e-9` |
+
+The frozen record is `experiments/mixed_vertex_screening_2026-08-15.json`. One-row seed files are frozen for each candidate, and the independent Julia BigFloat mixed-vertex verifier is split into three matrix jobs.
+
+Interpretation: organizer **discovery** is no longer the main blocker. The remaining organizer gate is independent arbitrary-precision reproduction, event-arc connection, canonical physical/Jordan structure, and nondegeneracy classification.
+
+These points remain screening results, not release claims.
+
+### The secondary lobe is consistent with a `-1` fold followed by a distinct mixed switch
+
+**Status: SCREENING-SUPPORTED**
+
+The earlier float64 candidate placed a `-1` event-curve fold near `(m1,m2)=(0.995705,0.97424)`. Its nested finite-difference curvature values were not fully robust under reruns, so those exact derivative numbers are not treated as publication evidence.
+
+A separate independent root-count screen gives a more robust topological signature. Around the same fold neighborhood:
+
+- at `m1=0.99560498`, corrected `G-` values at `m2=0.966261,0.974261,0.982261` are all negative;
+- at `m1=0.99580498`, the signs become negative, positive, negative.
+
+Thus the local slice changes from no sampled `-1` zero to two sign-change brackets, the expected zero-to-two root birth of a fold. This is recorded in `experiments/secondary_minus_fold_topology_screen_2026-08-15.json`.
+
+This object is geometrically distinct from the newly found secondary mixed `-1/+1` candidate near `(0.9967682,0.9560194)`. The current screening model is therefore: a `-1` fold creates the secondary lobe; farther along its lower boundary, a mixed organizer changes the active mechanism from `-1` to `+1`.
+
+Event-specific pseudo-arclength geometry and independent BigFloat reproduction remain mandatory.
 
 ### A simple one-mechanism secondary critical loop
 
 **Status: INVALIDATED**
 
-A first pseudo-arclength loop attempt assumed that the visually adjacent secondary lower crossings at `m1=0.996` and `0.997` represented the same smooth event.  It failed before continuation because the first localized crossing was a `-1` event while the second bracket did not contain a `-1` zero.
-
-This failure is evidence against the simple-loop model and motivated the all-event network audit and exact Floquet-vertex search.
+A first pseudo-arclength attempt assumed that the visually adjacent secondary lower crossings at `m1=0.996` and `0.997` represented the same smooth event. It failed because the first localized crossing was `-1` while the second coarse bracket did not contain a `-1` zero. The later global event census, mixed organizer candidate, and separate fold screen explain why that one-mechanism assumption was too simple.
 
 ## Physical transverse Floquet reduction
 
@@ -112,44 +157,28 @@ In canonical translation-reduced Jacobi coordinates let
 
 `E = span{X_H, X_L}`,
 
-where `X_H` is the time/energy generator and `X_L` is the planar rotation/angular-momentum generator.  At regular points `E` is a two-dimensional isotropic subspace and the physical transverse return map acts on the four-dimensional symplectic quotient `E^omega/E`.
+where `X_H` is the time/energy generator and `X_L` is the planar rotation/angular-momentum generator. At regular points `E` is a two-dimensional isotropic subspace and the physical transverse return map acts on the four-dimensional symplectic quotient `E^omega/E`.
 
-A direct numerical quotient construction was checked on three published S/U anchors and the frozen lower-`+1` / upper-collision representatives.  An initial run at ordinary screening tolerances failed the invariant, symplectic-defect and reciprocal-pairing gates.  The gates were **not** loosened.  Repeating the same construction with tighter float64 orbit and tangent integration made every original gate pass, showing that the first discrepancy was numerical variational sensitivity rather than a contradiction in the quotient geometry.
+A direct numerical quotient construction was checked on published S/U anchors and the frozen lower-`+1` / upper-collision representatives. The acceptance gates were not loosened; tighter float64 orbit/tangent integration made the original invariant, symplectic, leakage, pairing and neutral-invariance gates pass.
 
-Tightened frozen run `31875065636`:
+Tightened frozen run `31875065636`, artifact `9244514392`:
 
-- maximum mismatch between physical quotient invariants and the neutral-factor-reduced 8D invariants: `3.977020372580853e-06`;
-- maximum full canonical monodromy symplectic defect: `7.023079489471507e-07`;
-- maximum physical quotient symplectic defect: `1.58823032635551e-07`;
-- maximum quotient leakage out of the representative of `E^omega/E`: `6.884656678085577e-09`;
-- maximum reciprocal-pairing error: `1.7566592746399308e-05` (at the upper trace-collision representative, where the spectrum is ill-conditioned);
-- maximum neutral-subspace invariance defect: `3.954324934163367e-08`;
-- neutral isotropy defect: `0.0`;
-- artifact `9244514392`;
-- artifact ZIP SHA-256: `83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7`.
+- max physical/reduced invariant mismatch `3.98e-06`;
+- max canonical monodromy symplectic defect `7.02e-07`;
+- max physical quotient symplectic defect `1.59e-07`;
+- max quotient leakage `6.88e-09`;
+- max reciprocal-pairing error `1.76e-05` near the ill-conditioned upper collision;
+- max neutral-subspace invariance defect `3.95e-08`.
 
-The physical characteristic polynomial is
+The physical event equations agree exactly with the reduced trace algebra through
 
-`lambda^4-a lambda^3+b lambda^2-a lambda+1`,
-
-with reciprocal-pair trace roots satisfying
-
-`t^2-a t+(b-2)=0`.
-
-The physical event equations are therefore
-
+- `a=alpha-4`;
+- `b=beta-4alpha+10`;
 - `+1`: `b-2a+2=0`;
 - `-1`: `b+2a+2=0`;
 - collision: `a^2-4b+8=0`.
 
-They agree with the existing 8D trace algebra through
-
-- `a=alpha-4`;
-- `b=beta-4alpha+10`.
-
-Interpretation: the project now has an explicit physical four-dimensional symplectic return map, its physical eigendirections, and a structural cross-check against the older reduced-trace representation.  This closes the conceptual loophole of identifying physical stability by simply discarding four raw neutral multipliers.
-
-This result is still float64 structural evidence.  Publication-critical event locations and Krein classifications remain gated on the independent Julia BigFloat/canonical path.
+Publication-critical event locations and Krein/Jordan classifications remain gated on the independent BigFloat/canonical path.
 
 ## Upper-boundary mechanism
 
@@ -157,34 +186,49 @@ This result is still float64 structural evidence.  Publication-critical event lo
 
 **Status: INDEPENDENT-STRUCTURAL**
 
-Independent Julia BigFloat canonical-Jacobi integration with Vern9 and GenericSchur passes hard numerical gates:
+Independent Julia BigFloat canonical-Jacobi integration with Vern9 and GenericSchur passes hard numerical gates on published stable/unstable anchors: symplectic defect is of order `1e-21` and reciprocal pairing error of order `1e-25`.
 
-- periodic closure of order `1e-12`;
-- `||M^T J M-J||_inf` of order `1e-21`;
-- Hamiltonian linearization defect exactly zero in the implemented BigFloat algebra;
-- reciprocal multiplier pairing error of order `1e-25`.
+Immediately before the coarse upper transition the two nontrivial elliptic modes have opposite Krein signs. Immediately after it the four nontrivial multipliers form a reciprocal complex quartet off the unit circle.
 
-Immediately before the coarse upper transition (published stable row 11), the two nontrivial upper-half-plane elliptic modes have opposite Krein signs.  Immediately after it (published unstable row 12), the four nontrivial multipliers form a reciprocal complex quartet off the unit circle.
+Release label is withheld until the independently corrected exact collision point is evaluated canonically at BigFloat precision.
 
-Together with the independently derived reduced `Delta=0` crossing, this is strong qualitative evidence for a Krein/Hamiltonian--Hopf mechanism across the coarse cell.
+## Lower `+1` daughter genealogy
 
-Release label is still withheld until the independently corrected exact critical point is evaluated canonically at BigFloat precision.
+### Ten distinct amplitude-constrained daughter candidates exist
 
-## High-precision boundary verification
+**Status: SCREENING-SUPPORTED**
+
+The physical lower-`+1` branch-switch probe produced ten distinct same-period generic periodic-orbit candidates across two soft physical directions and signed amplitudes. Closures range from about `8.15e-9` to `1.55e-7`; normalized distances from the independently corrected same-mass Li parent range from roughly `5.84e-4` upward.
+
+These are branch-switch candidates, not a continued daughter family.
+
+### True generic daughter pseudo-arclength continuation is implemented
+
+**Status: ENGINEERING COMPLETE / SCIENTIFIC RUN PENDING**
+
+`src/threebody_atlas/generic_branch.py` removes the artificial amplitude condition after two accepted daughter seeds and continues the strict-periodic generic state `(z0,T,m2)` by pseudo-arclength at fixed `(m1,m3)`. `scripts/continue_lower_plus_one_daughter.py` compares every accepted point with the independently corrected same-mass Li parent and emits independent-reproduction seeds.
+
+The predictor/corrector geometry passed an analytic toy-branch execution test in the working environment, including a three-step monotone trace with zero synthetic closure/arclength residual. No claim about the three-body daughter topology follows from that toy test; a real daughter artifact is still required.
+
+## High-precision verification
 
 ### Earlier failure from serialized float64 boundary seeds
 
 **Status: INVALIDATED**
 
-The earlier BigFloat run started from a TSV whose shooting parameters did not match the source workflow named in its provenance header.  The resulting initial closure of order unity was a bad-input artifact, not a scientific contradiction.
+An earlier BigFloat run started from a TSV whose shooting parameters did not match the provenance header. The resulting order-unity initial closure was a bad-input artifact, not a scientific contradiction. The seed path was corrected.
 
-The seed file has been regenerated from the actual source run.  The independent verifier now anchors to frozen published rows first and treats sub-grid float64 seeds only as optional accelerators after they pass an independent BigFloat closure/event-sign gate.
+### Lower `+1` and upper collision exact roots
 
-### Current exact boundary roots
+**Status: CANDIDATE / COMPUTE-READY**
 
-**Status: CANDIDATE / RUNNING**
+The first monolithic Julia verifier reached roughly `1e-26` periodic closure on both representative searches; it localized the lower event near `m2=0.75401872...` and found a sign-changing upper-collision bracket. The workflow timed out before final upper refinement/artifact emission. It is now split into independent lower and upper jobs.
 
-The corrected independent BigFloat boundary workflow is still the publication gate for the exact `m1=0.8` lower and upper event locations.
+### Three mixed organizers
+
+**Status: CANDIDATE / COMPUTE-READY**
+
+The three new float64 organizer seeds are frozen and the existing independent Julia BigFloat mass-Newton verifier has been split into one candidate per job. No BigFloat mixed-vertex artifact exists yet.
 
 ## Universal reduced Floquet geometry
 
@@ -206,16 +250,19 @@ The exact spectral vertices are:
 - mixed `+1/-1`: `(4,4)`;
 - double `+1`: `(8,28)`.
 
-The mass-space stability diagram is therefore the preimage of this universal spectral-stability domain under the continuation-sheet map `(m1,m2)->(alpha,beta)`.
+The mass-space stability diagram is the preimage of this universal spectral-stability domain under the continuation-sheet trace map.
+
+## External execution status
+
+GitHub Actions is presently refusing runner allocation because of the account payment/spending-limit condition. The affected jobs terminate with zero executed steps. This blocks the split Julia critical-point verifier, three-way Julia mixed-vertex verifier, adaptive top-20 connectivity matrix, junction continuation matrix, daughter continuation matrix and ordinary CI. A zero-step job is not scientific evidence either for or against a claim.
 
 ## Current publication threshold
 
-The project is **not yet entitled to say the stated open problem is solved**.  The shortest remaining route is:
+The project is **not yet entitled to say the stated open problem is solved**. The shortest remaining route is:
 
-1. locate and independently reproduce the mechanism-switch vertices/folds;
-2. complete connected critical-arc continuation, including the secondary lobe/network;
-3. finish BigFloat exact boundary roots and canonical evaluation at representative critical points;
-4. finish the shooting-rank census and generic/path-diverse family-connectivity adversarial gates;
-5. resolve the lower `+1` branch-switch experiment and classify any genuine daughter/reconnection;
-6. freeze evidence manifests and regenerate the manuscript from them;
-7. rerun the current literature novelty audit immediately before release.
+1. independently reproduce the lower `+1`, upper collision, and all three mixed organizers in Julia BigFloat; evaluate corrected headline events canonically with convergence/uncertainty records;
+2. trace `+1`/`-1` arcs through each mixed organizer and independently verify the secondary `-1` root-birth fold with event-specific pseudo-arclength geometry;
+3. complete the adaptive top-20 MST attack and generic/path-diverse fallback for every survivor;
+4. execute and independently reproduce a real lower-`+1` daughter continuation and classify reconnection versus distinct branch;
+5. assemble and adversarially attack the complete critical graph/component decomposition, including hidden-pocket searches;
+6. freeze evidence manifests and manuscript inputs, then rerun the current literature novelty audit immediately before release.
