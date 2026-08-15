@@ -1,0 +1,91 @@
+name: Julia mixed Floquet vertex verifier
+
+on:
+  pull_request:
+    paths:
+      - "julia/verify_reduced.jl"
+      - "julia/verify_critical_points.jl"
+      - "julia/verify_mixed_vertices.jl"
+      - ".github/workflows/julia-mixed-vertex-verifier.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - "experiments/mixed_vertex_candidates.tsv"
+  workflow_dispatch:
+    inputs:
+      dps:
+        description: "BigFloat decimal precision"
+        required: true
+        default: "50"
+      tol_exp:
+        description: "Vern9 tolerance exponent"
+        required: true
+        default: "25"
+      closure_exp:
+        description: "Required corrected closure exponent"
+        required: true
+        default: "18"
+      event_exp:
+        description: "Required 2-event norm exponent"
+        required: true
+        default: "12"
+      fd_exp:
+        description: "Mass finite-difference step exponent"
+        required: true
+        default: "6"
+      max_shift_exp:
+        description: "Maximum accepted mass-root shift exponent"
+        required: true
+        default: "4"
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.11.9"
+      - name: Parse independent mixed-vertex verifier
+        run: julia -e 'Meta.parseall(read("julia/verify_mixed_vertices.jl", String)); println("Julia mixed-vertex verifier syntax OK")'
+
+  verify:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+      - name: Require frozen candidate seed file
+        run: test -s experiments/mixed_vertex_candidates.tsv
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.11.9"
+      - uses: julia-actions/cache@v2
+      - name: Instantiate locked independent solver stack
+        run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+      - name: Independently solve both mixed Floquet event equations
+        env:
+          DPS: ${{ inputs.dps || '50' }}
+          TOL_EXP: ${{ inputs.tol_exp || '25' }}
+          CLOSURE_EXP: ${{ inputs.closure_exp || '18' }}
+          EVENT_EXP: ${{ inputs.event_exp || '12' }}
+          FD_EXP: ${{ inputs.fd_exp || '6' }}
+          MAX_SHIFT_EXP: ${{ inputs.max_shift_exp || '4' }}
+        run: |
+          mkdir -p artifacts
+          julia --project=julia julia/verify_mixed_vertices.jl \
+            experiments/mixed_vertex_candidates.tsv \
+            artifacts/mixed-vertices-bigfloat.json \
+            "$DPS" "$TOL_EXP" "$CLOSURE_EXP" "$EVENT_EXP" "$FD_EXP" "$MAX_SHIFT_EXP"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mixed-vertices-bigfloat-${{ github.sha }}
+          path: artifacts/mixed-vertices-bigfloat.json
+          if-no-files-found: warn
+          retention-days: 90
