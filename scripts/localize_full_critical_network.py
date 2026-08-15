@@ -67,9 +67,13 @@ def solve_cell(cell_id: int, row: dict[str, str]) -> dict[str, Any]:
         stable,
         unstable,
         event_mode=mode,
-        m2_tolerance=2e-9,
+        # The scientific gate is the event residual below, not bracket width.
+        # A 2e-9 width stop was coarse enough to return residuals above 2e-8
+        # (for example cells 0 and 1 in run 31887432802), so refine the mass
+        # bracket further instead of weakening the event acceptance criterion.
+        m2_tolerance=1e-12,
         event_tolerance=2e-8,
-        max_iterations=40,
+        max_iterations=60,
         max_closure=1e-7,
     )
     q, f = critical.sample.point, critical.sample.floquet
