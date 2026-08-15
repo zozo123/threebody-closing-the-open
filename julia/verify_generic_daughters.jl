@@ -6,9 +6,13 @@
 #
 # Unknowns are (z0[1:8], T) at fixed masses.  We solve the full eight periodic
 # closure equations together with scale, rotation and phase gauges as an
-# overdetermined 11x9 BigFloat Gauss-Newton problem using the independently
-# integrated variational monodromy.  The resulting generic orbit is then
-# compared with an independently BigFloat-corrected Li parent at the same mass.
+# overdetermined 11x9 BigFloat problem using the independently integrated
+# variational monodromy.  Near the +1 bifurcation this Jacobian is necessarily
+# ill-conditioned, so the corrector uses a column-scaled Levenberg-Marquardt
+# trust region rather than trusting a raw Gauss-Newton step.  The acceptance
+# gates are unchanged: the final full residual must still reach the requested
+# arbitrary-precision target.  The resulting generic orbit is then compared
+# with an independently BigFloat-corrected Li parent at the same mass.
 
 include(joinpath(@__DIR__, "verify_critical_points.jl"))
 
@@ -63,34 +67,101 @@ function generic_residual_jacobian(masses, y, reference; tol::BigFloat)
     return residual,J,(;zf,M,sol,closure,scale,rotation,phase)
 end
 
-function correct_generic_daughter(seed;tol,target,maxiter=12)
+function daughter_variable_scales(y)
+    floors=BigFloat[0.2,0.2,0.5,0.2,0.5,0.5,0.5,0.5,1.0]
+    max.(abs.(BigFloat.(y)),floors)
+end
+
+function scaled_lm_direction(J,residual,mu::BigFloat)
+    n=size(J,2)
+    column_norms=BigFloat[max(norm(view(J,:,j)),BigFloat("1e-30")) for j in 1:n]
+    inv_column_norms=inv.(column_norms)
+    Js=J*Diagonal(inv_column_norms)
+    H=transpose(Js)*Js
+    g=transpose(Js)*residual
+    regularized=H+mu*Matrix{BigFloat}(I,n,n)
+    p=regularized\(-g)
+    inv_column_norms.*p
+end
+
+function trust_limit(delta,y,radius::BigFloat)
+    scales=daughter_variable_scales(y)
+    scaled_norm=norm(delta./scales)
+    if scaled_norm > radius
+        return delta*(radius/scaled_norm),scaled_norm
+    end
+    delta,scaled_norm
+end
+
+function correct_generic_daughter(seed;tol,target,maxiter=20)
     masses=seed.masses
     reference=copy(seed.z)
     y=vcat(copy(seed.z),seed.period)
     last=BigFloat(Inf)
+    trust_radius=BigFloat("5e-3")
+    damping=BigFloat("1e-10")
     for iter in 1:maxiter
         residual,J,data=generic_residual_jacobian(masses,y,reference;tol=tol)
         rn=norm(residual)
         last=rn
         println("generic correction iter=",iter," name=",seed.name," residual=",rn,
-                " closure=",norm(data.closure)," gauges=",norm(residual[9:11]))
+                " closure=",norm(data.closure)," gauges=",norm(residual[9:11]),
+                " trust_radius=",trust_radius," damping=",damping)
         if rn <= target
             return y,data,iter
         end
-        delta=J\(-residual)
+
         accepted=false
-        for ls in 0:7
-            λ=BigFloat(2)^(-ls)
-            trial=y+λ*delta
-            trial[9] > 0 || continue
-            tr,_,_=generic_residual_jacobian(masses,trial,reference;tol=tol)
-            if norm(tr) < rn
-                y=trial
-                accepted=true
-                break
+        local_mu=damping
+        best_norm=rn
+        best_trial=nothing
+        best_mu=local_mu
+
+        # A damped, column-scaled Gauss-Newton direction is a descent direction
+        # for 1/2||r||^2 once mu>0.  Increasing mu shrinks the step toward a
+        # scaled gradient step; the explicit trust radius prevents the nearly
+        # singular +1 direction from launching the iterate across branches.
+        for attempt in 1:10
+            delta=scaled_lm_direction(J,residual,local_mu)
+            delta,raw_scaled_norm=trust_limit(delta,y,trust_radius)
+            trial=y+delta
+            if trial[9] > 0
+                tr,_,_=generic_residual_jacobian(masses,trial,reference;tol=tol)
+                trial_norm=norm(tr)
+                println("  LM attempt=",attempt," mu=",local_mu,
+                        " raw_scaled_step=",raw_scaled_norm,
+                        " accepted_scaled_step=",norm(delta./daughter_variable_scales(y)),
+                        " trial_residual=",trial_norm)
+                if trial_norm < best_norm
+                    best_norm=trial_norm
+                    best_trial=trial
+                    best_mu=local_mu
+                end
+                if trial_norm < rn
+                    y=trial
+                    damping=max(local_mu/BigFloat(10),BigFloat("1e-24"))
+                    trust_radius=min(trust_radius*BigFloat("1.8"),BigFloat("5e-2"))
+                    accepted=true
+                    break
+                end
             end
+            local_mu*=BigFloat(100)
         end
-        accepted || error("generic daughter line search failed at residual=$rn")
+
+        if !accepted && best_trial !== nothing
+            y=best_trial
+            damping=best_mu
+            trust_radius=max(trust_radius/BigFloat(2),BigFloat("1e-8"))
+            accepted=true
+        end
+        if !accepted
+            trust_radius/=BigFloat(10)
+            damping=max(local_mu,BigFloat("1e-8"))
+            trust_radius >= BigFloat("1e-10") ||
+                error("generic daughter trust region collapsed at residual=$rn")
+            println("  no improving step; shrinking trust region to ",trust_radius,
+                    " and retrying next iteration")
+        end
     end
     error("BigFloat generic daughter correction failed; last residual=$last")
 end
@@ -174,7 +245,7 @@ function main_generic_daughters()
         mkpath(dirname(output))
         open(output,"w") do io
             print(io,
-              "{\"implementation\":\"independent Julia BigFloat + Vern9 + full 8D variational generic Gauss-Newton\",",
+              "{\"implementation\":\"independent Julia BigFloat + Vern9 + full 8D variational generic trust-region Levenberg-Marquardt\",",
               "\"dps\":",dps,",\"ode_tolerance\":\"1e-",tol_exp,"\",",
               "\"residual_target\":\"1e-",target_exp,"\",",
               "\"minimum_parent_distance\":\"1e-",min_parent_exp,"\",",
