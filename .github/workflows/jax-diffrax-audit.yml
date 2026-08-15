@@ -8,6 +8,7 @@ on:
       - "src/threebody_atlas/jax_diffrax.py"
       - "scripts/jax_diffrax_audit.py"
       - "tests/test_jax_diffrax.py"
+      - "tests/test_critical_geometry.py"
       - ".github/workflows/jax-diffrax-audit.yml"
   workflow_dispatch:
 
@@ -21,6 +22,7 @@ jobs:
     env:
       JAX_ENABLE_X64: "1"
       JAX_COMPILATION_CACHE_DIR: "${{ github.workspace }}/.jax-cache"
+      UV_PYTHON: "3.13"
     steps:
       - uses: actions/checkout@v7
       - name: Install uv
@@ -30,13 +32,11 @@ jobs:
           enable-cache: true
       - name: Install canonical Python
         run: uv python install 3.13
-      - name: Sync accelerated environment
-        env:
-          UV_PYTHON: "3.13"
-        run: uv sync --extra accelerated --extra dev
-      - name: Cross-check local JAX dynamics
-        run: uv run --no-sync pytest -q tests/test_jax_diffrax.py
-      - name: Audit adaptive closure sensitivities against SciPy
+      - name: Sync locked accelerated environment
+        run: uv sync --locked --extra accelerated --extra dev
+      - name: Cross-check dynamics and critical geometry
+        run: uv run --no-sync pytest -q tests/test_jax_diffrax.py tests/test_critical_geometry.py
+      - name: Audit adaptive derivative oracle against SciPy
         run: |
           mkdir -p artifacts
           uv run --no-sync python scripts/jax_diffrax_audit.py \
@@ -44,8 +44,9 @@ jobs:
             artifacts/jax-diffrax-derivative-audit.json \
             --require-eligible
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: jax-diffrax-audit-${{ github.sha }}
           path: artifacts/jax-diffrax-derivative-audit.json
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 90
