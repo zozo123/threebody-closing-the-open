@@ -29,17 +29,19 @@ Still Gate-A objects if the paper wants to use them: secondary-left fold, any fo
 
 A float64/JAX point is a proposal. It is never publication truth by itself.
 
-### Gate B -- exact Floquet organizer/network geometry
+### Gate B -- complete mechanism-resolved Floquet critical graph on the connected family sheet
 
 **Status: PENDING. This is the remaining theorem.**
 
-The final object is a graph, not a cloud. State `y=(x1,v1,v2,T,m1,m2)`. Mixed organizers are preimages of `(alpha,beta)=(4,4)`.
+The final object is a graph, not a cloud, and it need not be connected just because the family sheet is connected. State `y=(x1,v1,v2,T,m1,m2)`. Mixed organizers are preimages of `(alpha,beta)=(4,4)`. The 620 catalog S/U cells are samples supporting the graph; they are not 620 edges.
 
 Pass only when:
 
-- all 620 catalog S/U cells are localized and assigned to mechanism-labeled edges;
-- every mixed node has incoming and outgoing event arcs;
-- secondary-left birth and secondary-right death are classified (fold, mixed, domain boundary);
+- all 620 catalog S/U cells are localized and each belongs to exactly one mechanism-specific polyline;
+- mixed germs come from continuation artifacts, not nearby-root heuristics;
+- secondary-left birth and secondary-right death are classified (fold, mixed, or domain boundary);
+- the daughter is classified or the hypothesis is falsified (`no_branch_attachment` is allowed);
+- completeness is frozen;
 - no endpoint is `Newton failed`;
 - `research/evidence/V1_CRITICAL_GRAPH.json` reports `release_ready: true`.
 

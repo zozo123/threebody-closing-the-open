@@ -171,6 +171,42 @@ def validate_manifest(
                     generated = root / item["path"]
                     if not generated.is_file():
                         errors.append(f"missing generated artifact: {item['path']}")
+        graph_records = [
+            item
+            for item in evidence
+            if item.get("role") == "critical_graph"
+            and item.get("kind") == "repository_file"
+            and str(item.get("path", "")).endswith(".json")
+        ]
+        if not graph_records:
+            errors.append("scientific release requires a JSON critical_graph repository file")
+        else:
+            ready = False
+            for item in graph_records:
+                graph_path = root / str(item.get("path", ""))
+                if not graph_path.is_file():
+                    errors.append(f"missing critical graph: {graph_path}")
+                    continue
+                try:
+                    graph = json.loads(graph_path.read_text(encoding="utf-8"))
+                except json.JSONDecodeError:
+                    errors.append(f"critical graph is not JSON: {graph_path}")
+                    continue
+                if graph.get("release_ready") is True:
+                    ready = True
+                    digest = item.get("sha256")
+                    if digest:
+                        actual = sha256_file(graph_path)
+                        if str(digest).lower() != actual:
+                            errors.append(
+                                f"critical graph sha256 mismatch for {item.get('path')}: "
+                                f"manifest={digest} file={actual}"
+                            )
+            if not ready:
+                errors.append(
+                    "scientific release requires a critical_graph JSON with release_ready true "
+                    "(only the assembler may set that bit)"
+                )
 
     if errors:
         raise DiscoveryValidationError("\n".join(f"- {error}" for error in errors))

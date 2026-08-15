@@ -38,8 +38,10 @@ def test_assemble_critical_graph_stays_unready_without_endpoints(tmp_path, capsy
     graph = json.loads(output.read_text())
     assert graph["release_ready"] is False
     assert graph["edges"] == []
+    assert graph["source_transition_cells"] == 620
+    assert graph["localized_roots"] == 0
     assert "secondary_right_death" in graph["unexplained_nodes"]
-    assert "secondary_left_fold" in graph["unexplained_nodes"]
+    assert "secondary_left_birth" in graph["unexplained_nodes"]
     assert "lower_plus_one_daughter" in graph["unexplained_nodes"]
 
 
@@ -171,10 +173,24 @@ def test_hybrid_merger_refuses_to_loosen_event_gate(tmp_path) -> None:
         assert all(int(root["cell_id"]) != 1 for root in hybrid["roots"])
 
 
-def test_assembler_emits_edges_but_stays_unready_with_partial_roots(tmp_path) -> None:
+def _run_assembler(tmp_path, extra_args: list[str]) -> dict:
     import runpy
     import sys
 
+    output = tmp_path / "graph.json"
+    argv = sys.argv
+    sys.argv = ["assemble_critical_graph.py", "--output", str(output), *extra_args]
+    try:
+        try:
+            runpy.run_path(str(ROOT / "scripts/assemble_critical_graph.py"), run_name="__main__")
+        except SystemExit as exc:
+            assert exc.code == 2
+    finally:
+        sys.argv = argv
+    return json.loads(output.read_text())
+
+
+def test_assembler_emits_edges_but_stays_unready_with_partial_roots(tmp_path) -> None:
     roots = tmp_path / "roots.json"
     roots.write_text(
         json.dumps(
@@ -194,24 +210,167 @@ def test_assembler_emits_edges_but_stays_unready_with_partial_roots(tmp_path) ->
             }
         )
     )
-    output = tmp_path / "graph.json"
+    graph = _run_assembler(tmp_path, ["--roots", str(roots)])
+    assert graph["release_ready"] is False
+    assert graph["localized_roots"] == 1
+    assert graph["source_transition_cells"] == 620
+    assert len(graph["edges"]) == 1
+    assert graph["edges"][0]["kind"] == "mechanism_polyline"
+    assert graph["edges"][0]["mechanism"] == "plus_one"
+    assert graph["edges"][0]["cell_ids"] == [0]
+    assert graph["unexplained_nodes"]
+
+
+def test_assembler_groups_cells_into_polylines_not_one_edge_per_cell(tmp_path) -> None:
+    roots = tmp_path / "roots.json"
+    roots.write_text(
+        json.dumps(
+            {
+                "roots": [
+                    {
+                        "cell_id": 0,
+                        "status": "ok",
+                        "event_mode": "plus_one",
+                        "masses": [0.80, 0.750, 1.0],
+                    },
+                    {
+                        "cell_id": 1,
+                        "status": "ok",
+                        "event_mode": "plus_one",
+                        "masses": [0.80, 0.751, 1.0],
+                    },
+                    {
+                        "cell_id": 2,
+                        "status": "ok",
+                        "event_mode": "plus_one",
+                        "masses": [1.05, 1.13, 1.0],
+                    },
+                    {
+                        "cell_id": 3,
+                        "status": "ok",
+                        "event_mode": "minus_one",
+                        "masses": [0.90, 0.90, 1.0],
+                    },
+                ]
+            }
+        )
+    )
+    graph = _run_assembler(tmp_path, ["--roots", str(roots)])
+    assert graph["localized_roots"] == 4
+    assert len(graph["edges"]) == 3
+    plus = [edge for edge in graph["edges"] if edge["mechanism"] == "plus_one"]
+    assert sorted(plus, key=lambda edge: edge["cell_ids"][0])[0]["cell_ids"] == [0, 1]
+    assert graph["release_ready"] is False
+
+
+def test_daughter_no_branch_attachment_is_an_allowed_close(tmp_path) -> None:
+    daughter = tmp_path / "daughter.json"
+    daughter.write_text(json.dumps({"class": "no_branch_attachment", "passed": True}))
+    graph = _run_assembler(tmp_path, ["--daughter", str(daughter)])
+    assert "lower_plus_one_daughter" not in graph["unexplained_nodes"]
+    assert "secondary_left_birth" in graph["unexplained_nodes"]
+    assert graph["release_ready"] is False
+
+
+def test_merger_refuses_to_overwrite_accepted_float64_without_audit(tmp_path) -> None:
+    import runpy
+    import sys
+
+    attempts = []
+    for cell in range(620):
+        attempts.append(
+            {
+                "cell_id": cell,
+                "status": "ok" if cell == 0 else "missed_event",
+                "event_mode": "plus_one",
+                "event": 1e-10 if cell == 0 else 1e-6,
+                "closure": 1e-10,
+                "masses": [0.8, 0.755, 1.0],
+                "source_m2_bracket": [0.754, 0.756],
+            }
+        )
+    python_roots = tmp_path / "python.json"
+    python_roots.write_text(json.dumps({"attempts": attempts, "roots": [attempts[0]]}))
+    julia = tmp_path / "julia.json"
+    julia.write_text(
+        json.dumps(
+            {
+                "cell_id": 0,
+                "event_mode": "plus_one",
+                "event_value": "1e-12",
+                "closure_norm": "1e-20",
+                "passed": True,
+                "m1": "0.8",
+                "m2": "0.755",
+                "m3": "1.0",
+            }
+        )
+    )
     argv = sys.argv
     sys.argv = [
-        "assemble_critical_graph.py",
-        "--output",
-        str(output),
-        "--roots",
-        str(roots),
+        "merge_hybrid_critical_roots.py",
+        str(python_roots),
+        str(tmp_path / "out.json"),
+        "--julia",
+        str(julia),
     ]
     try:
         try:
-            runpy.run_path(str(ROOT / "scripts/assemble_critical_graph.py"), run_name="__main__")
+            runpy.run_path(str(ROOT / "scripts/merge_hybrid_critical_roots.py"), run_name="__main__")
+            raise AssertionError("must refuse overwrite")
         except SystemExit as exc:
-            assert exc.code == 2
+            assert exc.code not in (0, None)
     finally:
         sys.argv = argv
-    graph = json.loads(output.read_text())
-    assert graph["release_ready"] is False
-    assert len(graph["edges"]) == 1
-    assert graph["edges"][0]["mechanism"] == "plus_one"
-    assert graph["unexplained_nodes"]
+
+
+def test_merger_refuses_julia_m2_outside_source_bracket(tmp_path) -> None:
+    import runpy
+    import sys
+
+    attempts = []
+    for cell in range(620):
+        attempts.append(
+            {
+                "cell_id": cell,
+                "status": "missed_event",
+                "event_mode": "plus_one",
+                "event": 1e-6,
+                "closure": 1e-10,
+                "masses": [0.8, 0.755, 1.0],
+                "source_m2_bracket": [0.754, 0.756],
+            }
+        )
+    python_roots = tmp_path / "python.json"
+    python_roots.write_text(json.dumps({"attempts": attempts, "roots": []}))
+    julia = tmp_path / "julia.json"
+    julia.write_text(
+        json.dumps(
+            {
+                "cell_id": 1,
+                "event_mode": "plus_one",
+                "event_value": "1e-12",
+                "closure_norm": "1e-20",
+                "passed": True,
+                "m1": "0.8",
+                "m2": "0.90",
+                "m3": "1.0",
+            }
+        )
+    )
+    argv = sys.argv
+    sys.argv = [
+        "merge_hybrid_critical_roots.py",
+        str(python_roots),
+        str(tmp_path / "out.json"),
+        "--julia",
+        str(julia),
+    ]
+    try:
+        try:
+            runpy.run_path(str(ROOT / "scripts/merge_hybrid_critical_roots.py"), run_name="__main__")
+            raise AssertionError("must refuse out-of-bracket m2")
+        except SystemExit as exc:
+            assert exc.code not in (0, None)
+    finally:
+        sys.argv = argv

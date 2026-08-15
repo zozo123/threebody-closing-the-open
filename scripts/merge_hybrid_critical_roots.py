@@ -45,7 +45,15 @@ def from_python(row: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-def from_julia(row: dict[str, Any], screening: dict[str, Any] | None) -> dict[str, Any]:
+BRACKET_SLOP = 2e-9
+
+
+def from_julia(
+    row: dict[str, Any],
+    screening: dict[str, Any] | None,
+    *,
+    provenance: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     cell_id = int(row["cell_id"])
     event = as_float(row.get("event_value", row.get("event")))
     closure = as_float(row.get("closure_norm", row.get("closure")))
@@ -71,6 +79,30 @@ def from_julia(row: dict[str, Any], screening: dict[str, Any] | None) -> dict[st
         "estimator": "julia_bigfloat",
         "passed": passed,
         "source": "julia_bigfloat_vern9",
+        "raw_bigfloat": {
+            key: row.get(key)
+            for key in (
+                "event_value",
+                "closure_norm",
+                "m1",
+                "m2",
+                "m3",
+                "x1",
+                "v1",
+                "v2",
+                "period",
+                "alpha",
+                "beta",
+                "discriminant",
+            )
+            if row.get(key) is not None
+        },
+        "provenance": {
+            "source_run": row.get("source_run") or (provenance or {}).get("source_run"),
+            "source_sha": row.get("source_sha") or (provenance or {}).get("source_sha"),
+            "implementation": (provenance or {}).get("implementation") or row.get("implementation"),
+            "dps": (provenance or {}).get("dps") or row.get("dps"),
+        },
     }
     if screening:
         out["orientation"] = screening.get("orientation")
@@ -86,6 +118,14 @@ def from_julia(row: dict[str, Any], screening: dict[str, Any] | None) -> dict[st
         }
         if screening.get("event_mode") and screening.get("event_mode") != out["event_mode"]:
             out["screening_event_mode_reclassified"] = True
+        bracket = screening.get("source_m2_bracket")
+        if bracket and len(bracket) == 2 and len(out["masses"]) >= 2:
+            lo, hi = sorted((as_float(bracket[0]), as_float(bracket[1])))
+            m2 = as_float(out["masses"][1])
+            if not (lo - BRACKET_SLOP <= m2 <= hi + BRACKET_SLOP):
+                raise SystemExit(
+                    f"Julia m2 {m2:.16g} for cell {cell_id} is outside source bracket [{lo:.16g}, {hi:.16g}]"
+                )
     return out
 
 
@@ -94,6 +134,11 @@ def main() -> None:
     parser.add_argument("python_roots")
     parser.add_argument("output")
     parser.add_argument("--julia", action="append", default=[], help="Julia cell/batch JSON (repeatable)")
+    parser.add_argument(
+        "--audit",
+        action="store_true",
+        help="Allow Julia to replace an already-accepted float64 root (audit only).",
+    )
     args = parser.parse_args()
 
     python_payload = load(Path(args.python_roots))
@@ -137,7 +182,25 @@ def main() -> None:
                 raise SystemExit(f"duplicate Julia result for cell {cell_id}")
             seen_julia.add(cell_id)
             screening = attempt_by_cell.get(cell_id)
-            item = from_julia(row, screening)
+            if (
+                screening is not None
+                and screening.get("status") == "ok"
+                and cell_id in merged
+                and not args.audit
+            ):
+                raise SystemExit(
+                    f"Julia may not replace accepted float64 cell {cell_id} without --audit"
+                )
+            item = from_julia(
+                row,
+                screening,
+                provenance={
+                    "source_run": payload.get("source_run"),
+                    "source_sha": payload.get("source_sha"),
+                    "implementation": payload.get("implementation"),
+                    "dps": payload.get("dps"),
+                },
+            )
             if not item["passed"]:
                 continue
             julia_passed += 1

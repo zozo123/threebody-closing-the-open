@@ -1,10 +1,10 @@
 % Generated from research/DISCOVERY_RELEASE.json.
 \subsection*{Machine-readable discovery status}
-Scientific status: \textbf{OPEN}. OPEN. Gate C passed: one continuation-connected family; the 2023 two-set plot is a folded projection. Gate A passed for the mechanism words the paper is allowed to use: physical +1 crossing, opposite-Krein Hamiltonian-Hopf, and three mixed (4,4) organizers. Gate B pending: 0/620 edges frozen, secondary fold and right-death unclassified, daughter unclassified. Gate D pending. The manuscript may state the earned results and must not claim the atlas is complete.
+Scientific status: \textbf{OPEN}. OPEN. Gate C passed: one continuation-connected family; the 2023 two-set plot is a folded projection. Gate A passed for the mechanism words the paper is allowed to use: physical +1 crossing, opposite-Krein Hamiltonian-Hopf, and three mixed (4,4) organizers. Gate B pending: 620 cells are samples not edges; secondary-left birth, secondary-right death, and daughter unclassified; mixed germs and completeness not frozen. Gate D pending. The manuscript may state the earned results and must not claim the atlas is complete.
 \paragraph{Gates.}
 \begin{itemize}
 \item Gate A --- Independent truth for every mechanism word used in the paper: \textbf{PASS}. A +1, -1, mixed, or Hamiltonian-Hopf/Krein label may appear as an ATLAS result only after independent BigFloat correction, event localization, and physical symplectic-quotient diagnostics at the exact bracket. The paper currently uses only the bound +1, Hamiltonian-Hopf, and three mixed organizers.
-\item Gate B --- Connected Floquet critical graph: \textbf{PENDING}. Every catalog S/U cell lies on a mechanism-labeled edge; every endpoint is a domain boundary, mixed organizer, or verified fold; event arcs meet the mixed nodes; Newton-failed is forbidden; V1\_CRITICAL\_GRAPH.json has release\_ready true.
+\item Gate B --- Complete mechanism-resolved Floquet critical graph on the connected family sheet: \textbf{PENDING}. Every catalog S/U cell belongs to exactly one mechanism-specific polyline; N edges need not equal 620; every endpoint is a domain boundary, mixed organizer, or verified fold; mixed germs come from continuation artifacts; Newton-failed is forbidden; completeness is frozen; V1\_CRITICAL\_GRAPH.json has release\_ready true.
 \item Gate C --- One continuation-connected family: \textbf{PASS}. Family identity is bidirectional continuation in the Li chart and a generic strict-periodic chart, after rank and worst-MST attacks. Projected (T,L) branches are not families.
 \item Gate D --- Solved-release freeze: \textbf{PENDING}. Assembler release\_ready, same-day novelty, manuscript generated only from release\_claim records, --require-solved on the tagged commit.
 \end{itemize}
@@ -17,7 +17,7 @@ Scientific status: \textbf{OPEN}. OPEN. Gate C passed: one continuation-connecte
 \end{itemize}
 \paragraph{Remaining blockers.}
 \begin{itemize}
-\item Localize all 620 S/U cells and assemble them as graph edges (\#109 / \#126).
+\item Localize all 620 S/U cells and assign each to exactly one mechanism polyline (\#109 / \#126).
 \item Classify the secondary-left G- birth (\#110).
 \item Classify the secondary-right death without claiming a fourth organizer until it is bound (\#111 / \#127).
 \item Attach +1/-1 arcs through the three known mixed roots (\#114).

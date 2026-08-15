@@ -6,7 +6,12 @@ from pathlib import Path
 
 import pytest
 
-from threebody_atlas.discovery import DiscoveryValidationError, load_manifest, validate_manifest
+from threebody_atlas.discovery import (
+    DiscoveryValidationError,
+    load_manifest,
+    sha256_file,
+    validate_manifest,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -72,13 +77,15 @@ def _closed_manifest() -> dict:
             "limitations": ["Fixture only."],
         }
     ]
+    fixture = "tests/fixtures/solved_critical_graph.json"
     manifest["evidence"].extend(
         [
             {
                 "id": "critical-graph-fixture",
                 "kind": "repository_file",
                 "role": "critical_graph",
-                "path": "research/RESULT_LEDGER.md",
+                "path": fixture,
+                "sha256": sha256_file(ROOT / fixture),
                 "description": "Fixture for final critical-graph evidence.",
             },
             {
@@ -96,6 +103,16 @@ def _closed_manifest() -> dict:
 def test_closed_manifest_can_pass_scientific_contract() -> None:
     manifest = _closed_manifest()
     validate_manifest(manifest, ROOT, today=date(2026, 8, 15))
+
+
+def test_solved_manifest_requires_assembler_release_ready() -> None:
+    manifest = _closed_manifest()
+    for item in manifest["evidence"]:
+        if item.get("id") == "critical-graph-fixture":
+            item["path"] = "research/evidence/V1_CRITICAL_GRAPH.json"
+            item.pop("sha256", None)
+    with pytest.raises(DiscoveryValidationError, match="release_ready"):
+        validate_manifest(manifest, ROOT, today=date(2026, 8, 15))
 
 
 def test_solved_manifest_requires_fresh_novelty_search() -> None:

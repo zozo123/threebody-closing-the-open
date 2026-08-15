@@ -21,10 +21,10 @@ These statements are allowed in the manuscript because they have independent con
 
 ## What is still required to say SOLVED
 
-1. All 620 published S/U cells localized to event residual `<= 2e-8` and assembled as graph edges.
+1. All 620 published S/U cells localized to event residual `<= 2e-8` and assigned to mechanism-specific polylines (N edges need not equal 620).
 2. Secondary-left `G-` birth classified as a nondegenerate `m1`-projection fold or a documented alternative.
 3. Secondary-right death classified as a mixed organizer, separate folds, or a domain boundary. `Newton failed` is forbidden.
-4. Event-specific `+1`/`-1` arcs through every retained mixed node.
+4. Event-specific `+1`/`-1` continuation germs through every retained mixed node (not nearby-root heuristics).
 5. Lower `+1` daughter globally classified, or the hypothesis explicitly falsified.
 6. Completeness screens (neck, off-grid) frozen and negative at the declared resolution.
 7. `V1_CRITICAL_GRAPH.json` reports `release_ready: true`.

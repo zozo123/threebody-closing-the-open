@@ -1,0 +1,9 @@
+{
+  "schema": "atlas.v1.critical-graph/2",
+  "release_ready": true,
+  "claim_status": "fixture only; not a scientific release",
+  "source_transition_cells": 620,
+  "localized_roots": 620,
+  "nodes": [],
+  "edges": []
+}

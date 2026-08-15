@@ -1,20 +1,22 @@
 #!/usr/bin/env python3
-"""Assemble the v1 Floquet critical graph from frozen evidence.
+"""Assemble the v1 mechanism-resolved Floquet critical graph.
 
-This is the Gate B object.  It refuses release_ready until every required node
-class is present and, if a 620-cell root file is supplied, every cell is
-assigned.  Missing endpoints stay explicit.  Screening tracks are not promoted
-to release edges.
+620 catalog S/U cells are samples supporting the graph. They are not 620 edges.
+An edge is a mechanism-specific polyline carrying a list of source-cell ids.
+Endpoints, mixed germs, daughter class, and completeness must come from
+artifacts. The assembler never invents a classification and never flips
+release_ready without those artifacts.
 """
 from __future__ import annotations
 
 import argparse
 import json
+from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
 
-REQUIRED_NODE_IDS = (
+REQUIRED_HEADLINE_IDS = (
     "mixed_principal_left",
     "mixed_secondary_left",
     "mixed_principal_right",
@@ -26,7 +28,25 @@ MIXED_NODE_IDS = (
     "mixed_secondary_left",
     "mixed_principal_right",
 )
-MIXED_ARC_RADIUS = 0.08
+REQUIRED_GERM_KEYS = (
+    ("plus_one", "+"),
+    ("plus_one", "-"),
+    ("minus_one", "+"),
+    ("minus_one", "-"),
+)
+LEFT_BIRTH_CLASSES = frozenset({"projection_fold", "two_separate_arcs", "mixed_organizer"})
+RIGHT_DEATH_CLASSES = frozenset({"mixed_organizer", "projection_fold", "domain_boundary"})
+DAUGHTER_CLASSES = frozenset(
+    {
+        "reconnecting",
+        "closed_loop",
+        "distinct_branch",
+        "obstruction",
+        "no_branch_attachment",
+        "falsified",
+    }
+)
+MASS_JUMP = 0.025
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -39,21 +59,13 @@ def node(node_id: str, kind: str, *, status: str, masses: list[Any] | None = Non
     return record
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--output", default="research/evidence/V1_CRITICAL_GRAPH.json")
-    parser.add_argument("--roots")
-    parser.add_argument("--al-screen")
-    args = parser.parse_args()
-    root = Path(__file__).resolve().parents[1]
-
+def headline_nodes(root: Path) -> list[dict[str, Any]]:
     mixed_left = load(root / "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_LEFT_2026-08-15.json")
     mixed_sec = load(root / "research/evidence/V1_MIXED_CANONICAL_SECONDARY_LEFT_2026-08-15.json")
     mixed_right = load(root / "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_RIGHT_2026-08-15.json")
     plus_one = load(root / "research/evidence/V1_CANONICAL_LOWER_PLUS_ONE_2026-08-15.json")
     collision = load(root / "research/evidence/V1_CANONICAL_UPPER_COLLISION_2026-08-15.json")
-
-    nodes = [
+    return [
         node(
             "mixed_principal_left",
             "mixed_organizer",
@@ -101,144 +113,288 @@ def main() -> None:
             passed=collision.get("passed"),
             bracket_m2=collision.get("critical_bracket_m2"),
         ),
-        node(
-            "secondary_left_fold",
-            "projection_fold",
-            status="unresolved",
-            masses=[0.995705, 0.97424, 1.0],
-            mechanism="minus_one_m1_fold_candidate",
-            note="Root-count screen exists; event-specific geometry and BigFloat nondegeneracy are still required.",
-        ),
-        node(
-            "secondary_right_death",
-            "endpoint",
-            status="unresolved",
-            masses=[1.04306, 1.04640, 1.0],
-            mechanism="unknown",
-            note="Allowed classes: mixed_organizer, projection_fold, domain_boundary. Newton-failed is forbidden.",
-        ),
-        node(
-            "lower_plus_one_daughter",
-            "branch",
+    ]
+
+
+def forbidden_class(value: Any) -> bool:
+    text = str(value or "").lower().replace(" ", "_")
+    return "newton" in text and "fail" in text
+
+
+def load_classification(
+    path: Path | None,
+    *,
+    node_id: str,
+    default_kind: str,
+    allowed: frozenset[str],
+    missing_note: str,
+) -> dict[str, Any]:
+    if path is None:
+        return node(
+            node_id,
+            default_kind,
             status="unresolved",
             masses=None,
-            mechanism="physical_soft_plus_one_daughter_candidate",
-            note="Float64 minus continuation exists; independent BigFloat of d0-minus is required before classification.",
-        ),
-    ]
+            mechanism="unknown",
+            note=missing_note,
+            passed=False,
+        )
+    payload = load(path)
+    raw_class = payload.get("class") or payload.get("mechanism") or payload.get("classification")
+    if forbidden_class(raw_class) or forbidden_class(payload.get("status")) or forbidden_class(payload.get("error")):
+        return node(
+            node_id,
+            default_kind,
+            status="illegal",
+            masses=payload.get("masses"),
+            mechanism=str(raw_class),
+            note="Newton-failed is not an allowed endpoint class",
+            passed=False,
+            evidence=str(path),
+        )
+    passed = bool(payload.get("passed")) and str(raw_class) in allowed
+    return node(
+        node_id,
+        str(payload.get("kind") or default_kind),
+        status="independently_reproduced" if passed else "unresolved",
+        masses=payload.get("masses"),
+        mechanism=str(raw_class) if raw_class is not None else "unknown",
+        note=payload.get("note"),
+        passed=passed,
+        evidence=str(path),
+        estimator=payload.get("estimator"),
+    )
+
+
+def polyline_edges(roots: list[dict[str, Any]], *, jump: float = MASS_JUMP) -> list[dict[str, Any]]:
+    grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for root in roots:
+        grouped[str(root.get("event_mode") or "unknown")].append(root)
+    edges: list[dict[str, Any]] = []
+    for mode, items in grouped.items():
+        def key(item: dict[str, Any]) -> tuple[float, float, int]:
+            masses = item.get("masses") or [0.0, 0.0]
+            try:
+                return float(masses[0]), float(masses[1]), int(item["cell_id"])
+            except (TypeError, ValueError, KeyError, IndexError):
+                return 0.0, 0.0, int(item.get("cell_id", -1))
+
+        items = sorted(items, key=key)
+        runs: list[list[dict[str, Any]]] = []
+        current: list[dict[str, Any]] = []
+        previous: dict[str, Any] | None = None
+        for item in items:
+            if previous is None:
+                current = [item]
+            else:
+                pm = previous.get("masses") or [0.0, 0.0]
+                nm = item.get("masses") or [0.0, 0.0]
+                try:
+                    dist = ((float(pm[0]) - float(nm[0])) ** 2 + (float(pm[1]) - float(nm[1])) ** 2) ** 0.5
+                except (TypeError, ValueError, IndexError):
+                    dist = jump + 1.0
+                if dist > jump:
+                    runs.append(current)
+                    current = [item]
+                else:
+                    current.append(item)
+            previous = item
+        if current:
+            runs.append(current)
+        for index, run in enumerate(runs):
+            cell_ids = [int(row["cell_id"]) for row in run]
+            edges.append(
+                {
+                    "id": f"{mode}_{index}",
+                    "kind": "mechanism_polyline",
+                    "mechanism": mode,
+                    "cell_ids": cell_ids,
+                    "source_cell_count": len(cell_ids),
+                    "estimators": sorted({str(row.get("estimator") or "float64") for row in run}),
+                    "endpoints": {
+                        "start_cell": cell_ids[0],
+                        "end_cell": cell_ids[-1],
+                        "classified": False,
+                    },
+                }
+            )
+    edges.sort(key=lambda edge: (str(edge["mechanism"]), edge["cell_ids"][0]))
+    return edges
+
+
+def germ_key(record: dict[str, Any]) -> tuple[str, str, str]:
+    return (
+        str(record.get("mixed_node") or record.get("node") or ""),
+        str(record.get("event_mode") or record.get("mode") or ""),
+        str(record.get("direction") or ""),
+    )
+
+
+def collect_germs(paths: list[Path]) -> list[dict[str, Any]]:
+    germs: list[dict[str, Any]] = []
+    for path in paths:
+        payload = load(path)
+        rows = payload.get("germs") or payload.get("results") or ([payload] if payload.get("event_mode") or payload.get("mode") else [])
+        for row in rows:
+            if isinstance(row, dict):
+                germs.append(row)
+    return germs
+
+
+def missing_mixed_germs(germs: list[dict[str, Any]]) -> list[str]:
+    have = {germ_key(row) for row in germs}
+    missing: list[str] = []
+    for node_id in MIXED_NODE_IDS:
+        for mode, direction in REQUIRED_GERM_KEYS:
+            key = (node_id, mode, direction)
+            if key in have:
+                continue
+            # A germ that immediately ends on another classified node may omit
+            # the opposite unused direction only if that exact key is present
+            # with ends_on set; absence is still missing.
+            missing.append(f"{node_id}:{mode}:{direction}")
+    return missing
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", default="research/evidence/V1_CRITICAL_GRAPH.json")
+    parser.add_argument("--roots")
+    parser.add_argument("--left-birth")
+    parser.add_argument("--right-death")
+    parser.add_argument("--daughter")
+    parser.add_argument("--germs", action="append", default=[])
+    parser.add_argument("--completeness")
+    parser.add_argument("--al-screen")
+    args = parser.parse_args()
+    root = Path(__file__).resolve().parents[1]
+
+    nodes = headline_nodes(root)
+    nodes.append(
+        load_classification(
+            Path(args.left_birth) if args.left_birth else None,
+            node_id="secondary_left_birth",
+            default_kind="endpoint",
+            allowed=LEFT_BIRTH_CLASSES,
+            missing_note="Need event-specific G- geometry: projection fold with nonzero quadratic, or a recorded falsification.",
+        )
+    )
+    nodes.append(
+        load_classification(
+            Path(args.right_death) if args.right_death else None,
+            node_id="secondary_right_death",
+            default_kind="endpoint",
+            allowed=RIGHT_DEATH_CLASSES,
+            missing_note="Allowed classes: mixed_organizer, projection_fold, domain_boundary. Newton-failed is forbidden.",
+        )
+    )
+    nodes.append(
+        load_classification(
+            Path(args.daughter) if args.daughter else None,
+            node_id="lower_plus_one_daughter",
+            default_kind="branch",
+            allowed=DAUGHTER_CLASSES,
+            missing_note="Need independent d0-minus BigFloat plus one genealogy class, including no_branch_attachment.",
+        )
+    )
 
     roots: list[dict[str, Any]] = []
     if args.roots:
         payload = load(Path(args.roots))
-        roots = list(payload.get("roots", []))
+        roots = [row for row in payload.get("roots", []) if row.get("status") == "ok" or row.get("passed") is True]
 
-    al_note = None
-    if args.al_screen:
+    germs = collect_germs([Path(path) for path in args.germs])
+    missing_germs = missing_mixed_germs(germs)
+
+    completeness = None
+    if args.completeness:
+        completeness = load(Path(args.completeness))
+    elif args.al_screen:
         al = load(Path(args.al_screen))
         accepted = al.get("accepted_candidates", [])
         stable = [row for row in accepted if row.get("corrected", {}).get("screening_stable")]
-        al_note = {
+        completeness = {
+            "passed": False,
+            "note": "AL pocket screen only; neck raster and vertex harvest still required",
             "attempted": len(al.get("attempted", [])),
             "accepted": len(accepted),
             "screening_stable": len(stable),
-            "interpretation": (
-                "off-grid proposals corrected onto the known sheet; no hidden stable pocket in this sample"
-                if accepted and not stable
-                else "inspect accepted stable points before changing the graph"
-            ),
         }
 
-    missing_required = [node_id for node_id in REQUIRED_NODE_IDS if not any(n["id"] == node_id and n.get("passed") for n in nodes)]
-    unexplained = [n["id"] for n in nodes if n["status"] == "unresolved"]
     newton_failed = [
         item
         for item in roots
-        if "newton" in str(item.get("status", "")).lower() or "newton" in str(item.get("error", "")).lower()
+        if forbidden_class(item.get("status")) or forbidden_class(item.get("error"))
     ]
-    edges = []
-    for root in sorted(roots, key=lambda item: int(item["cell_id"])):
-        edges.append(
-            {
-                "id": f"cell_{int(root['cell_id'])}",
-                "cell_id": int(root["cell_id"]),
-                "kind": "catalog_su_cell",
-                "mechanism": root.get("event_mode"),
-                "orientation": root.get("orientation"),
-                "status": root.get("status"),
-                "estimator": root.get("estimator", "float64"),
-                "event": root.get("event"),
-                "closure": root.get("closure"),
-                "masses": root.get("masses"),
-            }
-        )
-
-    mixed_arcs: dict[str, dict[str, int]] = {}
-    for node_id in MIXED_NODE_IDS:
-        record = next(item for item in nodes if item["id"] == node_id)
-        masses = record.get("masses") or [None, None]
-        try:
-            m1, m2 = float(masses[0]), float(masses[1])
-        except (TypeError, ValueError, IndexError):
-            mixed_arcs[node_id] = {"plus_one": 0, "minus_one": 0}
-            continue
-        counts = {"plus_one": 0, "minus_one": 0}
-        for root in roots:
-            root_masses = root.get("masses") or []
-            if len(root_masses) < 2:
-                continue
-            try:
-                rm1, rm2 = float(root_masses[0]), float(root_masses[1])
-            except (TypeError, ValueError):
-                continue
-            if (rm1 - m1) ** 2 + (rm2 - m2) ** 2 > MIXED_ARC_RADIUS**2:
-                continue
-            mode = root.get("event_mode")
-            if mode in counts:
-                counts[mode] += 1
-        mixed_arcs[node_id] = counts
-    missing_mixed_arcs = [
-        node_id
-        for node_id, counts in mixed_arcs.items()
-        if counts["plus_one"] < 1 or counts["minus_one"] < 1
-    ]
-
+    edges = polyline_edges(roots) if roots else []
+    cell_ids = [int(root["cell_id"]) for root in roots]
+    assigned = [cell for edge in edges for cell in edge["cell_ids"]]
+    duplicates = sorted({cell for cell in assigned if assigned.count(cell) > 1})
     coverage = {
-        "supplied_roots": len(roots),
+        "source_transition_cells": 620,
+        "localized_roots": len(roots),
         "required_cells": 620,
-        "complete": len(roots) == 620 and {int(r["cell_id"]) for r in roots} == set(range(620)),
+        "complete": len(roots) == 620 and set(cell_ids) == set(range(620)),
         "edge_count": len(edges),
-        "missing_mixed_arcs": missing_mixed_arcs,
+        "cells_on_edges": len(assigned),
+        "duplicate_cell_ids": duplicates,
+        "missing_mixed_germs": missing_germs,
         "newton_failed": len(newton_failed),
+        "completeness_passed": bool(completeness and completeness.get("passed")),
     }
+
+    missing_required = [
+        node_id
+        for node_id in REQUIRED_HEADLINE_IDS
+        if not any(item["id"] == node_id and item.get("passed") for item in nodes)
+    ]
+    unexplained = [item["id"] for item in nodes if item["status"] in {"unresolved", "illegal"}]
+    illegal = [item["id"] for item in nodes if item["status"] == "illegal"]
+
     release_ready = (
         not missing_required
         and not unexplained
+        and not illegal
         and coverage["complete"]
-        and len(edges) == 620
-        and not missing_mixed_arcs
+        and coverage["edge_count"] >= 1
+        and coverage["cells_on_edges"] == 620
+        and not duplicates
+        and not missing_germs
         and not newton_failed
-        and all(n.get("passed") for n in nodes if n["id"] in REQUIRED_NODE_IDS)
+        and coverage["completeness_passed"]
+        and all(item.get("passed") for item in nodes if item["id"] in REQUIRED_HEADLINE_IDS)
     )
     graph = {
-        "schema": "atlas.v1.critical-graph/1",
+        "schema": "atlas.v1.critical-graph/2",
         "claim_status": (
-            "release_ready connected Floquet critical graph"
+            "release_ready complete mechanism-resolved Floquet critical graph on the connected family sheet"
             if release_ready
-            else "partial graph: headline nodes frozen; edges/endpoints still open"
+            else "partial graph: headline nodes frozen; 620 cells are samples, not edges; endpoints/germs/completeness still open"
         ),
         "release_ready": release_ready,
         "family_component": "one continuation-connected Li-Li-Liao catalog sheet",
+        "source_transition_cells": 620,
+        "localized_roots": len(roots),
         "nodes": nodes,
         "edges": edges,
-        "mixed_arcs": mixed_arcs,
+        "mixed_germs": [
+            {
+                "mixed_node": row.get("mixed_node") or row.get("node"),
+                "event_mode": row.get("event_mode") or row.get("mode"),
+                "direction": row.get("direction"),
+                "ends_on": row.get("ends_on"),
+                "status": row.get("status"),
+            }
+            for row in germs
+        ],
         "root_coverage": coverage,
         "unexplained_nodes": unexplained,
         "missing_required_nodes": missing_required,
-        "completeness_screen": al_note,
+        "completeness": completeness,
         "provisional_components": [
             "principal lower: +1 -> mixed -> -1 -> mixed -> +1",
             "principal upper: Delta=0 Hamiltonian-Hopf",
-            "secondary lobe: unresolved left fold -> mixed -> unresolved right death",
+            "secondary lobe: unresolved left birth -> mixed -> unresolved right death",
         ],
     }
     out = Path(args.output)
@@ -250,9 +406,9 @@ def main() -> None:
                 "output": str(out),
                 "release_ready": release_ready,
                 "unexplained_nodes": unexplained,
-                "supplied_roots": coverage["supplied_roots"],
+                "localized_roots": coverage["localized_roots"],
                 "edge_count": coverage["edge_count"],
-                "missing_mixed_arcs": coverage["missing_mixed_arcs"],
+                "missing_mixed_germs": coverage["missing_mixed_germs"],
             },
             indent=2,
         )
