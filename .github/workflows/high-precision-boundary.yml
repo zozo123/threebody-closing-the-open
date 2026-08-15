@@ -57,7 +57,7 @@ jobs:
               raise SystemExit(f'baseline source changed: {got}')
           print('source_git_blob=', got, 'sha256=', hashlib.sha256(raw).hexdigest())
           PY
-      - name: Independently correct published brackets and refine both stability edges
+      - name: Independently anchor public rows, validate subgrid seeds, and refine events
         env:
           DPS: ${{ inputs.dps || '50' }}
           TOL_EXP: ${{ inputs.tol_exp || '25' }}
@@ -67,7 +67,8 @@ jobs:
           julia julia/refine_boundaries.jl \
             data/raw/non-hierarchical-3b-supplementary_data.txt \
             artifacts/m1-0.8-boundaries-bigfloat.json \
-            "$DPS" "$TOL_EXP" "$CLOSURE_EXP" "$WIDTH_EXP"
+            "$DPS" "$TOL_EXP" "$CLOSURE_EXP" "$WIDTH_EXP" \
+            experiments/m1_0p8_boundary_seeds.tsv
       - uses: actions/upload-artifact@v4
         with:
           name: bigfloat-boundaries-${{ github.sha }}
