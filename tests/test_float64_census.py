@@ -26,12 +26,11 @@ def test_frozen_float64_census_has_every_cell_and_ok_roots_hold_gates() -> None:
     assert float(payload["max_closure"]) <= 1e-7
 
 
-def test_hybrid_merge_of_census_and_julia_hard_cells_holds_gates() -> None:
+def test_hybrid_merge_of_census_and_julia_hard_cells_holds_gates(tmp_path) -> None:
     import runpy
     import sys
 
-    output = Path("/var/folders/4l/24cf6m8566bdsdbgvjm26r_r0000gn/T/grok-goal-e40eac9f893d/implementer/hybrid-test.json")
-    output.parent.mkdir(parents=True, exist_ok=True)
+    output = tmp_path / "hybrid-test.json"
     census = ROOT / "research/evidence/V1_FLOAT64_CRITICAL_CENSUS_2026-08-15.json"
     miss = {
         int(row["cell_id"])
