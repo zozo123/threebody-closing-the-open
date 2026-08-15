@@ -60,6 +60,22 @@ function mixed_mass_jacobian(center;tol,target,h)
     J
 end
 
+# Julia's LAPACK-backed svdvals has no Matrix{BigFloat} method. For a 2x2
+# real matrix, compute the two singular values directly using the stable closed
+# form based on orthogonal sum/difference column combinations. This preserves
+# the original lower-singular-value gate without converting the independent
+# BigFloat verifier back to Float64.
+function singular_values_2x2(J::AbstractMatrix{T}) where {T<:Real}
+    size(J) == (2,2) || error("singular_values_2x2 requires a 2x2 matrix")
+    a,b = J[1,1],J[1,2]
+    c,d = J[2,1],J[2,2]
+    p = hypot(a+d,c-b)
+    q = hypot(a-d,c+b)
+    sigma_max = (p+q)/2
+    sigma_min = abs(p-q)/2
+    T[sigma_max,sigma_min]
+end
+
 function solve_mixed_mass_root(seed,center;tol,target,event_target,h,max_shift,maxiter=10)
     current = center
     seed_mass = BigFloat[seed.m1,seed.m2]
@@ -72,7 +88,7 @@ function solve_mixed_mass_root(seed,center;tol,target,event_target,h,max_shift,m
         en <= event_target && return current,iter
 
         J = mixed_mass_jacobian(current;tol=tol,target=target,h=h)
-        sv = svdvals(J)
+        sv = singular_values_2x2(J)
         sv[end] > parse(BigFloat,"1e-30") || error("mixed event mass Jacobian is singular")
         delta = J \ (-events)
 
