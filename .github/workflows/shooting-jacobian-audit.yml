@@ -1,23 +1,21 @@
-name: Direct mixed Floquet vertex search
+name: Shooting-Jacobian rank census
 
 on:
   workflow_dispatch:
   pull_request:
     paths:
-      - "scripts/locate_global_mixed_vertices.py"
-      - "src/threebody_atlas/hybrid_vertices.py"
-      - "src/threebody_atlas/jax_diffrax.py"
-      - ".github/workflows/global-mixed-vertex-search.yml"
-      - "pyproject.toml"
+      - "scripts/audit_shooting_jacobian.py"
+      - "src/threebody_atlas/liao_family.py"
+      - "src/threebody_atlas/reduced.py"
+      - ".github/workflows/shooting-jacobian-audit.yml"
       - "uv.lock"
   push:
     branches: ["main"]
     paths:
-      - "scripts/locate_global_mixed_vertices.py"
-      - "src/threebody_atlas/hybrid_vertices.py"
-      - "src/threebody_atlas/jax_diffrax.py"
-      - ".github/workflows/global-mixed-vertex-search.yml"
-      - "pyproject.toml"
+      - "scripts/audit_shooting_jacobian.py"
+      - "src/threebody_atlas/liao_family.py"
+      - "src/threebody_atlas/reduced.py"
+      - ".github/workflows/shooting-jacobian-audit.yml"
       - "uv.lock"
 
 permissions:
@@ -25,7 +23,6 @@ permissions:
 
 env:
   UV_PYTHON: "3.13"
-  JAX_ENABLE_X64: "1"
 
 jobs:
   preflight:
@@ -36,15 +33,12 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
-      - name: Parse direct vertex driver
-        run: |
-          python -m py_compile scripts/locate_global_mixed_vertices.py
-          python -m py_compile src/threebody_atlas/hybrid_vertices.py
+      - run: python -m py_compile scripts/audit_shooting_jacobian.py
 
-  search:
+  census:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 55
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
       - name: Install uv
@@ -53,14 +47,7 @@ jobs:
           version: "0.11.32"
           enable-cache: true
       - run: uv python install 3.13
-      - run: uv sync --locked --extra accelerated
-      - name: Require JAX x64
-        run: |
-          uv run --no-sync python - <<'PY'
-          import jax
-          assert jax.config.x64_enabled
-          print("backend=", jax.default_backend(), "x64=", jax.config.x64_enabled)
-          PY
+      - run: uv sync --locked
       - name: Fetch frozen Li-Li-Liao baseline
         run: |
           mkdir -p data/raw artifacts
@@ -77,20 +64,15 @@ jobs:
               raise SystemExit(f'baseline source changed: {got}')
           print('source_git_blob=', got, 'sha256=', hashlib.sha256(raw).hexdigest())
           PY
-      - name: Extract published transition brackets
+      - name: Census local shooting-chart rank
         run: |
-          uv run --no-sync python scripts/extract_mass_slice_brackets.py \
+          uv run --no-sync python scripts/audit_shooting_jacobian.py \
             data/raw/non-hierarchical-3b-supplementary_data.txt \
-            artifacts/published-transition-brackets.tsv
-      - name: Solve alpha=4 beta=4 preimages directly
-        run: |
-          uv run --no-sync python scripts/locate_global_mixed_vertices.py \
-            artifacts/published-transition-brackets.tsv \
-            artifacts/global-mixed-vertices.json \
-            --stride 10 --keep 10 --max-nfev 40
+            artifacts/shooting-jacobian-audit.json \
+            --stride 20
       - uses: actions/upload-artifact@v4
         with:
-          name: direct-mixed-vertices-${{ github.sha }}
-          path: artifacts/global-mixed-vertices.json
+          name: shooting-jacobian-audit-${{ github.sha }}
+          path: artifacts/shooting-jacobian-audit.json
           if-no-files-found: error
           retention-days: 90
