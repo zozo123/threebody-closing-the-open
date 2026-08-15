@@ -1,0 +1,121 @@
+name: Junction organizer continuation
+
+on:
+  workflow_dispatch:
+    inputs:
+      steps:
+        description: "Pseudo-arclength steps toward each coarse junction"
+        required: true
+        default: "14"
+      arclength_step:
+        description: "Normalized pseudo-arclength step"
+        required: true
+        default: "0.0015"
+  pull_request:
+    paths:
+      - "scripts/trace_junction_organizer.py"
+      - "src/threebody_atlas/critical_manifold.py"
+      - "src/threebody_atlas/hybrid_vertices.py"
+      - ".github/workflows/junction-organizer-continuation.yml"
+      - "uv.lock"
+  push:
+    branches: ["main"]
+    paths:
+      - "scripts/trace_junction_organizer.py"
+      - "src/threebody_atlas/critical_manifold.py"
+      - "src/threebody_atlas/hybrid_vertices.py"
+      - ".github/workflows/junction-organizer-continuation.yml"
+      - "uv.lock"
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON: "3.13"
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: python -m py_compile scripts/trace_junction_organizer.py
+
+  organizer:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - label: principal-lower-left
+            center_m1: "0.9295"
+            center_m2: "0.8865"
+            radius_m1: "0.006"
+            radius_m2: "0.035"
+          - label: secondary-birth
+            center_m1: "0.9965"
+            center_m2: "0.9605"
+            radius_m1: "0.006"
+            radius_m2: "0.035"
+          - label: principal-lower-right
+            center_m1: "1.0495"
+            center_m2: "1.1300"
+            radius_m1: "0.006"
+            radius_m2: "0.035"
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.32"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked
+      - name: Fetch frozen Li-Li-Liao baseline
+        run: |
+          mkdir -p data/raw artifacts
+          curl -L --fail --retry 3 \
+            https://raw.githubusercontent.com/sjtu-liao/three-body/main/non-hierarchical-3b-supplementary_data.txt \
+            -o data/raw/non-hierarchical-3b-supplementary_data.txt
+          uv run --no-sync python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          raw = Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
+          got = hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
+          expected = '79b2963df43e62201c35690bfc22bec166132427'
+          if got != expected:
+              raise SystemExit(f'baseline source changed: {got}')
+          print('source_git_blob=', got, 'sha256=', hashlib.sha256(raw).hexdigest())
+          PY
+      - name: Extract all published transition brackets
+        run: |
+          uv run --no-sync python scripts/extract_mass_slice_brackets.py \
+            data/raw/non-hierarchical-3b-supplementary_data.txt \
+            artifacts/published-transition-brackets.tsv
+      - name: Trace ${{ matrix.label }} organizer neighborhood
+        env:
+          STEPS: ${{ inputs.steps || '14' }}
+          ARC_STEP: ${{ inputs.arclength_step || '0.0015' }}
+        run: |
+          uv run --no-sync python scripts/trace_junction_organizer.py \
+            artifacts/published-transition-brackets.tsv \
+            "artifacts/junction-${{ matrix.label }}.json" \
+            --center-m1 "${{ matrix.center_m1 }}" \
+            --center-m2 "${{ matrix.center_m2 }}" \
+            --radius-m1 "${{ matrix.radius_m1 }}" \
+            --radius-m2 "${{ matrix.radius_m2 }}" \
+            --steps "$STEPS" \
+            --arclength-step "$ARC_STEP"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: junction-${{ matrix.label }}-${{ github.sha }}
+          path: artifacts/junction-${{ matrix.label }}.json
+          if-no-files-found: warn
+          retention-days: 90
