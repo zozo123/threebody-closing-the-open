@@ -190,7 +190,9 @@ function main()
     y0 = [q0... ,seed.m1,seed.m2]
     prob = BifurcationProblem(residual6,y0,(dummy=0.0,),(@optic _.dummy);J=jac6)
     npar = NewtonPar(tol=1e-6,max_iterations=12,verbose=true,linesearch=true)
-    root = newton(prob,npar;normN=x->norm(x,Inf),callback=BK.cbMaxNorm(10.0))
+    # BifurcationKit 0.8.2 routes regular Newton through the generic solve API.
+    # This call shape is taken directly from the pinned upstream 0.8.2 tests.
+    root = BK.solve(prob, Newton(), npar;normN=x->norm(x,Inf),callback=BK.cbMaxNorm(10.0))
     BK.converged(root) || error("BifurcationKit organizer Newton did not converge; residuals=$(root.residuals)")
 
     y = Float64.(root.u)
@@ -206,7 +208,7 @@ function main()
     mkpath(dirname(output))
     open(output,"w") do io
         print(io,"{\n",
-          "  \"implementation\": \"independent Julia 1.12.6 + BifurcationKit rank-revealed organizer Newton + Vern9 variational cross-check\",\n",
+          "  \"implementation\": \"independent Julia 1.12.6 + BifurcationKit 0.8.2 rank-revealed organizer Newton + Vern9 variational cross-check\",\n",
           "  \"claim_status\": \"screening_supported_independent_formulation\",\n",
           "  \"seed_name\": \"",json_string(seed.name),"\",\n",
           "  \"julia_version\": \"",VERSION,"\",\n",
