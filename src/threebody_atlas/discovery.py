@@ -222,7 +222,15 @@ def render_summary(manifest: dict[str, Any]) -> str:
 
 def render_latex_status(manifest: dict[str, Any]) -> str:
     def esc(text: str) -> str:
-        return text.replace("_", r"\_").replace("&", r"\&").replace("%", r"\%")
+        return (
+            text.replace("\\", r"\textbackslash{}")
+            .replace("_", r"\_")
+            .replace("&", r"\&")
+            .replace("%", r"\%")
+            .replace("#", r"\#")
+            .replace("^", r"\^{}")
+            .replace("~", r"\textasciitilde{}")
+        )
 
     status = esc(manifest["status"].upper())
     summary = esc(manifest["decision"]["summary"])
@@ -230,14 +238,28 @@ def render_latex_status(manifest: dict[str, Any]) -> str:
         "% Generated from research/DISCOVERY_RELEASE.json.",
         r"\subsection*{Machine-readable discovery status}",
         rf"Scientific status: \textbf{{{status}}}. {summary}",
+        r"\paragraph{Gates.}",
         r"\begin{itemize}",
     ]
     for gate in manifest["gates"]:
-        gate_id = esc(gate["id"])
-        title = esc(gate["title"])
-        gate_status = esc(gate["status"].upper())
-        lines.append(rf"\item Gate {gate_id} --- {title}: \textbf{{{gate_status}}}.")
+        lines.append(
+            rf"\item Gate {esc(gate['id'])} --- {esc(gate['title'])}: "
+            rf"\textbf{{{esc(gate['status'].upper())}}}. {esc(gate['criterion'])}"
+        )
     lines.append(r"\end{itemize}")
+    lines += [r"\paragraph{Authorized release claims.}", r"\begin{itemize}"]
+    claims = [c for c in manifest.get("claims", []) if c.get("status") == "release_claim"]
+    if not claims:
+        lines.append(r"\item No scientific release claim is authorized.")
+    for claim in claims:
+        cid = esc(claim["id"])
+        lines.append(rf"\item \textbf{{{cid}}}. {esc(claim['statement'])}")
+    lines.append(r"\end{itemize}")
+    if manifest.get("blockers"):
+        lines += [r"\paragraph{Remaining blockers.}", r"\begin{itemize}"]
+        for blocker in manifest["blockers"]:
+            lines.append(rf"\item {esc(blocker)}")
+        lines.append(r"\end{itemize}")
     return "\n".join(lines) + "\n"
 
 

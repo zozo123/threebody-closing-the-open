@@ -16,6 +16,20 @@ MANIFEST = ROOT / "research" / "DISCOVERY_RELEASE.json"
 def test_current_open_manifest_is_valid() -> None:
     manifest = load_manifest(MANIFEST)
     validate_manifest(manifest, ROOT, today=date(2026, 8, 15))
+    assert manifest["status"] == "open"
+    assert {g["id"]: g["status"] for g in manifest["gates"]} == {
+        "A": "pass",
+        "B": "pending",
+        "C": "pass",
+        "D": "pending",
+    }
+    release = [c for c in manifest["claims"] if c["status"] == "release_claim"]
+    assert {c["id"] for c in release} >= {
+        "one-continuation-family",
+        "principal-lower-plus-one",
+        "principal-upper-hamiltonian-hopf",
+        "three-mixed-organizers",
+    }
 
 
 def test_open_manifest_cannot_be_published_as_solved() -> None:
