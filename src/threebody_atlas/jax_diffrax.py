@@ -13,10 +13,17 @@ The integration interval is normalized to s in [0, 1], with
 so the period T is an ordinary differentiable parameter instead of the terminal
 integration time. This lets Diffrax ForwardMode differentiate the full closure
 map with respect to (x1, v1, v2, T, m1, m2).
+
+For Floquet-event gradients we integrate the 8D state together with its 8x8
+fundamental matrix. JAX then differentiates the smooth event scalar through that
+adaptive augmented solve. This requires second derivatives of the vector field,
+which JAX obtains automatically; the resulting gradients remain screening-only
+until independently checked against the SciPy variational path.
 """
 from __future__ import annotations
 
 from functools import lru_cache
+from typing import Literal
 
 import numpy as np
 
@@ -30,6 +37,7 @@ except ImportError:  # pragma: no cover - exercised in base-only environments.
     jnp = None
 
 Array = np.ndarray
+EventMode = Literal["plus_one", "minus_one", "trace_collision"]
 
 
 def accelerated_available() -> bool:
@@ -77,40 +85,108 @@ def _normalized_rhs(s, state, args):
     return period * reduced_rhs_jax(s, state, masses)
 
 
-def _closure_impl(y, m3, *, rtol: float, atol: float, max_steps: int):
-    z0 = chart_state_jax(y, m3)
-    masses = jnp.asarray([y[4], y[5], m3], dtype=jnp.float64)
-    term = diffrax.ODETerm(_normalized_rhs)
-    solver = diffrax.Dopri8()
-    controller = diffrax.PIDController(rtol=rtol, atol=atol)
-    sol = diffrax.diffeqsolve(
+def _solve(term, y0, args, *, rtol: float, atol: float, max_steps: int):
+    return diffrax.diffeqsolve(
         term,
-        solver,
+        diffrax.Dopri8(),
         t0=0.0,
         t1=1.0,
         dt0=None,
-        y0=z0,
-        args=(masses, y[3]),
+        y0=y0,
+        args=args,
         saveat=diffrax.SaveAt(t1=True),
-        stepsize_controller=controller,
+        stepsize_controller=diffrax.PIDController(rtol=rtol, atol=atol),
         adjoint=diffrax.ForwardMode(),
         max_steps=max_steps,
         throw=True,
     )
-    zf = sol.ys[0]
-    return zf - z0
+
+
+def _closure_impl(y, m3, *, rtol: float, atol: float, max_steps: int):
+    z0 = chart_state_jax(y, m3)
+    masses = jnp.asarray([y[4], y[5], m3], dtype=jnp.float64)
+    sol = _solve(
+        diffrax.ODETerm(_normalized_rhs),
+        z0,
+        (masses, y[3]),
+        rtol=rtol,
+        atol=atol,
+        max_steps=max_steps,
+    )
+    return sol.ys[0] - z0
+
+
+def _normalized_augmented_rhs(s, augmented, args):
+    masses, period = args
+    z = augmented[:8]
+    phi = augmented[8:].reshape(8, 8)
+    rhs = reduced_rhs_jax(s, z, masses)
+    local_jac = jax.jacfwd(reduced_rhs_jax, argnums=1)(s, z, masses)
+    dphi = local_jac @ phi
+    return period * jnp.concatenate((rhs, dphi.reshape(-1)))
+
+
+def _floquet_invariants_jax(monodromy):
+    alpha = jnp.trace(monodromy)
+    beta = 0.5 * (alpha * alpha - jnp.trace(monodromy @ monodromy))
+    discriminant = (alpha - 4.0) ** 2 - 4.0 * (beta - 4.0 * alpha + 8.0)
+    return alpha, beta, discriminant
+
+
+def _event_from_invariants(alpha, beta, discriminant, mode: EventMode):
+    if mode == "plus_one":
+        return beta - 6.0 * alpha + 20.0
+    if mode == "minus_one":
+        return beta - 2.0 * alpha + 4.0
+    if mode == "trace_collision":
+        return discriminant
+    raise ValueError(f"unsupported event mode: {mode}")
+
+
+def _event_impl(y, m3, mode: EventMode, *, rtol: float, atol: float, max_steps: int):
+    z0 = chart_state_jax(y, m3)
+    masses = jnp.asarray([y[4], y[5], m3], dtype=jnp.float64)
+    augmented0 = jnp.concatenate((z0, jnp.eye(8, dtype=jnp.float64).reshape(-1)))
+    sol = _solve(
+        diffrax.ODETerm(_normalized_augmented_rhs),
+        augmented0,
+        (masses, y[3]),
+        rtol=rtol,
+        atol=atol,
+        max_steps=max_steps,
+    )
+    monodromy = sol.ys[0][8:].reshape(8, 8)
+    alpha, beta, discriminant = _floquet_invariants_jax(monodromy)
+    return _event_from_invariants(alpha, beta, discriminant, mode)
 
 
 @lru_cache(maxsize=8)
-def _compiled(rtol: float, atol: float, max_steps: int):
+def _compiled_closure(rtol: float, atol: float, max_steps: int):
     require_accelerated_x64()
 
     def closure(y, m3):
         return _closure_impl(y, m3, rtol=rtol, atol=atol, max_steps=max_steps)
 
-    compiled_closure = jax.jit(closure)
-    compiled_jacobian = jax.jit(jax.jacfwd(closure, argnums=0))
-    return compiled_closure, compiled_jacobian
+    return jax.jit(closure), jax.jit(jax.jacfwd(closure, argnums=0))
+
+
+@lru_cache(maxsize=24)
+def _compiled_event(mode: EventMode, rtol: float, atol: float, max_steps: int):
+    require_accelerated_x64()
+
+    def event(y, m3):
+        return _event_impl(y, m3, mode, rtol=rtol, atol=atol, max_steps=max_steps)
+
+    return jax.jit(event), jax.jit(jax.jacfwd(event, argnums=0))
+
+
+def _validate_vector(y: Array) -> Array:
+    y_arr = np.asarray(y, dtype=float)
+    if y_arr.shape != (6,):
+        raise ValueError("continuation vector must have six components")
+    if y_arr[3] <= 0.0:
+        raise ValueError("period must be positive")
+    return y_arr
 
 
 def adaptive_closure_and_jacobian(
@@ -123,12 +199,8 @@ def adaptive_closure_and_jacobian(
 ) -> tuple[Array, Array]:
     """Return adaptive Diffrax closure and d(closure)/d(x1,v1,v2,T,m1,m2)."""
     require_accelerated_x64()
-    y_arr = np.asarray(y, dtype=float)
-    if y_arr.shape != (6,):
-        raise ValueError("continuation vector must have six components")
-    if y_arr[3] <= 0.0:
-        raise ValueError("period must be positive")
-    closure_fn, jacobian_fn = _compiled(float(rtol), float(atol), int(max_steps))
+    y_arr = _validate_vector(y)
+    closure_fn, jacobian_fn = _compiled_closure(float(rtol), float(atol), int(max_steps))
     y_jax = jnp.asarray(y_arr, dtype=jnp.float64)
     m3_jax = jnp.asarray(float(m3), dtype=jnp.float64)
     closure = np.asarray(jax.device_get(closure_fn(y_jax, m3_jax)), dtype=float)
@@ -148,6 +220,33 @@ def adaptive_closure(
         y, m3=m3, rtol=rtol, atol=atol, max_steps=max_steps
     )
     return closure
+
+
+def adaptive_event_and_gradient(
+    y: Array,
+    mode: EventMode,
+    *,
+    m3: float = 1.0,
+    rtol: float = 2e-9,
+    atol: float = 2e-11,
+    max_steps: int = 1 << 18,
+) -> tuple[float, Array]:
+    """Return a smooth Floquet event and its six-parameter JAX gradient.
+
+    The slightly looser defaults than the state-only closure path control the
+    cost of differentiating the 72D state+fundamental-matrix flow. Acceptance
+    against the SciPy variational implementation is mandatory before use.
+    """
+    require_accelerated_x64()
+    if mode not in ("plus_one", "minus_one", "trace_collision"):
+        raise ValueError(f"unsupported event mode: {mode}")
+    y_arr = _validate_vector(y)
+    event_fn, gradient_fn = _compiled_event(mode, float(rtol), float(atol), int(max_steps))
+    y_jax = jnp.asarray(y_arr, dtype=jnp.float64)
+    m3_jax = jnp.asarray(float(m3), dtype=jnp.float64)
+    value = float(jax.device_get(event_fn(y_jax, m3_jax)))
+    gradient = np.asarray(jax.device_get(gradient_fn(y_jax, m3_jax)), dtype=float)
+    return value, gradient
 
 
 def rhs_jacobian(state: Array, masses: Array) -> Array:
