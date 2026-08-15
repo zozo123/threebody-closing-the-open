@@ -12,11 +12,16 @@ on:
           - bigfloat-critical
           - bigfloat-mixed
           - latest-bifurcationkit
+          - capd-validated
         default: all
       dps:
         description: "BigFloat decimal precision"
         required: true
         default: "50"
+      capd_box_radius:
+        description: "Relative radius for CAPD rigorous initial-state box"
+        required: true
+        default: "1e-14"
 
 permissions:
   contents: read
@@ -143,5 +148,61 @@ jobs:
             ${{ matrix.output_file }}
             artifacts/selfhosted-latest-bk-Project.toml
             artifacts/selfhosted-latest-bk-Manifest.toml
+          if-no-files-found: warn
+          retention-days: 90
+
+  capd-validated:
+    if: inputs.lane == 'all' || inputs.lane == 'capd-validated'
+    runs-on: [self-hosted, Linux, X64]
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: principal-lower-left
+            seed_file: experiments/mixed_vertex_principal_lower_left.tsv
+          - label: secondary-lower-switch
+            seed_file: experiments/mixed_vertex_secondary_lower_switch.tsv
+          - label: principal-lower-right
+            seed_file: experiments/mixed_vertex_principal_lower_right.tsv
+    steps:
+      - uses: actions/checkout@v7
+      - name: Require C++ proof toolchain
+        run: |
+          command -v git
+          command -v cmake
+          command -v g++
+      - name: Fetch frozen current CAPD master
+        run: |
+          rm -rf third_party/CAPD
+          git clone --filter=blob:none https://github.com/CAPDGroup/CAPD.git third_party/CAPD
+          git -C third_party/CAPD checkout 731079217a9254ea2948d742df2b170895effe7f
+          test "$(git -C third_party/CAPD rev-parse HEAD)" = "731079217a9254ea2948d742df2b170895effe7f"
+      - name: Build CAPD rigorous ODE stack
+        run: |
+          cmake -S third_party/CAPD -B third_party/CAPD/build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCAPD_ENABLE_MULTIPRECISION=false
+          cmake --build third_party/CAPD/build --parallel 2
+      - name: Build and run rigorous flow enclosure
+        env:
+          BOX_RADIUS: ${{ inputs.capd_box_radius }}
+        run: |
+          mkdir -p artifacts
+          g++ -O2 -std=c++17 validated/capd/validated_flow.cpp \
+            $(third_party/CAPD/build/bin/capd-config --cflags --libs) \
+            -o artifacts/capd-validated-flow
+          artifacts/capd-validated-flow \
+            "${{ matrix.seed_file }}" \
+            "artifacts/selfhosted-capd-validated-flow-${{ matrix.label }}.json" \
+            "$BOX_RADIUS"
+          printf '%s\n' '731079217a9254ea2948d742df2b170895effe7f' > artifacts/CAPD_COMMIT.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: selfhosted-capd-validated-${{ matrix.label }}-${{ github.sha }}
+          path: |
+            artifacts/selfhosted-capd-validated-flow-${{ matrix.label }}.json
+            artifacts/CAPD_COMMIT.txt
           if-no-files-found: warn
           retention-days: 90
