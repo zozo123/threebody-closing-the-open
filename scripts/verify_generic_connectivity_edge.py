@@ -8,10 +8,10 @@ to the generic 8D translation-reduced strict-periodic formulation, and walks
 the same mass segment in both directions without imposing the Li collinearity
 or velocity ansatz.
 
-Only the number of mass substeps may increase. Closure, gauge, phase, and
-terminal-match gates are fixed across retries. A pass is finite-path
-cross-chart evidence; it is not by itself a theorem about the unsampled moduli
-space.
+Only predictor quality, Newton work, and the number of mass substeps may
+increase. Closure, gauge, phase, and terminal-match gates are fixed across all
+retries. A pass is finite-path cross-chart evidence; it is not by itself a
+theorem about the unsampled moduli space.
 """
 from __future__ import annotations
 
@@ -53,10 +53,12 @@ def endpoint_from_serialized(row: dict, max_residual: float) -> GenericPeriodicP
         reduced,
         li.period,
         reference_state=reduced,
-        max_nfev=100,
+        max_nfev=180,
         max_closure=max_residual,
         max_gauge=max_residual,
         max_phase=max_residual,
+        rtol=1e-10,
+        atol=1e-12,
     )
     if not generic.success:
         raise RuntimeError(
@@ -79,15 +81,78 @@ def off_li_norm(point: GenericPeriodicPoint) -> float:
     return float(np.linalg.norm(z[[1, 4, 6]]))
 
 
+def correction_score(point: GenericPeriodicPoint) -> float:
+    return float(
+        point.closure_norm
+        + point.gauge_norm
+        + abs(point.phase_residual)
+    )
+
+
+def correct_with_predictor_ensemble(
+    masses: tuple[float, float, float],
+    predictors: list[tuple[str, np.ndarray]],
+    reference_state: np.ndarray,
+    *,
+    max_residual: float,
+) -> tuple[GenericPeriodicPoint, str, list[dict]]:
+    """Try branch-informed predictors without changing any acceptance gate."""
+    trials: list[tuple[str, GenericPeriodicPoint]] = []
+    diagnostics: list[dict] = []
+    for label, predictor in predictors:
+        candidate = correct_generic_periodic(
+            masses,
+            predictor[:8],
+            float(predictor[8]),
+            reference_state=reference_state,
+            max_nfev=220,
+            max_closure=max_residual,
+            max_gauge=max_residual,
+            max_phase=max_residual,
+            rtol=1e-10,
+            atol=1e-12,
+        )
+        diagnostics.append(
+            {
+                "predictor": label,
+                "success": bool(candidate.success),
+                "closure_norm": candidate.closure_norm,
+                "gauge_norm": candidate.gauge_norm,
+                "phase_residual": candidate.phase_residual,
+                "nfev": candidate.nfev,
+            }
+        )
+        if candidate.success:
+            trials.append((label, candidate))
+    if not trials:
+        best = min(
+            diagnostics,
+            key=lambda item: (
+                item["closure_norm"]
+                + item["gauge_norm"]
+                + abs(item["phase_residual"])
+            ),
+        )
+        raise RuntimeError(
+            "generic corrector predictor ensemble missed fixed gates; "
+            f"best={best}"
+        )
+    label, point = min(trials, key=lambda item: correction_score(item[1]))
+    return point, label, diagnostics
+
+
 def walk(
     start: GenericPeriodicPoint,
-    target_masses: tuple[float, float, float],
+    target: GenericPeriodicPoint,
     *,
     steps: int,
     max_residual: float,
 ) -> tuple[GenericPeriodicPoint, list[dict], dict[str, float]]:
     m0 = np.asarray(start.masses, dtype=float)
-    m1 = np.asarray(target_masses, dtype=float)
+    m1 = np.asarray(target.masses, dtype=float)
+    start_vector = start.vector.copy()
+    target_vector = target.vector.copy()
+    previous: GenericPeriodicPoint | None = None
     current = start
     path: list[dict] = []
     maxima = {
@@ -100,23 +165,25 @@ def walk(
         theta = k / steps
         masses = tuple(float(x) for x in ((1.0 - theta) * m0 + theta * m1))
         reference = np.asarray(current.state, dtype=float)
-        nxt = correct_generic_periodic(
+
+        # Endpoint interpolation uses only independently generic-corrected
+        # endpoint solutions.  It imposes no Li ansatz on an interior point.
+        endpoint_linear = (1.0 - theta) * start_vector + theta * target_vector
+        predictors: list[tuple[str, np.ndarray]] = []
+        if previous is not None:
+            # Equal-mass-step secant predictor is the standard local continuation
+            # predictor and is tried first after two accepted generic points.
+            predictors.append(("secant", current.vector + (current.vector - previous.vector)))
+        predictors.append(("generic_endpoint_linear", endpoint_linear))
+        predictors.append(("previous_point", current.vector.copy()))
+
+        nxt, predictor_used, diagnostics = correct_with_predictor_ensemble(
             masses,
+            predictors,
             reference,
-            current.period,
-            reference_state=reference,
-            max_nfev=90,
-            max_closure=max_residual,
-            max_gauge=max_residual,
-            max_phase=max_residual,
+            max_residual=max_residual,
         )
-        if not nxt.success:
-            raise RuntimeError(
-                f"generic continuation failed at theta={theta:.8f}: "
-                f"closure={nxt.closure_norm:.3e} gauge={nxt.gauge_norm:.3e} "
-                f"phase={nxt.phase_residual:.3e}"
-            )
-        current = nxt
+        previous, current = current, nxt
         maxima["closure"] = max(maxima["closure"], float(current.closure_norm))
         maxima["gauge"] = max(maxima["gauge"], float(current.gauge_norm))
         maxima["phase"] = max(maxima["phase"], abs(float(current.phase_residual)))
@@ -131,6 +198,8 @@ def walk(
                 "phase_residual": current.phase_residual,
                 "off_li_norm": off_li_norm(current),
                 "nfev": current.nfev,
+                "predictor_used": predictor_used,
+                "predictor_trials": diagnostics,
             }
         )
     return current, path, maxima
@@ -146,10 +215,10 @@ def certify(
     left = endpoint_from_serialized(edge["left"], max_residual)
     right = endpoint_from_serialized(edge["right"], max_residual)
     forward, forward_path, max_forward = walk(
-        left, right.masses, steps=steps, max_residual=max_residual
+        left, right, steps=steps, max_residual=max_residual
     )
     reverse, reverse_path, max_reverse = walk(
-        right, left.masses, steps=steps, max_residual=max_residual
+        right, left, steps=steps, max_residual=max_residual
     )
     forward_match = distance(forward, right)
     reverse_match = distance(reverse, left)
@@ -161,7 +230,8 @@ def certify(
     return {
         "formulation": (
             "8D translation-reduced strict periodic single shooting with local scale, rotation, "
-            "and time-phase gauges; Li chart used only for endpoint warm starts"
+            "and time-phase gauges; Li chart used only for endpoint warm starts; interior predictor "
+            "ensemble uses generic endpoint interpolation and accepted-point secants"
         ),
         "substeps_each_direction": steps,
         "left_endpoint": {
