@@ -1,0 +1,147 @@
+name: Strongest hammers self-hosted
+
+on:
+  workflow_dispatch:
+    inputs:
+      lane:
+        description: "Verification lane to run"
+        required: true
+        type: choice
+        options:
+          - all
+          - bigfloat-critical
+          - bigfloat-mixed
+          - latest-bifurcationkit
+        default: all
+      dps:
+        description: "BigFloat decimal precision"
+        required: true
+        default: "50"
+
+permissions:
+  contents: read
+
+jobs:
+  critical-bigfloat:
+    if: inputs.lane == 'all' || inputs.lane == 'bigfloat-critical'
+    runs-on: [self-hosted, Linux, X64]
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: lower-plus-one
+            seed_file: experiments/critical_curve_lower_plus_one.tsv
+            output_file: artifacts/selfhosted-critical-lower-plus-one-bigfloat.json
+          - label: upper-trace-collision
+            seed_file: experiments/critical_curve_upper_collision.tsv
+            output_file: artifacts/selfhosted-critical-upper-trace-collision-bigfloat.json
+    steps:
+      - uses: actions/checkout@v7
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.11.9"
+      - name: Instantiate exact frozen independent stack
+        run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile(); Pkg.status()'
+      - name: Verify ${{ matrix.label }}
+        env:
+          DPS: ${{ inputs.dps }}
+        run: |
+          mkdir -p artifacts
+          julia --project=julia julia/verify_critical_points.jl \
+            "${{ matrix.seed_file }}" \
+            "${{ matrix.output_file }}" \
+            "$DPS" 25 18 8 5 4
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: selfhosted-critical-${{ matrix.label }}-${{ github.sha }}
+          path: ${{ matrix.output_file }}
+          if-no-files-found: warn
+          retention-days: 90
+
+  mixed-bigfloat:
+    if: inputs.lane == 'all' || inputs.lane == 'bigfloat-mixed'
+    runs-on: [self-hosted, Linux, X64]
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: principal-lower-left
+            seed_file: experiments/mixed_vertex_principal_lower_left.tsv
+            output_file: artifacts/selfhosted-mixed-principal-lower-left-bigfloat.json
+          - label: secondary-lower-switch
+            seed_file: experiments/mixed_vertex_secondary_lower_switch.tsv
+            output_file: artifacts/selfhosted-mixed-secondary-lower-switch-bigfloat.json
+          - label: principal-lower-right
+            seed_file: experiments/mixed_vertex_principal_lower_right.tsv
+            output_file: artifacts/selfhosted-mixed-principal-lower-right-bigfloat.json
+    steps:
+      - uses: actions/checkout@v7
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.11.9"
+      - name: Instantiate exact frozen independent stack
+        run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile(); Pkg.status()'
+      - name: Verify mixed organizer ${{ matrix.label }}
+        env:
+          DPS: ${{ inputs.dps }}
+        run: |
+          mkdir -p artifacts
+          julia --project=julia julia/verify_mixed_vertices.jl \
+            "${{ matrix.seed_file }}" \
+            "${{ matrix.output_file }}" \
+            "$DPS" 25 18 12 6 4
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: selfhosted-mixed-${{ matrix.label }}-${{ github.sha }}
+          path: ${{ matrix.output_file }}
+          if-no-files-found: warn
+          retention-days: 90
+
+  latest-bifurcationkit:
+    if: inputs.lane == 'all' || inputs.lane == 'latest-bifurcationkit'
+    runs-on: [self-hosted, Linux, X64]
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: principal-lower-left
+            seed_file: experiments/mixed_vertex_principal_lower_left.tsv
+            output_file: artifacts/selfhosted-latest-bk-principal-lower-left.json
+          - label: secondary-lower-switch
+            seed_file: experiments/mixed_vertex_secondary_lower_switch.tsv
+            output_file: artifacts/selfhosted-latest-bk-secondary-lower-switch.json
+          - label: principal-lower-right
+            seed_file: experiments/mixed_vertex_principal_lower_right.tsv
+            output_file: artifacts/selfhosted-latest-bk-principal-lower-right.json
+    steps:
+      - uses: actions/checkout@v7
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.12.6"
+      - name: Resolve latest independent stack and freeze manifest
+        run: |
+          julia --project=julia-latest -e 'using Pkg; Pkg.resolve(); Pkg.instantiate(); Pkg.precompile(); Pkg.status()'
+          test -s julia-latest/Manifest.toml
+      - name: Cross-check mixed organizer ${{ matrix.label }}
+        run: |
+          mkdir -p artifacts
+          julia --project=julia-latest julia-latest/crosscheck_mixed_vertex.jl \
+            "${{ matrix.seed_file }}" \
+            "${{ matrix.output_file }}"
+          cp julia-latest/Project.toml artifacts/selfhosted-latest-bk-Project.toml
+          cp julia-latest/Manifest.toml artifacts/selfhosted-latest-bk-Manifest.toml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: selfhosted-latest-bk-${{ matrix.label }}-${{ github.sha }}
+          path: |
+            ${{ matrix.output_file }}
+            artifacts/selfhosted-latest-bk-Project.toml
+            artifacts/selfhosted-latest-bk-Manifest.toml
+          if-no-files-found: warn
+          retention-days: 90
