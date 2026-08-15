@@ -143,6 +143,8 @@
     {"id":"canonical-lower-plus-one","kind":"repository_file","role":"independent_verification","path":"research/evidence/V1_CANONICAL_LOWER_PLUS_ONE_2026-08-15.json","description":"Independent BigFloat + physical E^omega/E bind of the lower +1 representative as a generic plus-one crossing; passed true."},
     {"id":"canonical-upper-collision","kind":"repository_file","role":"independent_verification","path":"research/evidence/V1_CANONICAL_UPPER_COLLISION_2026-08-15.json","description":"Independent BigFloat + physical E^omega/E bind of the upper collision as an opposite-Krein Hamiltonian-Hopf event; passed true."},
     {"id":"execution-dag","kind":"repository_file","role":"method","path":"research/EXECUTION_DAG.md","description":"Control-plane execution DAG for remaining v1 closure waves."},
+    {"id":"partial-critical-graph","kind":"repository_file","role":"critical_graph","path":"research/evidence/V1_CRITICAL_GRAPH.json","description":"Partial v1 critical graph: headline +1, Hamiltonian-Hopf, and three mixed nodes frozen; fold, secondary-right death, daughter, and 620-cell edges still open. release_ready is false."},
+    {"id":"al-pocket-screen","kind":"repository_file","role":"adversarial_search","path":"research/evidence/V1_AL_POCKET_SCREEN_2026-08-15.json","description":"Off-grid active-learning screen: 12/12 proposals corrected onto the known sheet, zero screening-stable hidden pockets in that sample."},
     {"id":"paper","kind":"generated_artifact","role":"paper","path":"paper/main.pdf","description":"Manuscript built after injecting the machine-readable discovery status."}
   ],
   "release": {

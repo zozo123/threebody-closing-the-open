@@ -89,7 +89,7 @@ def solve_cell(cell_id: int, row: dict[str, str]) -> dict[str, Any]:
             # bracket further instead of weakening the event acceptance criterion.
             m2_tolerance=1e-12,
             event_tolerance=2e-8,
-            max_iterations=60,
+            max_iterations=24,
             max_closure=1e-7,
         )
     except Exception as exc:

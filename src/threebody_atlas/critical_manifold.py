@@ -29,10 +29,11 @@ import numpy as np
 from scipy.integrate import solve_ivp
 from scipy.optimize import least_squares
 
-from .boundary import BoundarySample, evaluate
+from .boundary import BoundarySample, evaluate, stability_score
 from .liao_family import FamilyPoint, correct_family_point, state_from_chart
 from .reduced import (
     ReducedFloquetResult,
+    compute_reduced_floquet,
     full_to_reduced,
     reduced_jacobian,
     reduced_rhs,
@@ -232,33 +233,43 @@ def localize_critical_point(
     return LocalizedCriticalPoint(polished.sample, mode, final_v, float(width))
 
 
+def _precise_evaluate(point: FamilyPoint) -> BoundarySample:
+    """Recompute Floquet tightly so event Newton is not limited by monodromy noise."""
+    floquet = compute_reduced_floquet(
+        point.state(),
+        np.asarray(point.masses, dtype=float),
+        point.period,
+        rtol=5e-13,
+        atol=5e-15,
+    )
+    return BoundarySample(point, floquet, stability_score(floquet))
+
+
 def _polish_event_root(
     sample: BoundarySample,
     mode: EventMode,
     *,
     event_tolerance: float,
     max_closure: float,
-    max_steps: int = 8,
+    max_steps: int = 6,
 ) -> LocalizedCriticalPoint:
-    """One-dimensional Newton on m2 at fixed m1 after the bracket search."""
-    current = sample
+    """One-dimensional Newton on m2 at fixed m1 after a short bracket search."""
+    current = _precise_evaluate(sample.point)
     value = event_value(current.floquet, mode)
     if abs(value) <= event_tolerance:
-        width = 0.0
-        return LocalizedCriticalPoint(current, mode, float(value), width)
+        return LocalizedCriticalPoint(current, mode, float(value), 0.0)
 
     m1, m2, m3 = (float(x) for x in current.point.masses)
     for _ in range(max_steps):
-        step = max(1e-10, 1e-8 * max(abs(m2), 1.0))
-        probe_m2 = m2 + step
+        step = max(5e-11, 1e-8 * max(abs(m2), 1.0))
         probe = correct_family_point(
-            (m1, probe_m2, m3),
+            (m1, m2 + step, m3),
             (current.point.x1, current.point.v1, current.point.v2, current.point.period),
-            max_nfev=80,
+            max_nfev=40,
         )
         if not probe.success or probe.residual_norm > max_closure:
             break
-        probed = evaluate(probe)
+        probed = _precise_evaluate(probe)
         slope = (event_value(probed.floquet, mode) - value) / step
         if slope == 0.0 or not np.isfinite(slope):
             break
@@ -268,11 +279,11 @@ def _polish_event_root(
         corrected = correct_family_point(
             (m1, float(nxt_m2), m3),
             (current.point.x1, current.point.v1, current.point.v2, current.point.period),
-            max_nfev=80,
+            max_nfev=40,
         )
         if not corrected.success or corrected.residual_norm > max_closure:
             break
-        current = evaluate(corrected)
+        current = _precise_evaluate(corrected)
         m2 = float(current.point.masses[1])
         value = event_value(current.floquet, mode)
         if abs(value) <= event_tolerance:
