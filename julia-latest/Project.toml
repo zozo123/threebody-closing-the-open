@@ -1,6 +1,6 @@
 [deps]
 BifurcationKit = "0f109fa4-8a5d-4b75-95aa-f515264e7665"
-ForwardDiff = "f6369f11-7733-582d-bbbb-6f7a0d634f4e"
+ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 OrdinaryDiffEq = "1dea7af3-3e70-54e6-95c3-0bf5283fa5ed"
 OrdinaryDiffEqVerner = "79d7bb75-1356-48c1-b8c0-6832512096c2"
 SciMLBase = "0bca4576-84f4-4d90-8ffe-ffa030f20462"
