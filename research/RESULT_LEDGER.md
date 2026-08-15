@@ -239,6 +239,12 @@ QR-fixed canonical matrix run `31886247498` (commit `f24e14b`) independently ref
 
 These close the representative Gate A bind for the two principal-track headline mechanisms. They do **not** freeze the global critical graph.
 
+### Float64 persist-all census of all 620 S/U cells
+
+**Status: FLOAT64-STRUCTURAL**
+
+Actions run `31901007587` on `fdd0865` attempted every published S/U cell `0..619`. 462 cells hold the frozen `2e-8` event and `1e-7` closure gates (worst accepted event `1.99e-8`). 158 cells are `missed_event` and escalate to independent Julia BigFloat. Frozen: `research/evidence/V1_FLOAT64_CRITICAL_CENSUS_2026-08-15.json`. This is not 620/620 hybrid coverage and not SOLVED.
+
 ### Julia BigFloat localizes the float64-failed canary cells
 
 **Status: INDEPENDENT-STRUCTURAL**
