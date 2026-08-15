@@ -8,8 +8,11 @@ falsifiable codimension-two hypothesis rather than silently ending the tracks.
 
 It localizes both secondary roots at m1=1.042, continues them upward in fixed
 m1 with closure+event correction, and seeds the simultaneous ``G+=G-=0`` solve
-from their closest approach.  The output TSV is only a seed for the independent
-Julia BigFloat verifier; Python acceptance is never publication truth.
+from their closest approach.  The wall-continuation diagnostics are always
+written, even when the mixed solve fails, so a separate-fold alternative can be
+investigated instead of losing the decisive endpoint geometry.  The output TSV
+is only a seed for the independent Julia BigFloat verifier; Python acceptance
+is never publication truth.
 """
 from __future__ import annotations
 
@@ -184,6 +187,7 @@ def main() -> None:
     minus = candidates["minus_one"]
     approach: list[dict[str, Any]] = []
     best_pair = (float("inf"), plus, minus)
+    continuation_error: str | None = None
     for step in range(args.steps + 1):
         gap = float(np.linalg.norm(np.asarray(plus.sample.point.masses[:2]) - np.asarray(minus.sample.point.masses[:2])))
         approach.append({"step": step, "plus": serialize(plus), "minus": serialize(minus), "mass_gap": gap})
@@ -196,39 +200,56 @@ def main() -> None:
             next_plus = fixed_m1_root(plus, target_m1, "plus_one", max_m2_jump=args.max_m2_jump)
             next_minus = fixed_m1_root(minus, target_m1, "minus_one", max_m2_jump=args.max_m2_jump)
         except Exception as exc:
-            approach.append({"step": step + 1, "target_m1": target_m1, "stopped": f"{type(exc).__name__}: {exc}"})
+            continuation_error = f"{type(exc).__name__}: {exc}"
+            approach.append({"step": step + 1, "target_m1": target_m1, "stopped": continuation_error})
             break
         plus, minus = next_plus, next_minus
 
     closest_gap, close_plus, close_minus = best_pair
-    seed = 0.5 * (vector(close_plus) + vector(close_minus))
-    direct = solve_direct_vertex(
-        seed,
-        "mixed_plus_minus_one",
-        m3=1.0,
-        mass_bounds=((1.0415, 1.0435), (1.02, 1.06)),
-        max_nfev=100,
-    )
-    result = {
-        "claim_status": "float64 direct candidate only; independent Julia BigFloat/canonical verification required",
+    result: dict[str, Any] = {
+        "claim_status": "endpoint geometry screen; any mixed candidate still requires independent Julia BigFloat/canonical verification",
         "coarse_gap_hypothesis": "secondary +1 and -1 walls both disappear between m1=1.042 and 1.043",
         "closest_approach_mass_gap": closest_gap,
+        "continuation_error": continuation_error,
         "approach": approach,
-        "direct_candidate": {
-            "masses": [float(x) for x in direct.point.masses],
-            "x1": float(direct.point.x1),
-            "v1": float(direct.point.v1),
-            "v2": float(direct.point.v2),
-            "period": float(direct.point.period),
-            "closure": float(direct.point.residual_norm),
-            "alpha": float(direct.alpha),
-            "beta": float(direct.beta),
-            "event_values": [float(x) for x in direct.event_values],
-            "invariant_error": float(direct.invariant_error),
-            "nfev": int(direct.nfev),
-        },
+        "direct_candidate": None,
+        "direct_error": None,
     }
     Path(args.output_json).parent.mkdir(parents=True, exist_ok=True)
+
+    seed = 0.5 * (vector(close_plus) + vector(close_minus))
+    try:
+        direct = solve_direct_vertex(
+            seed,
+            "mixed_plus_minus_one",
+            m3=1.0,
+            mass_bounds=((1.0415, 1.0435), (1.02, 1.06)),
+            max_nfev=100,
+        )
+    except Exception as exc:
+        result["direct_error"] = f"{type(exc).__name__}: {exc}"
+        Path(args.output_json).write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+        print(json.dumps({
+            "closest_approach_mass_gap": closest_gap,
+            "continuation_error": continuation_error,
+            "direct_error": result["direct_error"],
+        }, indent=2))
+        raise SystemExit(1) from exc
+
+    result["claim_status"] = "float64 direct mixed candidate only; independent Julia BigFloat/canonical verification required"
+    result["direct_candidate"] = {
+        "masses": [float(x) for x in direct.point.masses],
+        "x1": float(direct.point.x1),
+        "v1": float(direct.point.v1),
+        "v2": float(direct.point.v2),
+        "period": float(direct.point.period),
+        "closure": float(direct.point.residual_norm),
+        "alpha": float(direct.alpha),
+        "beta": float(direct.beta),
+        "event_values": [float(x) for x in direct.event_values],
+        "invariant_error": float(direct.invariant_error),
+        "nfev": int(direct.nfev),
+    }
     Path(args.output_json).write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
 
     q = direct.point
