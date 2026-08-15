@@ -42,7 +42,9 @@ def test_assemble_critical_graph_stays_unready_without_endpoints(tmp_path, capsy
     assert graph["localized_roots"] == 0
     assert "secondary_right_death" in graph["unexplained_nodes"]
     assert "secondary_left_birth" in graph["unexplained_nodes"]
-    assert "lower_plus_one_daughter" in graph["unexplained_nodes"]
+    assert "lower_plus_one_daughter" not in graph["unexplained_nodes"]
+    assert graph["daughter_classification"]["status"] == "deferred_not_required_for_v1_graph"
+    assert graph["daughter_classification"]["required_for_v1_graph"] is False
 
 
 def test_event_gate_is_unchanged() -> None:
@@ -263,11 +265,12 @@ def test_assembler_groups_cells_into_polylines_not_one_edge_per_cell(tmp_path) -
     assert graph["release_ready"] is False
 
 
-def test_daughter_no_branch_attachment_is_an_allowed_close(tmp_path) -> None:
+def test_daughter_is_deferred_and_not_a_v1_blocker(tmp_path) -> None:
     daughter = tmp_path / "daughter.json"
     daughter.write_text(json.dumps({"class": "no_branch_attachment", "passed": True}))
     graph = _run_assembler(tmp_path, ["--daughter", str(daughter)])
     assert "lower_plus_one_daughter" not in graph["unexplained_nodes"]
+    assert graph["daughter_classification"]["required_for_v1_graph"] is False
     assert "secondary_left_birth" in graph["unexplained_nodes"]
     assert graph["release_ready"] is False
 

@@ -4,6 +4,18 @@
   "claim_status": "fixture only; not a scientific release",
   "source_transition_cells": 620,
   "localized_roots": 620,
+  "organizer_count": 3,
+  "unexplained_nodes": [],
+  "root_coverage": {
+    "complete": true,
+    "localized_roots": 620,
+    "cells_on_edges": 620,
+    "completeness_passed": true
+  },
+  "completeness": {
+    "passed": true,
+    "note": "fixture"
+  },
   "nodes": [],
   "edges": []
 }

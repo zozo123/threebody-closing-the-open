@@ -202,6 +202,26 @@ def validate_manifest(
                                 f"critical graph sha256 mismatch for {item.get('path')}: "
                                 f"manifest={digest} file={actual}"
                             )
+                    coverage = graph.get("root_coverage") or {}
+                    if int(graph.get("source_transition_cells") or 0) != 620:
+                        errors.append(f"{item.get('path')} must declare 620 source transition cells")
+                    if int(graph.get("localized_roots") or coverage.get("localized_roots") or 0) != 620:
+                        errors.append(f"{item.get('path')} must have 620 localized roots")
+                    if coverage.get("complete") is False:
+                        errors.append(f"{item.get('path')} source-cell assignment is incomplete")
+                    if graph.get("unexplained_nodes"):
+                        errors.append(
+                            f"{item.get('path')} still has unexplained endpoints: "
+                            + ", ".join(str(x) for x in graph["unexplained_nodes"])
+                        )
+                    completeness = graph.get("completeness") or {}
+                    if not (
+                        completeness.get("passed")
+                        or coverage.get("completeness_passed")
+                    ):
+                        errors.append(f"{item.get('path')} is missing a passed completeness certificate")
+                    if graph.get("organizer_count") is None and "organizer_count" not in coverage:
+                        errors.append(f"{item.get('path')} must report organizer_count")
             if not ready:
                 errors.append(
                     "scientific release requires a critical_graph JSON with release_ready true "

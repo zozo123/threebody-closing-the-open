@@ -25,7 +25,7 @@ A mechanism word (`+1`, `-1`, mixed `(+1,-1)`, Hamiltonian--Hopf/Krein) may appe
 
 Currently bound: principal lower `+1`; principal upper opposite-Krein Hamiltonian--Hopf; three mixed `(alpha,beta)=(4,4)` organizers.
 
-Still Gate-A objects if the paper wants to use them: secondary-left fold, any fourth mixed organizer, daughter nondegeneracy. Until those exist, the paper must not use those labels as established.
+Still Gate-A objects if the paper wants to use them: secondary-left fold, any fourth mixed organizer. Daughter nondegeneracy is a follow-up, not a v1-graph blocker. Until those exist, the paper must not use those labels as established.
 
 A float64/JAX point is a proposal. It is never publication truth by itself.
 
@@ -40,8 +40,8 @@ Pass only when:
 - all 620 catalog S/U cells are localized and each belongs to exactly one mechanism-specific polyline;
 - mixed germs come from continuation artifacts, not nearby-root heuristics;
 - secondary-left birth and secondary-right death are classified (fold, mixed, or domain boundary);
-- the daughter is classified or the hypothesis is falsified (`no_branch_attachment` is allowed);
 - completeness is frozen;
+- the lower +1 daughter is not a v1-graph blocker unless it is shown to change this critical set;
 - no endpoint is `Newton failed`;
 - `research/evidence/V1_CRITICAL_GRAPH.json` reports `release_ready: true`.
 

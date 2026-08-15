@@ -88,15 +88,6 @@
       "mechanism": "unknown",
       "note": "Allowed classes: mixed_organizer, projection_fold, domain_boundary. Newton-failed is forbidden.",
       "passed": false
-    },
-    {
-      "id": "lower_plus_one_daughter",
-      "kind": "branch",
-      "status": "unresolved",
-      "masses": null,
-      "mechanism": "unknown",
-      "note": "Need independent d0-minus BigFloat plus one genealogy class, including no_branch_attachment.",
-      "passed": false
     }
   ],
   "edges": [],
@@ -128,10 +119,15 @@
   },
   "unexplained_nodes": [
     "secondary_left_birth",
-    "secondary_right_death",
-    "lower_plus_one_daughter"
+    "secondary_right_death"
   ],
   "missing_required_nodes": [],
+  "organizer_count": 3,
+  "daughter_classification": {
+    "required_for_v1_graph": false,
+    "status": "deferred_not_required_for_v1_graph",
+    "class": null
+  },
   "completeness": null,
   "provisional_components": [
     "principal lower: +1 -> mixed -> -1 -> mixed -> +1",

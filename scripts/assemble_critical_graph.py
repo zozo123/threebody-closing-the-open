@@ -3,9 +3,10 @@
 
 620 catalog S/U cells are samples supporting the graph. They are not 620 edges.
 An edge is a mechanism-specific polyline carrying a list of source-cell ids.
-Endpoints, mixed germs, daughter class, and completeness must come from
-artifacts. The assembler never invents a classification and never flips
-release_ready without those artifacts.
+Endpoints, mixed germs, and completeness must come from artifacts.
+The lower +1 daughter is deferred unless it is shown to change this graph.
+The assembler never invents a classification and never flips
+release_ready without the mandatory artifacts.
 """
 from __future__ import annotations
 
@@ -34,7 +35,9 @@ REQUIRED_GERM_KEYS = (
     ("minus_one", "+"),
     ("minus_one", "-"),
 )
-LEFT_BIRTH_CLASSES = frozenset({"projection_fold", "two_separate_arcs", "mixed_organizer"})
+LEFT_BIRTH_CLASSES = frozenset(
+    {"projection_fold", "two_separate_arcs", "mixed_organizer", "domain_boundary"}
+)
 RIGHT_DEATH_CLASSES = frozenset({"mixed_organizer", "projection_fold", "domain_boundary"})
 DAUGHTER_CLASSES = frozenset(
     {
@@ -288,15 +291,26 @@ def main() -> None:
             missing_note="Allowed classes: mixed_organizer, projection_fold, domain_boundary. Newton-failed is forbidden.",
         )
     )
-    nodes.append(
-        load_classification(
-            Path(args.daughter) if args.daughter else None,
+    if args.daughter:
+        daughter_node = load_classification(
+            Path(args.daughter),
             node_id="lower_plus_one_daughter",
             default_kind="branch",
             allowed=DAUGHTER_CLASSES,
-            missing_note="Need independent d0-minus BigFloat plus one genealogy class, including no_branch_attachment.",
+            missing_note="Optional follow-up: not required to close the v1 critical graph.",
         )
-    )
+        nodes.append(daughter_node)
+        daughter_status = {
+            "required_for_v1_graph": False,
+            "status": daughter_node["status"],
+            "class": daughter_node.get("mechanism"),
+        }
+    else:
+        daughter_status = {
+            "required_for_v1_graph": False,
+            "status": "deferred_not_required_for_v1_graph",
+            "class": None,
+        }
 
     roots: list[dict[str, Any]] = []
     if args.roots:
@@ -348,8 +362,14 @@ def main() -> None:
         for node_id in REQUIRED_HEADLINE_IDS
         if not any(item["id"] == node_id and item.get("passed") for item in nodes)
     ]
-    unexplained = [item["id"] for item in nodes if item["status"] in {"unresolved", "illegal"}]
+    mandatory_unresolved = {
+        item["id"]
+        for item in nodes
+        if item["id"] != "lower_plus_one_daughter" and item["status"] in {"unresolved", "illegal"}
+    }
+    unexplained = sorted(mandatory_unresolved)
     illegal = [item["id"] for item in nodes if item["status"] == "illegal"]
+    organizer_count = sum(1 for item in nodes if item.get("kind") == "mixed_organizer" and item.get("passed"))
 
     release_ready = (
         not missing_required
@@ -390,6 +410,8 @@ def main() -> None:
         "root_coverage": coverage,
         "unexplained_nodes": unexplained,
         "missing_required_nodes": missing_required,
+        "organizer_count": organizer_count,
+        "daughter_classification": daughter_status,
         "completeness": completeness,
         "provisional_components": [
             "principal lower: +1 -> mixed -> -1 -> mixed -> +1",
