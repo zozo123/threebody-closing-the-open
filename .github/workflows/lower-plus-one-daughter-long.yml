@@ -1,0 +1,92 @@
+name: Long lower plus-one daughter genealogy
+
+on:
+  workflow_dispatch:
+    inputs:
+      steps:
+        description: "Requested pseudo-arclength steps on the physical soft daughter"
+        required: true
+        default: "240"
+      arclength_step:
+        description: "Normalized pseudo-arclength step"
+        required: true
+        default: "0.0015"
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/lower-plus-one-daughter-long.yml"
+      - "scripts/continue_lower_plus_one_daughter.py"
+      - "src/threebody_atlas/generic_branch.py"
+      - "src/threebody_atlas/generic_periodic.py"
+      - "src/threebody_atlas/branch_switch.py"
+      - "src/threebody_atlas/physical_floquet.py"
+      - "experiments/critical_curve_representatives.tsv"
+      - "uv.lock"
+
+concurrency:
+  group: long-lower-plus-one-daughter-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON: "3.13"
+
+jobs:
+  trace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked
+      - name: Trace the actual physical soft direction away from the parent
+        env:
+          STEPS: ${{ inputs.steps || '240' }}
+          ARC_STEP: ${{ inputs.arclength_step || '0.0015' }}
+        run: |
+          mkdir -p artifacts
+          uv run --no-sync python scripts/continue_lower_plus_one_daughter.py \
+            experiments/critical_curve_representatives.tsv \
+            artifacts/lower-plus-one-daughter-long.json \
+            --direction-index 0 \
+            --sign -1 \
+            --steps "$STEPS" \
+            --arclength-step "$ARC_STEP" \
+            --max-residual 3e-7 \
+            --distinct-tolerance 2e-5 \
+            --reconnect-tolerance 2e-5
+      - name: Summarize genealogy trace without promoting a release claim
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('artifacts/lower-plus-one-daughter-long.json').read_text())
+          pts=[x for x in p['trace_points'] if 'state' in x]
+          distances=[x['parent_distance'] for x in pts if 'parent_distance' in x]
+          off=[x['off_li_norm'] for x in pts if 'off_li_norm' in x]
+          print(json.dumps({
+              'trace_point_count':p['trace_point_count'],
+              'stopped_reason':p['stopped_reason'],
+              'reconnect_candidate_count':p['reconnect_candidate_count'],
+              'minimum_parent_distance':p['minimum_parent_distance'],
+              'maximum_parent_distance':max(distances) if distances else None,
+              'maximum_off_li_norm':max(off) if off else None,
+              'last_m2':p['trace_points'][-1]['masses'][1] if p['trace_points'] else None,
+          },indent=2))
+          if p['trace_point_count'] < 18:
+              raise SystemExit('long trace regressed below the previously certified 18-step structural baseline')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lower-plus-one-daughter-long-${{ github.sha }}
+          path: artifacts/lower-plus-one-daughter-long.json
+          if-no-files-found: warn
+          retention-days: 90
