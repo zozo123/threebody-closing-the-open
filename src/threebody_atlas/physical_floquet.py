@@ -58,6 +58,7 @@ class PhysicalFloquetResult:
     collision_event: float
     quotient_symplectic_defect: float
     quotient_leakage: float
+    reciprocal_pairing_error: float
     neutral_isotropy_defect: float
     neutral_invariance_defect: float
     canonical: CanonicalFloquetResult
@@ -163,9 +164,24 @@ def quotient_monodromy(
     return a, omega, q, defect, leakage, isotropy, neutral_invariance
 
 
-def _trace_invariants(matrix: Array) -> tuple[float, float, float, tuple[complex, complex]]:
-    a = float(np.trace(matrix))
-    b = float(0.5 * (a * a - np.trace(matrix @ matrix)))
+def physical_trace_invariants(
+    matrix: Array,
+) -> tuple[float, float, float, tuple[complex, complex]]:
+    """Return the invariant coefficients of a physical 4x4 symplectic map.
+
+    For characteristic polynomial
+
+        lambda^4 - a lambda^3 + b lambda^2 - a lambda + 1,
+
+    the reciprocal-pair trace roots ``t=lambda+1/lambda`` satisfy
+
+        t^2 - a t + (b-2) = 0.
+    """
+    m = np.asarray(matrix, dtype=float)
+    if m.shape != (4, 4):
+        raise ValueError("physical Floquet matrix must have shape (4,4)")
+    a = float(np.trace(m))
+    b = float(0.5 * (a * a - np.trace(m @ m)))
     discriminant = float(a * a - 4.0 * b + 8.0)
     roots = np.roots(np.asarray([1.0, -a, b - 2.0], dtype=float))
     return a, b, discriminant, (complex(roots[0]), complex(roots[1]))
@@ -197,12 +213,10 @@ def compute_physical_floquet(
         rotation,
     )
     multipliers = np.linalg.eigvals(matrix)
-    a, b, discriminant, roots = _trace_invariants(matrix)
+    a, b, discriminant, roots = physical_trace_invariants(matrix)
     plus = float(b - 2.0 * a + 2.0)
     minus = float(b + 2.0 * a + 2.0)
     collision = discriminant
-    # Pairing is not a separate field yet; fail loudly if the induced map is
-    # numerically inconsistent with reciprocal physical pairs.
     pairing = _pairing_error(multipliers)
     if not np.isfinite(pairing):
         raise RuntimeError("physical multiplier reciprocal pairing failed")
@@ -220,6 +234,7 @@ def compute_physical_floquet(
         collision_event=collision,
         quotient_symplectic_defect=defect,
         quotient_leakage=leakage,
+        reciprocal_pairing_error=pairing,
         neutral_isotropy_defect=isotropy,
         neutral_invariance_defect=neutral_invariance,
         canonical=canonical,
