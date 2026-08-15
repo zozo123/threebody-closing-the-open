@@ -1,0 +1,83 @@
+name: Julia generic daughter verifier
+
+on:
+  workflow_dispatch:
+    inputs:
+      dps:
+        description: "BigFloat decimal precision"
+        required: true
+        default: "50"
+      tol_exp:
+        description: "Vern9 tolerance exponent"
+        required: true
+        default: "25"
+      target_exp:
+        description: "Required generic residual exponent"
+        required: true
+        default: "18"
+      min_parent_distance_exp:
+        description: "Minimum normalized distance from Li parent exponent"
+        required: true
+        default: "4"
+  pull_request:
+    paths:
+      - "julia/verify_reduced.jl"
+      - "julia/verify_critical_points.jl"
+      - "julia/verify_generic_daughters.jl"
+      - "experiments/daughter_d0_plus_reproduction.tsv"
+      - "experiments/daughter_d1_plus_reproduction.tsv"
+      - ".github/workflows/julia-generic-daughter-verifier.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - "julia/verify_generic_daughters.jl"
+      - "experiments/daughter_d0_plus_reproduction.tsv"
+      - "experiments/daughter_d1_plus_reproduction.tsv"
+      - ".github/workflows/julia-generic-daughter-verifier.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: d0-plus
+            seed_file: experiments/daughter_d0_plus_reproduction.tsv
+            output_file: artifacts/daughter-d0-plus-bigfloat.json
+          - label: d1-plus
+            seed_file: experiments/daughter_d1_plus_reproduction.tsv
+            output_file: artifacts/daughter-d1-plus-bigfloat.json
+    steps:
+      - uses: actions/checkout@v7
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.11.9"
+      - uses: julia-actions/cache@v2
+      - name: Instantiate locked independent solver stack
+        run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+      - name: Parse independent daughter verifier
+        run: julia --project=julia -e 'Meta.parseall(read("julia/verify_generic_daughters.jl", String)); println("generic daughter verifier syntax OK")'
+      - name: Independently reproduce ${{ matrix.label }} daughter segment
+        env:
+          DPS: ${{ inputs.dps || '50' }}
+          TOL_EXP: ${{ inputs.tol_exp || '25' }}
+          TARGET_EXP: ${{ inputs.target_exp || '18' }}
+          MIN_PARENT_EXP: ${{ inputs.min_parent_distance_exp || '4' }}
+        run: |
+          mkdir -p artifacts
+          julia --project=julia julia/verify_generic_daughters.jl \
+            "${{ matrix.seed_file }}" \
+            "${{ matrix.output_file }}" \
+            "$DPS" "$TOL_EXP" "$TARGET_EXP" "$MIN_PARENT_EXP"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: generic-daughter-${{ matrix.label }}-${{ github.sha }}
+          path: ${{ matrix.output_file }}
+          if-no-files-found: warn
+          retention-days: 90
