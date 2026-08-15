@@ -8,15 +8,16 @@ on:
         required: true
         default: "8"
       steps:
-        description: "Critical-curve continuation steps per component"
+        description: "Pseudo-arclength continuation steps per component"
         required: true
         default: "4"
   push:
-    branches: ["agent/research-platform-v1"]
     paths:
       - "src/threebody_atlas/critical_curve.py"
+      - "src/threebody_atlas/critical_manifold.py"
       - "scripts/refine_mass_slice_brackets.py"
       - "scripts/trace_critical_components.py"
+      - "tests/test_critical_manifold.py"
       - ".github/workflows/critical-manifold-screen.yml"
 
 permissions:
@@ -33,6 +34,8 @@ jobs:
           python-version: "3.13"
           cache: pip
       - run: pip install -e .
+      - name: Algebraic critical-event tests
+        run: python -m pytest -q tests/test_critical_manifold.py
       - name: Fetch frozen baseline
         run: |
           mkdir -p data/raw artifacts
@@ -47,7 +50,7 @@ jobs:
           expected = '79b2963df43e62201c35690bfc22bec166132427'
           if got != expected:
               raise SystemExit(f'baseline source changed: {got}')
-          print('source_git_blob=', got)
+          print('source_git_blob=', got, 'sha256=', hashlib.sha256(raw).hexdigest())
           PY
       - name: Extract coarse transition brackets
         run: |
@@ -62,14 +65,14 @@ jobs:
             artifacts/published-transition-brackets.tsv \
             artifacts/refined-transition-brackets.json \
             --limit "$LIMIT" --tolerance 2e-7
-      - name: Trace connected screening components
+      - name: Localize smooth events and trace augmented components
         env:
           STEPS: ${{ inputs.steps || '4' }}
         run: |
           python scripts/trace_critical_components.py \
             artifacts/refined-transition-brackets.json \
             artifacts/critical-components.json \
-            --steps "$STEPS"
+            --steps "$STEPS" --arclength-step 4e-3
       - uses: actions/upload-artifact@v4
         with:
           name: critical-manifold-screen-${{ github.sha }}
