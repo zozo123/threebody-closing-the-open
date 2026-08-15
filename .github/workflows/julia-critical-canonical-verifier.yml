@@ -1,0 +1,66 @@
+name: Canonical BigFloat critical-event verifier
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "julia/verify_critical_events_canonical.jl"
+      - "julia/verify_critical_points.jl"
+      - "julia/verify_reduced.jl"
+      - "julia/canonical_jacobi.jl"
+      - "julia/physical_quotient_bigfloat.jl"
+      - "experiments/critical_curve_lower_plus_one.tsv"
+      - "experiments/critical_curve_upper_collision.tsv"
+      - "julia/Project.toml"
+      - "julia/Manifest.toml"
+      - ".github/workflows/julia-critical-canonical-verifier.yml"
+  pull_request:
+    paths:
+      - "julia/verify_critical_events_canonical.jl"
+      - "julia/canonical_jacobi.jl"
+      - "julia/physical_quotient_bigfloat.jl"
+      - ".github/workflows/julia-critical-canonical-verifier.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: lower-plus-one
+            seed_file: experiments/critical_curve_lower_plus_one.tsv
+            output_file: artifacts/critical-canonical-lower-plus-one.json
+          - label: upper-trace-collision
+            seed_file: experiments/critical_curve_upper_collision.tsv
+            output_file: artifacts/critical-canonical-upper-collision.json
+    steps:
+      - uses: actions/checkout@v7
+      - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32
+        with:
+          version: "1.11.9"
+      - uses: julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8
+      - name: Instantiate locked independent solver stack
+        run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+      - name: Parse exact canonical critical verifier
+        run: julia --project=julia -e 'Meta.parseall(read("julia/verify_critical_events_canonical.jl", String)); println("critical canonical verifier syntax OK")'
+      - name: Reproduce and canonically classify ${{ matrix.label }}
+        run: |
+          mkdir -p artifacts
+          julia --project=julia julia/verify_critical_events_canonical.jl \
+            "${{ matrix.seed_file }}" \
+            "${{ matrix.output_file }}" \
+            60 28 18 8
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: critical-canonical-${{ matrix.label }}-${{ github.sha }}
+          path: ${{ matrix.output_file }}
+          if-no-files-found: warn
+          retention-days: 90
