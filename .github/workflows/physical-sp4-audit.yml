@@ -73,8 +73,9 @@ jobs:
             experiments/critical_curve_representatives.tsv \
             artifacts/physical-sp4-audit.json
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: physical-sp4-audit-${{ github.sha }}
           path: artifacts/physical-sp4-audit.json
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 90
