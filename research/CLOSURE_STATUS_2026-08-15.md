@@ -66,7 +66,19 @@ Ten amplitude-constrained generic daughter candidates exist, but amplitude-const
 
 ### GitHub Actions compute is currently blocked externally
 
-The split Julia critical-point verifier, split three-candidate Julia mixed-vertex verifier, twenty-edge adversarial connectivity matrix, three-junction organizer workflow, four-way daughter continuation matrix, and ordinary CI are presently unable to start because GitHub reports that recent account payments failed or the Actions spending limit must be increased. Their latest jobs have zero executed steps. These runs contain no scientific result.
+The split Julia critical-point verifier, split three-candidate Julia mixed-vertex verifier, twenty-edge adversarial connectivity matrix, three-junction organizer workflow, four-way daughter continuation matrix, latest BifurcationKit cross-check, CAPD validated-flow matrix, and ordinary CI are presently unable to start because GitHub reports that recent account payments failed or the Actions spending limit must be increased. Their latest hosted jobs have zero executed steps. These runs contain no scientific result.
+
+### Strongest-hammers execution architecture is now on `main`
+
+The compute-ready architecture is documented in `research/STRONGEST_HAMMERS_2026-08-15.md` and deliberately separates independent formulations:
+
+- **Frozen BigFloat truth:** the existing Julia `1.11.9` + Vern9 + GenericSchur stack remains the formal independent reproduction lane.
+- **Latest continuation cross-check:** a separate Julia `1.12.6` environment targets BifurcationKit `0.8.2`. `julia-latest/crosscheck_mixed_vertex.jl` independently reimplements the 8D relative dynamics and analytic variational equations, uses a rank-revealed normalized periodic section, and asks BifurcationKit Newton to solve four periodic-closure equations together with `G+=0` and `G-=0`. Its resolved `Manifest.toml` is retained with artifacts rather than treating a floating latest environment as reproducible evidence.
+- **Validated numerics:** `validated/capd/validated_flow.cpp` uses the current frozen CAPD master commit `731079217a9254ea2948d742df2b170895effe7f` to rigorously enclose the full-period flow, first variational matrix, and interval `alpha`, `beta`, `G+`, `G-`, and discriminant values around each frozen mixed seed. Its declared scope is validated-flow scaffolding only; it does not claim periodic-orbit existence or organizer existence until an interval-Newton/Krawczyk root certificate is added.
+- **Execution redundancy:** `.github/workflows/strong-hammers-self-hosted.yml` runs the same frozen BigFloat thresholds, the latest BifurcationKit cross-check, and the CAPD validation lane on a user-controlled Linux x86_64 runner, bypassing the GitHub-hosted billing condition without changing scientific gates.
+- **Consensus firewall:** `scripts/organizer_consensus_gate.py` requires BigFloat, latest-BifurcationKit, and CAPD evidence to agree before the organizer evidence can be called cross-formulation supported. Passing that firewall still does not authorize a release claim.
+
+The hosted latest-BifurcationKit run `31883185042` and CAPD run `31883494620` also received zero executed steps, confirming that their current failures are infrastructure-only rather than numerical outcomes.
 
 ## Current verdict
 
@@ -75,8 +87,8 @@ The stated v1 open problem is **not solved yet**.
 The shortest closure path is now more specific:
 
 1. independently reproduce the lower `+1` and upper collision representatives in Julia BigFloat and complete exact canonical mechanism checks;
-2. independently reproduce all three mixed organizer candidates in the split Julia BigFloat verifier, then trace the `+1` and `-1` event arcs through each organizer;
-3. independently verify the secondary `-1` root-birth fold with event-specific pseudo-arclength geometry and BigFloat evidence;
+2. independently reproduce all three mixed organizer candidates in the split Julia BigFloat verifier, cross-check them with the latest BifurcationKit lane, validate their flow/monodromy with CAPD, then add a rigorous interval-Newton/Krawczyk organizer root certificate and trace the `+1` and `-1` event arcs through each organizer;
+3. independently verify the secondary `-1` root-birth fold with event-specific pseudo-arclength geometry and BigFloat/validated-numerics evidence;
 4. finish the remaining globally worst MST links under adaptive continuation and attack every survivor in the generic chart/path-diverse formulation; the formerly failing rank-3 edge itself is now resolved;
 5. execute generic daughter pseudo-arclength continuation, independently reproduce a clean daughter segment, and determine whether it reconnects to the catalog sheet;
 6. assemble the exact critical graph, run hidden-pocket/component adversarial searches, freeze uncertainties/evidence hashes/component decomposition, rerun the release-date literature audit, and regenerate the manuscript from `release_claim` records only.
