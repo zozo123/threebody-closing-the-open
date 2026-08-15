@@ -1,0 +1,100 @@
+name: Secondary right mixed organizer E2E
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "scripts/locate_secondary_right_mixed.py"
+      - "julia/verify_mixed_vertices.jl"
+      - "julia/verify_mixed_vertices_canonical.jl"
+      - "julia/physical_quotient_bigfloat.jl"
+      - ".github/workflows/secondary-right-mixed-organizer.yml"
+      - "uv.lock"
+      - "julia/Manifest.toml"
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON: "3.13"
+  JAX_ENABLE_X64: "true"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked --extra accelerated
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.11.9"
+      - uses: julia-actions/cache@v2
+      - name: Instantiate locked independent solver stack
+        run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+      - name: Parse endpoint organizer drivers
+        run: |
+          python -m py_compile scripts/locate_secondary_right_mixed.py
+          julia --project=julia -e 'Meta.parseall(read("julia/verify_mixed_vertices.jl", String)); Meta.parseall(read("julia/verify_mixed_vertices_canonical.jl", String)); println("endpoint mixed verifier syntax OK")'
+      - name: Fetch frozen Li-Li-Liao baseline
+        run: |
+          mkdir -p data/raw artifacts
+          curl -L --fail --retry 3 \
+            https://raw.githubusercontent.com/sjtu-liao/three-body/main/non-hierarchical-3b-supplementary_data.txt \
+            -o data/raw/non-hierarchical-3b-supplementary_data.txt
+          uv run --no-sync python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          raw = Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
+          got = hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
+          expected = '79b2963df43e62201c35690bfc22bec166132427'
+          if got != expected:
+              raise SystemExit(f'baseline source changed: {got}')
+          print('source_git_blob=', got, 'sha256=', hashlib.sha256(raw).hexdigest())
+          PY
+      - name: Extract all published transition brackets
+        run: |
+          uv run --no-sync python scripts/extract_mass_slice_brackets.py \
+            data/raw/non-hierarchical-3b-supplementary_data.txt \
+            artifacts/published-transition-brackets.tsv
+      - name: Continue both secondary walls into their hidden right endpoint
+        run: |
+          uv run --no-sync python scripts/locate_secondary_right_mixed.py \
+            artifacts/published-transition-brackets.tsv \
+            artifacts/secondary-right-mixed-screen.json \
+            artifacts/secondary-right-mixed-seed.tsv \
+            --seed-m1 1.042 \
+            --m1-step 0.00002 \
+            --steps 50 \
+            --m2-min 1.0 --m2-max 1.07 \
+            --max-m2-jump 0.004
+      - name: Independently reproduce simultaneous mixed root
+        run: |
+          julia --project=julia julia/verify_mixed_vertices.jl \
+            artifacts/secondary-right-mixed-seed.tsv \
+            artifacts/secondary-right-mixed-bigfloat.json \
+            50 25 18 12 6 4
+      - name: Independently classify physical canonical organizer
+        run: |
+          julia --project=julia julia/verify_mixed_vertices_canonical.jl \
+            artifacts/secondary-right-mixed-seed.tsv \
+            artifacts/secondary-right-mixed-canonical.json \
+            60 28 18 12
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: secondary-right-mixed-organizer-${{ github.sha }}
+          path: |
+            artifacts/secondary-right-mixed-screen.json
+            artifacts/secondary-right-mixed-seed.tsv
+            artifacts/secondary-right-mixed-bigfloat.json
+            artifacts/secondary-right-mixed-canonical.json
+          if-no-files-found: warn
+          retention-days: 90
