@@ -86,7 +86,8 @@ jobs:
             --chunk-index "${{ matrix.chunk }}" \
             --chunks "$CHUNKS" \
             --max-iterations 20 \
-            --m2-tolerance 1e-12
+            --m2-tolerance 1e-12 \
+            --allow-misses
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -106,7 +107,7 @@ jobs:
           pattern: critical-root-chunk-*-${{ github.sha }}
           path: artifacts/root-chunks
           merge-multiple: true
-      - name: Merge and enforce the 620-cell graph substrate gates
+      - name: Merge persist-all attempts and report the float64 prefilter
         run: |
           python - <<'PY'
           import json
@@ -117,73 +118,95 @@ jobs:
           if len(files) != 62:
               raise SystemExit(f'expected 62 chunk files, found {len(files)}')
 
+          attempts = []
           roots = []
           chunks = set()
-          max_closure = 0.0
-          max_event = 0.0
           for path in files:
               payload = json.loads(path.read_text())
               if payload.get('chunks') != 62:
                   raise SystemExit(f'{path}: wrong partition count {payload.get("chunks")}')
               chunks.add(int(payload['chunk_index']))
-              roots.extend(payload['roots'])
-              max_closure = max(max_closure, float(payload['max_closure']))
-              max_event = max(max_event, float(payload['max_abs_event']))
+              chunk_attempts = payload.get('attempts') or payload.get('roots') or []
+              attempts.extend(chunk_attempts)
+              roots.extend(item for item in chunk_attempts if item.get('status') == 'ok')
 
           if chunks != set(range(62)):
               raise SystemExit(f'missing/duplicate chunks: {sorted(chunks)}')
-          ids = [int(root['cell_id']) for root in roots]
-          counts = Counter(ids)
-          duplicated = sorted(cell for cell, count in counts.items() if count != 1)
           expected = set(range(620))
-          observed = set(ids)
-          if len(roots) != 620 or observed != expected or duplicated:
+          attempt_ids = [int(item['cell_id']) for item in attempts]
+          attempt_counts = Counter(attempt_ids)
+          duplicated = sorted(cell for cell, count in attempt_counts.items() if count != 1)
+          observed = set(attempt_ids)
+          if len(attempts) != 620 or observed != expected or duplicated:
               raise SystemExit(
-                  f'root coverage failed: roots={len(roots)} missing={sorted(expected-observed)[:20]} '
-                  f'extra={sorted(observed-expected)[:20]} duplicated={duplicated[:20]}'
+                  f'attempt coverage failed: attempts={len(attempts)} '
+                  f'missing={sorted(expected-observed)[:20]} '
+                  f'duplicated={duplicated[:20]}'
               )
-          if max_closure > 1e-7:
-              raise SystemExit(f'closure gate failed: {max_closure:.6e}')
-          if max_event > 2e-8:
-              raise SystemExit(f'event gate failed: {max_event:.6e}')
+
+          missed = [item for item in attempts if item.get('status') != 'ok']
+          ok_ids = [int(root['cell_id']) for root in roots]
+          max_closure = max((float(root['closure']) for root in roots), default=0.0)
+          max_event = max((abs(float(root['event'])) for root in roots), default=0.0)
+          if roots and max_closure > 1e-7:
+              raise SystemExit(f'ok-root closure gate failed: {max_closure:.6e}')
+          if roots and max_event > 2e-8:
+              raise SystemExit(f'ok-root event gate failed: {max_event:.6e}')
 
           roots.sort(key=lambda root: int(root['cell_id']))
-          mode_counts = Counter(root['event_mode'] for root in roots)
-          orientation_counts = Counter(root['orientation'] for root in roots)
+          attempts.sort(key=lambda item: int(item['cell_id']))
+          missed.sort(key=lambda item: int(item['cell_id']))
+          complete = len(roots) == 620
           payload = {
               'schema': 'atlas.v1.full-critical-root-network/1',
+              'estimator': 'float64',
               'claim_status': (
-                  'float64 structural localization of all 620 unique endpoint-sign-changing '
-                  'catalog S/U cells; organizer/fold/headline mechanism release claims remain '
-                  'independently BigFloat/canonical gated'
+                  'float64 structural localization of all 620 unique endpoint-sign-changing catalog S/U cells'
+                  if complete
+                  else 'float64 persist-all prefilter; missed cells escalate to independent Julia BigFloat'
               ),
               'source_transition_cells': 620,
               'localized_roots': len(roots),
-              'event_mode_counts': dict(sorted(mode_counts.items())),
-              'orientation_counts': dict(sorted(orientation_counts.items())),
+              'missed_cells': len(missed),
+              'missed_status_counts': dict(sorted(Counter(str(item.get('status')) for item in missed).items())),
+              'event_mode_counts': dict(sorted(Counter(root['event_mode'] for root in roots).items())),
+              'orientation_counts': dict(sorted(Counter(root['orientation'] for root in roots).items())),
               'max_closure': max_closure,
               'max_abs_event': max_event,
               'coverage': {
-                  'minimum_cell_id': min(ids),
-                  'maximum_cell_id': max(ids),
+                  'minimum_cell_id': min(attempt_ids),
+                  'maximum_cell_id': max(attempt_ids),
                   'unique_cell_ids': len(observed),
+                  'unique_ok_cell_ids': len(set(ok_ids)),
                   'chunks': 62,
+                  'complete': complete,
               },
               'roots': roots,
+              'attempts': attempts,
           }
-          out = Path('artifacts/full-critical-roots.json')
-          out.write_text(json.dumps(payload, indent=2) + '\n')
+          Path('artifacts/full-critical-roots.json').write_text(json.dumps(payload, indent=2) + '\n')
+          Path('artifacts/float64-missed-cells.json').write_text(json.dumps({
+              'schema': 'atlas.v1.float64-missed-cells/1',
+              'missed_cells': len(missed),
+              'missed_status_counts': payload['missed_status_counts'],
+              'misses': missed,
+          }, indent=2) + '\n')
           print(json.dumps({
               'localized_roots': len(roots),
+              'missed_cells': len(missed),
+              'missed_status_counts': payload['missed_status_counts'],
               'event_mode_counts': payload['event_mode_counts'],
-              'orientation_counts': payload['orientation_counts'],
               'max_closure': max_closure,
               'max_abs_event': max_event,
+              'complete': complete,
           }, indent=2))
           PY
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: full-critical-roots-${{ github.sha }}
-          path: artifacts/full-critical-roots.json
-          if-no-files-found: error
+          path: |
+            artifacts/full-critical-roots.json
+            artifacts/float64-missed-cells.json
+          if-no-files-found: warn
           retention-days: 90

@@ -21,6 +21,12 @@ REQUIRED_NODE_IDS = (
     "headline_lower_plus_one",
     "headline_upper_collision",
 )
+MIXED_NODE_IDS = (
+    "mixed_principal_left",
+    "mixed_secondary_left",
+    "mixed_principal_right",
+)
+MIXED_ARC_RADIUS = 0.08
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -144,15 +150,73 @@ def main() -> None:
 
     missing_required = [node_id for node_id in REQUIRED_NODE_IDS if not any(n["id"] == node_id and n.get("passed") for n in nodes)]
     unexplained = [n["id"] for n in nodes if n["status"] == "unresolved"]
+    newton_failed = [
+        item
+        for item in roots
+        if "newton" in str(item.get("status", "")).lower() or "newton" in str(item.get("error", "")).lower()
+    ]
+    edges = []
+    for root in sorted(roots, key=lambda item: int(item["cell_id"])):
+        edges.append(
+            {
+                "id": f"cell_{int(root['cell_id'])}",
+                "cell_id": int(root["cell_id"]),
+                "kind": "catalog_su_cell",
+                "mechanism": root.get("event_mode"),
+                "orientation": root.get("orientation"),
+                "status": root.get("status"),
+                "estimator": root.get("estimator", "float64"),
+                "event": root.get("event"),
+                "closure": root.get("closure"),
+                "masses": root.get("masses"),
+            }
+        )
+
+    mixed_arcs: dict[str, dict[str, int]] = {}
+    for node_id in MIXED_NODE_IDS:
+        record = next(item for item in nodes if item["id"] == node_id)
+        masses = record.get("masses") or [None, None]
+        try:
+            m1, m2 = float(masses[0]), float(masses[1])
+        except (TypeError, ValueError, IndexError):
+            mixed_arcs[node_id] = {"plus_one": 0, "minus_one": 0}
+            continue
+        counts = {"plus_one": 0, "minus_one": 0}
+        for root in roots:
+            root_masses = root.get("masses") or []
+            if len(root_masses) < 2:
+                continue
+            try:
+                rm1, rm2 = float(root_masses[0]), float(root_masses[1])
+            except (TypeError, ValueError):
+                continue
+            if (rm1 - m1) ** 2 + (rm2 - m2) ** 2 > MIXED_ARC_RADIUS**2:
+                continue
+            mode = root.get("event_mode")
+            if mode in counts:
+                counts[mode] += 1
+        mixed_arcs[node_id] = counts
+    missing_mixed_arcs = [
+        node_id
+        for node_id, counts in mixed_arcs.items()
+        if counts["plus_one"] < 1 or counts["minus_one"] < 1
+    ]
+
     coverage = {
         "supplied_roots": len(roots),
         "required_cells": 620,
         "complete": len(roots) == 620 and {int(r["cell_id"]) for r in roots} == set(range(620)),
+        "edge_count": len(edges),
+        "missing_mixed_arcs": missing_mixed_arcs,
+        "newton_failed": len(newton_failed),
     }
     release_ready = (
         not missing_required
         and not unexplained
         and coverage["complete"]
+        and len(edges) == 620
+        and not missing_mixed_arcs
+        and not newton_failed
         and all(n.get("passed") for n in nodes if n["id"] in REQUIRED_NODE_IDS)
     )
     graph = {
@@ -165,7 +229,8 @@ def main() -> None:
         "release_ready": release_ready,
         "family_component": "one continuation-connected Li-Li-Liao catalog sheet",
         "nodes": nodes,
-        "edges": [],
+        "edges": edges,
+        "mixed_arcs": mixed_arcs,
         "root_coverage": coverage,
         "unexplained_nodes": unexplained,
         "missing_required_nodes": missing_required,
@@ -186,6 +251,8 @@ def main() -> None:
                 "release_ready": release_ready,
                 "unexplained_nodes": unexplained,
                 "supplied_roots": coverage["supplied_roots"],
+                "edge_count": coverage["edge_count"],
+                "missing_mixed_arcs": coverage["missing_mixed_arcs"],
             },
             indent=2,
         )

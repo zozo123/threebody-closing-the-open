@@ -6,13 +6,6 @@ name: Ultra 124-way critical-root SWAT
 
 on:
   workflow_dispatch:
-  push:
-    branches: ["main"]
-    paths:
-      - "scripts/localize_full_critical_network.py"
-      - "src/threebody_atlas/critical_manifold.py"
-      - ".github/workflows/v1-root-ultra.yml"
-      - ".github/actions/atlas-uv-baseline/action.yml"
 
 concurrency:
   group: v1-root-ultra-${{ github.ref }}

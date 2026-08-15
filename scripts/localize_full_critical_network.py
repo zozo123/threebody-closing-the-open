@@ -152,6 +152,11 @@ def main() -> None:
     parser.add_argument("--m2-tolerance", type=float, default=1e-12)
     parser.add_argument("--event-tolerance", type=float, default=2e-8)
     parser.add_argument("--max-closure", type=float, default=1e-7)
+    parser.add_argument(
+        "--allow-misses",
+        action="store_true",
+        help="Persist every attempt and exit 0 even if some cells miss the frozen gates.",
+    )
     args = parser.parse_args()
     if args.chunks < 1 or not (0 <= args.chunk_index < args.chunks):
         raise SystemExit("invalid chunk partition")
@@ -199,7 +204,13 @@ def main() -> None:
     roots = [item for item in attempts if item.get("status") == "ok"]
     missed = [item for item in attempts if item.get("status") != "ok"]
     payload = {
-        "claim_status": "float64 structural localization of every assigned unique-event S/U cell; independent headline verification remains separate",
+        "claim_status": (
+            "float64 persist-all prefilter of assigned unique-event S/U cells; "
+            "misses escalate to independent Julia BigFloat; headline verification remains separate"
+            if args.allow_misses
+            else "float64 structural localization of every assigned unique-event S/U cell; independent headline verification remains separate"
+        ),
+        "allow_misses": bool(args.allow_misses),
         "chunk_index": args.chunk_index,
         "chunks": args.chunks,
         "solver": {
@@ -241,7 +252,7 @@ def main() -> None:
             indent=2,
         )
     )
-    if missed:
+    if missed and not args.allow_misses:
         first = missed[0]
         raise SystemExit(
             f"{len(missed)} cell(s) missed gates; first cell={first.get('cell_id')} "

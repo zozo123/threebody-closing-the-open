@@ -37,8 +37,10 @@ def test_assemble_critical_graph_stays_unready_without_endpoints(tmp_path, capsy
         sys.argv = argv
     graph = json.loads(output.read_text())
     assert graph["release_ready"] is False
+    assert graph["edges"] == []
     assert "secondary_right_death" in graph["unexplained_nodes"]
     assert "secondary_left_fold" in graph["unexplained_nodes"]
+    assert "lower_plus_one_daughter" in graph["unexplained_nodes"]
 
 
 def test_event_gate_is_unchanged() -> None:
@@ -92,3 +94,107 @@ def test_localize_cli_refuses_to_loosen_gates() -> None:
     )
     assert closure.returncode != 0
     assert "1e-7" in (closure.stdout + closure.stderr)
+
+
+def test_hybrid_merger_refuses_to_loosen_event_gate(tmp_path) -> None:
+    import runpy
+    import sys
+
+    python_roots = tmp_path / "python.json"
+    julia_cell = tmp_path / "julia.json"
+    output = tmp_path / "hybrid.json"
+    python_roots.write_text(
+        json.dumps(
+            {
+                "roots": [
+                    {
+                        "cell_id": 0,
+                        "status": "ok",
+                        "event_mode": "plus_one",
+                        "event": 1e-10,
+                        "closure": 1e-10,
+                        "masses": [0.8, 0.75, 1.0],
+                    }
+                ]
+            }
+        )
+    )
+    julia_cell.write_text(
+        json.dumps(
+            {
+                "cell_id": 1,
+                "event_mode": "plus_one",
+                "event_value": "3e-8",
+                "closure_norm": "1e-12",
+                "passed": True,
+                "m1": "0.8",
+                "m2": "0.76",
+                "m3": "1.0",
+            }
+        )
+    )
+    argv = sys.argv
+    sys.argv = [
+        "merge_hybrid_critical_roots.py",
+        str(python_roots),
+        str(output),
+        "--julia",
+        str(julia_cell),
+    ]
+    try:
+        try:
+            runpy.run_path(str(ROOT / "scripts/merge_hybrid_critical_roots.py"), run_name="__main__")
+            raise AssertionError("merger must reject a 3e-8 Julia event")
+        except SystemExit as exc:
+            assert exc.code not in (0, None)
+    finally:
+        sys.argv = argv
+    if output.exists():
+        hybrid = json.loads(output.read_text())
+        assert all(int(root["cell_id"]) != 1 for root in hybrid["roots"])
+
+
+def test_assembler_emits_edges_but_stays_unready_with_partial_roots(tmp_path) -> None:
+    import runpy
+    import sys
+
+    roots = tmp_path / "roots.json"
+    roots.write_text(
+        json.dumps(
+            {
+                "roots": [
+                    {
+                        "cell_id": 0,
+                        "status": "ok",
+                        "event_mode": "plus_one",
+                        "orientation": "U->S",
+                        "estimator": "float64",
+                        "event": 1e-10,
+                        "closure": 1e-10,
+                        "masses": [0.8, 0.755, 1.0],
+                    }
+                ]
+            }
+        )
+    )
+    output = tmp_path / "graph.json"
+    argv = sys.argv
+    sys.argv = [
+        "assemble_critical_graph.py",
+        "--output",
+        str(output),
+        "--roots",
+        str(roots),
+    ]
+    try:
+        try:
+            runpy.run_path(str(ROOT / "scripts/assemble_critical_graph.py"), run_name="__main__")
+        except SystemExit as exc:
+            assert exc.code == 2
+    finally:
+        sys.argv = argv
+    graph = json.loads(output.read_text())
+    assert graph["release_ready"] is False
+    assert len(graph["edges"]) == 1
+    assert graph["edges"][0]["mechanism"] == "plus_one"
+    assert graph["unexplained_nodes"]
