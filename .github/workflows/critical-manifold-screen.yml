@@ -3,20 +3,15 @@ name: Critical manifold screening
 on:
   workflow_dispatch:
     inputs:
-      limit:
-        description: "Number of published transition brackets to refine"
-        required: true
-        default: "8"
       steps:
         description: "Pseudo-arclength continuation steps per component"
         required: true
         default: "4"
   push:
     paths:
-      - "src/threebody_atlas/critical_curve.py"
       - "src/threebody_atlas/critical_manifold.py"
-      - "scripts/refine_mass_slice_brackets.py"
-      - "scripts/trace_critical_components.py"
+      - "scripts/extract_mass_slice_brackets.py"
+      - "scripts/trace_critical_components_from_published.py"
       - "tests/test_critical_manifold.py"
       - ".github/workflows/critical-manifold-screen.yml"
 
@@ -52,25 +47,17 @@ jobs:
               raise SystemExit(f'baseline source changed: {got}')
           print('source_git_blob=', got, 'sha256=', hashlib.sha256(raw).hexdigest())
           PY
-      - name: Extract coarse transition brackets
+      - name: Extract all published S/U transition brackets
         run: |
           python scripts/extract_mass_slice_brackets.py \
             data/raw/non-hierarchical-3b-supplementary_data.txt \
             artifacts/published-transition-brackets.tsv
-      - name: Refine selected mass slices
-        env:
-          LIMIT: ${{ inputs.limit || '8' }}
-        run: |
-          python scripts/refine_mass_slice_brackets.py \
-            artifacts/published-transition-brackets.tsv \
-            artifacts/refined-transition-brackets.json \
-            --limit "$LIMIT" --tolerance 2e-7
-      - name: Localize smooth events and trace augmented components
+      - name: Localize smooth Floquet events and trace augmented components directly
         env:
           STEPS: ${{ inputs.steps || '4' }}
         run: |
-          python scripts/trace_critical_components.py \
-            artifacts/refined-transition-brackets.json \
+          python scripts/trace_critical_components_from_published.py \
+            artifacts/published-transition-brackets.tsv \
             artifacts/critical-components.json \
             --steps "$STEPS" --arclength-step 4e-3
       - uses: actions/upload-artifact@v4
@@ -78,7 +65,6 @@ jobs:
           name: critical-manifold-screen-${{ github.sha }}
           path: |
             artifacts/published-transition-brackets.tsv
-            artifacts/refined-transition-brackets.json
             artifacts/critical-components.json
           if-no-files-found: error
           retention-days: 90
