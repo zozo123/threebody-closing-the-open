@@ -189,9 +189,11 @@ function main()
 
     y0 = [q0... ,seed.m1,seed.m2]
     prob = BifurcationProblem(residual6,y0,(dummy=0.0,),(@optic _.dummy);J=jac6)
-    npar = NewtonPar(tol=1e-6,max_iterations=12,verbose=true,linesearch=true)
-    # BifurcationKit 0.8.2 routes regular Newton through the generic solve API.
-    # This call shape is taken directly from the pinned upstream 0.8.2 tests.
+    # More Newton work is not a looser scientific gate.  The first 0.8.2 run
+    # drove the scaled residual from 6.8e-3 to 5.7e-6 in 12 steps, so we keep
+    # the final physics gates unchanged and simply allow the current upstream
+    # solver to reach its asymptotic regime.
+    npar = NewtonPar(tol=1e-7,max_iterations=30,verbose=true,linesearch=true)
     root = BK.solve(prob, Newton(), npar;normN=x->norm(x,Inf),callback=BK.cbMaxNorm(10.0))
     BK.converged(root) || error("BifurcationKit organizer Newton did not converge; residuals=$(root.residuals)")
 
