@@ -251,6 +251,12 @@ Actions run `31901007587` on `fdd0865` attempted every published S/U cell `0..61
 
 Actions run `31896441018` on `a9f5a57` independently localized **all 16** float64-failed canary cells with Julia BigFloat + Vern9. Every residual is below the frozen `2e-8` event gate (worst `1.66e-8` on cell 100) and far below the `1e-7` closure gate (worst `5.87e-13`). Cell 2 is at `1.16e-11`; cell 50 is at `3.31e-10`; cell 619 is at `6.54e-13`. Four cells Python labeled `plus_one` are independently `trace_collision`. Frozen harvest: `research/evidence/V1_JULIA_HARD_CANARY_2026-08-15.json`. This is not 620-edge coverage and not SOLVED.
 
+### Partial hybrid census: 485 / 620 cells under frozen gates
+
+**Status: INDEPENDENT-STRUCTURAL / incomplete**
+
+`research/evidence/V1_HYBRID_CRITICAL_ROOTS_PARTIAL.json` now holds 462 accepted float64 roots plus 23 independent Julia BigFloat escalations (canary plus harvest of run `31901007587` chunks 2, 4, 8, 16). New unique BigFloat cells in this harvest: 34, 66, 68, 98, 164. Frozen gates still hold (max accepted event `1.99e-8`, max closure `1.34e-9`). 135 cells remain missing. This is not 620/620 and not SOLVED.
+
 ### Three mixed organizers
 
 **Status: CANDIDATE / COMPUTE-READY**

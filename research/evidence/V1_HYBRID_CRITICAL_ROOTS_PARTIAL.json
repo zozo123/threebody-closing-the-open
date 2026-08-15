@@ -2,7 +2,7 @@
   "schema": "atlas.v1.hybrid-critical-root-network/2",
   "claim_status": "partial hybrid localization; remaining cells still require accepted high-precision localization",
   "source_transition_cells": 620,
-  "localized_roots": 480,
+  "localized_roots": 485,
   "missing_cells": [
     6,
     7,
@@ -22,7 +22,6 @@
     31,
     32,
     33,
-    34,
     37,
     39,
     41,
@@ -46,9 +45,7 @@
     63,
     64,
     65,
-    66,
     67,
-    68,
     69,
     70,
     71,
@@ -68,7 +65,6 @@
     93,
     95,
     97,
-    98,
     99,
     101,
     102,
@@ -104,7 +100,6 @@
     157,
     161,
     163,
-    164,
     165,
     166,
     169,
@@ -148,19 +143,19 @@
   "complete": false,
   "estimator_counts": {
     "float64": 462,
-    "julia_bigfloat": 18
+    "julia_bigfloat": 23
   },
   "event_mode_counts": {
     "minus_one": 168,
-    "plus_one": 158,
+    "plus_one": 163,
     "trace_collision": 154
   },
   "max_closure": 1.3449954408014987e-09,
   "max_abs_event": 1.989798081858396e-08,
   "python_attempts": 620,
   "python_ok": 462,
-  "julia_rows_seen": 18,
-  "julia_ok": 18,
+  "julia_rows_seen": 23,
+  "julia_ok": 23,
   "julia_event_mode_reclassifications": [],
   "frozen_gates": {
     "event": 2e-08,
@@ -1042,6 +1037,65 @@
       }
     },
     {
+      "cell_id": 34,
+      "status": "ok",
+      "event_mode": "plus_one",
+      "event": 1.9064850691983946e-12,
+      "closure": 1.3656326488310751e-14,
+      "masses": [
+        0.817,
+        0.7440824568000816,
+        1.0
+      ],
+      "x1": "-0.139865759662718538161292295368279750365744028483217",
+      "v1": "2.44651383060530028938214455332347713699184090733581",
+      "v2": "0.333218098019729030895091342424474349235066555064418",
+      "period": "5.23463318999519032787027745836734488662337321820144",
+      "alpha": "5.64065916433581004991962632265714278872558048034962",
+      "beta": "13.8439549860167667845869563304513221609549167765554",
+      "discriminant": "5.56648917882497222800682900978214219133998200547007",
+      "estimator": "julia_bigfloat",
+      "passed": true,
+      "source": "julia_bigfloat_vern9",
+      "raw_bigfloat": {
+        "event_value": "1.90648506919839450846542860143389445772066994221467e-12",
+        "closure_norm": "1.3656326488310751273780017759149418797364776377264e-14",
+        "m1": "0.81700000000000000000000000000000000000000000000001",
+        "m2": "0.744082456800081596947642355204737510198601460535731",
+        "m3": "1.0",
+        "x1": "-0.139865759662718538161292295368279750365744028483217",
+        "v1": "2.44651383060530028938214455332347713699184090733581",
+        "v2": "0.333218098019729030895091342424474349235066555064418",
+        "period": "5.23463318999519032787027745836734488662337321820144",
+        "alpha": "5.64065916433581004991962632265714278872558048034962",
+        "beta": "13.8439549860167667845869563304513221609549167765554",
+        "discriminant": "5.56648917882497222800682900978214219133998200547007"
+      },
+      "provenance": {
+        "source_run": 31901007587,
+        "source_sha": null,
+        "implementation": "independent Julia BigFloat + Vern9 published-cell localizer",
+        "dps": 40
+      },
+      "orientation": "U->S",
+      "published_labels": [
+        "U",
+        "S"
+      ],
+      "source_m2_bracket": [
+        0.744,
+        0.745
+      ],
+      "screening": {
+        "estimator": "python_float64",
+        "status": "missed_event",
+        "event_mode": "plus_one",
+        "event": -1.6957153903263134e-07,
+        "closure": 6.033303329764291e-10,
+        "error": null
+      }
+    },
+    {
       "cell_id": 35,
       "orientation": "S->U",
       "published_labels": [
@@ -1225,9 +1279,9 @@
       },
       "provenance": {
         "source_run": 31901007587,
-        "source_sha": "fdd0865c2b2f96de8f03c2b84497ba9660f24dc3",
+        "source_sha": null,
         "implementation": "independent Julia BigFloat + Vern9 published-cell localizer",
-        "dps": null
+        "dps": 40
       },
       "orientation": "U->S",
       "published_labels": [
@@ -1382,9 +1436,9 @@
       },
       "provenance": {
         "source_run": 31901007587,
-        "source_sha": "fdd0865c2b2f96de8f03c2b84497ba9660f24dc3",
+        "source_sha": null,
         "implementation": "independent Julia BigFloat + Vern9 published-cell localizer",
-        "dps": null
+        "dps": 40
       },
       "orientation": "U->S",
       "published_labels": [
@@ -1464,6 +1518,124 @@
       }
     },
     {
+      "cell_id": 66,
+      "status": "ok",
+      "event_mode": "plus_one",
+      "event": 3.2016438492955206e-09,
+      "closure": 7.245590234204897e-17,
+      "masses": [
+        0.833,
+        0.7370530150207378,
+        1.0
+      ],
+      "x1": "-0.145424119556095524232938478573959987499881217885539",
+      "v1": "2.37610543207759125199401014783913364010511177766498",
+      "v2": "0.352035986042176691329142910404673530869577419912705",
+      "period": "5.35053164706139996349996818602677611170011305195803",
+      "alpha": "5.78884714151241594535780169163744944147177444857341",
+      "beta": "14.7330828522761395214423309175692833754400136988242",
+      "discriminant": "4.88919695079123851893030505324021725462002404735422",
+      "estimator": "julia_bigfloat",
+      "passed": true,
+      "source": "julia_bigfloat_vern9",
+      "raw_bigfloat": {
+        "event_value": "3.20164384929552076774458672660936700738371188997565e-09",
+        "closure_norm": "7.24559023420489714548999576809679782558560463755064e-17",
+        "m1": "0.832999999999999999999999999999999999999999999999995",
+        "m2": "0.73705301502073782085781413937050487561321605002022",
+        "m3": "1.0",
+        "x1": "-0.145424119556095524232938478573959987499881217885539",
+        "v1": "2.37610543207759125199401014783913364010511177766498",
+        "v2": "0.352035986042176691329142910404673530869577419912705",
+        "period": "5.35053164706139996349996818602677611170011305195803",
+        "alpha": "5.78884714151241594535780169163744944147177444857341",
+        "beta": "14.7330828522761395214423309175692833754400136988242",
+        "discriminant": "4.88919695079123851893030505324021725462002404735422"
+      },
+      "provenance": {
+        "source_run": 31901007587,
+        "source_sha": null,
+        "implementation": "independent Julia BigFloat + Vern9 published-cell localizer",
+        "dps": 40
+      },
+      "orientation": "U->S",
+      "published_labels": [
+        "U",
+        "S"
+      ],
+      "source_m2_bracket": [
+        0.737,
+        0.738
+      ],
+      "screening": {
+        "estimator": "python_float64",
+        "status": "missed_event",
+        "event_mode": "plus_one",
+        "event": 4.861184521587347e-08,
+        "closure": 1.0204645588134196e-09,
+        "error": null
+      }
+    },
+    {
+      "cell_id": 68,
+      "status": "ok",
+      "event_mode": "plus_one",
+      "event": 3.4568461050036467e-09,
+      "closure": 6.892363143795669e-17,
+      "masses": [
+        0.834,
+        0.7369183867137042,
+        1.0
+      ],
+      "x1": "-0.145865074091637600891229600091544642853876592249191",
+      "v1": "2.3709617010902896317141656252704344799503371132939",
+      "v2": "0.353363917589347175089732944287365352956536728918648",
+      "period": "5.36063465162771356391720893831783614065811146194368",
+      "alpha": "5.80357366960069855328602629500195895861045009529511",
+      "beta": "14.8214420210610374247198044317872495243236808850968",
+      "discriminant": "4.82428861104395690248418264741658917494648202319814",
+      "estimator": "julia_bigfloat",
+      "passed": true,
+      "source": "julia_bigfloat_vern9",
+      "raw_bigfloat": {
+        "event_value": "3.45684610500364666177549577266098031332540575058648e-09",
+        "closure_norm": "6.89236314379566932945085663802616988443665126389087e-17",
+        "m1": "0.83399999999999999999999999999999999999999999999999",
+        "m2": "0.73691838671370428061092028391636100476751403742722",
+        "m3": "1.0",
+        "x1": "-0.145865074091637600891229600091544642853876592249191",
+        "v1": "2.3709617010902896317141656252704344799503371132939",
+        "v2": "0.353363917589347175089732944287365352956536728918648",
+        "period": "5.36063465162771356391720893831783614065811146194368",
+        "alpha": "5.80357366960069855328602629500195895861045009529511",
+        "beta": "14.8214420210610374247198044317872495243236808850968",
+        "discriminant": "4.82428861104395690248418264741658917494648202319814"
+      },
+      "provenance": {
+        "source_run": 31901007587,
+        "source_sha": null,
+        "implementation": "independent Julia BigFloat + Vern9 published-cell localizer",
+        "dps": 40
+      },
+      "orientation": "U->S",
+      "published_labels": [
+        "U",
+        "S"
+      ],
+      "source_m2_bracket": [
+        0.736,
+        0.737
+      ],
+      "screening": {
+        "estimator": "python_float64",
+        "status": "missed_event",
+        "event_mode": "plus_one",
+        "event": 1.33002448166053e-07,
+        "closure": 7.688949804677223e-10,
+        "error": null
+      }
+    },
+    {
       "cell_id": 72,
       "status": "ok",
       "event_mode": "plus_one",
@@ -1500,9 +1672,9 @@
       },
       "provenance": {
         "source_run": 31901007587,
-        "source_sha": "fdd0865c2b2f96de8f03c2b84497ba9660f24dc3",
+        "source_sha": null,
         "implementation": "independent Julia BigFloat + Vern9 published-cell localizer",
-        "dps": null
+        "dps": 40
       },
       "orientation": "U->S",
       "published_labels": [
@@ -1706,9 +1878,9 @@
       },
       "provenance": {
         "source_run": 31901007587,
-        "source_sha": "fdd0865c2b2f96de8f03c2b84497ba9660f24dc3",
+        "source_sha": null,
         "implementation": "independent Julia BigFloat + Vern9 published-cell localizer",
-        "dps": null
+        "dps": 40
       },
       "orientation": "U->S",
       "published_labels": [
@@ -1974,6 +2146,65 @@
       "passed": true
     },
     {
+      "cell_id": 98,
+      "status": "ok",
+      "event_mode": "plus_one",
+      "event": 2.92178811899717e-09,
+      "closure": 3.919396313575246e-16,
+      "masses": [
+        0.849,
+        0.7441393923315405,
+        1.0
+      ],
+      "x1": "-0.155490947357362947224750004943538276207532584802831",
+      "v1": "2.2698785610158717184528433759812235774038118266221",
+      "v2": "0.374853278707862429304028918739716463121095810341211",
+      "period": "5.57036313456721136368427398739332084463103554100304",
+      "alpha": "5.93943229856651708169663405933809339711149705232883",
+      "beta": "15.6365937943208906091769743731697834456090097429585",
+      "discriminant": "4.24593924050371472598150252571872499267316238576772",
+      "estimator": "julia_bigfloat",
+      "passed": true,
+      "source": "julia_bigfloat_vern9",
+      "raw_bigfloat": {
+        "event_value": "2.92178811899717001714122306294002742898554825336409e-09",
+        "closure_norm": "3.91939631357524601238494119027696337114616537052753e-16",
+        "m1": "0.849000000000000000000000000000000000000000000000001",
+        "m2": "0.744139392331540493483234844478438047322952398503416",
+        "m3": "1.0",
+        "x1": "-0.155490947357362947224750004943538276207532584802831",
+        "v1": "2.2698785610158717184528433759812235774038118266221",
+        "v2": "0.374853278707862429304028918739716463121095810341211",
+        "period": "5.57036313456721136368427398739332084463103554100304",
+        "alpha": "5.93943229856651708169663405933809339711149705232883",
+        "beta": "15.6365937943208906091769743731697834456090097429585",
+        "discriminant": "4.24593924050371472598150252571872499267316238576772"
+      },
+      "provenance": {
+        "source_run": 31901007587,
+        "source_sha": null,
+        "implementation": "independent Julia BigFloat + Vern9 published-cell localizer",
+        "dps": 40
+      },
+      "orientation": "U->S",
+      "published_labels": [
+        "U",
+        "S"
+      ],
+      "source_m2_bracket": [
+        0.744,
+        0.745
+      ],
+      "screening": {
+        "estimator": "python_float64",
+        "status": "missed_event",
+        "event_mode": "plus_one",
+        "event": -4.561851696394115e-08,
+        "closure": 8.731505389422598e-10,
+        "error": null
+      }
+    },
+    {
       "cell_id": 100,
       "status": "ok",
       "event_mode": "plus_one",
@@ -2118,9 +2349,9 @@
       },
       "provenance": {
         "source_run": 31901007587,
-        "source_sha": "fdd0865c2b2f96de8f03c2b84497ba9660f24dc3",
+        "source_sha": null,
         "implementation": "independent Julia BigFloat + Vern9 published-cell localizer",
-        "dps": null
+        "dps": 40
       },
       "orientation": "U->S",
       "published_labels": [
@@ -3472,6 +3703,65 @@
       "estimator": "float64",
       "source": "python_float64",
       "passed": true
+    },
+    {
+      "cell_id": 164,
+      "status": "ok",
+      "event_mode": "plus_one",
+      "event": 4.1044237752851413e-10,
+      "closure": 5.967165645611878e-19,
+      "masses": [
+        0.882,
+        0.813646206650342,
+        1.0
+      ],
+      "x1": "-0.197306562945127694771249680044506358949640682929199",
+      "v1": "1.93694095908965282943411357962796910470718198877865",
+      "v2": "0.405864317670789377455818021746746386919588732504954",
+      "period": "6.11984093751418967356920260513501025592830245710045",
+      "alpha": "5.10191331581876724293028642475359805129188518258742",
+      "beta": "10.6114798953230458351102326597735003972687500325764",
+      "discriminant": "8.39890642738680282585547641145870047074484610352841",
+      "estimator": "julia_bigfloat",
+      "passed": true,
+      "source": "julia_bigfloat_vern9",
+      "raw_bigfloat": {
+        "event_value": "4.10442377528514111251912089517438937051524398382654e-10",
+        "closure_norm": "5.9671656456118782967170649775054406161680745426936e-19",
+        "m1": "0.882000000000000000000000000000000000000000000000008",
+        "m2": "0.813646206650342024100757028469692312787293747926184",
+        "m3": "1.0",
+        "x1": "-0.197306562945127694771249680044506358949640682929199",
+        "v1": "1.93694095908965282943411357962796910470718198877865",
+        "v2": "0.405864317670789377455818021746746386919588732504954",
+        "period": "6.11984093751418967356920260513501025592830245710045",
+        "alpha": "5.10191331581876724293028642475359805129188518258742",
+        "beta": "10.6114798953230458351102326597735003972687500325764",
+        "discriminant": "8.39890642738680282585547641145870047074484610352841"
+      },
+      "provenance": {
+        "source_run": 31901007587,
+        "source_sha": null,
+        "implementation": "independent Julia BigFloat + Vern9 published-cell localizer",
+        "dps": 40
+      },
+      "orientation": "U->S",
+      "published_labels": [
+        "U",
+        "S"
+      ],
+      "source_m2_bracket": [
+        0.813,
+        0.814
+      ],
+      "screening": {
+        "estimator": "python_float64",
+        "status": "missed_event",
+        "event_mode": "plus_one",
+        "event": -3.4042322738514486e-08,
+        "closure": 6.194864416591907e-10,
+        "error": null
+      }
     },
     {
       "cell_id": 167,
@@ -23698,9 +23988,9 @@
       },
       "provenance": {
         "source_run": 31901007587,
-        "source_sha": "fdd0865c2b2f96de8f03c2b84497ba9660f24dc3",
+        "source_sha": null,
         "implementation": "independent Julia BigFloat + Vern9 published-cell localizer",
-        "dps": null
+        "dps": 40
       },
       "orientation": "U->S",
       "published_labels": [

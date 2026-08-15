@@ -85,10 +85,8 @@ def test_completeness_refuses_without_neck(tmp_path) -> None:
     assert record["passed"] is False
 
 
-def test_germ_builder_maps_frozen_principal_left_junction() -> None:
-    import tempfile
-
-    out = Path("/var/folders/4l/24cf6m8566bdsdbgvjm26r_r0000gn/T/grok-goal-e40eac9f893d/implementer/germs-test.json")
+def test_germ_builder_maps_frozen_principal_left_junction(tmp_path) -> None:
+    out = tmp_path / "germs-test.json"
     src = ROOT / "research/evidence/V1_JUNCTION_PRINCIPAL_LEFT_2026-08-15.json"
     assert src.is_file()
     assert _run(
