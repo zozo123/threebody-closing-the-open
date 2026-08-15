@@ -1,0 +1,46 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from threebody_atlas.critical_manifold import classify_localized_cell
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_headline_canonical_records_passed() -> None:
+    for name in (
+        "V1_CANONICAL_LOWER_PLUS_ONE_2026-08-15.json",
+        "V1_CANONICAL_UPPER_COLLISION_2026-08-15.json",
+        "V1_MIXED_CANONICAL_PRINCIPAL_LEFT_2026-08-15.json",
+        "V1_MIXED_CANONICAL_SECONDARY_LEFT_2026-08-15.json",
+        "V1_MIXED_CANONICAL_PRINCIPAL_RIGHT_2026-08-15.json",
+    ):
+        payload = json.loads((ROOT / "research/evidence" / name).read_text())
+        assert payload["passed"] is True
+
+
+def test_assemble_critical_graph_stays_unready_without_endpoints(tmp_path, capsys) -> None:
+    import runpy
+    import sys
+
+    output = tmp_path / "graph.json"
+    argv = sys.argv
+    sys.argv = ["assemble_critical_graph.py", "--output", str(output)]
+    try:
+        try:
+            runpy.run_path(str(ROOT / "scripts/assemble_critical_graph.py"), run_name="__main__")
+        except SystemExit as exc:
+            assert exc.code == 2
+    finally:
+        sys.argv = argv
+    graph = json.loads(output.read_text())
+    assert graph["release_ready"] is False
+    assert "secondary_right_death" in graph["unexplained_nodes"]
+    assert "secondary_left_fold" in graph["unexplained_nodes"]
+
+
+def test_event_gate_is_unchanged() -> None:
+    assert classify_localized_cell(closure=1e-10, event=1.9e-8, m2=0.75, lo=0.75, hi=0.751) == "ok"
+    assert classify_localized_cell(closure=1e-10, event=2.1e-8, m2=0.75, lo=0.75, hi=0.751) == "missed_event"
