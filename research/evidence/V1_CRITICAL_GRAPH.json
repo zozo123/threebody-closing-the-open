@@ -4,7 +4,7 @@
   "release_ready": false,
   "family_component": "one continuation-connected Li-Li-Liao catalog sheet",
   "source_transition_cells": 620,
-  "localized_roots": 602,
+  "localized_roots": 611,
   "nodes": [
     {
       "id": "mixed_principal_left",
@@ -79,7 +79,7 @@
       "mechanism": "two_separate_arcs",
       "note": "Two G- roots exist at the birth slice and the fold/reconnection screen failed; fold hypothesis falsified at this resolution.",
       "passed": true,
-      "evidence": "/Users/zozo123/three-body/research/evidence/V1_LEFT_BIRTH_CLASS_2026-08-15.json",
+      "evidence": "research/evidence/V1_LEFT_BIRTH_CLASS_2026-08-15.json",
       "estimator": "float64_geometry_screen"
     },
     {
@@ -1743,7 +1743,9 @@
         53,
         55,
         57,
+        59,
         61,
+        63,
         65,
         67,
         69,
@@ -1755,8 +1757,10 @@
         81,
         83,
         85,
+        87,
         89,
         93,
+        95,
         97,
         99,
         101,
@@ -1768,6 +1772,7 @@
         113,
         115,
         117,
+        119,
         121,
         125,
         127,
@@ -1782,6 +1787,7 @@
         145,
         147,
         149,
+        151,
         153,
         155,
         157,
@@ -1932,11 +1938,13 @@
         523,
         527,
         531,
+        535,
         547,
         551,
         555,
         559,
         563,
+        567,
         571,
         575,
         579,
@@ -1949,9 +1957,10 @@
         593,
         595,
         597,
+        599,
         601
       ],
-      "source_cell_count": 236,
+      "source_cell_count": 245,
       "estimators": [
         "float64",
         "julia_bigfloat"
@@ -1991,25 +2000,49 @@
       "direction": "-",
       "ends_on": "mixed_principal_left",
       "status": "traced"
+    },
+    {
+      "mixed_node": "mixed_principal_right",
+      "event_mode": "minus_one",
+      "direction": "+",
+      "ends_on": "mixed_principal_right",
+      "status": "traced"
+    },
+    {
+      "mixed_node": "mixed_principal_right",
+      "event_mode": "minus_one",
+      "direction": "-",
+      "ends_on": "mixed_principal_right",
+      "status": "traced"
+    },
+    {
+      "mixed_node": "mixed_principal_right",
+      "event_mode": "plus_one",
+      "direction": "+",
+      "ends_on": "mixed_principal_right",
+      "status": "traced"
+    },
+    {
+      "mixed_node": "mixed_principal_right",
+      "event_mode": "plus_one",
+      "direction": "-",
+      "ends_on": "mixed_principal_right",
+      "status": "traced"
     }
   ],
   "root_coverage": {
     "source_transition_cells": 620,
-    "localized_roots": 602,
+    "localized_roots": 611,
     "required_cells": 620,
     "complete": false,
     "edge_count": 79,
-    "cells_on_edges": 602,
+    "cells_on_edges": 611,
     "duplicate_cell_ids": [],
     "missing_mixed_germs": [
       "mixed_secondary_left:plus_one:+",
       "mixed_secondary_left:plus_one:-",
       "mixed_secondary_left:minus_one:+",
-      "mixed_secondary_left:minus_one:-",
-      "mixed_principal_right:plus_one:+",
-      "mixed_principal_right:plus_one:-",
-      "mixed_principal_right:minus_one:+",
-      "mixed_principal_right:minus_one:-"
+      "mixed_secondary_left:minus_one:-"
     ],
     "newton_failed": 0,
     "completeness_passed": false

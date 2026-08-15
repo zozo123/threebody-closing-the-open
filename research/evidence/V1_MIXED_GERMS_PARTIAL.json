@@ -53,6 +53,58 @@
         1.0
       ],
       "stopped_reason": "requested_steps_completed"
+    },
+    {
+      "mixed_node": "mixed_principal_right",
+      "event_mode": "minus_one",
+      "direction": "+",
+      "status": "traced",
+      "ends_on": "mixed_principal_right",
+      "masses": [
+        1.048,
+        1.126804401432563,
+        1.0
+      ],
+      "stopped_reason": "requested_steps_completed"
+    },
+    {
+      "mixed_node": "mixed_principal_right",
+      "event_mode": "minus_one",
+      "direction": "-",
+      "status": "traced",
+      "ends_on": "mixed_principal_right",
+      "masses": [
+        1.0550536128477475,
+        1.1387583089648676,
+        1.0
+      ],
+      "stopped_reason": "requested_steps_completed"
+    },
+    {
+      "mixed_node": "mixed_principal_right",
+      "event_mode": "plus_one",
+      "direction": "+",
+      "status": "traced",
+      "ends_on": "mixed_principal_right",
+      "masses": [
+        1.051,
+        1.1366655420692178,
+        1.0
+      ],
+      "stopped_reason": "pseudo-arclength correction failed: augmented least-squares failed: The maximum number of function evaluations is exceeded."
+    },
+    {
+      "mixed_node": "mixed_principal_right",
+      "event_mode": "plus_one",
+      "direction": "-",
+      "status": "traced",
+      "ends_on": "mixed_principal_right",
+      "masses": [
+        1.05,
+        1.131789195654533,
+        1.0
+      ],
+      "stopped_reason": "pseudo-arclength correction failed: augmented least-squares failed: The maximum number of function evaluations is exceeded."
     }
   ]
 }
