@@ -54,7 +54,7 @@ jobs:
             output_file: artifacts/daughter-d1-plus-bigfloat.json
     steps:
       - uses: actions/checkout@v7
-      - uses: julia-actions/setup-julia@v2
+      - uses: julia-actions/setup-julia@v3
         with:
           version: "1.11.9"
       - uses: julia-actions/cache@v2
