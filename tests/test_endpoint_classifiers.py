@@ -85,6 +85,22 @@ def test_completeness_refuses_without_neck(tmp_path) -> None:
     assert record["passed"] is False
 
 
+def test_germ_builder_maps_frozen_principal_left_junction() -> None:
+    import tempfile
+
+    out = Path("/var/folders/4l/24cf6m8566bdsdbgvjm26r_r0000gn/T/grok-goal-e40eac9f893d/implementer/germs-test.json")
+    src = ROOT / "research/evidence/V1_JUNCTION_PRINCIPAL_LEFT_2026-08-15.json"
+    assert src.is_file()
+    assert _run(
+        "build_mixed_germs_from_junction.py",
+        [str(out), "--junction", str(src)],
+    ) == 0
+    payload = json.loads(out.read_text())
+    keys = {(g["mixed_node"], g["event_mode"], g["direction"]) for g in payload["germs"]}
+    assert ("mixed_principal_left", "plus_one", "+") in keys
+    assert ("mixed_principal_left", "minus_one", "-") in keys
+
+
 def test_completeness_passes_with_neck_and_clean_al(tmp_path) -> None:
     al = ROOT / "research/evidence/V1_AL_POCKET_SCREEN_2026-08-15.json"
     neck = tmp_path / "neck.json"

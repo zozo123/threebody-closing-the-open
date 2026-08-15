@@ -1,0 +1,58 @@
+{
+  "schema": "atlas.v1.mixed-germs/1",
+  "claim_status": "float64 junction traces split into local G+/G- germs; not a substitute for BigFloat vertices",
+  "germs": [
+    {
+      "mixed_node": "mixed_principal_left",
+      "event_mode": "plus_one",
+      "direction": "+",
+      "status": "traced",
+      "ends_on": "mixed_principal_left",
+      "masses": [
+        0.928,
+        0.8838772895243089,
+        1.0
+      ],
+      "stopped_reason": "requested_steps_completed"
+    },
+    {
+      "mixed_node": "mixed_principal_left",
+      "event_mode": "plus_one",
+      "direction": "-",
+      "status": "traced",
+      "ends_on": "mixed_principal_left",
+      "masses": [
+        0.9321359250557786,
+        0.8887992542218717,
+        1.0
+      ],
+      "stopped_reason": "requested_steps_completed"
+    },
+    {
+      "mixed_node": "mixed_principal_left",
+      "event_mode": "minus_one",
+      "direction": "+",
+      "status": "traced",
+      "ends_on": "mixed_principal_left",
+      "masses": [
+        0.931,
+        0.8898115763326967,
+        1.0
+      ],
+      "stopped_reason": "requested_steps_completed"
+    },
+    {
+      "mixed_node": "mixed_principal_left",
+      "event_mode": "minus_one",
+      "direction": "-",
+      "status": "traced",
+      "ends_on": "mixed_principal_left",
+      "masses": [
+        0.9278582139401068,
+        0.881780332833661,
+        1.0
+      ],
+      "stopped_reason": "requested_steps_completed"
+    }
+  ]
+}

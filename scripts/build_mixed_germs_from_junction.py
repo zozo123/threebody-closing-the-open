@@ -53,13 +53,31 @@ def main() -> None:
     germs: list[dict[str, Any]] = []
     for path in args.junction:
         payload = json.loads(Path(path).read_text(encoding="utf-8"))
-        label = str(payload.get("label") or payload.get("name") or Path(path).stem)
+        label = " ".join(
+            [
+                str(payload.get("label") or ""),
+                str(payload.get("name") or ""),
+                Path(path).stem,
+                str((payload.get("requested_center") or {})),
+            ]
+        ).lower()
+        mixed_node = str(payload.get("mixed_node") or "")
         for key, node in LABEL_TO_NODE.items():
-            if key in label:
+            if key.replace("_", "-") in label.replace("_", "-"):
                 mixed_node = node
                 break
-        else:
-            mixed_node = str(payload.get("mixed_node") or "")
+        if not mixed_node:
+            center = payload.get("requested_center") or {}
+            try:
+                m1 = float(center.get("m1") if isinstance(center, dict) else center[0])
+                if abs(m1 - 0.9295) < 0.01:
+                    mixed_node = "mixed_principal_left"
+                elif abs(m1 - 0.9965) < 0.01:
+                    mixed_node = "mixed_secondary_left"
+                elif abs(m1 - 1.0495) < 0.01:
+                    mixed_node = "mixed_principal_right"
+            except (TypeError, ValueError, KeyError, IndexError):
+                mixed_node = mixed_node
         if not mixed_node:
             raise SystemExit(f"cannot map {path} to a mixed node")
         traces = payload.get("traces") or payload.get("germs") or []
