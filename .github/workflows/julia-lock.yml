@@ -13,12 +13,12 @@ permissions:
 
 concurrency:
   group: julia-lock-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   lock:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
         with:
@@ -26,9 +26,9 @@ jobs:
       - uses: julia-actions/setup-julia@v2
         with:
           version: "1.11.9"
-      - name: Resolve and instantiate pinned verifier environment
+      - name: Resolve pinned verifier environment
         run: |
-          julia --project=julia -e 'using Pkg; isempty(Pkg.Registry.reachable_registries()) && Pkg.Registry.add("General"); Pkg.resolve(); Pkg.instantiate(); Pkg.precompile(); Pkg.status()'
+          julia --project=julia -e 'using Pkg; isempty(Pkg.Registry.reachable_registries()) && Pkg.Registry.add("General"); Pkg.resolve(); Pkg.instantiate(); Pkg.status()'
       - name: Commit generated Manifest
         run: |
           test -f julia/Manifest.toml
