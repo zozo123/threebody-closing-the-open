@@ -1,0 +1,100 @@
+name: Lower plus-one daughter continuation
+
+on:
+  workflow_dispatch:
+    inputs:
+      steps:
+        description: "Pseudo-arclength steps after the two branch-switch seeds"
+        required: true
+        default: "18"
+      arclength_step:
+        description: "Normalized pseudo-arclength step"
+        required: true
+        default: "0.0015"
+  pull_request:
+    paths:
+      - "src/threebody_atlas/generic_branch.py"
+      - "src/threebody_atlas/branch_switch.py"
+      - "scripts/continue_lower_plus_one_daughter.py"
+      - "experiments/critical_curve_representatives.tsv"
+      - ".github/workflows/lower-plus-one-daughter-continuation.yml"
+      - "uv.lock"
+  push:
+    branches: ["main"]
+    paths:
+      - "src/threebody_atlas/generic_branch.py"
+      - "src/threebody_atlas/branch_switch.py"
+      - "scripts/continue_lower_plus_one_daughter.py"
+      - "experiments/critical_curve_representatives.tsv"
+      - ".github/workflows/lower-plus-one-daughter-continuation.yml"
+      - "uv.lock"
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON: "3.13"
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: |
+          python -m py_compile src/threebody_atlas/generic_branch.py
+          python -m py_compile scripts/continue_lower_plus_one_daughter.py
+
+  continue:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - label: d0-minus
+            direction: 0
+            sign: -1
+          - label: d0-plus
+            direction: 0
+            sign: 1
+          - label: d1-minus
+            direction: 1
+            sign: -1
+          - label: d1-plus
+            direction: 1
+            sign: 1
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.32"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked
+      - name: Continue daughter ${{ matrix.label }}
+        env:
+          STEPS: ${{ inputs.steps || '18' }}
+          ARC_STEP: ${{ inputs.arclength_step || '0.0015' }}
+        run: |
+          mkdir -p artifacts
+          uv run --no-sync python scripts/continue_lower_plus_one_daughter.py \
+            experiments/critical_curve_representatives.tsv \
+            "artifacts/lower-plus-one-daughter-${{ matrix.label }}.json" \
+            --direction-index "${{ matrix.direction }}" \
+            --sign "${{ matrix.sign }}" \
+            --steps "$STEPS" \
+            --arclength-step "$ARC_STEP"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lower-plus-one-daughter-${{ matrix.label }}-${{ github.sha }}
+          path: artifacts/lower-plus-one-daughter-${{ matrix.label }}.json
+          if-no-files-found: warn
+          retention-days: 90
