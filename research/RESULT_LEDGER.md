@@ -257,6 +257,12 @@ Actions run `31896441018` on `a9f5a57` independently localized **all 16** float6
 
 `research/evidence/V1_HYBRID_CRITICAL_ROOTS_PARTIAL.json` now holds 462 accepted float64 roots plus 157 independent Julia BigFloat escalations (CI + local remainder). Frozen gates still hold (max accepted event `1.99e-8`, max closure `1.34e-9`). 1 cells remain missing (cell 543). This is not 620/620 and not SOLVED.
 
+### Hybrid 620/620 census under frozen gates
+
+**Status: INDEPENDENT-STRUCTURAL**
+
+`research/evidence/V1_HYBRID_CRITICAL_ROOTS_PARTIAL.json` (also frozen as `V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json`) holds every published S/U cell `0..619`: 462 accepted float64 roots plus 158 independent Julia BigFloat escalations (GHA run `31901007587` plus local remainder). Frozen gates hold (max accepted event `1.99e-8`, max closure `1.34e-9`). This closes the root-localization subproblem. It is not by itself the mechanism-resolved graph and not SOLVED.
+
 ### Three mixed organizers
 
 **Status: CANDIDATE / COMPUTE-READY**

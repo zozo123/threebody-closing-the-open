@@ -4,7 +4,7 @@
   "release_ready": false,
   "family_component": "one continuation-connected Li-Li-Liao catalog sheet",
   "source_transition_cells": 620,
-  "localized_roots": 619,
+  "localized_roots": 620,
   "nodes": [
     {
       "id": "mixed_principal_left",
@@ -79,7 +79,7 @@
       "mechanism": "two_separate_arcs",
       "note": "Two G- roots exist at the birth slice and the fold/reconnection screen failed; fold hypothesis falsified at this resolution.",
       "passed": true,
-      "evidence": "/Users/zozo123/three-body/research/evidence/V1_LEFT_BIRTH_CLASS_2026-08-15.json",
+      "evidence": "research/evidence/V1_LEFT_BIRTH_CLASS_2026-08-15.json",
       "estimator": "float64_geometry_screen"
     },
     {
@@ -1947,6 +1947,7 @@
         531,
         535,
         539,
+        543,
         547,
         551,
         555,
@@ -1968,7 +1969,7 @@
         599,
         601
       ],
-      "source_cell_count": 253,
+      "source_cell_count": 254,
       "estimators": [
         "float64",
         "julia_bigfloat"
@@ -2040,11 +2041,11 @@
   ],
   "root_coverage": {
     "source_transition_cells": 620,
-    "localized_roots": 619,
+    "localized_roots": 620,
     "required_cells": 620,
-    "complete": false,
+    "complete": true,
     "edge_count": 79,
-    "cells_on_edges": 619,
+    "cells_on_edges": 620,
     "duplicate_cell_ids": [],
     "missing_mixed_germs": [
       "mixed_secondary_left:plus_one:+",
