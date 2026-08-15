@@ -255,7 +255,7 @@ Actions run `31896441018` on `a9f5a57` independently localized **all 16** float6
 
 **Status: INDEPENDENT-STRUCTURAL / incomplete**
 
-`research/evidence/V1_HYBRID_CRITICAL_ROOTS_PARTIAL.json` now holds 462 accepted float64 roots plus 56 independent Julia BigFloat escalations (canary plus harvest of run `31901007587` chunks 0, 2, 4, 6, 8, 9, 10, 11, 12, 15, 16). Frozen gates still hold (max accepted event `1.99e-8`, max closure `1.34e-9`). 102 cells remain missing. This is not 620/620 and not SOLVED.
+`research/evidence/V1_HYBRID_CRITICAL_ROOTS_PARTIAL.json` now holds 462 accepted float64 roots plus 72 independent Julia BigFloat escalations (canary plus harvest of run `31901007587` chunks 0, 1, 2, 3, 4, 6, 8, 9, 10, 11, 12, 13, 15, 16). Frozen gates still hold (max accepted event `1.99e-8`, max closure `1.34e-9`). 86 cells remain missing. This is not 620/620 and not SOLVED.
 
 ### Three mixed organizers
 
