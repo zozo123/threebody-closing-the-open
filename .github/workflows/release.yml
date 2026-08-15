@@ -3,6 +3,13 @@ name: Release
 on:
   push:
     tags: ["v*"]
+  pull_request:
+    paths:
+      - "paper/**"
+      - "research/DISCOVERY_RELEASE.json"
+      - "scripts/build_discovery_release.py"
+      - "src/threebody_atlas/discovery.py"
+      - ".github/workflows/release.yml"
   workflow_dispatch:
 
 permissions:
@@ -27,21 +34,118 @@ jobs:
       - run: uv run --no-sync pytest
       - name: Build Python distributions
         run: uv build --no-sources
-      - name: Install TeX
+      - name: Validate discovery contract and inject paper status
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=(
+            --validate-only
+            --emit-paper-status paper/generated/discovery-release.tex
+          )
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            args+=(--require-solved)
+          fi
+          uv run --no-sync python scripts/build_discovery_release.py "${args[@]}"
+      - name: Install TeX and ZIP tooling
         run: |
           sudo apt-get update
-          sudo apt-get install -y latexmk texlive-latex-base texlive-latex-recommended texlive-latex-extra
+          sudo apt-get install -y latexmk texlive-latex-base texlive-latex-recommended texlive-latex-extra zip
       - name: Build manuscript
         working-directory: paper
         run: latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
-      - name: Generate release checksums
+      - name: Assemble self-contained paper release bundle
+        shell: bash
         run: |
+          set -euo pipefail
+
+          ref_name="${GITHUB_REF_NAME//\//-}"
+          bundle="threebody-atlas-paper-bundle-${ref_name}"
+          stage="dist/${bundle}"
+          source_date_epoch="$(git show -s --format=%ct HEAD)"
+          commit_date="$(git show -s --format=%cI HEAD)"
+
+          rm -rf "${stage}"
+          mkdir -p "${stage}"
+
+          # Start from the exact tracked repository snapshot so the paper bundle
+          # cannot silently omit code, workflows, experiments, tests, or research
+          # records needed to understand and reproduce the manuscript.
+          git archive --format=tar HEAD | tar -xf - -C "${stage}"
+
+          # Add build products and generated claim-gate material that are
+          # intentionally not tracked in git.
+          mkdir -p "${stage}/paper/generated"
+          cp paper/main.pdf "${stage}/paper/main.pdf"
+          cp paper/generated/discovery-release.tex \
+            "${stage}/paper/generated/discovery-release.tex"
+
+          cat > "${stage}/BUNDLE_CONTENTS.md" <<EOF
+          # Three-Body Orbit Atlas paper release bundle
+
+          This archive is a self-contained snapshot for the manuscript release.
+
+          It contains:
+          - the compiled manuscript at `paper/main.pdf`;
+          - the complete tracked repository snapshot at commit `${GITHUB_SHA}`;
+          - the LaTeX source and bibliography under `paper/`;
+          - the generated discovery-release status injected into the PDF build;
+          - the frozen scientific protocol and release records under `research/`;
+          - committed experiment inputs/results under `experiments/`;
+          - Python/Julia/reproduction code, workflows, tests, and locked environments;
+          - `RELEASE_PROVENANCE.txt` and an internal `SHA256SUMS` manifest.
+
+          A tagged `v*` GitHub release is published only after the discovery manifest
+          validates with `--require-solved`.
+          EOF
+
+          cat > "${stage}/RELEASE_PROVENANCE.txt" <<EOF
+          repository=${GITHUB_REPOSITORY}
+          commit=${GITHUB_SHA}
+          commit_date=${commit_date}
+          ref=${GITHUB_REF}
+          ref_name=${GITHUB_REF_NAME}
+          workflow=${GITHUB_WORKFLOW}
+          workflow_ref=${GITHUB_WORKFLOW_REF}
+          run_id=${GITHUB_RUN_ID}
+          run_attempt=${GITHUB_RUN_ATTEMPT}
+          paper_pdf=paper/main.pdf
+          discovery_manifest=research/DISCOVERY_RELEASE.json
+          source_snapshot=git archive HEAD
+          EOF
+
+          (
+            cd "${stage}"
+            find . -type f ! -name SHA256SUMS -print0 \
+              | LC_ALL=C sort -z \
+              | xargs -0 sha256sum > SHA256SUMS
+          )
+
+          # Normalize mtimes and archive ordering so identical source/build inputs
+          # produce a stable ZIP layout without host-specific ZIP metadata.
+          find "${stage}" -exec touch -h -d "@${source_date_epoch}" {} +
+          (
+            cd dist
+            find "${bundle}" -type f -print \
+              | LC_ALL=C sort \
+              | zip -X -q "${bundle}.zip" -@
+          )
+
           cp paper/main.pdf dist/atlas-paper.pdf
+          rm -rf "${stage}"
+
+          test -s "dist/${bundle}.zip"
+          test -s dist/atlas-paper.pdf
+      - name: Generate release checksums
+        shell: bash
+        run: |
+          set -euo pipefail
           cd dist
-          sha256sum * > SHA256SUMS
+          find . -maxdepth 1 -type f ! -name SHA256SUMS -print0 \
+            | LC_ALL=C sort -z \
+            | xargs -0 sha256sum > SHA256SUMS
       - uses: actions/upload-artifact@v4
         with:
-          name: release-candidate-${{ github.ref_name }}-${{ github.sha }}
+          name: release-candidate-${{ github.event.pull_request.number || github.ref_name }}-${{ github.sha }}
           path: |
             dist/*
           if-no-files-found: error
