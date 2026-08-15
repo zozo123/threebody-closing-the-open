@@ -1,0 +1,74 @@
+name: Latest BifurcationKit mixed-organizer cross-check
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "julia-latest/**"
+      - "experiments/mixed_vertex_principal_lower_left.tsv"
+      - "experiments/mixed_vertex_secondary_lower_switch.tsv"
+      - "experiments/mixed_vertex_principal_lower_right.tsv"
+      - ".github/workflows/latest-bifurcationkit-crosscheck.yml"
+  pull_request:
+    paths:
+      - "julia-latest/**"
+      - "experiments/mixed_vertex_principal_lower_left.tsv"
+      - "experiments/mixed_vertex_secondary_lower_switch.tsv"
+      - "experiments/mixed_vertex_principal_lower_right.tsv"
+      - ".github/workflows/latest-bifurcationkit-crosscheck.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  crosscheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: principal-lower-left
+            seed_file: experiments/mixed_vertex_principal_lower_left.tsv
+            output_file: artifacts/latest-bk-principal-lower-left.json
+          - label: secondary-lower-switch
+            seed_file: experiments/mixed_vertex_secondary_lower_switch.tsv
+            output_file: artifacts/latest-bk-secondary-lower-switch.json
+          - label: principal-lower-right
+            seed_file: experiments/mixed_vertex_principal_lower_right.tsv
+            output_file: artifacts/latest-bk-principal-lower-right.json
+    steps:
+      - uses: actions/checkout@v7
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.12.6"
+      - uses: julia-actions/cache@v2
+      - name: Instantiate and freeze resolved latest-stack environment
+        run: |
+          julia --project=julia-latest -e 'using Pkg; Pkg.resolve(); Pkg.instantiate(); Pkg.precompile(); Pkg.status()'
+          test -s julia-latest/Manifest.toml
+      - name: Parse latest-stack cross-check
+        run: julia --project=julia-latest -e 'Meta.parseall(read("julia-latest/crosscheck_mixed_vertex.jl", String)); println("latest-stack cross-check syntax OK")'
+      - name: Cross-check ${{ matrix.label }} independently
+        run: |
+          mkdir -p artifacts
+          julia --project=julia-latest julia-latest/crosscheck_mixed_vertex.jl \
+            "${{ matrix.seed_file }}" \
+            "${{ matrix.output_file }}"
+      - name: Copy resolved environment into evidence bundle
+        if: always()
+        run: |
+          mkdir -p artifacts
+          cp julia-latest/Project.toml artifacts/latest-bk-Project.toml
+          if test -f julia-latest/Manifest.toml; then cp julia-latest/Manifest.toml artifacts/latest-bk-Manifest.toml; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: latest-bifurcationkit-${{ matrix.label }}-${{ github.sha }}
+          path: |
+            ${{ matrix.output_file }}
+            artifacts/latest-bk-Project.toml
+            artifacts/latest-bk-Manifest.toml
+          if-no-files-found: warn
+          retention-days: 90
