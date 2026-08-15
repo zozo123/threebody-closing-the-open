@@ -2,7 +2,10 @@ name: Release
 
 on:
   push:
+    branches: ["main"]
     tags: ["v*"]
+    paths:
+      - ".github/workflows/release.yml"
   pull_request:
     paths:
       - "paper/**"
@@ -11,6 +14,12 @@ on:
       - "src/threebody_atlas/discovery.py"
       - ".github/workflows/release.yml"
   workflow_dispatch:
+    inputs:
+      publish_prerelease:
+        description: "Publish or refresh a paper-bundle prerelease for this commit"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -58,7 +67,11 @@ jobs:
         run: |
           set -euo pipefail
 
-          ref_name="${GITHUB_REF_NAME//\//-}"
+          if [[ "${GITHUB_REF}" == "refs/heads/main" || "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
+            ref_name="paper-preview-${GITHUB_SHA::12}"
+          else
+            ref_name="${GITHUB_REF_NAME//\//-}"
+          fi
           bundle="threebody-atlas-paper-bundle-${ref_name}"
           stage="dist/${bundle}"
           source_date_epoch="$(git show -s --format=%ct HEAD)"
@@ -94,8 +107,10 @@ jobs:
           - Python/Julia/reproduction code, workflows, tests, and locked environments;
           - `RELEASE_PROVENANCE.txt` and an internal `SHA256SUMS` manifest.
 
-          A tagged `v*` GitHub release is published only after the discovery manifest
-          validates with `--require-solved`.
+          `paper-preview-*` GitHub releases are explicitly prerelease snapshots and
+          do not claim that ATLAS V1 is scientifically solved. A tagged `v*` final
+          release is still published only after the discovery manifest validates
+          with `--require-solved`.
           EOF
 
           cat > "${stage}/RELEASE_PROVENANCE.txt" <<EOF
@@ -150,7 +165,30 @@ jobs:
             dist/*
           if-no-files-found: error
           retention-days: 90
-      - name: Publish GitHub release for tags
+      - name: Publish GitHub prerelease for paper-bundle previews
+        if: >-
+          (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+          (github.event_name == 'workflow_dispatch' && inputs.publish_prerelease)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          short_sha="${GITHUB_SHA::12}"
+          tag="paper-preview-${short_sha}"
+          title="Three-Body Orbit Atlas paper bundle preview ${short_sha}"
+          notes="Paper and reproducibility bundle built from commit ${GITHUB_SHA}. This is a prerelease snapshot of the current research state, not the final solved ATLAS V1 release. The compiled PDF includes the machine-readable discovery status from research/DISCOVERY_RELEASE.json."
+
+          if gh release view "${tag}" >/dev/null 2>&1; then
+            gh release upload "${tag}" dist/* --clobber
+          else
+            gh release create "${tag}" dist/* \
+              --target "${GITHUB_SHA}" \
+              --title "${title}" \
+              --notes "${notes}" \
+              --prerelease
+          fi
+      - name: Publish GitHub release for solved v tags
         if: startsWith(github.ref, 'refs/tags/v')
         env:
           GH_TOKEN: ${{ github.token }}
