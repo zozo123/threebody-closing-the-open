@@ -30,25 +30,48 @@ permissions:
 env:
   UV_PYTHON: "3.13"
   CHUNKS: "62"
-  JULIA_CHUNKS: "32"
 
 jobs:
   preflight:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-python@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          python-version: "3.13"
-      - run: |
-          python -m py_compile scripts/localize_full_critical_network.py scripts/merge_hybrid_critical_roots.py
-          python - <<'PY'
-          import yaml
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked
+      - name: Parse localization and merge scripts
+        run: uv run --no-sync python -m py_compile scripts/localize_full_critical_network.py scripts/merge_hybrid_critical_roots.py
+      - name: Freeze published transition brackets once
+        run: |
+          mkdir -p data/raw artifacts
+          curl -L --fail --retry 3 \
+            https://raw.githubusercontent.com/sjtu-liao/three-body/main/non-hierarchical-3b-supplementary_data.txt \
+            -o data/raw/non-hierarchical-3b-supplementary_data.txt
+          uv run --no-sync python - <<'PY'
+          import hashlib
           from pathlib import Path
-          yaml.safe_load(Path('.github/workflows/full-critical-root-localization.yml').read_text())
-          print('workflow YAML parsed')
+          raw = Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
+          got = hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
+          expected = '79b2963df43e62201c35690bfc22bec166132427'
+          if got != expected:
+              raise SystemExit(f'baseline source changed: {got}')
+          print('source_git_blob=', got, 'sha256=', hashlib.sha256(raw).hexdigest())
           PY
+          uv run --no-sync python scripts/extract_mass_slice_brackets.py \
+            data/raw/non-hierarchical-3b-supplementary_data.txt \
+            artifacts/published-transition-brackets.tsv
+          test "$(($(wc -l < artifacts/published-transition-brackets.tsv) - 1))" -eq 620
+      - uses: actions/upload-artifact@v4
+        with:
+          name: published-transition-brackets-${{ github.sha }}
+          path: artifacts/published-transition-brackets.tsv
+          if-no-files-found: error
+          retention-days: 90
 
   localize:
     if: github.event_name != 'pull_request'
@@ -69,27 +92,10 @@ jobs:
           enable-cache: true
       - run: uv python install 3.13
       - run: uv sync --locked
-      - name: Fetch frozen Li-Li-Liao baseline
-        run: |
-          mkdir -p data/raw artifacts
-          curl -L --fail --retry 3 \
-            https://raw.githubusercontent.com/sjtu-liao/three-body/main/non-hierarchical-3b-supplementary_data.txt \
-            -o data/raw/non-hierarchical-3b-supplementary_data.txt
-          uv run --no-sync python - <<'PY'
-          import hashlib
-          from pathlib import Path
-          raw = Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
-          got = hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
-          expected = '79b2963df43e62201c35690bfc22bec166132427'
-          if got != expected:
-              raise SystemExit(f'baseline source changed: {got}')
-          print('source_git_blob=', got, 'sha256=', hashlib.sha256(raw).hexdigest())
-          PY
-      - name: Extract all published transition brackets
-        run: |
-          uv run --no-sync python scripts/extract_mass_slice_brackets.py \
-            data/raw/non-hierarchical-3b-supplementary_data.txt \
-            artifacts/published-transition-brackets.tsv
+      - uses: actions/download-artifact@v4
+        with:
+          name: published-transition-brackets-${{ github.sha }}
+          path: artifacts
       - name: Localize chunk ${{ matrix.chunk }} of 62
         run: |
           uv run --no-sync python scripts/localize_full_critical_network.py \
@@ -239,30 +245,16 @@ jobs:
         with:
           name: full-critical-roots-${{ github.sha }}
           path: artifacts/census
+      - uses: actions/download-artifact@v4
+        with:
+          name: published-transition-brackets-${{ github.sha }}
+          path: artifacts
       - uses: julia-actions/setup-julia@v2
         with:
           version: "1.11.9"
       - uses: julia-actions/cache@v2
       - name: Instantiate locked independent solver stack
         run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
-      - name: Fetch and verify frozen Li-Li-Liao baseline
-        run: |
-          mkdir -p data/raw artifacts
-          curl -L --fail --retry 3 \
-            https://raw.githubusercontent.com/sjtu-liao/three-body/main/non-hierarchical-3b-supplementary_data.txt \
-            -o data/raw/non-hierarchical-3b-supplementary_data.txt
-          python - <<'PY'
-          import hashlib
-          from pathlib import Path
-          raw = Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
-          got = hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
-          expected = '79b2963df43e62201c35690bfc22bec166132427'
-          if got != expected:
-              raise SystemExit(f'baseline source changed: {got}')
-          PY
-          python scripts/extract_mass_slice_brackets.py \
-            data/raw/non-hierarchical-3b-supplementary_data.txt \
-            artifacts/published-transition-brackets.tsv
       - name: Build BigFloat escalation batch ${{ matrix.chunk }} of 32
         id: batch
         env:
@@ -280,14 +272,20 @@ jobs:
           wanted = {int(row['cell_id']) for row in missed if int(row['cell_id']) % chunks == chunk}
           source = Path('artifacts/published-transition-brackets.tsv')
           target = Path(f'artifacts/julia-escalation-{chunk}.tsv')
+          output_fields = [
+              'cell_id', 'm1', 'm3', 'left_m2', 'left_x1', 'left_v1', 'left_v2', 'left_period',
+              'right_m2', 'right_x1', 'right_v1', 'right_v2', 'right_period',
+          ]
+          rows = []
           with source.open(encoding='utf-8') as handle:
-              reader = csv.DictReader(handle, delimiter='\t')
-              fieldnames = reader.fieldnames
-              rows = [row for i, row in enumerate(reader) if i in wanted]
+              for cell_id, row in enumerate(csv.DictReader(handle, delimiter='\t')):
+                  if cell_id not in wanted:
+                      continue
+                  rows.append({field: (cell_id if field == 'cell_id' else row[field]) for field in output_fields})
           if {int(row['cell_id']) for row in rows} != wanted:
               raise SystemExit(f'failed to materialize requested cells: {sorted(wanted)}')
           with target.open('w', encoding='utf-8', newline='') as handle:
-              writer = csv.DictWriter(handle, fieldnames=fieldnames, delimiter='\t', lineterminator='\n')
+              writer = csv.DictWriter(handle, fieldnames=output_fields, delimiter='\t', lineterminator='\n')
               writer.writeheader()
               writer.writerows(rows)
           Path(f'artifacts/julia-escalation-{chunk}-count.txt').write_text(str(len(rows)))
