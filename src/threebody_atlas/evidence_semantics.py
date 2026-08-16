@@ -18,6 +18,7 @@ from typing import Any
 REGISTRY_SCHEMA = "atlas.v1.search-scope-registry/1"
 REGISTRY_PATH = Path("research/SEARCH_SCOPE_REGISTRY.json")
 CERTIFICATE_CRITERION = "bounded_completeness_bundle/v1"
+FULL_EVENT_COVER_CRITERION = "validated_full_event_cover/v1"
 RELEASE_REQUIREMENT = "full_critical_set_release/v1"
 CLAIM_KEYS = (
     "enumerates_label_transition_roots",
@@ -28,10 +29,6 @@ CLAIM_KEYS = (
 )
 
 _VERSIONED_ID = re.compile(r"^[a-z0-9][a-z0-9_-]*/v[1-9][0-9]*$")
-_LEGACY_ROLE_CRITERIA = {
-    "active_learning": "active_learning_pocket/v1",
-    "neck_scan": "local_neck_raster/v1",
-}
 
 
 class SemanticContractError(ValueError):
@@ -87,6 +84,8 @@ def validate_registry(registry: Any) -> list[str]:
         criteria = {}
     if CERTIFICATE_CRITERION not in criteria:
         errors.append(f"registry criteria must include {CERTIFICATE_CRITERION!r}")
+    if FULL_EVENT_COVER_CRITERION not in criteria:
+        errors.append(f"registry criteria must include {FULL_EVENT_COVER_CRITERION!r}")
     for criterion_id, item in criteria.items():
         if not isinstance(criterion_id, str) or not _VERSIONED_ID.fullmatch(criterion_id):
             errors.append(f"criterion id {criterion_id!r} must end in an explicit /vN")
@@ -181,12 +180,14 @@ def classify_artifact(
 ) -> tuple[str, str]:
     """Return ``(criterion_id, origin)`` for a source artifact.
 
-    New artifacts should declare ``search_semantics.criterion_id`` themselves.
-    Frozen historical artifacts remain immutable and are typed by exact
-    path+digest bindings in the registry.  Synthetic legacy fixtures may use a
-    role-specific compatibility classification; the resulting certificate
-    still records that inference and is never release-sufficient.
+    New artifacts must declare ``search_semantics.criterion_id`` and a matching
+    claim scope. Frozen historical artifacts remain immutable and are typed by
+    exact path+digest bindings in the registry. Role names are not a semantic
+    fallback: an unbound production artifact without an explicit criterion is
+    rejected.
     """
+    if not isinstance(payload, dict):
+        raise SemanticContractError(f"source {role!r} JSON root must be an object")
     block = payload.get("search_semantics")
     declared = block.get("criterion_id") if isinstance(block, dict) else None
     relative = _repository_relative(path, repo_root)
@@ -199,11 +200,15 @@ def classify_artifact(
         raise SemanticContractError(
             f"source {role!r} declares criterion {declared!r}, but its frozen binding says {bound!r}"
         )
-    criterion_id = str(declared or bound or _LEGACY_ROLE_CRITERIA.get(role) or "")
-    if not criterion_id:
+    if declared is None and bound is None:
         raise SemanticContractError(
             f"source {role!r} has no search_semantics.criterion_id or frozen registry binding"
         )
+    if declared is not None and (not isinstance(block, dict) or "claim_scope" not in block):
+        raise SemanticContractError(
+            f"source {role!r} declares criterion {declared!r} but omits a matching claim_scope"
+        )
+    criterion_id = str(declared or bound)
     expected = criterion_claims(registry, criterion_id)
     if isinstance(block, dict) and "claim_scope" in block:
         actual, errors = _claims(block.get("claim_scope"), label=f"source {role!r} claim_scope")
@@ -220,7 +225,7 @@ def classify_artifact(
                 f"source {role!r} semantic_contract_sha256 is stale for criterion "
                 f"{criterion_id!r}"
             )
-    origin = "declared" if declared is not None else "frozen_binding" if bound else "legacy_role"
+    origin = "declared" if declared is not None else "frozen_binding"
     return criterion_id, origin
 
 
@@ -240,17 +245,22 @@ def semantic_contract_digest(
 
 
 def build_certificate_semantics(
-    sources: list[dict[str, Any]], registry: dict[str, Any]
+    sources: list[dict[str, Any]],
+    registry: dict[str, Any],
+    *,
+    criterion_id: str = CERTIFICATE_CRITERION,
 ) -> dict[str, Any]:
+    if criterion_id not in registry.get("criteria", {}):
+        raise SemanticContractError(f"unknown certificate criterion {criterion_id!r}")
     parent_criteria = {
         str(source["role"]): str(source["criterion_id"])
         for source in sources
         if source.get("role") and source.get("criterion_id")
     }
-    criterion_ids = [CERTIFICATE_CRITERION, *parent_criteria.values()]
+    criterion_ids = [criterion_id, *parent_criteria.values()]
     return {
-        "criterion_id": CERTIFICATE_CRITERION,
-        "claim_scope": criterion_claims(registry, CERTIFICATE_CRITERION),
+        "criterion_id": criterion_id,
+        "claim_scope": criterion_claims(registry, criterion_id),
         "parent_criteria": parent_criteria,
         "release_requirement": RELEASE_REQUIREMENT,
         "semantic_contract_sha256": semantic_contract_digest(
@@ -287,16 +297,22 @@ def verify_certificate_semantics(
         }
 
     criterion_id = block.get("criterion_id")
-    if criterion_id != CERTIFICATE_CRITERION:
+    expected_claim_scope: dict[str, bool] | None = None
+    if not isinstance(criterion_id, str) or criterion_id not in registry.get("criteria", {}):
         errors.append(
-            f"certificate criterion_id must be {CERTIFICATE_CRITERION!r}, got {criterion_id!r}"
+            f"certificate criterion_id {criterion_id!r} is not a registered search criterion"
         )
-    expected_claim_scope = criterion_claims(registry, CERTIFICATE_CRITERION)
+    else:
+        expected_claim_scope = criterion_claims(registry, criterion_id)
     actual_claim_scope, claim_errors = _claims(
         block.get("claim_scope"), label="certificate search_semantics.claim_scope"
     )
     errors.extend(claim_errors)
-    if actual_claim_scope is not None and actual_claim_scope != expected_claim_scope:
+    if (
+        actual_claim_scope is not None
+        and expected_claim_scope is not None
+        and actual_claim_scope != expected_claim_scope
+    ):
         errors.append("certificate claim_scope disagrees with the search-scope registry")
 
     actual_parents: dict[str, str] = {}
@@ -329,9 +345,11 @@ def verify_certificate_semantics(
             "certificate parent_criteria do not match the re-derived source semantics"
         )
 
-    criterion_ids = [CERTIFICATE_CRITERION, *actual_parents.values()]
+    digest_ids = list(actual_parents.values())
+    if isinstance(criterion_id, str) and criterion_id in registry.get("criteria", {}):
+        digest_ids = [criterion_id, *digest_ids]
     expected_digest = semantic_contract_digest(
-        registry, criterion_ids=criterion_ids, requirement_id=RELEASE_REQUIREMENT
+        registry, criterion_ids=digest_ids, requirement_id=RELEASE_REQUIREMENT
     )
     if block.get("semantic_contract_sha256") != expected_digest:
         errors.append(

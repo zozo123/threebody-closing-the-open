@@ -27,7 +27,9 @@ These statements are allowed in the manuscript because they have independent con
 4. Event-specific `+1`/`-1` continuation germs through every retained mixed node (not nearby-root heuristics).
 5. Lower `+1` daughter classified as reconnecting, closed loop, distinct branch, obstruction, no branch attachment, or falsified.
 6. Completeness screens (neck, off-grid) frozen and negative at the declared resolution.
-7. `V1_CRITICAL_GRAPH.json` reports `release_ready: true`.
+7. `V1_CRITICAL_GRAPH.json` reports `release_ready: true`. That bit now requires
+   the full-critical-set semantic scope (`full_critical_set_release/v1`), not only
+   a numerically valid bounded AL/neck certificate.
 8. Same-day novelty audit and `--require-solved` on the tagged commit.
 
 ## What does not count

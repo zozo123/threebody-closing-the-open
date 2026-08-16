@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 
 from threebody_atlas.critical_manifold import classify_localized_cell
+from threebody_atlas.evidence_semantics import artifact_semantics
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -324,6 +325,7 @@ AL_SCREEN = ROOT / "research/evidence/V1_AL_POCKET_SCREEN_2026-08-15.json"
 def _write_clean_neck_scan(path: Path) -> dict:
     """A neck raster that legitimately supports a bounded completeness claim."""
     neck = {
+        "search_semantics": artifact_semantics(ROOT, "local_neck_raster/v1"),
         "completed": True,
         "grid": {"m1": [0.997, 0.999], "m2": [0.993, 1.006], "step": 0.0001, "samples": 12},
         "minimum_resolved_unstable_gap": 0.0002,

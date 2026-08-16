@@ -1107,7 +1107,10 @@ Three corollaries, all earned by the measurements of 2026-08-16 reported in Sect
 `research/evidence/V1_CRITICAL_GRAPH.json`. Nothing else may set it, and no human may
 hand-edit it. More generally: **nothing may be hand-written into `research/evidence/`.**
 Only producing scripts write there. Test fixtures live in `tests/` or a scratch directory
-and must be obviously synthetic.
+and must be obviously synthetic. `release_ready` is the theorem-grade /
+full-critical-set claim (`full_critical_set_release/v1`), not a synonym for
+"the bounded AL/neck certificate verified". The assembler still reports that
+narrower numerical result separately.
 
 The current state of that file, re-verified for this document: `release_ready = false`,
 schema `atlas.v1.critical-graph/3`, `unexplained_nodes = [secondary_left_birth]`,

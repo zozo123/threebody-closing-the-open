@@ -441,6 +441,9 @@ def verify_certificate(
         except (OSError, ValueError) as exc:
             errors.append(f"source {role or '<no role>'} is not readable JSON: {exc}")
             continue
+        if not isinstance(payload, dict):
+            errors.append(f"source {role or '<no role>'} JSON root must be an object")
+            continue
         if role in REQUIRED_SOURCE_ROLES:
             payloads[role] = payload
             resolved_paths[role] = resolved
@@ -569,9 +572,12 @@ def verification_report(
             if resolved is None:
                 continue
             try:
-                payloads[role] = json.loads(resolved.read_text(encoding="utf-8"))
+                payload = json.loads(resolved.read_text(encoding="utf-8"))
             except (OSError, ValueError):
                 continue
+            if not isinstance(payload, dict):
+                continue
+            payloads[role] = payload
             resolved_paths[role] = resolved
         try:
             registry = load_registry(repo_root)

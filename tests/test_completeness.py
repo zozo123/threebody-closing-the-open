@@ -15,6 +15,8 @@ from threebody_atlas.completeness import (
     verify_certificate,
 )
 from threebody_atlas.evidence_semantics import (
+    FULL_EVENT_COVER_CRITERION,
+    artifact_semantics,
     build_certificate_semantics,
     criterion_claims,
     load_registry,
@@ -33,11 +35,16 @@ def _clean_al(count: int = MINIMUM_AL_ATTEMPTS) -> dict:
         }
         for _ in range(count)
     ]
-    return {"attempted": rows, "accepted_candidates": rows}
+    return {
+        "search_semantics": artifact_semantics(ROOT, "active_learning_pocket/v1"),
+        "attempted": rows,
+        "accepted_candidates": rows,
+    }
 
 
 def _clean_neck() -> dict:
     return {
+        "search_semantics": artifact_semantics(ROOT, "local_neck_raster/v1"),
         "completed": True,
         "grid": {"m1": [0.997, 0.999], "m2": [0.993, 1.006], "step": 0.0001, "samples": 12},
         "minimum_resolved_unstable_gap": 0.0002,
@@ -100,14 +107,14 @@ def _sealed(tmp_path: Path) -> tuple[Path, dict]:
             "path": str(al_path),
             "sha256": sha256_file(al_path),
             "criterion_id": "active_learning_pocket/v1",
-            "semantic_origin": "legacy_role",
+            "semantic_origin": "declared",
         },
         {
             "role": "neck_scan",
             "path": str(neck_path),
             "sha256": sha256_file(neck_path),
             "criterion_id": "local_neck_raster/v1",
-            "semantic_origin": "legacy_role",
+            "semantic_origin": "declared",
         },
     ]
     registry = load_registry(ROOT)
@@ -180,6 +187,38 @@ def test_relabeling_a_parent_criterion_invalidates_a_resealed_certificate(tmp_pa
     passed, errors = verify_certificate(record, repo_root=ROOT, certificate_path=certificate)
     assert passed is False
     assert any("derived 'active_learning_pocket/v1'" in error for error in errors)
+
+
+def test_full_event_certificate_can_satisfy_release_scope(tmp_path) -> None:
+    certificate, record = _sealed(tmp_path)
+    from threebody_atlas.completeness import verification_report
+
+    registry = load_registry(ROOT)
+    record["search_semantics"] = build_certificate_semantics(
+        record["sources"],
+        registry,
+        criterion_id=FULL_EVENT_COVER_CRITERION,
+    )
+    record = seal(record)
+    report = verification_report(record, repo_root=ROOT, certificate_path=certificate)
+    assert report["passed"] is True
+    assert report["release_scope_passed"] is True
+    assert report["search_semantics"]["criterion_id"] == FULL_EVENT_COVER_CRITERION
+    assert report["release_scope_errors"] == []
+
+
+def test_array_root_source_is_rejected_instead_of_crashing(tmp_path) -> None:
+    certificate, record = _sealed(tmp_path)
+    array_source = tmp_path / "array.json"
+    array_source.write_text("[]")
+    for row in record["sources"]:
+        if row["role"] == "active_learning":
+            row["path"] = str(array_source)
+            row["sha256"] = sha256_file(array_source)
+    record = seal(record)
+    passed, errors = verify_certificate(record, repo_root=ROOT, certificate_path=certificate)
+    assert passed is False
+    assert any("JSON root must be an object" in error for error in errors)
 
 
 def test_claim_scope_cannot_be_strengthened_by_resealing(tmp_path) -> None:

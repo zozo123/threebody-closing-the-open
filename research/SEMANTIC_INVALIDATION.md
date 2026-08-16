@@ -33,6 +33,16 @@ enumerate the full domain, exclude even roots, or exclude tangencies. Therefore
 `full_critical_set_scope_passed` is false and `release_ready` cannot turn green
 from the historical 620-transition substrate.
 
+This is a deliberate redefinition of the global assembler `release_ready` bit,
+not a silent change of the publication standard. Issues #138, #140, and #147
+distinguish a numerically valid bounded paper from theorem-grade / global
+validated completeness. The assembler still records that the bounded certificate
+verified, but `release_ready` now also requires `full_critical_set_release/v1`
+(full-domain enumeration, even-root exclusion, tangency exclusion). A future
+`validated_full_event_cover/v1` certificate can satisfy that requirement; the
+current bounded bundle cannot. The graph therefore stays `release_ready=false`
+until a genuine full-event cover exists.
+
 Mutation coverage changes a used criterion's description without bumping its
 version. The source bytes remain untouched, and the completeness verifier must
 still fail on the stale semantic-contract digest.

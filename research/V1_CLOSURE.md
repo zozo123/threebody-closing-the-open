@@ -64,7 +64,9 @@ Pass only when:
   artifact named in the certificate (`active_learning` and `neck_scan` are both mandatory),
   re-hashes it, and re-derives the AL pocket-screen and neck-raster predicates from the artifact
   itself. A certificate sealed only with a digest over its own content is not evidence, and
-  re-sealing a certificate after editing a source artifact does not launder it;
+  re-sealing a certificate after editing a source artifact does not launder it. A numerically
+  valid bounded certificate is not enough for `release_ready`; that bit also requires
+  `full_critical_set_release/v1`;
 - the lower +1 daughter is classified, with `no_branch_attachment` accepted as a valid close;
 - no endpoint is `Newton failed`;
 - `research/evidence/V1_CRITICAL_GRAPH.json` reports `release_ready: true`.

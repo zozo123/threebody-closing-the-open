@@ -8,8 +8,16 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+from threebody_atlas.evidence_semantics import artifact_semantics
+
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def _neck_document(**fields):
+    document = {"search_semantics": artifact_semantics(ROOT, "local_neck_raster/v1")}
+    document.update(fields)
+    return document
 
 
 def _run(script: str, args: list[str]) -> int:
@@ -389,17 +397,17 @@ def test_completeness_passes_with_neck_and_clean_al(tmp_path) -> None:
     neck = tmp_path / "neck.json"
     neck.write_text(
         json.dumps(
-            {
-                "completed": True,
-                "grid": {"m1": [0.997, 0.999], "m2": [0.993, 1.006], "step": 0.0001, "samples": 12},
-                "minimum_resolved_unstable_gap": 0.0002,
-                "any_vertical_merge": False,
-                "any_boundary_truncated_merge_test": False,
-                "any_line_without_stable_sample": False,
-                "any_stable_interval_touches_boundary": False,
-                "all_lines_separated": True,
-                "max_shooting_residual": 1e-9,
-                "line_summaries": [
+            _neck_document(
+                completed=True,
+                grid={"m1": [0.997, 0.999], "m2": [0.993, 1.006], "step": 0.0001, "samples": 12},
+                minimum_resolved_unstable_gap=0.0002,
+                any_vertical_merge=False,
+                any_boundary_truncated_merge_test=False,
+                any_line_without_stable_sample=False,
+                any_stable_interval_touches_boundary=False,
+                all_lines_separated=True,
+                max_shooting_residual=1e-9,
+                line_summaries=[
                     {
                         "m1": 0.997,
                         "stable_intervals": [[0.994, 0.996], [0.998, 1.0]],
@@ -407,7 +415,7 @@ def test_completeness_passes_with_neck_and_clean_al(tmp_path) -> None:
                         "merge_verdict": "separated",
                     }
                 ],
-            }
+            )
         )
     )
     out = tmp_path / "comp.json"
@@ -430,33 +438,33 @@ def test_freezer_downgrades_a_certificate_it_cannot_re_verify(tmp_path) -> None:
     neck = tmp_path / "neck.json"
     neck.write_text(
         json.dumps(
-            {
-                "completed": True,
-                "grid": {"m1": [0.997, 0.999], "m2": [0.993, 1.006], "step": 0.0001, "samples": 12},
-                "minimum_resolved_unstable_gap": 0.0002,
-                "any_vertical_merge": False,
+            _neck_document(
+                completed=True,
+                grid={"m1": [0.997, 0.999], "m2": [0.993, 1.006], "step": 0.0001, "samples": 12},
+                minimum_resolved_unstable_gap=0.0002,
+                any_vertical_merge=False,
                 # Genuinely clean, so the ONLY reason this certificate is
                 # downgraded is the unreachable source path under test.
-                "any_boundary_truncated_merge_test": False,
-                "any_line_without_stable_sample": False,
-                "any_stable_interval_touches_boundary": False,
-                "all_lines_separated": True,
-                "merge_verdict_counts": {
+                any_boundary_truncated_merge_test=False,
+                any_line_without_stable_sample=False,
+                any_stable_interval_touches_boundary=False,
+                all_lines_separated=True,
+                merge_verdict_counts={
                     "separated": 1,
                     "interior_merge": 0,
                     "truncation_undecidable": 0,
                     "no_stable_sample": 0,
                 },
-                "boundary_truncated_lines": [],
-                "max_shooting_residual": 1e-9,
-                "line_summaries": [
+                boundary_truncated_lines=[],
+                max_shooting_residual=1e-9,
+                line_summaries=[
                     {
                         "m1": 0.997,
                         "stable_intervals": [[0.994, 0.996], [0.998, 1.0]],
                         "interior_unstable_gaps": [0.0019],
                     }
                 ],
-            }
+            )
         )
     )
     out = tmp_path / "elsewhere" / "comp.json"
@@ -474,14 +482,20 @@ def test_completeness_rejects_vertical_merge(tmp_path) -> None:
     neck = tmp_path / "neck.json"
     neck.write_text(
         json.dumps(
-            {
-                "completed": True,
-                "grid": {"m1": [0.997, 0.997], "m2": [0.993, 1.006], "step": 0.0001, "samples": 131},
-                "minimum_resolved_unstable_gap": None,
-                "any_vertical_merge": True,
-                "max_shooting_residual": 1e-9,
-                "line_summaries": [{"m1": 0.997, "stable_intervals": [[0.993, 1.006]], "interior_unstable_gaps": []}],
-            }
+            _neck_document(
+                completed=True,
+                grid={"m1": [0.997, 0.997], "m2": [0.993, 1.006], "step": 0.0001, "samples": 131},
+                minimum_resolved_unstable_gap=None,
+                any_vertical_merge=True,
+                max_shooting_residual=1e-9,
+                line_summaries=[
+                    {
+                        "m1": 0.997,
+                        "stable_intervals": [[0.993, 1.006]],
+                        "interior_unstable_gaps": [],
+                    }
+                ],
+            )
         )
     )
     out = tmp_path / "comp.json"
