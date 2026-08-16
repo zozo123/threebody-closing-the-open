@@ -141,20 +141,28 @@ that; 462 do not.  This audit quantifies what the missing 462 actually cost.
 
 ## Recommended fixes, in order of cheapness
 
-1. **Record `||M||` and `eps*||M||^2` next to every event value.**  One line in
-   the producer.  Then the gate can be stated as
-   `|event| <= max(2e-8, k * eps * ||M||^2)` -- which is *not* a loosened gate,
-   it is an honest one, and it converts a silent failure into a visible one.
-   A root whose floor exceeds 2e-8 should be marked as requiring BigFloat, not
-   silently passed.
+**None of these loosens the 2e-8 event gate or the 1e-7 closure gate.  The gates
+are correct; what is wrong is asserting them from a measurement that cannot
+resolve them.  The fix is always to strengthen the measurement or to refuse the
+assertion -- never to widen the gate.**
+
+1. **Record `||M||` and `eps*||M||^2` beside every event value.**  One line in
+   the producer.  A root whose floor exceeds 2e-8 has not passed the gate, it has
+   failed to be *measured* against the gate; mark it `precision_insufficient`
+   and route it to BigFloat.  That is a stricter regime than today, where such a
+   root is silently recorded as passing.  Explicitly: do **not** turn this into
+   `|event| <= max(2e-8, k*eps*||M||^2)`.  That would be exactly the loosening
+   this document exists to prevent.
 2. **Re-measure closure at a converged tolerance**, not at `screening_rtol`.  The
-   corrector may run loose; the certificate must not.
+   corrector may run loose; the certificate must not.  Expect some roots to move
+   from "1e-9, comfortably inside 1e-7" to "1.3e-7, outside 1e-7" -- and those
+   must then be treated as failures, not re-gated.
 3. **Escalate the high-`||M||` roots to the Julia BigFloat lane.**  The audit
    output ranks them, so the escalation list is already sorted by need.
-4. Longer term, compute `beta` without forming `tr(M^2)` in the same precision
-   as `M` -- e.g. accumulate `sum_ij M_ij M_ji` in compensated (Kahan/two-product)
-   arithmetic, which costs nothing next to the integration and recovers most of
-   the lost digits.
+4. Longer term, compute `beta` without forming `tr(M^2)` in working precision --
+   e.g. accumulate `sum_ij M_ij M_ji` with a two-product/compensated sum, which
+   costs nothing next to the integration and recovers most of the lost digits.
+   This raises the measurement to meet the gate, which is the right direction.
 
 ## The obvious objection, and the answer
 
