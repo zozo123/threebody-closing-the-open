@@ -275,32 +275,46 @@ def test_float64_evaluation_of_the_canonical_organizers_misses_the_event_gate() 
         _, floquet = _flow_for_vector(vector, m3=masses[2], rtol=5e-13, atol=5e-15)
         events[name] = float(event_value(floquet, "plus_one"))
 
-    # Pin the SCIENCE, not the bit pattern.  These are float64 evaluations of a
-    # 60-digit chart, so the last couple of significant digits are genuinely
-    # platform-dependent: macOS arm64 gives principal_left = -1.2794e-07 where
-    # ubuntu x86_64 gives -1.2798e-07.  An exact-string assertion pinned that
-    # difference and turned a real scientific statement into a flaky test.  What
-    # the limitation actually claims -- and all it needs to claim -- is the
-    # magnitude and which organizers clear the gate.
-    reference = {
-        "principal_left": -1.28e-07,
-        "secondary_left": -1.958e-08,
-        "principal_right": -2.556e-08,
-    }
-    for name, expected in reference.items():
-        assert events[name] < 0.0, f"{name} plus_one event should be negative"
-        assert events[name] == pytest.approx(expected, rel=1e-3), (
-            f"{name} float64 plus_one event {events[name]:.5e} moved more than "
-            f"0.1% from {expected:.5e}; investigate before re-pinning"
+    # Pin the SCIENCE, not the bit pattern, and note how weak that science is.
+    #
+    # These are float64 evaluations of 60-digit charts, and the platform spread
+    # is far larger than rounding:
+    #     principal_left   -1.2794e-07 (macOS arm64)  vs -1.2798e-07 (linux x86_64)
+    #     secondary_left   -1.9582e-08 (macOS arm64)  vs -2.1803e-08 (linux x86_64)
+    # secondary_left moves by 11%, and -- this is the point -- its two values sit
+    # on OPPOSITE SIDES of the frozen 2e-8 gate.  So a float64 re-evaluation is
+    # not merely imprecise at the organizers; it is not stable enough to decide
+    # WHICH organizers clear the gate.  Asserting an exact membership list would
+    # itself be platform-dependent.
+    #
+    # The robust, and stronger, statement is: every organizer's float64 plus_one
+    # event is of order 1e-8 or worse, at least two of three exceed the gate, and
+    # the two principal organizers exceed it on every platform observed.
+    for name, value in events.items():
+        assert value < 0.0, f"{name} plus_one event should be negative"
+        assert abs(value) >= 1e-8, (
+            f"{name} float64 plus_one event {value:.5e} is unexpectedly small; "
+            "the limitation claims float64 cannot reach the 2e-8 gate here"
         )
-    over_gate = [name for name, value in events.items() if abs(value) > gate]
-    assert sorted(over_gate) == ["principal_left", "principal_right"]
+    assert abs(events["principal_left"]) == pytest.approx(1.28e-07, rel=0.05)
+    assert abs(events["secondary_left"]) == pytest.approx(2.07e-08, rel=0.10)
+    assert abs(events["principal_right"]) == pytest.approx(2.56e-08, rel=0.05)
+
+    over_gate = {name for name, value in events.items() if abs(value) > gate}
+    assert {"principal_left", "principal_right"} <= over_gate, (
+        "both principal organizers must miss the gate under float64 on every "
+        f"platform; got {sorted(over_gate)}"
+    )
+    assert len(over_gate) >= 2
 
     manifest = load_manifest(MANIFEST)
     known = " ".join(manifest["known_limitations"])
-    # Quote to three significant figures for the same reason.
-    for value in ("-1.28e-7", "-1.96e-8", "-2.56e-8"):
+    # The manifest must quote the platform-stable values AND disclose that
+    # secondary-left straddles the gate depending on platform.
+    for value in ("-1.28e-7", "-2.56e-8", "-1.96e-8", "-2.18e-8"):
         assert value in known
+    assert "straddle" in known
+    assert "re-corrected" in known
     assert "two of the three canonical organizers do not clear the gate" in known
     # The gate itself is untouched.
     graph = json.loads((ROOT / "research/evidence/V1_CRITICAL_GRAPH.json").read_text())
