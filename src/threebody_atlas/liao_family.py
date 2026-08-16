@@ -15,6 +15,7 @@ import numpy as np
 from scipy.integrate import solve_ivp
 from scipy.optimize import least_squares
 
+from .conditioning import SolveConditioning, condition_report
 from .reduced import full_to_reduced, reduced_jacobian, reduced_rhs, reduction_matrix
 
 Array = np.ndarray
@@ -30,6 +31,11 @@ class FamilyPoint:
     residual_norm: float
     nfev: int
     success: bool
+    #: Conditioning of the 8x4 shooting Jacobian at the corrected point.
+    #: ``residual_norm`` alone cannot say how close this orbit is to the true
+    #: periodic orbit; ``conditioning.displacement_bound`` can.  Optional so
+    #: hand-built seed points (which never ran a solve) stay constructible.
+    conditioning: SolveConditioning | None = None
 
     def state(self) -> Array:
         return state_from_chart(self.masses, self.x1, self.v1, self.v2)
@@ -136,6 +142,8 @@ def correct_family_point(
         max_nfev=max_nfev,
         x_scale="jac",
     )
+    # ``fit.jac`` is the unscaled analytic Jacobian at the returned point, so
+    # the conditioning report costs no extra variational integration.
     return FamilyPoint(
         masses=masses,
         x1=float(fit.x[0]),
@@ -145,6 +153,7 @@ def correct_family_point(
         residual_norm=float(np.linalg.norm(fit.fun)),
         nfev=int(fit.nfev),
         success=bool(fit.success),
+        conditioning=condition_report(getattr(fit, "jac", None), fit.fun),
     )
 
 

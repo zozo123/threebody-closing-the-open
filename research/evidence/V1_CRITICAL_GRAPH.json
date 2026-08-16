@@ -3141,6 +3141,28 @@
     "classification_binding_errors": [],
     "edge_topology_complete": true
   },
+  "root_residual_margin": {
+    "localized_roots": 620,
+    "event_gate": 2e-08,
+    "max_abs_event": 1.989798081858396e-08,
+    "gate_occupancy_max": 0.994899040929198,
+    "headroom_fraction": 0.005100959070801991,
+    "median_abs_event": 3.28579821634308e-09,
+    "p90_abs_event": 1.578564702287011e-08,
+    "p99_abs_event": 1.904002139951899e-08,
+    "roots_above_1e_8": 165,
+    "roots_above_half_gate": 165,
+    "roots_above_95_percent_of_gate": 7,
+    "closure_conditioning": {
+      "reported": 0,
+      "missing": 620
+    },
+    "event_conditioning": {
+      "reported": 0,
+      "missing": 620
+    },
+    "max_reported_m2_uncertainty": null
+  },
   "incidence": {
     "node_count": 12,
     "edge_count": 7,

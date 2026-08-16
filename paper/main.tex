@@ -256,6 +256,81 @@ $-1$ germ would carry far enough to bring cell $392$'s endpoint
 sweep up the blocked endpoint --- \texttt{minus\_one\_s\_to\_u\_0}'s start is
 $2.81\times10^{-2}$ from the organizer, past even the composed $0.016$ reach ---
 which is what keeps that disclosure honest rather than convenient.
+\section{The event gate has almost no margin, and less resolution than margin}
+\label{sec:margin}
+
+The localized census is gated at $|G|\le 2\times10^{-8}$ and $\|\text{closure}\|
+\le 10^{-7}$.  Both gates are frozen and are never loosened anywhere in this
+work.  What follows is a statement about how much that first gate is worth.
+
+Across the $620$ localized roots the event residual has median
+$3.29\times10^{-9}$, ninetieth percentile $1.58\times10^{-8}$, ninety-ninth
+percentile $1.90\times10^{-8}$, and maximum $1.9897980818583960\times10^{-8}$.
+The census therefore passes its own gate by $0.511\%$: the worst cell occupies
+$99.489\%$ of the budget.  $165$ of the $620$ roots exceed $10^{-8}$ and seven
+exceed $95\%$ of the gate.  Any sentence reporting that the census ``passes the
+$2\times10^{-8}$ gate'' is incomplete unless it also reports that margin.
+
+The margin is not the binding problem.  The binding problem is that
+$2\times10^{-8}$ is finer than the accuracy with which the event functional can
+be evaluated at these orbits.  Holding the recorded state fixed and recomputing
+$G$ with the locked dependency versions, moving only the integrator tolerance
+from $\mathrm{rtol}=5\times10^{-13}$ to $5\times10^{-14}$, moves $G$ by a median
+$1.48\times10^{-7}$, which is $7.4$ times the gate; $20$ of $24$ probed cells --
+the twelve worst offenders and twelve evenly spaced controls alike -- cross
+$2\times10^{-8}$ at some tolerance on that ladder.  Re-running the identical
+computation on a different CPU architecture, same locked
+\texttt{numpy}/\texttt{scipy}, reproduces every digit locally but differs from
+the frozen values by a median $2.78\times10^{-8}$ and a maximum
+$4.14\times10^{-7}$; ten of twenty-two comparable probes land above the gate.
+The mechanism is transparent: $\Delta=(\alpha-4)^2-4(\beta-4\alpha+8)$ with
+$\alpha,\beta=O(1)$ cancels roughly eight decimal digits, and the surviving
+digits sit on architecture-dependent summation order inside the monodromy
+product.
+
+Two consequences, stated separately because they are not the same claim.
+First, for the roughly $165$ cells in the top decade the accepted float64
+residual lies below that lane's own evaluation noise, so $|G|\le
+2\times10^{-8}$ there records where the localizer stopped, not how close the
+point is to the true critical set.  The same stopping rule is visible in the
+independent BigFloat lane, which also terminates on the first iterate under the
+gate and consequently reports seven of its $158$ roots at $10^{-8}$ to
+$1.66\times10^{-8}$ despite $40$-digit arithmetic.
+Second, the \emph{locations} are much better than the certificate.  The measured
+$\partial G/\partial m_2$ ranges from $20$ to $660$, so even the full evaluation
+uncertainty maps to an $m_2$ uncertainty between $10^{-10}$ and $8\times10^{-9}$,
+far inside the $10^{-3}$ published cells.  The graph's combinatorics are not at
+risk; the numerical certificate attached to them is weaker than its own
+tolerance suggests.
+
+The tail does not cluster.  Among the twenty-five worst cells the event-mode
+enrichment is $1.27$ for $\Delta$, $1.00$ for $+1$ and $0.59$ for $-1$;
+orientation enrichment is $1.07$ versus $0.93$; they occupy twelve distinct
+$m_1$ bands; the Spearman correlation between $|G|$ and $m_1$ is $0.12$; and
+their median distance to the nearest organizer, $0.054$, is indistinguishable
+from the census median $0.049$.  A physical cause would concentrate.  This is
+scattered, which is what a measurement floor looks like.
+
+That floor is quantifiable.  Across the tight tolerance ladder the monodromy
+invariants $\alpha,\beta$ themselves are reproducible only to a median relative
+$4.2\times10^{-9}$ -- about nine significant digits, not fifteen -- and the
+event functionals cancel by a median factor $2.6\times10^{8}$ (worst
+$5.2\times10^{10}$).  The product of those two numbers is the observed
+$10^{-7}$.  Pulling $\max|G|$ down by a factor of ten to $2\times10^{-9}$ is
+therefore not reachable in float64 at any integrator tolerance: the target sits
+$73$ times below that lane's own evaluation uncertainty.  It is reachable in the
+BigFloat lane, which already attains $7\times10^{-13}$ on its best cells and
+whose $10^{-8}$ entries are gate-limited rather than precision-limited; the cost
+is running all $620$ cells there instead of $158$.  At the measured mean of
+$5.45$ secant iterations per cell and the measured dps$=60$ correction cost of
+$5.5$ minutes, that is about $23$ minutes per cell, $179$ serial CPU-hours, or
+under three wall-hours at the existing $62$-way CI fan-out.
+
+Accordingly every solve in this work now reports, alongside its residual, the
+singular values $\sigma_{\min}$, $\sigma_{\max}$, the condition number
+$\kappa_2=\sigma_{\max}/\sigma_{\min}$ of its Jacobian, and the backward-error
+displacement bound $\|\delta x\|\lesssim\|J^{+}\|\,\|F(x)\|$.  A residual
+without its conditioning is not a measurement.
 
 \section{What remains, and why the status is OPEN}
 

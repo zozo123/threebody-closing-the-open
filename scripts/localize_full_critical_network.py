@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Any
 
 from threebody_atlas.boundary import evaluate
+from threebody_atlas.conditioning import conditioning_dict, summarize_conditioning
 from threebody_atlas.critical_manifold import (
     classify_localized_cell,
     event_value,
@@ -56,6 +57,7 @@ def solve_cell(
     m2_tolerance: float = 1e-12,
     event_tolerance: float = 2e-8,
     max_closure: float = 1e-7,
+    conditioning: bool = True,
 ) -> dict[str, Any]:
     left_point, right_point = point(row, "left"), point(row, "right")
     left, right = evaluate(left_point), evaluate(right_point)
@@ -99,6 +101,7 @@ def solve_cell(
             event_tolerance=event_tolerance,
             max_iterations=max_iterations,
             max_closure=max_closure,
+            conditioning=conditioning,
         )
     except Exception as exc:
         return {
@@ -138,6 +141,16 @@ def solve_cell(
         "minus_one_event": float(event_value(f, "minus_one")),
         "trace_collision_event": float(event_value(f, "trace_collision")),
         "trace_roots": [[float(z.real), float(z.imag)] for z in f.trace_roots],
+        # Informational cost of the two numbers above.  ``closure`` and
+        # ``event`` are backward errors; only these turn them into forward
+        # uncertainties on the orbit and on m2 respectively.
+        "closure_conditioning": conditioning_dict(q.conditioning),
+        "event_conditioning": conditioning_dict(critical.conditioning),
+        "m2_uncertainty": (
+            critical.conditioning.displacement_bound
+            if critical.conditioning is not None
+            else None
+        ),
     }
 
 
@@ -152,6 +165,14 @@ def main() -> None:
     parser.add_argument("--m2-tolerance", type=float, default=1e-12)
     parser.add_argument("--event-tolerance", type=float, default=2e-8)
     parser.add_argument("--max-closure", type=float, default=1e-7)
+    parser.add_argument(
+        "--no-conditioning",
+        dest="conditioning",
+        action="store_false",
+        help="Skip the two extra corrected Floquet evaluations per cell that measure "
+        "d(event)/d(m2).  Only use this for throughput experiments: without it the "
+        "event residual is published with no forward-error interpretation.",
+    )
     parser.add_argument(
         "--allow-misses",
         action="store_true",
@@ -198,6 +219,7 @@ def main() -> None:
                 m2_tolerance=args.m2_tolerance,
                 event_tolerance=args.event_tolerance,
                 max_closure=args.max_closure,
+                conditioning=args.conditioning,
             )
         )
 
@@ -219,6 +241,7 @@ def main() -> None:
             "event_tolerance": args.event_tolerance,
             "max_closure": args.max_closure,
             "cell_ids": args.cell_ids,
+            "conditioning": bool(args.conditioning),
         },
         "total_input_cells": len(rows),
         "attempted_cells": len(attempts),
@@ -230,6 +253,20 @@ def main() -> None:
         },
         "max_closure": max((float(x["closure"]) for x in roots), default=0.0),
         "max_abs_event": max((abs(float(x["event"])) for x in roots), default=0.0),
+        "closure_conditioning_summary": summarize_conditioning(
+            [x.get("closure_conditioning") for x in roots]
+        ),
+        "event_conditioning_summary": summarize_conditioning(
+            [x.get("event_conditioning") for x in roots]
+        ),
+        "max_m2_uncertainty": max(
+            (
+                float(x["m2_uncertainty"])
+                for x in roots
+                if x.get("m2_uncertainty") is not None
+            ),
+            default=None,
+        ),
         "attempts": attempts,
         "roots": roots,
     }

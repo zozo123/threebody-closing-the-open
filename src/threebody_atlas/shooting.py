@@ -10,6 +10,7 @@ from dataclasses import dataclass
 import numpy as np
 from scipy.optimize import least_squares
 
+from .conditioning import SolveConditioning, condition_report
 from .dynamics import center_of_mass, integrate_orbit, rhs, total_energy
 
 Array = np.ndarray
@@ -23,6 +24,9 @@ class ShootingResult:
     nfev: int
     success: bool
     message: str
+    #: Conditioning of the augmented shooting Jacobian at the returned point.
+    #: Without it ``residual_norm`` is a backward error with no forward meaning.
+    conditioning: SolveConditioning | None = None
 
 
 def refine_periodic_orbit(
@@ -83,4 +87,5 @@ def refine_periodic_orbit(
         nfev=int(fit.nfev),
         success=bool(fit.success),
         message=str(fit.message),
+        conditioning=condition_report(getattr(fit, "jac", None), fit.fun),
     )
