@@ -3,6 +3,26 @@
   "claim_status": "partial graph: 620 cells are samples, not edges; unresolved gates are enumerated by the artifact",
   "release_ready": false,
   "family_component": "one continuation-connected Li-Li-Liao catalog sheet",
+  "topology": {
+    "free_group_word": "bABabaBAba",
+    "role": "catalog topology metadata; topology is not used as family identity",
+    "source": "research/OPEN_PROBLEM.md"
+  },
+  "declared_mass_domain": {
+    "m1": [
+      0.8,
+      1.1
+    ],
+    "m2": [
+      0.7,
+      1.2
+    ],
+    "m3": 1.0
+  },
+  "frozen_numerical_gates": {
+    "maximum_absolute_event": 2e-08,
+    "maximum_periodic_closure": 1e-07
+  },
   "source_transition_cells": 620,
   "localized_roots": 620,
   "nodes": [
@@ -88,20 +108,47 @@
     {
       "id": "secondary_right_death",
       "kind": "endpoint",
-      "status": "unresolved",
-      "masses": null,
-      "mechanism": "unknown",
-      "note": "Allowed classes: mixed_organizer, projection_fold, domain_boundary. Newton-failed is forbidden.",
-      "passed": false
+      "status": "independently_reproduced",
+      "masses": [
+        "1.0426234457894453029006607865151261094124167952193571963283940451010535",
+        "1.0460039217640023612037763287793607507467547209940905010670534829673121",
+        "1.0"
+      ],
+      "mechanism": "mixed_organizer",
+      "note": "The two secondary walls end at an independently reproduced physical mixed (+1,-1) organizer.",
+      "passed": true,
+      "evidence": "research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json",
+      "estimator": "independent Julia BigFloat root solve + canonical Jacobi Vern9 + physical E^omega/E quotient + GenericSchur",
+      "evidence_level": "physical",
+      "screening_passed": true,
+      "edge_endpoint_bindings": [
+        {
+          "cell_id": 576,
+          "side": "end",
+          "mechanism": "plus_one",
+          "orientation": "U->S"
+        },
+        {
+          "cell_id": 577,
+          "side": "end",
+          "mechanism": "minus_one",
+          "orientation": "S->U"
+        }
+      ]
     },
     {
       "id": "lower_plus_one_daughter",
       "kind": "branch",
-      "status": "unresolved",
+      "status": "independently_reproduced",
       "masses": null,
-      "mechanism": "unknown",
-      "note": "Classify the lower +1 daughter as reconnecting, closed_loop, distinct_branch, obstruction, no_branch_attachment, or falsified.",
-      "passed": false
+      "mechanism": "distinct_branch",
+      "note": "The physical soft direction defines a generic strict-periodic branch distinct from the same-mass Li parent; its reversing-symmetry partner is the same daughter.",
+      "passed": true,
+      "evidence": "research/evidence/V1_DAUGHTER_CLASS_2026-08-16.json",
+      "estimator": "independent Julia BigFloat + Vern9 + full 8D variational generic trust-region Levenberg-Marquardt",
+      "evidence_level": "independently_reproduced",
+      "screening_passed": true,
+      "edge_endpoint_bindings": []
     },
     {
       "id": "domain_m1_min",
@@ -410,7 +457,10 @@
             1.0454414398297092,
             1.0
           ],
-          "node": null
+          "node": "secondary_right_death",
+          "attachment": "verified_classification_artifact",
+          "binding_class": "mixed_organizer",
+          "binding_evidence": "research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json"
         },
         "classified": false
       }
@@ -672,9 +722,12 @@
             1.0359819791033056,
             1.0
           ],
-          "node": null
+          "node": "secondary_right_death",
+          "attachment": "verified_classification_artifact",
+          "binding_class": "mixed_organizer",
+          "binding_evidence": "research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json"
         },
-        "classified": false
+        "classified": true
       }
     },
     {
@@ -1051,6 +1104,11 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
       "valid": true
     },
@@ -1065,6 +1123,11 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
       "valid": true
     },
@@ -1079,6 +1142,11 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
       "valid": true
     },
@@ -1093,6 +1161,11 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
       "valid": true
     },
@@ -1107,6 +1180,11 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
       "valid": true
     },
@@ -1121,6 +1199,11 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
       "valid": true
     },
@@ -1135,6 +1218,11 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
       "valid": true
     },
@@ -1149,6 +1237,11 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
       "valid": true
     },
@@ -1163,6 +1256,11 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
       "valid": true
     },
@@ -1177,6 +1275,11 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
       "valid": true
     },
@@ -1191,6 +1294,11 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
       "valid": true
     },
@@ -1205,7 +1313,88 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
+      "valid": true
+    },
+    {
+      "mixed_node": "secondary_right_death",
+      "event_mode": "plus_one",
+      "direction": "+",
+      "ends_on": "secondary_right_death",
+      "masses": [
+        1.042651372434157,
+        1.046617030544298,
+        1.0
+      ],
+      "status": "traced",
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.0006137444695968634,
+      "closure": 3.818178353343132e-12,
+      "event": -1.3566392453867593e-09,
+      "source_artifact": "research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json",
+      "valid": true
+    },
+    {
+      "mixed_node": "secondary_right_death",
+      "event_mode": "plus_one",
+      "direction": "-",
+      "ends_on": "secondary_right_death",
+      "masses": [
+        1.0425947686784605,
+        1.0453937822175037,
+        1.0
+      ],
+      "status": "traced",
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.0006108130998070707,
+      "closure": 4.063789303578445e-12,
+      "event": 5.1113104859723535e-09,
+      "source_artifact": "research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json",
+      "valid": true
+    },
+    {
+      "mixed_node": "secondary_right_death",
+      "event_mode": "minus_one",
+      "direction": "+",
+      "ends_on": "secondary_right_death",
+      "masses": [
+        1.0427724789708586,
+        1.0461381311066387,
+        1.0
+      ],
+      "status": "traced",
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.00020055681692000173,
+      "closure": 3.894782225757369e-12,
+      "event": 2.9683455693430005e-10,
+      "source_artifact": "research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json",
+      "valid": true
+    },
+    {
+      "mixed_node": "secondary_right_death",
+      "event_mode": "minus_one",
+      "direction": "-",
+      "ends_on": "secondary_right_death",
+      "masses": [
+        1.0424744331415392,
+        1.045869634435641,
+        1.0
+      ],
+      "status": "traced",
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.00020059375811411646,
+      "closure": 1.6624782970405055e-12,
+      "event": 2.822897471332908e-11,
+      "source_artifact": "research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json",
       "valid": true
     }
   ],
@@ -1240,42 +1429,26 @@
           1.0
         ],
         "reserved_for": null
-      },
-      {
-        "edge": "minus_one_s_to_u_0",
-        "side": "end",
-        "masses": [
-          1.042,
-          1.0454414398297092,
-          1.0
-        ],
-        "reserved_for": null
-      },
-      {
-        "edge": "plus_one_u_to_s_1",
-        "side": "end",
-        "masses": [
-          1.042,
-          1.0359819791033056,
-          1.0
-        ],
-        "reserved_for": null
       }
     ],
     "classification_binding_errors": [],
     "edge_topology_complete": false
   },
   "unexplained_nodes": [
-    "lower_plus_one_daughter",
-    "secondary_left_birth",
-    "secondary_right_death"
+    "secondary_left_birth"
   ],
   "missing_required_nodes": [],
-  "organizer_count": 3,
+  "organizer_count": 4,
   "daughter_classification": {
     "required_for_v1_graph": true,
-    "status": "unresolved",
-    "class": "unknown"
+    "status": "independently_reproduced",
+    "class": "distinct_branch"
   },
-  "completeness": null
+  "completeness": {
+    "passed": false,
+    "note": "AL pocket screen only; neck raster and vertex harvest still required",
+    "attempted": 12,
+    "accepted": 12,
+    "screening_stable": 0
+  }
 }

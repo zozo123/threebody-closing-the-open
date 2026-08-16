@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import hashlib
+import os
 from pathlib import Path
 
 from threebody_atlas.critical_manifold import classify_localized_cell
@@ -620,6 +621,38 @@ def test_assembler_is_the_only_path_to_a_fully_ready_graph(tmp_path) -> None:
     )
     assert graph["release_ready"] is False
     assert graph["root_coverage"]["completeness_passed"] is False
+
+
+def test_committed_critical_graph_is_not_stale(tmp_path) -> None:
+    """The committed graph must be exactly what the assembler emits today.
+
+    research/evidence/V1_CRITICAL_GRAPH.json carries release_ready, and the
+    assembler is the only thing allowed to set it.  If the committed file drifts
+    from a fresh assembly -- because evidence landed, because the assembler
+    gained a field, or because somebody hand-edited it -- that is a provenance
+    break and must fail here as well as in
+    .github/workflows/critical-graph-assembly.yml.
+    """
+    import subprocess
+    import sys
+
+    output = tmp_path / "graph.json"
+    result = subprocess.run(
+        ["bash", str(ROOT / "scripts/assemble_v1_critical_graph.sh"), str(output)],
+        capture_output=True,
+        text=True,
+        check=False,
+        env={**os.environ, "PYTHON": sys.executable},
+    )
+    # 0 == release_ready, 2 == assembled but legitimately not release_ready.
+    assert result.returncode in (0, 2), result.stdout + result.stderr
+
+    committed = (ROOT / "research/evidence/V1_CRITICAL_GRAPH.json").read_text()
+    assert output.read_text() == committed, (
+        "Committed critical graph is stale. Regenerate with "
+        "scripts/assemble_v1_critical_graph.sh research/evidence/V1_CRITICAL_GRAPH.json"
+    )
+    assert (json.loads(committed)["release_ready"] is True) == (result.returncode == 0)
 
 
 def test_merger_refuses_to_overwrite_accepted_float64_without_audit(tmp_path) -> None:
