@@ -6,11 +6,13 @@ on:
     tags: ["v*"]
     paths:
       - ".github/workflows/release.yml"
+      - "scripts/verify_actions_evidence.py"
   pull_request:
     paths:
       - "paper/**"
       - "research/DISCOVERY_RELEASE.json"
       - "scripts/build_discovery_release.py"
+      - "scripts/verify_actions_evidence.py"
       - "src/threebody_atlas/discovery.py"
       - ".github/workflows/release.yml"
   workflow_dispatch:
@@ -22,6 +24,7 @@ on:
         type: boolean
 
 permissions:
+  actions: read
   contents: write
 
 jobs:
@@ -39,7 +42,10 @@ jobs:
           enable-cache: true
       - run: uv python install 3.13
       - run: uv sync --locked --group dev
-      - run: uv run --no-sync ruff check src tests --output-format github
+      - run: >-
+          uv run --no-sync ruff check
+          src tests scripts/build_discovery_release.py scripts/verify_actions_evidence.py
+          --output-format github
       - run: uv run --no-sync pytest
       - name: Build Python distributions
         run: uv build --no-sources
@@ -56,6 +62,13 @@ jobs:
             args+=(--require-solved)
           fi
           uv run --no-sync python scripts/build_discovery_release.py "${args[@]}"
+      - name: Verify pinned Actions evidence for solved v tags
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          uv run --no-sync python scripts/verify_actions_evidence.py
+          --repository "${GITHUB_REPOSITORY}"
       - name: Install TeX and ZIP tooling
         run: |
           sudo apt-get update
@@ -111,7 +124,8 @@ jobs:
           `paper-preview-*` GitHub releases are explicitly prerelease snapshots and
           do not claim that ATLAS V1 is scientifically solved. A tagged `v*` final
           release is still published only after the discovery manifest validates
-          with `--require-solved`.
+          with `--require-solved` and all pinned external Actions evidence is
+          revalidated against GitHub metadata.
           EOF
 
           cat > "${stage}/RELEASE_PROVENANCE.txt" <<EOF
