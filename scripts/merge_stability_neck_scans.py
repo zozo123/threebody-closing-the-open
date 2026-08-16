@@ -11,8 +11,13 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import sys
 from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from neck_topology import summarize  # noqa: E402
 
 
 def frange(start: float, stop: float, step: float) -> list[float]:
@@ -103,7 +108,23 @@ def main() -> None:
             f"got={len(samples)} expected={len(expected_m1) * expected_samples_per_line}"
         )
 
-    summaries = [summaries_by_m1[key] for key in sorted(summaries_by_m1)]
+    merged_summaries = [summaries_by_m1[key] for key in sorted(summaries_by_m1)]
+    # Re-derive the truncation and merge verdicts here from the declared window
+    # rather than trusting per-tile flags, then refuse any tile whose own
+    # verdict disagrees with the merged-window recomputation.
+    summaries, verdicts = summarize(
+        merged_summaries,
+        m2_min=args.expected_m2_min,
+        m2_max=args.expected_m2_max,
+        step=args.step,
+    )
+    for original, annotated in zip(merged_summaries, summaries, strict=True):
+        declared = original.get("merge_verdict")
+        if declared is not None and declared != annotated["merge_verdict"]:
+            raise SystemExit(
+                f"merge-verdict mismatch at m1={original.get('m1')}: "
+                f"tile={declared} recomputed={annotated['merge_verdict']}"
+            )
     samples.sort(key=lambda row: (float(row["m1"]), float(row["m2"])))
     positive_gaps = [
         float(gap)
@@ -112,7 +133,7 @@ def main() -> None:
         if float(gap) >= 0.0
     ]
     record: dict[str, Any] = {
-        "schema": "atlas.v1.stability-neck-scan/2",
+        "schema": "atlas.v1.stability-neck-scan/3",
         "completed": True,
         "fragment_count": len(args.fragments),
         "grid": {
@@ -123,7 +144,7 @@ def main() -> None:
         },
         "max_shooting_residual": maximum_closure,
         "minimum_resolved_unstable_gap": min(positive_gaps) if positive_gaps else None,
-        "any_vertical_merge": any(len(summary.get("stable_intervals", [])) <= 1 for summary in summaries),
+        **verdicts,
         "line_summaries": summaries,
         "samples": samples,
         "source_fragments": sorted(sources, key=lambda row: row["file"]),
@@ -145,6 +166,13 @@ def main() -> None:
                 "samples": len(samples),
                 "minimum_resolved_unstable_gap": record["minimum_resolved_unstable_gap"],
                 "any_vertical_merge": record["any_vertical_merge"],
+                "any_boundary_truncated_merge_test": record["any_boundary_truncated_merge_test"],
+                "any_line_without_stable_sample": record["any_line_without_stable_sample"],
+                "any_stable_interval_touches_boundary": record[
+                    "any_stable_interval_touches_boundary"
+                ],
+                "all_lines_separated": record["all_lines_separated"],
+                "merge_verdict_counts": record["merge_verdict_counts"],
             },
             indent=2,
         )
