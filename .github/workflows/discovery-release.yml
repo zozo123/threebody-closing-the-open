@@ -13,6 +13,14 @@ on:
       - "src/threebody_atlas/discovery.py"
       - ".github/workflows/discovery-release.yml"
   workflow_dispatch:
+    inputs:
+      confirm_publish:
+        description: >-
+          Type the exact solved tag (for example solved-v1.0.0) to TAG THE COMMIT AND
+          PUBLISH A PUBLIC GitHub Release asserting that the v1 discovery is solved.
+          Leave empty to validate, build and upload artifacts without publishing.
+        required: false
+        default: ""
 
 permissions:
   actions: read
@@ -103,8 +111,15 @@ jobs:
             dist/*
           if-no-files-found: error
           retention-days: 365
+      # A push to main must never mint a solved tag on its own.  Every gate above
+      # this line is a machine check; asserting in public that a named open
+      # problem is solved is a human act, so it takes a deliberate dispatch in
+      # which the operator retypes the exact tag.
       - name: Tag the exact validated and packaged main commit
-        if: github.ref == 'refs/heads/main'
+        if: >-
+          github.ref == 'refs/heads/main'
+          && github.event_name == 'workflow_dispatch'
+          && inputs.confirm_publish == env.SOLVED_TAG
         shell: bash
         run: |
           set -euo pipefail
@@ -115,7 +130,16 @@ jobs:
             git tag "${SOLVED_TAG}" "${GITHUB_SHA}"
             git push origin "refs/tags/${SOLVED_TAG}"
           fi
+      # Two legitimate publish paths, both human-initiated: a person pushes a
+      # solved-v* tag, or a person dispatches this workflow and retypes the tag.
+      # The previous unguarded form published on any push to main that cleared
+      # --require-solved, so the only thing standing between a green gate and a
+      # public "solved" claim was that the gate happened to be red.
       - name: Publish solved discovery release
+        if: >-
+          startsWith(github.ref, 'refs/tags/solved-v')
+          || (github.event_name == 'workflow_dispatch'
+              && inputs.confirm_publish == env.SOLVED_TAG)
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
