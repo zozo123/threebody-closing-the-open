@@ -22,6 +22,7 @@
 - `workflow/README.md` defines content-addressed scientific campaign identity,
   exactly-once task accounting, fail-closed cache reuse, structured incidents, and
   atomic evidence promotion under injected infrastructure faults.
+- `CLAIM_ASSURANCE.md` documents the generated 14-dimensional per-claim assurance matrix, weakest-link report, and fail-closed numerical/theorem readiness policies.
 
 Gates: A pass, B pass (`release_ready` true on the 13-edge graph), C pass, D pending (human-signed same-day novelty + `--require-solved`).
 The repository must not label the frozen v1 problem `SOLVED` until `--require-solved` passes on a tagged commit.
