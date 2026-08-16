@@ -19,10 +19,10 @@ env:
 
 jobs:
   resolve-minus-endpoints:
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
@@ -31,10 +31,6 @@ jobs:
           enable-cache: true
       - run: uv python install 3.13
       - run: uv sync --locked --extra accelerated --group dev
-      - name: Remove stale private import from experimental tracer
-        run: |
-          sed -i '/    _flow_for_vector,/d' scripts/trace_label_invisible_continuous.py
-          sed -i 's/from threebody_atlas.boundary import BoundarySample, stability_score/from threebody_atlas.boundary import BoundarySample/' scripts/trace_label_invisible_continuous.py
       - name: Compile continuation experiments
         run: |
           uv run --no-sync python -m py_compile \
@@ -82,7 +78,7 @@ jobs:
               if "all_sampled_endpoints_resolved" in payload:
                   print("all_sampled_endpoints_resolved:", payload["all_sampled_endpoints_resolved"])
           PY
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: sampled-endpoint-resolution-${{ github.sha }}
