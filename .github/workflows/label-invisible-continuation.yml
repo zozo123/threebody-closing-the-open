@@ -1,0 +1,85 @@
+name: Label-invisible continuous reconciliation
+
+on:
+  push:
+    branches:
+      - agent/continuous-event-witnesses
+    paths:
+      - "scripts/trace_label_invisible_continuous.py"
+      - ".github/workflows/label-invisible-continuation.yml"
+  workflow_dispatch:
+    inputs:
+      mass_step:
+        description: "Variational mass-plane arclength step"
+        required: true
+        default: "0.0035"
+      max_steps:
+        description: "Maximum accepted steps per branch"
+        required: true
+        default: "120"
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON: "3.13"
+  JAX_ENABLE_X64: "1"
+  JAX_COMPILATION_CACHE_DIR: "${{ github.workspace }}/.jax-cache"
+
+jobs:
+  continuous-reconciliation:
+    runs-on: [self-hosted, Linux, X64]
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - name: Sync locked accelerated environment
+        run: uv sync --locked --extra accelerated --group dev
+      - name: Compile campaign and verify derivative primitives
+        run: |
+          uv run --no-sync python -m py_compile scripts/trace_label_invisible_continuous.py
+          uv run --no-sync pytest -q \
+            tests/test_mass_sensitivity.py \
+            tests/test_jax_diffrax.py \
+            tests/test_critical_geometry.py
+      - name: Trace four physical branches
+        env:
+          MASS_STEP: ${{ inputs.mass_step || '0.0035' }}
+          MAX_STEPS: ${{ inputs.max_steps || '120' }}
+        run: |
+          mkdir -p artifacts/label-invisible-continuation
+          set +e
+          uv run --no-sync python scripts/trace_label_invisible_continuous.py \
+            research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json \
+            research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json \
+            artifacts/label-invisible-continuation/continuous-reconciliation.json \
+            --mass-step "$MASS_STEP" \
+            --max-steps "$MAX_STEPS"
+          status=$?
+          set -e
+          echo "campaign_exit=$status" >> "$GITHUB_STEP_SUMMARY"
+          if [[ -f artifacts/label-invisible-continuation/continuous-reconciliation.json ]]; then
+            python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+          p = json.loads(Path("artifacts/label-invisible-continuation/continuous-reconciliation.json").read_text())
+          print("continuous_witness_passed=", p.get("continuous_witness_passed"))
+          for branch in p.get("branches", []):
+              print(branch.get("branch_id"), "passed=", branch.get("continuous_branch_passed"), "stop=", branch.get("stopped_reason"))
+          PY
+          fi
+          exit "$status"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: label-invisible-continuation-${{ github.sha }}
+          path: artifacts/label-invisible-continuation/continuous-reconciliation.json
+          if-no-files-found: warn
+          retention-days: 90
