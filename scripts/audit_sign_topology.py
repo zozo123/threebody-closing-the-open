@@ -652,28 +652,32 @@ def plan_line(
 
 
 @contextmanager
-def _wall_clock_budget(seconds: float):
-    """Abort a probe that costs more than it is worth.
+def _cpu_budget(seconds: float):
+    """Abort a probe that costs more CPU than it is worth.
 
     Probes are placed in regions nobody has integrated before.  A single orbit
     with a near-collision can make the adaptive integrator crawl for minutes,
     and one such probe can eat the whole audit.  A probe we could not afford is
     recorded as a failure, never as a pass.
+
+    The budget is measured in *process CPU time*, not wall clock, so a busy
+    machine shortens no probe: the audit's coverage must not depend on what else
+    happens to be running.
     """
     if seconds <= 0 or threading.current_thread() is not threading.main_thread():
         yield
         return
 
     def _fire(_signum: int, _frame: Any) -> None:
-        raise TimeoutError(f"probe exceeded {seconds:g}s wall-clock budget")
+        raise TimeoutError(f"probe exceeded {seconds:g}s CPU budget")
 
-    previous = signal.signal(signal.SIGALRM, _fire)
-    signal.setitimer(signal.ITIMER_REAL, seconds)
+    previous = signal.signal(signal.SIGPROF, _fire)
+    signal.setitimer(signal.ITIMER_PROF, seconds)
     try:
         yield
     finally:
-        signal.setitimer(signal.ITIMER_REAL, 0.0)
-        signal.signal(signal.SIGALRM, previous)
+        signal.setitimer(signal.ITIMER_PROF, 0.0)
+        signal.signal(signal.SIGPROF, previous)
 
 
 def evaluate_probes(
@@ -722,7 +726,7 @@ def evaluate_probes(
     def solve(m2: float, guess: tuple[float, float, float, float]) -> tuple[Probe, tuple | None]:
         started = time.perf_counter()
         try:
-            with _wall_clock_budget(probe_budget):
+            with _cpu_budget(probe_budget):
                 point = correct_family_point((m1, m2, 1.0), guess)
                 if not point.success or point.residual_norm > max_closure:
                     return (
@@ -751,9 +755,11 @@ def evaluate_probes(
         for i in indices:
             m2 = ordered[i]
             probe, nxt = solve(m2, guess)
-            if not probe.ok and guess != anchor_guess:
+            if not probe.ok and guess != anchor_guess and "TimeoutError" not in probe.note:
                 # One retry from the census anchor: a marching seed can wander,
-                # and a failed probe silently shrinks the audit's coverage.
+                # and a failed probe silently shrinks the audit's coverage.  A
+                # probe that exhausted its budget is not retried -- that failure
+                # is about the orbit, not the seed, and retrying doubles the bill.
                 retry, nxt = solve(m2, anchor_guess)
                 retry.seconds += probe.seconds
                 probe = retry
@@ -950,6 +956,14 @@ def main() -> None:
     )
     parser.add_argument("--standoff", type=float, default=4e-3)
     parser.add_argument("--max-gap", type=float, default=0.07)
+    parser.add_argument(
+        "--m2-range",
+        default=None,
+        help=(
+            "restrict probes to lo,hi within the declared m2 domain.  Narrowing this "
+            "shrinks coverage and is recorded in the artifact; it never widens a gate."
+        ),
+    )
     parser.add_argument("--sign-threshold", type=float, default=1e-3)
     parser.add_argument("--min-clearance", type=float, default=2e-3)
     parser.add_argument("--refine-steps", type=int, default=6)
@@ -959,7 +973,7 @@ def main() -> None:
         "--probe-budget",
         type=float,
         default=45.0,
-        help="wall-clock seconds a single probe may consume before it is failed",
+        help="process CPU seconds a single probe may consume before it is failed",
     )
     parser.add_argument("--no-certify", action="store_true")
     args = parser.parse_args()
@@ -971,6 +985,10 @@ def main() -> None:
     edges = edges_from_graph(graph, roots)
     domain = graph["declared_mass_domain"]
     m2_lo, m2_hi = float(domain["m2"][0]), float(domain["m2"][1])
+    if args.m2_range:
+        lo_text, hi_text = args.m2_range.split(",")
+        m2_lo = max(m2_lo, float(lo_text))
+        m2_hi = min(m2_hi, float(hi_text))
     m1_lo, m1_hi = float(domain["m1"][0]), float(domain["m1"][1])
 
     scan_lines = [float(x) for x in args.scan_lines.split(",") if x.strip()]
@@ -1065,11 +1083,13 @@ def main() -> None:
             "scan_lines": scan_lines,
             "standoff": args.standoff,
             "max_gap": args.max_gap,
+            "probed_m2_range": [m2_lo, m2_hi],
+            "declared_m2_range": domain["m2"],
             "sign_threshold": args.sign_threshold,
             "min_clearance": args.min_clearance,
             "max_closure": MAX_CLOSURE,
             "refine_steps": args.refine_steps,
-            "probe_budget_seconds": args.probe_budget,
+            "probe_cpu_budget_seconds": args.probe_budget,
         },
         "committed_edges": [
             {
