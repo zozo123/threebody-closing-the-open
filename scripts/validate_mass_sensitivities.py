@@ -26,7 +26,13 @@ secondary G-=0 fold root:
    resolved to ~1e-13, so differencing it is far better conditioned than
    differencing the event -- this is the sharp test of the implicit step.
 
-5. WALL CLOCK for both paths.
+5. MASS HESSIAN SYMMETRY (``--hessian-steps``).  Each row of the mass Hessian is
+   one central difference of the *exact* gradient, so ``d2G/dm1 dm2`` is obtained
+   twice along different axes.  Clairaut symmetry is then a free consistency
+   check, and ``-d2G/dm2^2 / (dG/dm1)`` is the fold curvature ``audit_fold``
+   reports -- comparable against the two newborn branches' secant curvatures.
+
+6. WALL CLOCK for both paths.
 
 Prints a JSON report.  With ``--output PATH`` it also writes it; PATH must not
 be under ``research/evidence`` -- this script is a development instrument, not
@@ -135,12 +141,33 @@ def dp_dm_finite_difference(masses, p, h, *, rtol, atol):
     return np.stack(cols, axis=1)
 
 
+def hessian_symmetry(masses, p, mode, h, *, rtol, atol):
+    """Build both rows of the mass Hessian and check the mixed partials agree.
+
+    Each row is one central difference of the *exact* gradient, so the two
+    estimates of ``d2G/dm1 dm2`` are computed along different axes and share
+    nothing but the sensitivity machinery.  Clairaut symmetry is then a free,
+    genuinely independent consistency check on the whole construction -- and on
+    the fold curvature ``-d2G/dm2^2 / (dG/dm1)`` that ``audit_fold`` reports.
+    """
+    row0, _ = ms.second_mass_derivative(masses, p, mode, 0, h, rtol=rtol, atol=atol)
+    row1, _ = ms.second_mass_derivative(masses, p, mode, 1, h, rtol=rtol, atol=atol)
+    return {
+        "h": h,
+        "d2_dm1dm1": float(row0[0]),
+        "d2_dm1dm2_via_m1": float(row0[1]),
+        "d2_dm1dm2_via_m2": float(row1[0]),
+        "d2_dm2dm2": float(row1[1]),
+        "mixed_partial_relative_disagreement": _rel(float(row0[1]), float(row1[0])),
+    }
+
+
 def _rel(a, b):
     scale = max(abs(a), abs(b), 1e-300)
     return abs(a - b) / scale
 
 
-def run_point(name, masses, guess, *, rtol, atol, fd_steps, dp_steps, modes):
+def run_point(name, masses, guess, *, rtol, atol, fd_steps, dp_steps, hessian_h, modes):
     t0 = time.perf_counter()
     corrected = ms.corrected_sample(masses, guess, rtol=rtol, atol=atol)
     correct_wall = time.perf_counter() - t0
@@ -199,6 +226,20 @@ def run_point(name, masses, guess, *, rtol, atol, fd_steps, dp_steps, modes):
         }
     record["dp_dm_finite_difference"] = dp_fd
 
+    if hessian_h:
+        record["mass_hessian"] = {
+            mode: [
+                hessian_symmetry(masses, p, mode, h, rtol=rtol, atol=atol)
+                for h in hessian_h
+            ]
+            for mode in modes
+        }
+        for mode in modes:
+            for entry in record["mass_hessian"][mode]:
+                entry["fold_curvature_m1_second_derivative"] = float(
+                    -entry["d2_dm2dm2"] / sens.d_events_dm[mode][0]
+                )
+
     fd_walls = []
     for mode in modes:
         entry = {"analytic": sens.d_events_dm[mode].tolist(), "axes": []}
@@ -233,6 +274,7 @@ def main() -> int:
     ap.add_argument("--atol", type=float, default=1e-15)
     ap.add_argument("--fd-steps", type=float, nargs="*", default=[1e-3, 2e-4])
     ap.add_argument("--dp-steps", type=float, nargs="*", default=[2e-4])
+    ap.add_argument("--hessian-steps", type=float, nargs="*", default=[])
     ap.add_argument("--modes", nargs="*", default=["minus_one"])
     ap.add_argument("--only", nargs="*", default=None)
     ap.add_argument("--output", type=Path, default=None)
@@ -248,7 +290,7 @@ def main() -> int:
         rec = run_point(
             name, masses, guess,
             rtol=args.rtol, atol=args.atol, fd_steps=args.fd_steps,
-            dp_steps=args.dp_steps, modes=args.modes,
+            dp_steps=args.dp_steps, hessian_h=args.hessian_steps, modes=args.modes,
         )
         records.append(rec)
         print(json.dumps(rec, indent=2), flush=True)
