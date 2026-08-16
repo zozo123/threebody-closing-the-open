@@ -157,6 +157,22 @@ Event-specific pseudo-arclength geometry and independent BigFloat reproduction r
 
 A first pseudo-arclength attempt assumed that the visually adjacent secondary lower crossings at `m1=0.996` and `0.997` represented the same smooth event. It failed because the first localized crossing was `-1` while the second coarse bracket did not contain a `-1` zero. The later global event census, mixed organizer candidate, and separate fold screen explain why that one-mechanism assumption was too simple.
 
+### The S/U-label bracket criterion cannot sample critical curves interior to the unstable region
+
+**Status: FLOAT64-STRUCTURAL**
+
+The 620-cell census population is defined by `extract_mass_slice_brackets`, which emitted a bracket exactly where the published S/U label flipped between adjacent baseline rows. The label is the thresholded predicate `n_unstable == 0`, not a continuous function, so a critical curve across which the unstable dimension steps `2 -> 1` leaves both rows labelled `U` and produces no bracket at any `m2` resolution. This is invariant under refinement: subdividing a `U`-`U` interval yields more `U`-`U` intervals.
+
+Read off the committed artifact rather than inferred: all 620 roots in `V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json` record a strict S/U flip (319 `U->S`, 301 `S->U`), and there are exactly 620 roots for 620 cells.
+
+Measured on ten published m1 slices over `0.80 <= m2 <= 1.00` (2010 rows, all closing under `1e-7`), both criteria on identical rows: 16 published-label brackets against 25 event-sign brackets. Nine of the 25 sit on `U`/`U` cells with `n_unstable` stepping `2 -> 1`; all nine were localized by `critical_manifold.localize_critical_point` under the unchanged `2e-8` event and `1e-7` closure gates, none missed. Seven of the nine are the curves the sign-topology audit already reported; two — `(0.920, 0.85950367)` and `(1.040, 0.86021152)`, both `-1` — are new. The largest certified event is `1.94e-8` at `(0.930, 0.88627431)`, inside the gate but marginal in float64 and therefore a BigFloat escalation candidate, not a claim.
+
+Supporting counts, all zero and all reported: label brackets with no event sign change; cells carrying more than one crossing event (so the "all 620 cells exhibit exactly one endpoint-sign-changing event" claim above survives on this sample); rows failing closure; rows whose published S/U label disagrees with the recomputed invariants.
+
+Frozen: `research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json`. Reasoning: `research/BRACKET_CRITERION_BLINDNESS.md`.
+
+This does **not** re-run the census, does **not** modify `V1_CRITICAL_GRAPH.json`, and does **not** close Gate B. It identifies the cause of the Gate B falsification and supplies a criterion without that blind spot. The replacement is not complete either: a sign criterion is still blind to tangencies and to two crossings of the same event inside one published cell, both of which shrink with sampling density.
+
 ## Physical transverse Floquet reduction
 
 ### The regular physical return map is constructed on `E^omega/E`, not by deleting four eigenvalues
