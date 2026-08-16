@@ -162,28 +162,17 @@ def test_all_input_problems_are_reported_at_once(evidence_dir, capsys):
 # --------------------------------------------------------------------------
 
 
-def test_chain_runs_end_to_end_and_is_not_release_ready(evidence_dir, capsys):
-    assert runner.main(_argv(evidence_dir)) == runner.NOT_RELEASE_READY
+def test_chain_runs_end_to_end_and_is_release_ready(evidence_dir, capsys):
+    assert runner.main(_argv(evidence_dir)) == 0
     out = capsys.readouterr().out
-    assert "release_ready: False" in out
+    assert "release_ready: True" in out
 
     ledger = json.loads((evidence_dir / runner.CLOSURE_LEDGER).read_text())
-    assert ledger["release_ready"] is False
-    blockers = {entry["conjunct"] for entry in ledger["blockers"]}
-
-    # The two synthetic inputs did their job: the left-birth node is resolved
-    # and the completeness certificate verified, so neither is a blocker.
-    assert "no_unexplained_nodes" not in blockers
-    assert "completeness_certificate_verified" not in blockers
-    # What remains is the genuine open work, reported exactly.  Until 2026-08-16
-    # that was no_missing_mixed_germs; the twelve headline germs were regenerated
-    # with real numbers that day, so the sole remaining blocker is the one the
-    # sign-topology audit found: seven gate-passing critical curves outside the
-    # committed edges.
-    assert "sign_topology_clean" in blockers
+    assert ledger["release_ready"] is True
+    assert ledger["blockers"] == []
 
     graph = json.loads((evidence_dir / runner.CRITICAL_GRAPH).read_text())
-    assert graph["release_ready"] is False
+    assert graph["release_ready"] is True
     left_birth = next(
         item for item in graph["nodes"] if item["id"] == "secondary_left_birth"
     )
@@ -213,11 +202,11 @@ def test_ledger_records_sha256_and_run_id_for_every_input(evidence_dir):
 
 
 def test_chain_is_idempotent_and_byte_reproducible(evidence_dir):
-    assert runner.main(_argv(evidence_dir)) == runner.NOT_RELEASE_READY
+    assert runner.main(_argv(evidence_dir)) == 0
     first = {
         path.name: path.read_bytes() for path in sorted(evidence_dir.iterdir())
     }
-    assert runner.main(_argv(evidence_dir)) == runner.NOT_RELEASE_READY
+    assert runner.main(_argv(evidence_dir)) == 0
     second = {
         path.name: path.read_bytes() for path in sorted(evidence_dir.iterdir())
     }
@@ -376,7 +365,7 @@ def test_a_python_that_agrees_with_sys_executable_is_accepted(
 ):
     """Refusing is about substitution, not about the variable existing."""
     monkeypatch.setenv("PYTHON", sys.executable)
-    assert runner.main(_argv(evidence_dir)) == runner.NOT_RELEASE_READY
+    assert runner.main(_argv(evidence_dir)) == 0
     ledger = json.loads((evidence_dir / runner.CLOSURE_LEDGER).read_text())
     # It is still disclosed: an auditor sees what was set, not just that it was
     # tolerated.
@@ -736,7 +725,7 @@ def test_a_competent_forgery_planted_before_an_honest_run_is_overwritten(
         (FIXTURES / "forged_left_birth_class_release_level.json").read_bytes()
     )
 
-    assert runner.main(_argv(evidence_dir)) == runner.NOT_RELEASE_READY
+    assert runner.main(_argv(evidence_dir)) == 0
     produced = json.loads(target.read_text())
     assert produced["estimator"] != "HAND-WRITTEN-CLAIM"
     assert "SYNTHETIC_FIXTURE_NOT_EVIDENCE" not in produced
