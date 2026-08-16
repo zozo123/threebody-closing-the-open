@@ -261,6 +261,11 @@ def _cell(
         "dimension": dimension["id"],
         "status": status,
         "detail": detail,
+        "derivation_refs": [
+            "discovery_manifest",
+            f"claim:{claim['id']}",
+            f"dimension:{dimension['id']}",
+        ],
         "evidence": evidence,
     }
 
@@ -315,6 +320,27 @@ def build_matrix(manifest: dict[str, Any], policy: dict[str, Any], root: Path) -
         )
 
     release_rows = [row for row in rows if row["claim_status"] == "release_claim"]
+    derivation_sources = {
+        "discovery_manifest": {
+            "kind": "claim_registry",
+            "sha256": canonical_sha256(manifest),
+        },
+        **{
+            f"claim:{claim['id']}": {
+                "kind": "claim",
+                "sha256": canonical_sha256(claim),
+            }
+            for claim in manifest.get("claims", [])
+            if isinstance(claim, dict) and claim.get("id")
+        },
+        **{
+            f"dimension:{dimension['id']}": {
+                "kind": "assurance_policy_dimension",
+                "sha256": canonical_sha256(dimension),
+            }
+            for dimension in policy["dimensions"]
+        },
+    }
     views = {
         "headline_claims": [row["claim_id"] for row in release_rows],
         "edge_node_matrix": [
@@ -354,6 +380,7 @@ def build_matrix(manifest: dict[str, Any], policy: dict[str, Any], root: Path) -
         "claim_count": len(rows),
         "dimension_count": len(DIMENSION_IDS),
         "status_vocabulary": sorted(STATUSES),
+        "derivation_sources": derivation_sources,
         "claims": rows,
         "views": views,
         "release_policy": {

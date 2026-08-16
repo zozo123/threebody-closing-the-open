@@ -50,10 +50,16 @@ def test_committed_assurance_artifacts_are_exactly_reproducible() -> None:
 
 def test_every_claim_has_every_dimension_and_typed_evidence_identities() -> None:
     matrix = _load(MATRIX_PATH)
+    sources = matrix["derivation_sources"]
     for row in matrix["claims"]:
         assert tuple(cell["dimension"] for cell in row["cells"]) == DIMENSION_IDS
         assert all(cell["status"] in STATUSES for cell in row["cells"])
         for cell in row["cells"]:
+            assert len(cell["derivation_refs"]) == 3
+            assert all(reference in sources for reference in cell["derivation_refs"])
+            assert all(
+                len(sources[reference]["sha256"]) == 64 for reference in cell["derivation_refs"]
+            )
             for identity in cell["evidence"]:
                 assert identity["valid"] is True
                 assert len(identity["sha256"]) == 64
@@ -95,6 +101,7 @@ def test_evidence_parent_mutation_stales_the_matrix_without_manual_edits() -> No
         before[("one-continuation-family", "direct_continuation_topology")]["evidence"]
         != after[("one-continuation-family", "direct_continuation_topology")]["evidence"]
     )
+    assert all(before[key] == after[key] for key in before if key[0] != "one-continuation-family")
     with pytest.raises(AssuranceError, match="stale"):
         verify_committed_artifacts(
             ROOT,
