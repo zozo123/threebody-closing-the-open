@@ -1,0 +1,1698 @@
+{
+  "schema": "atlas.v1.bracket-criterion-comparison/1",
+  "created_at": "2026-08-16T16:10:41.431230+00:00",
+  "code_revision": "9d20603eb0bcdc564cc082ceca7a911f895c9eca",
+  "python": "3.13.11",
+  "platform": "macOS-26.6.1-arm64-arm-64bit-Mach-O",
+  "arithmetic": "float64 screening (scipy DOP853 + variational Newton)",
+  "inputs": {
+    "dataset": "data/raw/non-hierarchical-3b-supplementary_data.txt",
+    "audit_evidence": [
+      "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json",
+      "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json"
+    ],
+    "committed_graph": "research/evidence/V1_CRITICAL_GRAPH.json"
+  },
+  "method": {
+    "published_label_criterion": "bracket adjacent published rows whose S/U label flips (threebody_atlas.bracket_criteria.published_label_brackets); the criterion that produced the 620-cell census",
+    "event_sign_criterion": "bracket adjacent published rows across which G_plus = beta-6*alpha+20, G_minus = beta-2*alpha+4 or discriminant = (alpha-4)^2-4*(beta-4*alpha+8) changes sign (threebody_atlas.bracket_criteria.event_sign_brackets)",
+    "label_invisible": "an event-sign bracket across which the published label does not flip; no S/U-label criterion can produce it at any resolution",
+    "unreachable_by_published_label_pipeline": "an event-sign bracket the historical pipeline could not have turned into a root, either because no label flipped on that cell (no_label_bracket) or because the cell carries more than one crossing event and infer_event_mode selects exactly one (shadowed_by_single_mode_selection)",
+    "certification": "threebody_atlas.critical_manifold.localize_critical_point at the frozen gates |event| <= 2e-8 and closure <= 1e-7"
+  },
+  "parameters": {
+    "m1_slices": [
+      0.9,
+      0.92,
+      0.925,
+      0.929,
+      0.93,
+      0.931,
+      0.94,
+      0.97,
+      1.0,
+      1.04
+    ],
+    "m2_window": [
+      0.8,
+      1.0
+    ],
+    "components": [
+      "g_plus",
+      "g_minus",
+      "discriminant"
+    ],
+    "jobs": 9,
+    "certified": true
+  },
+  "totals": {
+    "published_label_brackets": 16,
+    "event_sign_brackets": 25,
+    "label_invisible_brackets": 9,
+    "unreachable_by_published_label_pipeline": 9,
+    "unreachable_reason_counts": {
+      "no_label_bracket": 9
+    },
+    "unreachable_certified_at_frozen_gates": 9,
+    "unreachable_missing_frozen_gates": 0,
+    "label_brackets_without_an_event_sign_change": 0,
+    "rows_failing_closure": 0,
+    "rows_disagreeing_with_published_label": 0,
+    "wall_seconds": 2526.51211625
+  },
+  "slices": [
+    {
+      "m1": 0.9,
+      "rows_in_window": 201,
+      "rows_evaluated": 201,
+      "rows_failing_closure": [],
+      "published_label_bracket_count": 2,
+      "published_label_brackets": [
+        [
+          0.845,
+          0.846
+        ],
+        [
+          0.885,
+          0.886
+        ]
+      ],
+      "event_sign_bracket_count": 2,
+      "label_invisible_bracket_count": 0,
+      "unreachable_by_published_label_pipeline_count": 0,
+      "unreachable_reason_counts": {},
+      "cells_carrying_more_than_one_event": [],
+      "label_brackets_without_an_event_sign_change": [],
+      "rows_disagreeing_with_published_label": [],
+      "component_counts": {
+        "g_plus": 1,
+        "discriminant": 1
+      },
+      "brackets": [
+        {
+          "m1": 0.9,
+          "component": "g_plus",
+          "event_mode": "plus_one",
+          "m2_bracket": [
+            0.845,
+            0.846
+          ],
+          "published_labels": [
+            "U",
+            "S"
+          ],
+          "label_flip": true,
+          "interior_to_unstable_region": false,
+          "n_unstable": [
+            1,
+            0
+          ],
+          "event_values": [
+            -0.09389423798987195,
+            0.04443733015968121
+          ],
+          "closure": [
+            5.005402984280543e-10,
+            6.266286712838386e-10
+          ],
+          "reachable_by_published_label_pipeline": true,
+          "unreachable_reason": null,
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.845,
+            0.846
+          ]
+        },
+        {
+          "m1": 0.9,
+          "component": "discriminant",
+          "event_mode": "trace_collision",
+          "m2_bracket": [
+            0.885,
+            0.886
+          ],
+          "published_labels": [
+            "S",
+            "U"
+          ],
+          "label_flip": true,
+          "interior_to_unstable_region": false,
+          "n_unstable": [
+            0,
+            2
+          ],
+          "event_values": [
+            0.18206513627685905,
+            -0.04119179034515917
+          ],
+          "closure": [
+            4.08470701962252e-10,
+            3.8794555318057363e-10
+          ],
+          "reachable_by_published_label_pipeline": true,
+          "unreachable_reason": null,
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.885,
+            0.886
+          ]
+        }
+      ],
+      "seconds": 104.3123718329989
+    },
+    {
+      "m1": 0.92,
+      "rows_in_window": 201,
+      "rows_evaluated": 201,
+      "rows_failing_closure": [],
+      "published_label_bracket_count": 2,
+      "published_label_brackets": [
+        [
+          0.873,
+          0.874
+        ],
+        [
+          0.925,
+          0.926
+        ]
+      ],
+      "event_sign_bracket_count": 3,
+      "label_invisible_bracket_count": 1,
+      "unreachable_by_published_label_pipeline_count": 1,
+      "unreachable_reason_counts": {
+        "no_label_bracket": 1
+      },
+      "cells_carrying_more_than_one_event": [],
+      "label_brackets_without_an_event_sign_change": [],
+      "rows_disagreeing_with_published_label": [],
+      "component_counts": {
+        "g_minus": 1,
+        "g_plus": 1,
+        "discriminant": 1
+      },
+      "brackets": [
+        {
+          "m1": 0.92,
+          "component": "g_minus",
+          "event_mode": "minus_one",
+          "m2_bracket": [
+            0.859,
+            0.86
+          ],
+          "published_labels": [
+            "U",
+            "U"
+          ],
+          "label_flip": false,
+          "interior_to_unstable_region": true,
+          "n_unstable": [
+            2,
+            1
+          ],
+          "event_values": [
+            -0.02278011435890548,
+            0.0223477715013356
+          ],
+          "closure": [
+            5.112731826357336e-10,
+            4.1346166800376294e-10
+          ],
+          "reachable_by_published_label_pipeline": false,
+          "unreachable_reason": "no_label_bracket",
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.859,
+            0.86
+          ],
+          "certification": {
+            "status": "passed",
+            "localizer": "threebody_atlas.critical_manifold.localize_critical_point",
+            "event_mode": "minus_one",
+            "masses": [
+              0.92,
+              0.8595036698750498,
+              1.0
+            ],
+            "event_value": -1.4525376457186212e-09,
+            "closure": 4.6193163717750237e-10,
+            "period": 6.527113958796029,
+            "x1": -0.24014056871152933,
+            "v1": 1.6835636944869687,
+            "v2": 0.42913647305364505,
+            "gates": {
+              "maximum_absolute_event": 2e-08,
+              "maximum_periodic_closure": 1e-07
+            },
+            "seconds": 57.37994370800152
+          },
+          "nearest_committed_edge": null
+        },
+        {
+          "m1": 0.92,
+          "component": "g_plus",
+          "event_mode": "plus_one",
+          "m2_bracket": [
+            0.873,
+            0.874
+          ],
+          "published_labels": [
+            "U",
+            "S"
+          ],
+          "label_flip": true,
+          "interior_to_unstable_region": false,
+          "n_unstable": [
+            1,
+            0
+          ],
+          "event_values": [
+            -0.1468042942092005,
+            0.01083725318769524
+          ],
+          "closure": [
+            3.9577103100341553e-10,
+            3.304640114151888e-10
+          ],
+          "reachable_by_published_label_pipeline": true,
+          "unreachable_reason": null,
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.873,
+            0.874
+          ]
+        },
+        {
+          "m1": 0.92,
+          "component": "discriminant",
+          "event_mode": "trace_collision",
+          "m2_bracket": [
+            0.925,
+            0.926
+          ],
+          "published_labels": [
+            "S",
+            "U"
+          ],
+          "label_flip": true,
+          "interior_to_unstable_region": false,
+          "n_unstable": [
+            0,
+            2
+          ],
+          "event_values": [
+            0.05865170185139246,
+            -0.14079008873124355
+          ],
+          "closure": [
+            2.9393657664322946e-10,
+            2.643187261606182e-10
+          ],
+          "reachable_by_published_label_pipeline": true,
+          "unreachable_reason": null,
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.925,
+            0.926
+          ]
+        }
+      ],
+      "seconds": 233.15964991700093
+    },
+    {
+      "m1": 0.925,
+      "rows_in_window": 201,
+      "rows_evaluated": 201,
+      "rows_failing_closure": [],
+      "published_label_bracket_count": 2,
+      "published_label_brackets": [
+        [
+          0.88,
+          0.881
+        ],
+        [
+          0.934,
+          0.935
+        ]
+      ],
+      "event_sign_bracket_count": 3,
+      "label_invisible_bracket_count": 1,
+      "unreachable_by_published_label_pipeline_count": 1,
+      "unreachable_reason_counts": {
+        "no_label_bracket": 1
+      },
+      "cells_carrying_more_than_one_event": [],
+      "label_brackets_without_an_event_sign_change": [],
+      "rows_disagreeing_with_published_label": [],
+      "component_counts": {
+        "g_minus": 1,
+        "g_plus": 1,
+        "discriminant": 1
+      },
+      "brackets": [
+        {
+          "m1": 0.925,
+          "component": "g_minus",
+          "event_mode": "minus_one",
+          "m2_bracket": [
+            0.874,
+            0.875
+          ],
+          "published_labels": [
+            "U",
+            "U"
+          ],
+          "label_flip": false,
+          "interior_to_unstable_region": true,
+          "n_unstable": [
+            2,
+            1
+          ],
+          "event_values": [
+            -0.0027008017229546155,
+            0.041189801411991134
+          ],
+          "closure": [
+            3.4497407279772246e-10,
+            4.5525646181262764e-10
+          ],
+          "reachable_by_published_label_pipeline": false,
+          "unreachable_reason": "no_label_bracket",
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.874,
+            0.875
+          ],
+          "certification": {
+            "status": "passed",
+            "localizer": "threebody_atlas.critical_manifold.localize_critical_point",
+            "event_mode": "minus_one",
+            "masses": [
+              0.925,
+              0.8740612936701803,
+              1.0
+            ],
+            "event_value": -8.934426531936879e-10,
+            "closure": 3.38796645400929e-10,
+            "period": 6.602203866550863,
+            "x1": -0.2502088497007466,
+            "v1": 1.6360279983804535,
+            "v2": 0.4300206698644605,
+            "gates": {
+              "maximum_absolute_event": 2e-08,
+              "maximum_periodic_closure": 1e-07
+            },
+            "seconds": 45.62057412500144
+          },
+          "nearest_committed_edge": null
+        },
+        {
+          "m1": 0.925,
+          "component": "g_plus",
+          "event_mode": "plus_one",
+          "m2_bracket": [
+            0.88,
+            0.881
+          ],
+          "published_labels": [
+            "U",
+            "S"
+          ],
+          "label_flip": true,
+          "interior_to_unstable_region": false,
+          "n_unstable": [
+            1,
+            0
+          ],
+          "event_values": [
+            -0.03496221338496497,
+            0.12492038378014314
+          ],
+          "closure": [
+            3.060506998701959e-10,
+            2.982443947773149e-10
+          ],
+          "reachable_by_published_label_pipeline": true,
+          "unreachable_reason": null,
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.88,
+            0.881
+          ]
+        },
+        {
+          "m1": 0.925,
+          "component": "discriminant",
+          "event_mode": "trace_collision",
+          "m2_bracket": [
+            0.934,
+            0.935
+          ],
+          "published_labels": [
+            "S",
+            "U"
+          ],
+          "label_flip": true,
+          "interior_to_unstable_region": false,
+          "n_unstable": [
+            0,
+            2
+          ],
+          "event_values": [
+            0.12296297340993001,
+            -0.06975767022147039
+          ],
+          "closure": [
+            3.1714173566491624e-10,
+            2.72425800373668e-10
+          ],
+          "reachable_by_published_label_pipeline": true,
+          "unreachable_reason": null,
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.934,
+            0.935
+          ]
+        }
+      ],
+      "seconds": 199.3727982499986
+    },
+    {
+      "m1": 0.929,
+      "rows_in_window": 201,
+      "rows_evaluated": 201,
+      "rows_failing_closure": [],
+      "published_label_bracket_count": 2,
+      "published_label_brackets": [
+        [
+          0.885,
+          0.886
+        ],
+        [
+          0.942,
+          0.943
+        ]
+      ],
+      "event_sign_bracket_count": 3,
+      "label_invisible_bracket_count": 1,
+      "unreachable_by_published_label_pipeline_count": 1,
+      "unreachable_reason_counts": {
+        "no_label_bracket": 1
+      },
+      "cells_carrying_more_than_one_event": [],
+      "label_brackets_without_an_event_sign_change": [],
+      "rows_disagreeing_with_published_label": [],
+      "component_counts": {
+        "g_minus": 1,
+        "g_plus": 1,
+        "discriminant": 1
+      },
+      "brackets": [
+        {
+          "m1": 0.929,
+          "component": "g_minus",
+          "event_mode": "minus_one",
+          "m2_bracket": [
+            0.884,
+            0.885
+          ],
+          "published_labels": [
+            "U",
+            "U"
+          ],
+          "label_flip": false,
+          "interior_to_unstable_region": true,
+          "n_unstable": [
+            2,
+            1
+          ],
+          "event_values": [
+            -0.03255612546528042,
+            0.01070586154207298
+          ],
+          "closure": [
+            3.0817556486841455e-10,
+            3.0372348908647145e-10
+          ],
+          "reachable_by_published_label_pipeline": false,
+          "unreachable_reason": "no_label_bracket",
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.884,
+            0.885
+          ],
+          "certification": {
+            "status": "passed",
+            "localizer": "threebody_atlas.critical_manifold.localize_critical_point",
+            "event_mode": "minus_one",
+            "masses": [
+              0.929,
+              0.8847517496268272,
+              1.0
+            ],
+            "event_value": -6.034621691242137e-10,
+            "closure": 2.9528441365206035e-10,
+            "period": 6.659920554843181,
+            "x1": -0.25794709481015354,
+            "v1": 1.6013222815906638,
+            "v2": 0.430819458501294,
+            "gates": {
+              "maximum_absolute_event": 2e-08,
+              "maximum_periodic_closure": 1e-07
+            },
+            "seconds": 39.28127045899964
+          },
+          "nearest_committed_edge": null
+        },
+        {
+          "m1": 0.929,
+          "component": "g_plus",
+          "event_mode": "plus_one",
+          "m2_bracket": [
+            0.885,
+            0.886
+          ],
+          "published_labels": [
+            "U",
+            "S"
+          ],
+          "label_flip": true,
+          "interior_to_unstable_region": false,
+          "n_unstable": [
+            1,
+            0
+          ],
+          "event_values": [
+            -0.013006594463867316,
+            0.14891679448377104
+          ],
+          "closure": [
+            3.0372348908647145e-10,
+            3.7930693774086027e-10
+          ],
+          "reachable_by_published_label_pipeline": true,
+          "unreachable_reason": null,
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.885,
+            0.886
+          ]
+        },
+        {
+          "m1": 0.929,
+          "component": "discriminant",
+          "event_mode": "trace_collision",
+          "m2_bracket": [
+            0.942,
+            0.943
+          ],
+          "published_labels": [
+            "S",
+            "U"
+          ],
+          "label_flip": true,
+          "interior_to_unstable_region": false,
+          "n_unstable": [
+            0,
+            2
+          ],
+          "event_values": [
+            0.008433566640069223,
+            -0.1765571998829616
+          ],
+          "closure": [
+            2.3693305876823027e-10,
+            3.0761585871275857e-10
+          ],
+          "reachable_by_published_label_pipeline": true,
+          "unreachable_reason": null,
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.942,
+            0.943
+          ]
+        }
+      ],
+      "seconds": 258.3074457500006
+    },
+    {
+      "m1": 0.93,
+      "rows_in_window": 201,
+      "rows_evaluated": 201,
+      "rows_failing_closure": [],
+      "published_label_bracket_count": 2,
+      "published_label_brackets": [
+        [
+          0.887,
+          0.888
+        ],
+        [
+          0.943,
+          0.944
+        ]
+      ],
+      "event_sign_bracket_count": 3,
+      "label_invisible_bracket_count": 1,
+      "unreachable_by_published_label_pipeline_count": 1,
+      "unreachable_reason_counts": {
+        "no_label_bracket": 1
+      },
+      "cells_carrying_more_than_one_event": [],
+      "label_brackets_without_an_event_sign_change": [],
+      "rows_disagreeing_with_published_label": [],
+      "component_counts": {
+        "g_plus": 1,
+        "g_minus": 1,
+        "discriminant": 1
+      },
+      "brackets": [
+        {
+          "m1": 0.93,
+          "component": "g_plus",
+          "event_mode": "plus_one",
+          "m2_bracket": [
+            0.886,
+            0.887
+          ],
+          "published_labels": [
+            "U",
+            "U"
+          ],
+          "label_flip": false,
+          "interior_to_unstable_region": true,
+          "n_unstable": [
+            2,
+            1
+          ],
+          "event_values": [
+            -0.04483007389934457,
+            0.11793983789939233
+          ],
+          "closure": [
+            2.7133390751118707e-10,
+            2.90465170208268e-10
+          ],
+          "reachable_by_published_label_pipeline": false,
+          "unreachable_reason": "no_label_bracket",
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.886,
+            0.887
+          ],
+          "certification": {
+            "status": "passed",
+            "localizer": "threebody_atlas.critical_manifold.localize_critical_point",
+            "event_mode": "plus_one",
+            "masses": [
+              0.93,
+              0.8862743134281336,
+              1.0
+            ],
+            "event_value": -1.9359646330485702e-08,
+            "closure": 2.784740538235849e-10,
+            "period": 6.671573481769987,
+            "x1": -0.2593811215524515,
+            "v1": 1.5948816250449571,
+            "v2": 0.43125431477886256,
+            "gates": {
+              "maximum_absolute_event": 2e-08,
+              "maximum_periodic_closure": 1e-07
+            },
+            "seconds": 69.21644720900076
+          },
+          "nearest_committed_edge": null
+        },
+        {
+          "m1": 0.93,
+          "component": "g_minus",
+          "event_mode": "minus_one",
+          "m2_bracket": [
+            0.887,
+            0.888
+          ],
+          "published_labels": [
+            "U",
+            "S"
+          ],
+          "label_flip": true,
+          "interior_to_unstable_region": false,
+          "n_unstable": [
+            1,
+            0
+          ],
+          "event_values": [
+            -0.013077726437447978,
+            0.029785238012775217
+          ],
+          "closure": [
+            2.90465170208268e-10,
+            3.058834493354782e-10
+          ],
+          "reachable_by_published_label_pipeline": true,
+          "unreachable_reason": null,
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.887,
+            0.888
+          ]
+        },
+        {
+          "m1": 0.93,
+          "component": "discriminant",
+          "event_mode": "trace_collision",
+          "m2_bracket": [
+            0.943,
+            0.944
+          ],
+          "published_labels": [
+            "S",
+            "U"
+          ],
+          "label_flip": true,
+          "interior_to_unstable_region": false,
+          "n_unstable": [
+            0,
+            2
+          ],
+          "event_values": [
+            0.1653169941308852,
+            -0.019823857614744922
+          ],
+          "closure": [
+            3.105906030072268e-10,
+            3.3074275595778003e-10
+          ],
+          "reachable_by_published_label_pipeline": true,
+          "unreachable_reason": null,
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.943,
+            0.944
+          ]
+        }
+      ],
+      "seconds": 287.88794095900084
+    },
+    {
+      "m1": 0.931,
+      "rows_in_window": 201,
+      "rows_evaluated": 201,
+      "rows_failing_closure": [],
+      "published_label_bracket_count": 2,
+      "published_label_brackets": [
+        [
+          0.889,
+          0.89
+        ],
+        [
+          0.945,
+          0.946
+        ]
+      ],
+      "event_sign_bracket_count": 3,
+      "label_invisible_bracket_count": 1,
+      "unreachable_by_published_label_pipeline_count": 1,
+      "unreachable_reason_counts": {
+        "no_label_bracket": 1
+      },
+      "cells_carrying_more_than_one_event": [],
+      "label_brackets_without_an_event_sign_change": [],
+      "rows_disagreeing_with_published_label": [],
+      "component_counts": {
+        "g_plus": 1,
+        "g_minus": 1,
+        "discriminant": 1
+      },
+      "brackets": [
+        {
+          "m1": 0.931,
+          "component": "g_plus",
+          "event_mode": "plus_one",
+          "m2_bracket": [
+            0.887,
+            0.888
+          ],
+          "published_labels": [
+            "U",
+            "U"
+          ],
+          "label_flip": false,
+          "interior_to_unstable_region": true,
+          "n_unstable": [
+            2,
+            1
+          ],
+          "event_values": [
+            -0.07559618930217127,
+            0.08799461393814667
+          ],
+          "closure": [
+            2.6152534347666684e-10,
+            2.783637593975138e-10
+          ],
+          "reachable_by_published_label_pipeline": false,
+          "unreachable_reason": "no_label_bracket",
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.887,
+            0.888
+          ],
+          "certification": {
+            "status": "passed",
+            "localizer": "threebody_atlas.critical_manifold.localize_critical_point",
+            "event_mode": "plus_one",
+            "masses": [
+              0.931,
+              0.8874607225060899,
+              1.0
+            ],
+            "event_value": 1.1286463319493123e-08,
+            "closure": 2.718353915905636e-10,
+            "period": 6.682429339976992,
+            "x1": -0.2606700483811329,
+            "v1": 1.5890656628468203,
+            "v2": 0.431759174362911,
+            "gates": {
+              "maximum_absolute_event": 2e-08,
+              "maximum_periodic_closure": 1e-07
+            },
+            "seconds": 93.86679704200287
+          },
+          "nearest_committed_edge": null
+        },
+        {
+          "m1": 0.931,
+          "component": "g_minus",
+          "event_mode": "minus_one",
+          "m2_bracket": [
+            0.889,
+            0.89
+          ],
+          "published_labels": [
+            "U",
+            "S"
+          ],
+          "label_flip": true,
+          "interior_to_unstable_region": false,
+          "n_unstable": [
+            1,
+            0
+          ],
+          "event_values": [
+            -0.034761437971962295,
+            0.008036812757719947
+          ],
+          "closure": [
+            3.7127049501441505e-10,
+            2.7540117559483e-10
+          ],
+          "reachable_by_published_label_pipeline": true,
+          "unreachable_reason": null,
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.889,
+            0.89
+          ]
+        },
+        {
+          "m1": 0.931,
+          "component": "discriminant",
+          "event_mode": "trace_collision",
+          "m2_bracket": [
+            0.945,
+            0.946
+          ],
+          "published_labels": [
+            "S",
+            "U"
+          ],
+          "label_flip": true,
+          "interior_to_unstable_region": false,
+          "n_unstable": [
+            0,
+            2
+          ],
+          "event_values": [
+            0.13543211628133567,
+            -0.047676141264247685
+          ],
+          "closure": [
+            3.285309959625284e-10,
+            2.5309522592047455e-10
+          ],
+          "reachable_by_published_label_pipeline": true,
+          "unreachable_reason": null,
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.945,
+            0.946
+          ]
+        }
+      ],
+      "seconds": 311.48347812499924
+    },
+    {
+      "m1": 0.94,
+      "rows_in_window": 201,
+      "rows_evaluated": 201,
+      "rows_failing_closure": [],
+      "published_label_bracket_count": 2,
+      "published_label_brackets": [
+        [
+          0.91,
+          0.911
+        ],
+        [
+          0.962,
+          0.963
+        ]
+      ],
+      "event_sign_bracket_count": 3,
+      "label_invisible_bracket_count": 1,
+      "unreachable_by_published_label_pipeline_count": 1,
+      "unreachable_reason_counts": {
+        "no_label_bracket": 1
+      },
+      "cells_carrying_more_than_one_event": [],
+      "label_brackets_without_an_event_sign_change": [],
+      "rows_disagreeing_with_published_label": [],
+      "component_counts": {
+        "g_plus": 1,
+        "g_minus": 1,
+        "discriminant": 1
+      },
+      "brackets": [
+        {
+          "m1": 0.94,
+          "component": "g_plus",
+          "event_mode": "plus_one",
+          "m2_bracket": [
+            0.897,
+            0.898
+          ],
+          "published_labels": [
+            "U",
+            "U"
+          ],
+          "label_flip": false,
+          "interior_to_unstable_region": true,
+          "n_unstable": [
+            2,
+            1
+          ],
+          "event_values": [
+            -0.13641017147925183,
+            0.031190875775266136
+          ],
+          "closure": [
+            2.464754562109775e-10,
+            2.1315012538836752e-10
+          ],
+          "reachable_by_published_label_pipeline": false,
+          "unreachable_reason": "no_label_bracket",
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.897,
+            0.898
+          ],
+          "certification": {
+            "status": "passed",
+            "localizer": "threebody_atlas.critical_manifold.localize_critical_point",
+            "event_mode": "plus_one",
+            "masses": [
+              0.94,
+              0.8978130034319328,
+              1.0
+            ],
+            "event_value": 1.3643361995718806e-08,
+            "closure": 2.1429309815519142e-10,
+            "period": 6.780226480724233,
+            "x1": -0.27234751878481905,
+            "v1": 1.5382615092980503,
+            "v2": 0.43627323170834675,
+            "gates": {
+              "maximum_absolute_event": 2e-08,
+              "maximum_periodic_closure": 1e-07
+            },
+            "seconds": 87.13889112499965
+          },
+          "nearest_committed_edge": null
+        },
+        {
+          "m1": 0.94,
+          "component": "g_minus",
+          "event_mode": "minus_one",
+          "m2_bracket": [
+            0.91,
+            0.911
+          ],
+          "published_labels": [
+            "U",
+            "S"
+          ],
+          "label_flip": true,
+          "interior_to_unstable_region": false,
+          "n_unstable": [
+            1,
+            0
+          ],
+          "event_values": [
+            -0.022777391133887548,
+            0.017256177085817725
+          ],
+          "closure": [
+            2.8396493005188833e-10,
+            2.388619106652818e-10
+          ],
+          "reachable_by_published_label_pipeline": true,
+          "unreachable_reason": null,
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.91,
+            0.911
+          ]
+        },
+        {
+          "m1": 0.94,
+          "component": "discriminant",
+          "event_mode": "trace_collision",
+          "m2_bracket": [
+            0.962,
+            0.963
+          ],
+          "published_labels": [
+            "S",
+            "U"
+          ],
+          "label_flip": true,
+          "interior_to_unstable_region": false,
+          "n_unstable": [
+            0,
+            2
+          ],
+          "event_values": [
+            0.06695274944513763,
+            -0.09974999978887089
+          ],
+          "closure": [
+            2.3771888411913095e-10,
+            2.240257749731442e-10
+          ],
+          "reachable_by_published_label_pipeline": true,
+          "unreachable_reason": null,
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.962,
+            0.963
+          ]
+        }
+      ],
+      "seconds": 290.6267670840025
+    },
+    {
+      "m1": 0.97,
+      "rows_in_window": 201,
+      "rows_evaluated": 201,
+      "rows_failing_closure": [],
+      "published_label_bracket_count": 1,
+      "published_label_brackets": [
+        [
+          0.963,
+          0.964
+        ]
+      ],
+      "event_sign_bracket_count": 2,
+      "label_invisible_bracket_count": 1,
+      "unreachable_by_published_label_pipeline_count": 1,
+      "unreachable_reason_counts": {
+        "no_label_bracket": 1
+      },
+      "cells_carrying_more_than_one_event": [],
+      "label_brackets_without_an_event_sign_change": [],
+      "rows_disagreeing_with_published_label": [],
+      "component_counts": {
+        "g_plus": 1,
+        "g_minus": 1
+      },
+      "brackets": [
+        {
+          "m1": 0.97,
+          "component": "g_plus",
+          "event_mode": "plus_one",
+          "m2_bracket": [
+            0.929,
+            0.93
+          ],
+          "published_labels": [
+            "U",
+            "U"
+          ],
+          "label_flip": false,
+          "interior_to_unstable_region": true,
+          "n_unstable": [
+            2,
+            1
+          ],
+          "event_values": [
+            -0.06294348547013584,
+            0.09918772756733674
+          ],
+          "closure": [
+            2.1735729919661472e-10,
+            1.9592205313806345e-10
+          ],
+          "reachable_by_published_label_pipeline": false,
+          "unreachable_reason": "no_label_bracket",
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.929,
+            0.93
+          ],
+          "certification": {
+            "status": "passed",
+            "localizer": "threebody_atlas.critical_manifold.localize_critical_point",
+            "event_mode": "plus_one",
+            "masses": [
+              0.97,
+              0.9293865510513267,
+              1.0
+            ],
+            "event_value": -1.2665957171975606e-09,
+            "closure": 2.3917461535598694e-10,
+            "period": 7.112436317218215,
+            "x1": -0.3127859460024418,
+            "v1": 1.385118740916194,
+            "v2": 0.4508572005658332,
+            "gates": {
+              "maximum_absolute_event": 2e-08,
+              "maximum_periodic_closure": 1e-07
+            },
+            "seconds": 57.87320483300209
+          },
+          "nearest_committed_edge": null
+        },
+        {
+          "m1": 0.97,
+          "component": "g_minus",
+          "event_mode": "minus_one",
+          "m2_bracket": [
+            0.963,
+            0.964
+          ],
+          "published_labels": [
+            "U",
+            "S"
+          ],
+          "label_flip": true,
+          "interior_to_unstable_region": false,
+          "n_unstable": [
+            1,
+            0
+          ],
+          "event_values": [
+            -0.01535278959301234,
+            0.008569840546908125
+          ],
+          "closure": [
+            1.7359837150343034e-10,
+            1.893474631587806e-10
+          ],
+          "reachable_by_published_label_pipeline": true,
+          "unreachable_reason": null,
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.963,
+            0.964
+          ]
+        }
+      ],
+      "seconds": 256.3635997499987
+    },
+    {
+      "m1": 1.0,
+      "rows_in_window": 201,
+      "rows_evaluated": 201,
+      "rows_failing_closure": [],
+      "published_label_bracket_count": 1,
+      "published_label_brackets": [
+        [
+          0.959,
+          0.96
+        ]
+      ],
+      "event_sign_bracket_count": 2,
+      "label_invisible_bracket_count": 1,
+      "unreachable_by_published_label_pipeline_count": 1,
+      "unreachable_reason_counts": {
+        "no_label_bracket": 1
+      },
+      "cells_carrying_more_than_one_event": [],
+      "label_brackets_without_an_event_sign_change": [],
+      "rows_disagreeing_with_published_label": [],
+      "component_counts": {
+        "g_minus": 1,
+        "g_plus": 1
+      },
+      "brackets": [
+        {
+          "m1": 1.0,
+          "component": "g_minus",
+          "event_mode": "minus_one",
+          "m2_bracket": [
+            0.938,
+            0.939
+          ],
+          "published_labels": [
+            "U",
+            "U"
+          ],
+          "label_flip": false,
+          "interior_to_unstable_region": true,
+          "n_unstable": [
+            2,
+            1
+          ],
+          "event_values": [
+            -0.0025784002086481905,
+            0.01573676254028733
+          ],
+          "closure": [
+            1.9462794585305095e-10,
+            1.9775695531653762e-10
+          ],
+          "reachable_by_published_label_pipeline": false,
+          "unreachable_reason": "no_label_bracket",
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.938,
+            0.939
+          ],
+          "certification": {
+            "status": "passed",
+            "localizer": "threebody_atlas.critical_manifold.localize_critical_point",
+            "event_mode": "minus_one",
+            "masses": [
+              1.0,
+              0.9381374453766612,
+              1.0
+            ],
+            "event_value": -1.1616348771781304e-08,
+            "closure": 2.4276561755174883e-10,
+            "period": 7.407741683692863,
+            "x1": -0.3460560149416563,
+            "v1": 1.2755851404991816,
+            "v2": 0.4698642545046926,
+            "gates": {
+              "maximum_absolute_event": 2e-08,
+              "maximum_periodic_closure": 1e-07
+            },
+            "seconds": 33.425466374999814
+          },
+          "nearest_committed_edge": {
+            "edge_id": "minus_one_s_to_u_0",
+            "committed_m2": 1.0027448042427147,
+            "m2_gap": 0.06460735886605351
+          }
+        },
+        {
+          "m1": 1.0,
+          "component": "g_plus",
+          "event_mode": "plus_one",
+          "m2_bracket": [
+            0.959,
+            0.96
+          ],
+          "published_labels": [
+            "U",
+            "S"
+          ],
+          "label_flip": true,
+          "interior_to_unstable_region": false,
+          "n_unstable": [
+            1,
+            0
+          ],
+          "event_values": [
+            -0.03717099987222383,
+            0.09197981103952202
+          ],
+          "closure": [
+            1.7156854545182235e-10,
+            1.9447116865979785e-10
+          ],
+          "reachable_by_published_label_pipeline": true,
+          "unreachable_reason": null,
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.959,
+            0.96
+          ]
+        }
+      ],
+      "seconds": 213.92831787500108
+    },
+    {
+      "m1": 1.04,
+      "rows_in_window": 201,
+      "rows_evaluated": 201,
+      "rows_failing_closure": [],
+      "published_label_bracket_count": 0,
+      "published_label_brackets": [],
+      "event_sign_bracket_count": 1,
+      "label_invisible_bracket_count": 1,
+      "unreachable_by_published_label_pipeline_count": 1,
+      "unreachable_reason_counts": {
+        "no_label_bracket": 1
+      },
+      "cells_carrying_more_than_one_event": [],
+      "label_brackets_without_an_event_sign_change": [],
+      "rows_disagreeing_with_published_label": [],
+      "component_counts": {
+        "g_minus": 1
+      },
+      "brackets": [
+        {
+          "m1": 1.04,
+          "component": "g_minus",
+          "event_mode": "minus_one",
+          "m2_bracket": [
+            0.86,
+            0.861
+          ],
+          "published_labels": [
+            "U",
+            "U"
+          ],
+          "label_flip": false,
+          "interior_to_unstable_region": true,
+          "n_unstable": [
+            2,
+            1
+          ],
+          "event_values": [
+            -0.043556385972653544,
+            0.16082011588
+          ],
+          "closure": [
+            1.9023624019437913e-10,
+            2.683267617804802e-10
+          ],
+          "reachable_by_published_label_pipeline": false,
+          "unreachable_reason": "no_label_bracket",
+          "events_crossing_this_cell": 1,
+          "cell": [
+            0.86,
+            0.861
+          ],
+          "certification": {
+            "status": "passed",
+            "localizer": "threebody_atlas.critical_manifold.localize_critical_point",
+            "event_mode": "minus_one",
+            "masses": [
+              1.04,
+              0.8602115178285591,
+              1.0
+            ],
+            "event_value": -9.50907619312602e-09,
+            "closure": 1.776175781628642e-10,
+            "period": 7.5306097469132816,
+            "x1": -0.31809097904558437,
+            "v1": 1.3337604468834452,
+            "v2": 0.5216065631245992,
+            "gates": {
+              "maximum_absolute_event": 2e-08,
+              "maximum_periodic_closure": 1e-07
+            },
+            "seconds": 182.03930512499937
+          },
+          "nearest_committed_edge": {
+            "edge_id": "minus_one_s_to_u_0",
+            "committed_m2": 1.043625445139478,
+            "m2_gap": 0.18341392731091888
+          }
+        }
+      ],
+      "seconds": 370.94659908299946
+    }
+  ],
+  "cross_check_against_sign_topology_audit": [
+    {
+      "source": "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json",
+      "m1": 0.94,
+      "m2": 0.8978130033684775,
+      "event_mode": "plus_one",
+      "endpoint_n_unstable": [
+        2,
+        1
+      ],
+      "on_published_m1_grid": true,
+      "matched": true,
+      "matches": [
+        {
+          "m1": 0.94,
+          "m2_bracket": [
+            0.897,
+            0.898
+          ],
+          "event_mode": "plus_one",
+          "n_unstable": [
+            2,
+            1
+          ],
+          "published_labels": [
+            "U",
+            "U"
+          ],
+          "m1_offset": 0.0,
+          "unreachable_reason": "no_label_bracket",
+          "certification_status": "passed",
+          "certified_m2": 0.8978130034319328
+        }
+      ]
+    },
+    {
+      "source": "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json",
+      "m1": 0.97,
+      "m2": 0.9293865510484488,
+      "event_mode": "plus_one",
+      "endpoint_n_unstable": [
+        2,
+        1
+      ],
+      "on_published_m1_grid": true,
+      "matched": true,
+      "matches": [
+        {
+          "m1": 0.97,
+          "m2_bracket": [
+            0.929,
+            0.93
+          ],
+          "event_mode": "plus_one",
+          "n_unstable": [
+            2,
+            1
+          ],
+          "published_labels": [
+            "U",
+            "U"
+          ],
+          "m1_offset": 0.0,
+          "unreachable_reason": "no_label_bracket",
+          "certification_status": "passed",
+          "certified_m2": 0.9293865510513267
+        }
+      ]
+    },
+    {
+      "source": "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json",
+      "m1": 1.0,
+      "m2": 0.9381374464130331,
+      "event_mode": "minus_one",
+      "endpoint_n_unstable": [
+        2,
+        1
+      ],
+      "on_published_m1_grid": true,
+      "matched": true,
+      "matches": [
+        {
+          "m1": 1.0,
+          "m2_bracket": [
+            0.938,
+            0.939
+          ],
+          "event_mode": "minus_one",
+          "n_unstable": [
+            2,
+            1
+          ],
+          "published_labels": [
+            "U",
+            "U"
+          ],
+          "m1_offset": 0.0,
+          "unreachable_reason": "no_label_bracket",
+          "certification_status": "passed",
+          "certified_m2": 0.9381374453766612
+        }
+      ]
+    },
+    {
+      "source": "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json",
+      "m1": 0.925,
+      "m2": 0.8740612936729903,
+      "event_mode": "minus_one",
+      "endpoint_n_unstable": [
+        2,
+        1
+      ],
+      "on_published_m1_grid": true,
+      "matched": true,
+      "matches": [
+        {
+          "m1": 0.925,
+          "m2_bracket": [
+            0.874,
+            0.875
+          ],
+          "event_mode": "minus_one",
+          "n_unstable": [
+            2,
+            1
+          ],
+          "published_labels": [
+            "U",
+            "U"
+          ],
+          "m1_offset": 0.0,
+          "unreachable_reason": "no_label_bracket",
+          "certification_status": "passed",
+          "certified_m2": 0.8740612936701803
+        }
+      ]
+    },
+    {
+      "source": "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json",
+      "m1": 0.9295,
+      "m2": 0.885678087825198,
+      "event_mode": "plus_one",
+      "endpoint_n_unstable": [
+        2,
+        1
+      ],
+      "on_published_m1_grid": false,
+      "matched": true,
+      "matches": [
+        {
+          "m1": 0.93,
+          "m2_bracket": [
+            0.886,
+            0.887
+          ],
+          "event_mode": "plus_one",
+          "n_unstable": [
+            2,
+            1
+          ],
+          "published_labels": [
+            "U",
+            "U"
+          ],
+          "m1_offset": 0.000500000000000056,
+          "unreachable_reason": "no_label_bracket",
+          "certification_status": "passed",
+          "certified_m2": 0.8862743134281336
+        }
+      ]
+    },
+    {
+      "source": "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json",
+      "m1": 0.9295,
+      "m2": 0.8860337144332926,
+      "event_mode": "minus_one",
+      "endpoint_n_unstable": [
+        1,
+        0
+      ],
+      "on_published_m1_grid": false,
+      "matched": true,
+      "matches": [
+        {
+          "m1": 0.929,
+          "m2_bracket": [
+            0.884,
+            0.885
+          ],
+          "event_mode": "minus_one",
+          "n_unstable": [
+            2,
+            1
+          ],
+          "published_labels": [
+            "U",
+            "U"
+          ],
+          "m1_offset": -0.0004999999999999449,
+          "unreachable_reason": "no_label_bracket",
+          "certification_status": "passed",
+          "certified_m2": 0.8847517496268272
+        }
+      ]
+    },
+    {
+      "source": "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json",
+      "m1": 0.9305,
+      "m2": 0.886868495932042,
+      "event_mode": "plus_one",
+      "endpoint_n_unstable": [
+        2,
+        1
+      ],
+      "on_published_m1_grid": false,
+      "matched": true,
+      "matches": [
+        {
+          "m1": 0.93,
+          "m2_bracket": [
+            0.886,
+            0.887
+          ],
+          "event_mode": "plus_one",
+          "n_unstable": [
+            2,
+            1
+          ],
+          "published_labels": [
+            "U",
+            "U"
+          ],
+          "m1_offset": -0.0004999999999999449,
+          "unreachable_reason": "no_label_bracket",
+          "certification_status": "passed",
+          "certified_m2": 0.8862743134281336
+        },
+        {
+          "m1": 0.931,
+          "m2_bracket": [
+            0.887,
+            0.888
+          ],
+          "event_mode": "plus_one",
+          "n_unstable": [
+            2,
+            1
+          ],
+          "published_labels": [
+            "U",
+            "U"
+          ],
+          "m1_offset": 0.000500000000000056,
+          "unreachable_reason": "no_label_bracket",
+          "certification_status": "passed",
+          "certified_m2": 0.8874607225060899
+        }
+      ]
+    }
+  ],
+  "scope": "A comparison of two bracketing criteria on published baseline rows. It does not regenerate the 620-cell census, does not modify V1_CRITICAL_GRAPH.json, and never sets release_ready.  Where the event-sign criterion finds a label-invisible bracket that the localizer certifies, the label criterion provably could not have produced that root; where it finds none, nothing is certified about completeness."
+}
