@@ -1,0 +1,32 @@
+name: Claim assurance matrix
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: claim-assurance-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  assurance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked --group dev
+      - run: uv run --no-sync ruff check src/threebody_atlas/assurance.py scripts/build_claim_assurance.py tests/test_assurance.py
+      - run: uv run --no-sync python scripts/build_claim_assurance.py --check
+      - run: uv run --no-sync pytest tests/test_assurance.py

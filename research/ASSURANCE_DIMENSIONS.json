@@ -1,0 +1,203 @@
+{
+  "schema": "atlas.claim-assurance-policy.v1",
+  "dimensions": [
+    {
+      "id": "source_data_lineage",
+      "description": "Source inputs are bound by a machine-verifiable lineage artifact.",
+      "evaluator": {
+        "type": "global_artifact_boolean",
+        "roles": ["source_lineage"],
+        "field": "passed"
+      },
+      "missing_status": "not_run",
+      "missing_detail": "no source-lineage verdict artifact is registered"
+    },
+    {
+      "id": "spec_conformance",
+      "description": "The discovery manifest satisfies the executable claim and evidence specification.",
+      "evaluator": {
+        "type": "manifest_validation",
+        "evidence_roles": ["protocol", "open_problem"]
+      },
+      "missing_status": "fail"
+    },
+    {
+      "id": "orbit_sheet_identity",
+      "description": "The claim is attached to orbit, family, or sheet identity evidence.",
+      "evaluator": {
+        "type": "claim_evidence_presence",
+        "roles": ["family_connectivity", "independent_verification"]
+      },
+      "missing_status": "scientifically_unresolved",
+      "missing_detail": "claim has no registered orbit/sheet identity evidence"
+    },
+    {
+      "id": "numerical_correction",
+      "description": "The claim references a corrected numerical or independently verified result.",
+      "evaluator": {
+        "type": "claim_evidence_presence",
+        "roles": ["family_connectivity", "critical_graph", "independent_verification"]
+      },
+      "missing_status": "not_run",
+      "missing_detail": "no corrected numerical evidence is registered for this claim"
+    },
+    {
+      "id": "direct_continuation_topology",
+      "description": "Direct continuation or topology evidence supports the claim.",
+      "evaluator": {
+        "type": "claim_evidence_presence",
+        "roles": ["family_connectivity", "critical_graph"]
+      },
+      "missing_status": "not_run",
+      "missing_detail": "no direct continuation/topology evidence is registered for this claim"
+    },
+    {
+      "id": "physical_formulation_independence",
+      "description": "A physically independent formulation or chart is bound to the claim.",
+      "evaluator": {
+        "type": "claim_evidence_presence",
+        "roles": ["independent_verification"],
+        "ids": ["generic-bridge-artifact"]
+      },
+      "missing_status": "not_run",
+      "missing_detail": "no independent physical formulation is registered for this claim"
+    },
+    {
+      "id": "conditioning_margin",
+      "description": "A machine-derived conditioning or margin audit passes.",
+      "evaluator": {
+        "type": "global_artifact_boolean",
+        "roles": ["conditioning_audit"],
+        "field": "passed"
+      },
+      "missing_status": "not_run",
+      "missing_detail": "no conditioning-margin verdict artifact is registered"
+    },
+    {
+      "id": "truth_known_calibration",
+      "description": "Truth-known calibration demonstrates detection power at the required scale.",
+      "evaluator": {
+        "type": "global_artifact_boolean",
+        "roles": ["calibration_audit"],
+        "field": "passed"
+      },
+      "missing_status": "not_run",
+      "missing_detail": "no truth-known calibration verdict artifact is registered"
+    },
+    {
+      "id": "mutation_metamorphic_coverage",
+      "description": "A bound mutation/metamorphic audit passes for the truth machinery.",
+      "evaluator": {
+        "type": "global_artifact_boolean",
+        "roles": ["mutation_audit"],
+        "field": "passed"
+      },
+      "missing_status": "not_run",
+      "missing_detail": "no claim-level mutation verdict artifact is registered"
+    },
+    {
+      "id": "blind_n_version",
+      "description": "A blind or implementation-independent version supports the claim.",
+      "evaluator": {
+        "type": "claim_evidence_presence",
+        "roles": ["independent_verification"],
+        "ids": ["generic-bridge-artifact"]
+      },
+      "missing_status": "not_run",
+      "missing_detail": "no blind N-version evidence is registered for this claim"
+    },
+    {
+      "id": "platform_systematics_envelope",
+      "description": "A cross-platform systematics artifact reports agreement inside the frozen envelope.",
+      "evaluator": {
+        "type": "global_artifact_boolean",
+        "roles": ["platform_systematics"],
+        "field": "passed"
+      },
+      "missing_status": "not_run",
+      "missing_detail": "no platform-systematics verdict artifact is registered"
+    },
+    {
+      "id": "literature_novelty",
+      "description": "The novelty search is current and passed without claiming a novelty theorem.",
+      "evaluator": {
+        "type": "novelty_state"
+      },
+      "missing_status": "scientifically_unresolved"
+    },
+    {
+      "id": "rigorous_certificate",
+      "description": "A rigorous theorem/proof certificate artifact passes.",
+      "evaluator": {
+        "type": "global_artifact_boolean",
+        "roles": ["rigorous_certificate"],
+        "field": "passed"
+      },
+      "missing_status": "not_run",
+      "missing_detail": "no theorem-grade certificate verdict artifact is registered"
+    },
+    {
+      "id": "unresolved_contradictions",
+      "description": "The discovery manifest contains no unresolved scientific blockers.",
+      "evaluator": {
+        "type": "no_blockers"
+      },
+      "missing_status": "scientifically_unresolved"
+    }
+  ],
+  "profiles": {
+    "numerical_paper": {
+      "description": "Every non-theorem assurance dimension required for a numerical paper must pass.",
+      "required_dimensions": [
+        "source_data_lineage",
+        "spec_conformance",
+        "orbit_sheet_identity",
+        "numerical_correction",
+        "direct_continuation_topology",
+        "physical_formulation_independence",
+        "conditioning_margin",
+        "truth_known_calibration",
+        "mutation_metamorphic_coverage",
+        "blind_n_version",
+        "platform_systematics_envelope",
+        "literature_novelty",
+        "unresolved_contradictions"
+      ]
+    },
+    "theorem_grade": {
+      "description": "Theorem readiness is separate and additionally requires a rigorous certificate.",
+      "required_dimensions": [
+        "source_data_lineage",
+        "spec_conformance",
+        "orbit_sheet_identity",
+        "numerical_correction",
+        "direct_continuation_topology",
+        "physical_formulation_independence",
+        "conditioning_margin",
+        "truth_known_calibration",
+        "mutation_metamorphic_coverage",
+        "blind_n_version",
+        "platform_systematics_envelope",
+        "literature_novelty",
+        "rigorous_certificate",
+        "unresolved_contradictions"
+      ]
+    }
+  },
+  "views": {
+    "edge_node_claims": [
+      "principal-lower-plus-one",
+      "principal-upper-hamiltonian-hopf",
+      "three-mixed-organizers",
+      "secondary-minus-one-fold",
+      "lower-plus-one-daughter"
+    ],
+    "completeness_claims": ["coarse-event-network"]
+  },
+  "rules": [
+    "No status may be averaged into a scalar score.",
+    "Every pass is re-derived from a manifest rule, evidence identity, or bound artifact verdict.",
+    "Missing, infrastructure-blocked, failed, and scientifically unresolved are distinct states.",
+    "The numerical-paper and theorem-grade profiles are separate conjunctions."
+  ]
+}

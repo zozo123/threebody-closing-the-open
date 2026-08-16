@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Validate the open-problem gate and materialize a discovery release dossier."""
+
 from __future__ import annotations
 
 import argparse
@@ -19,6 +20,24 @@ from threebody_atlas.discovery import (  # noqa: E402
     render_summary,
     validate_manifest,
 )
+from threebody_atlas.assurance import (  # noqa: E402
+    AssuranceError,
+    validate_release_assurance,
+    verify_committed_artifacts,
+)
+
+ASSURANCE_POLICY = ROOT / "research/ASSURANCE_DIMENSIONS.json"
+ASSURANCE_MATRIX = ROOT / "research/evidence/V1_CLAIM_ASSURANCE_MATRIX.json"
+WEAKEST_LINK_REPORT = ROOT / "research/evidence/V1_WEAKEST_LINK_REPORT.json"
+
+
+def _load_json(path: Path) -> dict:
+    import json
+
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise ValueError(f"{path.relative_to(ROOT)} must contain a JSON object")
+    return value
 
 
 def parse_args() -> argparse.Namespace:
@@ -38,7 +57,13 @@ def main() -> int:
     try:
         manifest = load_manifest(manifest_path)
         validate_manifest(manifest, ROOT, require_solved=args.require_solved)
-    except (DiscoveryValidationError, ValueError, OSError) as exc:
+        if args.require_solved:
+            policy = _load_json(ASSURANCE_POLICY)
+            matrix = _load_json(ASSURANCE_MATRIX)
+            report = _load_json(WEAKEST_LINK_REPORT)
+            verify_committed_artifacts(ROOT, manifest, policy, matrix, report)
+            validate_release_assurance(manifest, matrix)
+    except (AssuranceError, DiscoveryValidationError, ValueError, OSError) as exc:
         print(f"Discovery release validation failed:\n{exc}", file=sys.stderr)
         return 2
 

@@ -1,0 +1,3387 @@
+{
+  "claim_count": 7,
+  "claims": [
+    {
+      "cells": [
+        {
+          "detail": "no source-lineage verdict artifact is registered",
+          "dimension": "source_data_lineage",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "discovery manifest satisfies its executable specification",
+          "dimension": "spec_conformance",
+          "evidence": [
+            {
+              "id": "open-problem",
+              "kind": "repository_file",
+              "path": "research/OPEN_PROBLEM.md",
+              "role": "open_problem",
+              "sha256": "212f19259af8d312880c7db0580a607af4efedfe92ab0841c28b82e00959b01a",
+              "valid": true
+            },
+            {
+              "id": "protocol",
+              "kind": "repository_file",
+              "path": "research/PROTOCOL.md",
+              "role": "protocol",
+              "sha256": "26bba31e90a9c1a742198c9373102dc5ebe0696db6328c474038f157f91cb29f",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "orbit_sheet_identity",
+          "evidence": [
+            {
+              "id": "family-bridge-artifact",
+              "kind": "actions_artifact",
+              "role": "family_connectivity",
+              "sha256": "279895e090b44cb692a6da6f1a749433ae18635289dc291a52daadbd9bc5c5fe",
+              "valid": true
+            },
+            {
+              "id": "generic-bridge-artifact",
+              "kind": "actions_artifact",
+              "role": "family_connectivity",
+              "sha256": "d2b76fa7e0a73791a662a54202f7e50202b7ade6c67e4d21f2816dde328748dd",
+              "valid": true
+            },
+            {
+              "id": "v1-connectivity-certificate",
+              "kind": "repository_file",
+              "path": "research/V1_CONNECTIVITY_CERTIFICATE_2026-08-15.md",
+              "role": "family_connectivity",
+              "sha256": "1423bc146969763dd92355f2fe02f01b2ea3fa79f19097d18c87837765e77035",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "numerical_correction",
+          "evidence": [
+            {
+              "id": "family-bridge-artifact",
+              "kind": "actions_artifact",
+              "role": "family_connectivity",
+              "sha256": "279895e090b44cb692a6da6f1a749433ae18635289dc291a52daadbd9bc5c5fe",
+              "valid": true
+            },
+            {
+              "id": "generic-bridge-artifact",
+              "kind": "actions_artifact",
+              "role": "family_connectivity",
+              "sha256": "d2b76fa7e0a73791a662a54202f7e50202b7ade6c67e4d21f2816dde328748dd",
+              "valid": true
+            },
+            {
+              "id": "v1-connectivity-certificate",
+              "kind": "repository_file",
+              "path": "research/V1_CONNECTIVITY_CERTIFICATE_2026-08-15.md",
+              "role": "family_connectivity",
+              "sha256": "1423bc146969763dd92355f2fe02f01b2ea3fa79f19097d18c87837765e77035",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "direct_continuation_topology",
+          "evidence": [
+            {
+              "id": "family-bridge-artifact",
+              "kind": "actions_artifact",
+              "role": "family_connectivity",
+              "sha256": "279895e090b44cb692a6da6f1a749433ae18635289dc291a52daadbd9bc5c5fe",
+              "valid": true
+            },
+            {
+              "id": "generic-bridge-artifact",
+              "kind": "actions_artifact",
+              "role": "family_connectivity",
+              "sha256": "d2b76fa7e0a73791a662a54202f7e50202b7ade6c67e4d21f2816dde328748dd",
+              "valid": true
+            },
+            {
+              "id": "v1-connectivity-certificate",
+              "kind": "repository_file",
+              "path": "research/V1_CONNECTIVITY_CERTIFICATE_2026-08-15.md",
+              "role": "family_connectivity",
+              "sha256": "1423bc146969763dd92355f2fe02f01b2ea3fa79f19097d18c87837765e77035",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "physical_formulation_independence",
+          "evidence": [
+            {
+              "id": "generic-bridge-artifact",
+              "kind": "actions_artifact",
+              "role": "family_connectivity",
+              "sha256": "d2b76fa7e0a73791a662a54202f7e50202b7ade6c67e4d21f2816dde328748dd",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "no conditioning-margin verdict artifact is registered",
+          "dimension": "conditioning_margin",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no truth-known calibration verdict artifact is registered",
+          "dimension": "truth_known_calibration",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no claim-level mutation verdict artifact is registered",
+          "dimension": "mutation_metamorphic_coverage",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "blind_n_version",
+          "evidence": [
+            {
+              "id": "generic-bridge-artifact",
+              "kind": "actions_artifact",
+              "role": "family_connectivity",
+              "sha256": "d2b76fa7e0a73791a662a54202f7e50202b7ade6c67e4d21f2816dde328748dd",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "no platform-systematics verdict artifact is registered",
+          "dimension": "platform_systematics_envelope",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "novelty status is 'pending', not 'pass'",
+          "dimension": "literature_novelty",
+          "evidence": [
+            {
+              "id": "novelty-audit",
+              "kind": "repository_file",
+              "path": "research/NOVELTY_AUDIT.md",
+              "role": "novelty_audit",
+              "sha256": "8f7e9ea8f7b4ae509b3fbc4ce5e730d9ccf7f5ad19e1f071f6b8c474a3ee961b",
+              "valid": true
+            }
+          ],
+          "status": "scientifically_unresolved"
+        },
+        {
+          "detail": "no theorem-grade certificate verdict artifact is registered",
+          "dimension": "rigorous_certificate",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+          "dimension": "unresolved_contradictions",
+          "evidence": [],
+          "status": "scientifically_unresolved"
+        }
+      ],
+      "claim_id": "one-continuation-family",
+      "claim_status": "release_claim",
+      "readiness": {
+        "numerical_paper": {
+          "blockers": [
+            {
+              "detail": "no source-lineage verdict artifact is registered",
+              "dimension": "source_data_lineage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no conditioning-margin verdict artifact is registered",
+              "dimension": "conditioning_margin",
+              "status": "not_run"
+            },
+            {
+              "detail": "no truth-known calibration verdict artifact is registered",
+              "dimension": "truth_known_calibration",
+              "status": "not_run"
+            },
+            {
+              "detail": "no claim-level mutation verdict artifact is registered",
+              "dimension": "mutation_metamorphic_coverage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no platform-systematics verdict artifact is registered",
+              "dimension": "platform_systematics_envelope",
+              "status": "not_run"
+            },
+            {
+              "detail": "novelty status is 'pending', not 'pass'",
+              "dimension": "literature_novelty",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "dimension": "unresolved_contradictions",
+              "status": "scientifically_unresolved"
+            }
+          ],
+          "ready": false,
+          "required_dimensions": [
+            "source_data_lineage",
+            "spec_conformance",
+            "orbit_sheet_identity",
+            "numerical_correction",
+            "direct_continuation_topology",
+            "physical_formulation_independence",
+            "conditioning_margin",
+            "truth_known_calibration",
+            "mutation_metamorphic_coverage",
+            "blind_n_version",
+            "platform_systematics_envelope",
+            "literature_novelty",
+            "unresolved_contradictions"
+          ]
+        },
+        "theorem_grade": {
+          "blockers": [
+            {
+              "detail": "no source-lineage verdict artifact is registered",
+              "dimension": "source_data_lineage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no conditioning-margin verdict artifact is registered",
+              "dimension": "conditioning_margin",
+              "status": "not_run"
+            },
+            {
+              "detail": "no truth-known calibration verdict artifact is registered",
+              "dimension": "truth_known_calibration",
+              "status": "not_run"
+            },
+            {
+              "detail": "no claim-level mutation verdict artifact is registered",
+              "dimension": "mutation_metamorphic_coverage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no platform-systematics verdict artifact is registered",
+              "dimension": "platform_systematics_envelope",
+              "status": "not_run"
+            },
+            {
+              "detail": "novelty status is 'pending', not 'pass'",
+              "dimension": "literature_novelty",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "no theorem-grade certificate verdict artifact is registered",
+              "dimension": "rigorous_certificate",
+              "status": "not_run"
+            },
+            {
+              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "dimension": "unresolved_contradictions",
+              "status": "scientifically_unresolved"
+            }
+          ],
+          "ready": false,
+          "required_dimensions": [
+            "source_data_lineage",
+            "spec_conformance",
+            "orbit_sheet_identity",
+            "numerical_correction",
+            "direct_continuation_topology",
+            "physical_formulation_independence",
+            "conditioning_margin",
+            "truth_known_calibration",
+            "mutation_metamorphic_coverage",
+            "blind_n_version",
+            "platform_systematics_envelope",
+            "literature_novelty",
+            "rigorous_certificate",
+            "unresolved_contradictions"
+          ]
+        }
+      }
+    },
+    {
+      "cells": [
+        {
+          "detail": "no source-lineage verdict artifact is registered",
+          "dimension": "source_data_lineage",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "discovery manifest satisfies its executable specification",
+          "dimension": "spec_conformance",
+          "evidence": [
+            {
+              "id": "open-problem",
+              "kind": "repository_file",
+              "path": "research/OPEN_PROBLEM.md",
+              "role": "open_problem",
+              "sha256": "212f19259af8d312880c7db0580a607af4efedfe92ab0841c28b82e00959b01a",
+              "valid": true
+            },
+            {
+              "id": "protocol",
+              "kind": "repository_file",
+              "path": "research/PROTOCOL.md",
+              "role": "protocol",
+              "sha256": "26bba31e90a9c1a742198c9373102dc5ebe0696db6328c474038f157f91cb29f",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "orbit_sheet_identity",
+          "evidence": [
+            {
+              "id": "canonical-lower-plus-one",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_CANONICAL_LOWER_PLUS_ONE_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "212c7b835cb734145e5f00208cc11c7625cac07e113742894771015855a9eada",
+              "valid": true
+            },
+            {
+              "id": "physical-sp4-artifact",
+              "kind": "actions_artifact",
+              "role": "independent_verification",
+              "sha256": "83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "numerical_correction",
+          "evidence": [
+            {
+              "id": "canonical-lower-plus-one",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_CANONICAL_LOWER_PLUS_ONE_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "212c7b835cb734145e5f00208cc11c7625cac07e113742894771015855a9eada",
+              "valid": true
+            },
+            {
+              "id": "physical-sp4-artifact",
+              "kind": "actions_artifact",
+              "role": "independent_verification",
+              "sha256": "83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "no direct continuation/topology evidence is registered for this claim",
+          "dimension": "direct_continuation_topology",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "physical_formulation_independence",
+          "evidence": [
+            {
+              "id": "canonical-lower-plus-one",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_CANONICAL_LOWER_PLUS_ONE_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "212c7b835cb734145e5f00208cc11c7625cac07e113742894771015855a9eada",
+              "valid": true
+            },
+            {
+              "id": "physical-sp4-artifact",
+              "kind": "actions_artifact",
+              "role": "independent_verification",
+              "sha256": "83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "no conditioning-margin verdict artifact is registered",
+          "dimension": "conditioning_margin",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no truth-known calibration verdict artifact is registered",
+          "dimension": "truth_known_calibration",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no claim-level mutation verdict artifact is registered",
+          "dimension": "mutation_metamorphic_coverage",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "blind_n_version",
+          "evidence": [
+            {
+              "id": "canonical-lower-plus-one",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_CANONICAL_LOWER_PLUS_ONE_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "212c7b835cb734145e5f00208cc11c7625cac07e113742894771015855a9eada",
+              "valid": true
+            },
+            {
+              "id": "physical-sp4-artifact",
+              "kind": "actions_artifact",
+              "role": "independent_verification",
+              "sha256": "83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "no platform-systematics verdict artifact is registered",
+          "dimension": "platform_systematics_envelope",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "novelty status is 'pending', not 'pass'",
+          "dimension": "literature_novelty",
+          "evidence": [
+            {
+              "id": "novelty-audit",
+              "kind": "repository_file",
+              "path": "research/NOVELTY_AUDIT.md",
+              "role": "novelty_audit",
+              "sha256": "8f7e9ea8f7b4ae509b3fbc4ce5e730d9ccf7f5ad19e1f071f6b8c474a3ee961b",
+              "valid": true
+            }
+          ],
+          "status": "scientifically_unresolved"
+        },
+        {
+          "detail": "no theorem-grade certificate verdict artifact is registered",
+          "dimension": "rigorous_certificate",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+          "dimension": "unresolved_contradictions",
+          "evidence": [],
+          "status": "scientifically_unresolved"
+        }
+      ],
+      "claim_id": "principal-lower-plus-one",
+      "claim_status": "release_claim",
+      "readiness": {
+        "numerical_paper": {
+          "blockers": [
+            {
+              "detail": "no source-lineage verdict artifact is registered",
+              "dimension": "source_data_lineage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no direct continuation/topology evidence is registered for this claim",
+              "dimension": "direct_continuation_topology",
+              "status": "not_run"
+            },
+            {
+              "detail": "no conditioning-margin verdict artifact is registered",
+              "dimension": "conditioning_margin",
+              "status": "not_run"
+            },
+            {
+              "detail": "no truth-known calibration verdict artifact is registered",
+              "dimension": "truth_known_calibration",
+              "status": "not_run"
+            },
+            {
+              "detail": "no claim-level mutation verdict artifact is registered",
+              "dimension": "mutation_metamorphic_coverage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no platform-systematics verdict artifact is registered",
+              "dimension": "platform_systematics_envelope",
+              "status": "not_run"
+            },
+            {
+              "detail": "novelty status is 'pending', not 'pass'",
+              "dimension": "literature_novelty",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "dimension": "unresolved_contradictions",
+              "status": "scientifically_unresolved"
+            }
+          ],
+          "ready": false,
+          "required_dimensions": [
+            "source_data_lineage",
+            "spec_conformance",
+            "orbit_sheet_identity",
+            "numerical_correction",
+            "direct_continuation_topology",
+            "physical_formulation_independence",
+            "conditioning_margin",
+            "truth_known_calibration",
+            "mutation_metamorphic_coverage",
+            "blind_n_version",
+            "platform_systematics_envelope",
+            "literature_novelty",
+            "unresolved_contradictions"
+          ]
+        },
+        "theorem_grade": {
+          "blockers": [
+            {
+              "detail": "no source-lineage verdict artifact is registered",
+              "dimension": "source_data_lineage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no direct continuation/topology evidence is registered for this claim",
+              "dimension": "direct_continuation_topology",
+              "status": "not_run"
+            },
+            {
+              "detail": "no conditioning-margin verdict artifact is registered",
+              "dimension": "conditioning_margin",
+              "status": "not_run"
+            },
+            {
+              "detail": "no truth-known calibration verdict artifact is registered",
+              "dimension": "truth_known_calibration",
+              "status": "not_run"
+            },
+            {
+              "detail": "no claim-level mutation verdict artifact is registered",
+              "dimension": "mutation_metamorphic_coverage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no platform-systematics verdict artifact is registered",
+              "dimension": "platform_systematics_envelope",
+              "status": "not_run"
+            },
+            {
+              "detail": "novelty status is 'pending', not 'pass'",
+              "dimension": "literature_novelty",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "no theorem-grade certificate verdict artifact is registered",
+              "dimension": "rigorous_certificate",
+              "status": "not_run"
+            },
+            {
+              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "dimension": "unresolved_contradictions",
+              "status": "scientifically_unresolved"
+            }
+          ],
+          "ready": false,
+          "required_dimensions": [
+            "source_data_lineage",
+            "spec_conformance",
+            "orbit_sheet_identity",
+            "numerical_correction",
+            "direct_continuation_topology",
+            "physical_formulation_independence",
+            "conditioning_margin",
+            "truth_known_calibration",
+            "mutation_metamorphic_coverage",
+            "blind_n_version",
+            "platform_systematics_envelope",
+            "literature_novelty",
+            "rigorous_certificate",
+            "unresolved_contradictions"
+          ]
+        }
+      }
+    },
+    {
+      "cells": [
+        {
+          "detail": "no source-lineage verdict artifact is registered",
+          "dimension": "source_data_lineage",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "discovery manifest satisfies its executable specification",
+          "dimension": "spec_conformance",
+          "evidence": [
+            {
+              "id": "open-problem",
+              "kind": "repository_file",
+              "path": "research/OPEN_PROBLEM.md",
+              "role": "open_problem",
+              "sha256": "212f19259af8d312880c7db0580a607af4efedfe92ab0841c28b82e00959b01a",
+              "valid": true
+            },
+            {
+              "id": "protocol",
+              "kind": "repository_file",
+              "path": "research/PROTOCOL.md",
+              "role": "protocol",
+              "sha256": "26bba31e90a9c1a742198c9373102dc5ebe0696db6328c474038f157f91cb29f",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "orbit_sheet_identity",
+          "evidence": [
+            {
+              "id": "canonical-upper-collision",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_CANONICAL_UPPER_COLLISION_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "afcb4748c24c19746209f1339eeb5f5fce0bf9f62570652c53077044d8d71e1d",
+              "valid": true
+            },
+            {
+              "id": "physical-sp4-artifact",
+              "kind": "actions_artifact",
+              "role": "independent_verification",
+              "sha256": "83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "numerical_correction",
+          "evidence": [
+            {
+              "id": "canonical-upper-collision",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_CANONICAL_UPPER_COLLISION_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "afcb4748c24c19746209f1339eeb5f5fce0bf9f62570652c53077044d8d71e1d",
+              "valid": true
+            },
+            {
+              "id": "physical-sp4-artifact",
+              "kind": "actions_artifact",
+              "role": "independent_verification",
+              "sha256": "83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "no direct continuation/topology evidence is registered for this claim",
+          "dimension": "direct_continuation_topology",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "physical_formulation_independence",
+          "evidence": [
+            {
+              "id": "canonical-upper-collision",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_CANONICAL_UPPER_COLLISION_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "afcb4748c24c19746209f1339eeb5f5fce0bf9f62570652c53077044d8d71e1d",
+              "valid": true
+            },
+            {
+              "id": "physical-sp4-artifact",
+              "kind": "actions_artifact",
+              "role": "independent_verification",
+              "sha256": "83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "no conditioning-margin verdict artifact is registered",
+          "dimension": "conditioning_margin",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no truth-known calibration verdict artifact is registered",
+          "dimension": "truth_known_calibration",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no claim-level mutation verdict artifact is registered",
+          "dimension": "mutation_metamorphic_coverage",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "blind_n_version",
+          "evidence": [
+            {
+              "id": "canonical-upper-collision",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_CANONICAL_UPPER_COLLISION_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "afcb4748c24c19746209f1339eeb5f5fce0bf9f62570652c53077044d8d71e1d",
+              "valid": true
+            },
+            {
+              "id": "physical-sp4-artifact",
+              "kind": "actions_artifact",
+              "role": "independent_verification",
+              "sha256": "83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "no platform-systematics verdict artifact is registered",
+          "dimension": "platform_systematics_envelope",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "novelty status is 'pending', not 'pass'",
+          "dimension": "literature_novelty",
+          "evidence": [
+            {
+              "id": "novelty-audit",
+              "kind": "repository_file",
+              "path": "research/NOVELTY_AUDIT.md",
+              "role": "novelty_audit",
+              "sha256": "8f7e9ea8f7b4ae509b3fbc4ce5e730d9ccf7f5ad19e1f071f6b8c474a3ee961b",
+              "valid": true
+            }
+          ],
+          "status": "scientifically_unresolved"
+        },
+        {
+          "detail": "no theorem-grade certificate verdict artifact is registered",
+          "dimension": "rigorous_certificate",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+          "dimension": "unresolved_contradictions",
+          "evidence": [],
+          "status": "scientifically_unresolved"
+        }
+      ],
+      "claim_id": "principal-upper-hamiltonian-hopf",
+      "claim_status": "release_claim",
+      "readiness": {
+        "numerical_paper": {
+          "blockers": [
+            {
+              "detail": "no source-lineage verdict artifact is registered",
+              "dimension": "source_data_lineage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no direct continuation/topology evidence is registered for this claim",
+              "dimension": "direct_continuation_topology",
+              "status": "not_run"
+            },
+            {
+              "detail": "no conditioning-margin verdict artifact is registered",
+              "dimension": "conditioning_margin",
+              "status": "not_run"
+            },
+            {
+              "detail": "no truth-known calibration verdict artifact is registered",
+              "dimension": "truth_known_calibration",
+              "status": "not_run"
+            },
+            {
+              "detail": "no claim-level mutation verdict artifact is registered",
+              "dimension": "mutation_metamorphic_coverage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no platform-systematics verdict artifact is registered",
+              "dimension": "platform_systematics_envelope",
+              "status": "not_run"
+            },
+            {
+              "detail": "novelty status is 'pending', not 'pass'",
+              "dimension": "literature_novelty",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "dimension": "unresolved_contradictions",
+              "status": "scientifically_unresolved"
+            }
+          ],
+          "ready": false,
+          "required_dimensions": [
+            "source_data_lineage",
+            "spec_conformance",
+            "orbit_sheet_identity",
+            "numerical_correction",
+            "direct_continuation_topology",
+            "physical_formulation_independence",
+            "conditioning_margin",
+            "truth_known_calibration",
+            "mutation_metamorphic_coverage",
+            "blind_n_version",
+            "platform_systematics_envelope",
+            "literature_novelty",
+            "unresolved_contradictions"
+          ]
+        },
+        "theorem_grade": {
+          "blockers": [
+            {
+              "detail": "no source-lineage verdict artifact is registered",
+              "dimension": "source_data_lineage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no direct continuation/topology evidence is registered for this claim",
+              "dimension": "direct_continuation_topology",
+              "status": "not_run"
+            },
+            {
+              "detail": "no conditioning-margin verdict artifact is registered",
+              "dimension": "conditioning_margin",
+              "status": "not_run"
+            },
+            {
+              "detail": "no truth-known calibration verdict artifact is registered",
+              "dimension": "truth_known_calibration",
+              "status": "not_run"
+            },
+            {
+              "detail": "no claim-level mutation verdict artifact is registered",
+              "dimension": "mutation_metamorphic_coverage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no platform-systematics verdict artifact is registered",
+              "dimension": "platform_systematics_envelope",
+              "status": "not_run"
+            },
+            {
+              "detail": "novelty status is 'pending', not 'pass'",
+              "dimension": "literature_novelty",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "no theorem-grade certificate verdict artifact is registered",
+              "dimension": "rigorous_certificate",
+              "status": "not_run"
+            },
+            {
+              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "dimension": "unresolved_contradictions",
+              "status": "scientifically_unresolved"
+            }
+          ],
+          "ready": false,
+          "required_dimensions": [
+            "source_data_lineage",
+            "spec_conformance",
+            "orbit_sheet_identity",
+            "numerical_correction",
+            "direct_continuation_topology",
+            "physical_formulation_independence",
+            "conditioning_margin",
+            "truth_known_calibration",
+            "mutation_metamorphic_coverage",
+            "blind_n_version",
+            "platform_systematics_envelope",
+            "literature_novelty",
+            "rigorous_certificate",
+            "unresolved_contradictions"
+          ]
+        }
+      }
+    },
+    {
+      "cells": [
+        {
+          "detail": "no source-lineage verdict artifact is registered",
+          "dimension": "source_data_lineage",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "discovery manifest satisfies its executable specification",
+          "dimension": "spec_conformance",
+          "evidence": [
+            {
+              "id": "open-problem",
+              "kind": "repository_file",
+              "path": "research/OPEN_PROBLEM.md",
+              "role": "open_problem",
+              "sha256": "212f19259af8d312880c7db0580a607af4efedfe92ab0841c28b82e00959b01a",
+              "valid": true
+            },
+            {
+              "id": "protocol",
+              "kind": "repository_file",
+              "path": "research/PROTOCOL.md",
+              "role": "protocol",
+              "sha256": "26bba31e90a9c1a742198c9373102dc5ebe0696db6328c474038f157f91cb29f",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "orbit_sheet_identity",
+          "evidence": [
+            {
+              "id": "mixed-canonical-principal-left",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_LEFT_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "6682978d1aedb4290e239ed5ec9403b67dc708c83ffc35fa4d29d57741c45737",
+              "valid": true
+            },
+            {
+              "id": "mixed-canonical-principal-right",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_RIGHT_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "b79e3a52e633fada412c6e7c82be9406dab526957ae521b6df8f607456f48d59",
+              "valid": true
+            },
+            {
+              "id": "mixed-canonical-secondary-left",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_MIXED_CANONICAL_SECONDARY_LEFT_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "2a46962601f67a8724511c6e58656dec8621076a08d7c6aaa2a897947758610b",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "numerical_correction",
+          "evidence": [
+            {
+              "id": "mixed-canonical-principal-left",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_LEFT_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "6682978d1aedb4290e239ed5ec9403b67dc708c83ffc35fa4d29d57741c45737",
+              "valid": true
+            },
+            {
+              "id": "mixed-canonical-principal-right",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_RIGHT_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "b79e3a52e633fada412c6e7c82be9406dab526957ae521b6df8f607456f48d59",
+              "valid": true
+            },
+            {
+              "id": "mixed-canonical-secondary-left",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_MIXED_CANONICAL_SECONDARY_LEFT_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "2a46962601f67a8724511c6e58656dec8621076a08d7c6aaa2a897947758610b",
+              "valid": true
+            },
+            {
+              "id": "mixed-vertex-screening-file",
+              "kind": "repository_file",
+              "path": "experiments/mixed_vertex_screening_2026-08-15.json",
+              "role": "critical_graph",
+              "sha256": "07a6dab04ed41b525487ed43bea52f7cdbc7642d903a1f03783f4634d0e532a8",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "direct_continuation_topology",
+          "evidence": [
+            {
+              "id": "mixed-vertex-screening-file",
+              "kind": "repository_file",
+              "path": "experiments/mixed_vertex_screening_2026-08-15.json",
+              "role": "critical_graph",
+              "sha256": "07a6dab04ed41b525487ed43bea52f7cdbc7642d903a1f03783f4634d0e532a8",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "physical_formulation_independence",
+          "evidence": [
+            {
+              "id": "mixed-canonical-principal-left",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_LEFT_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "6682978d1aedb4290e239ed5ec9403b67dc708c83ffc35fa4d29d57741c45737",
+              "valid": true
+            },
+            {
+              "id": "mixed-canonical-principal-right",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_RIGHT_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "b79e3a52e633fada412c6e7c82be9406dab526957ae521b6df8f607456f48d59",
+              "valid": true
+            },
+            {
+              "id": "mixed-canonical-secondary-left",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_MIXED_CANONICAL_SECONDARY_LEFT_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "2a46962601f67a8724511c6e58656dec8621076a08d7c6aaa2a897947758610b",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "no conditioning-margin verdict artifact is registered",
+          "dimension": "conditioning_margin",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no truth-known calibration verdict artifact is registered",
+          "dimension": "truth_known_calibration",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no claim-level mutation verdict artifact is registered",
+          "dimension": "mutation_metamorphic_coverage",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "blind_n_version",
+          "evidence": [
+            {
+              "id": "mixed-canonical-principal-left",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_LEFT_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "6682978d1aedb4290e239ed5ec9403b67dc708c83ffc35fa4d29d57741c45737",
+              "valid": true
+            },
+            {
+              "id": "mixed-canonical-principal-right",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_RIGHT_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "b79e3a52e633fada412c6e7c82be9406dab526957ae521b6df8f607456f48d59",
+              "valid": true
+            },
+            {
+              "id": "mixed-canonical-secondary-left",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_MIXED_CANONICAL_SECONDARY_LEFT_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "2a46962601f67a8724511c6e58656dec8621076a08d7c6aaa2a897947758610b",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "no platform-systematics verdict artifact is registered",
+          "dimension": "platform_systematics_envelope",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "novelty status is 'pending', not 'pass'",
+          "dimension": "literature_novelty",
+          "evidence": [
+            {
+              "id": "novelty-audit",
+              "kind": "repository_file",
+              "path": "research/NOVELTY_AUDIT.md",
+              "role": "novelty_audit",
+              "sha256": "8f7e9ea8f7b4ae509b3fbc4ce5e730d9ccf7f5ad19e1f071f6b8c474a3ee961b",
+              "valid": true
+            }
+          ],
+          "status": "scientifically_unresolved"
+        },
+        {
+          "detail": "no theorem-grade certificate verdict artifact is registered",
+          "dimension": "rigorous_certificate",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+          "dimension": "unresolved_contradictions",
+          "evidence": [],
+          "status": "scientifically_unresolved"
+        }
+      ],
+      "claim_id": "three-mixed-organizers",
+      "claim_status": "release_claim",
+      "readiness": {
+        "numerical_paper": {
+          "blockers": [
+            {
+              "detail": "no source-lineage verdict artifact is registered",
+              "dimension": "source_data_lineage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no conditioning-margin verdict artifact is registered",
+              "dimension": "conditioning_margin",
+              "status": "not_run"
+            },
+            {
+              "detail": "no truth-known calibration verdict artifact is registered",
+              "dimension": "truth_known_calibration",
+              "status": "not_run"
+            },
+            {
+              "detail": "no claim-level mutation verdict artifact is registered",
+              "dimension": "mutation_metamorphic_coverage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no platform-systematics verdict artifact is registered",
+              "dimension": "platform_systematics_envelope",
+              "status": "not_run"
+            },
+            {
+              "detail": "novelty status is 'pending', not 'pass'",
+              "dimension": "literature_novelty",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "dimension": "unresolved_contradictions",
+              "status": "scientifically_unresolved"
+            }
+          ],
+          "ready": false,
+          "required_dimensions": [
+            "source_data_lineage",
+            "spec_conformance",
+            "orbit_sheet_identity",
+            "numerical_correction",
+            "direct_continuation_topology",
+            "physical_formulation_independence",
+            "conditioning_margin",
+            "truth_known_calibration",
+            "mutation_metamorphic_coverage",
+            "blind_n_version",
+            "platform_systematics_envelope",
+            "literature_novelty",
+            "unresolved_contradictions"
+          ]
+        },
+        "theorem_grade": {
+          "blockers": [
+            {
+              "detail": "no source-lineage verdict artifact is registered",
+              "dimension": "source_data_lineage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no conditioning-margin verdict artifact is registered",
+              "dimension": "conditioning_margin",
+              "status": "not_run"
+            },
+            {
+              "detail": "no truth-known calibration verdict artifact is registered",
+              "dimension": "truth_known_calibration",
+              "status": "not_run"
+            },
+            {
+              "detail": "no claim-level mutation verdict artifact is registered",
+              "dimension": "mutation_metamorphic_coverage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no platform-systematics verdict artifact is registered",
+              "dimension": "platform_systematics_envelope",
+              "status": "not_run"
+            },
+            {
+              "detail": "novelty status is 'pending', not 'pass'",
+              "dimension": "literature_novelty",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "no theorem-grade certificate verdict artifact is registered",
+              "dimension": "rigorous_certificate",
+              "status": "not_run"
+            },
+            {
+              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "dimension": "unresolved_contradictions",
+              "status": "scientifically_unresolved"
+            }
+          ],
+          "ready": false,
+          "required_dimensions": [
+            "source_data_lineage",
+            "spec_conformance",
+            "orbit_sheet_identity",
+            "numerical_correction",
+            "direct_continuation_topology",
+            "physical_formulation_independence",
+            "conditioning_margin",
+            "truth_known_calibration",
+            "mutation_metamorphic_coverage",
+            "blind_n_version",
+            "platform_systematics_envelope",
+            "literature_novelty",
+            "rigorous_certificate",
+            "unresolved_contradictions"
+          ]
+        }
+      }
+    },
+    {
+      "cells": [
+        {
+          "detail": "no source-lineage verdict artifact is registered",
+          "dimension": "source_data_lineage",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "discovery manifest satisfies its executable specification",
+          "dimension": "spec_conformance",
+          "evidence": [
+            {
+              "id": "open-problem",
+              "kind": "repository_file",
+              "path": "research/OPEN_PROBLEM.md",
+              "role": "open_problem",
+              "sha256": "212f19259af8d312880c7db0580a607af4efedfe92ab0841c28b82e00959b01a",
+              "valid": true
+            },
+            {
+              "id": "protocol",
+              "kind": "repository_file",
+              "path": "research/PROTOCOL.md",
+              "role": "protocol",
+              "sha256": "26bba31e90a9c1a742198c9373102dc5ebe0696db6328c474038f157f91cb29f",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim has no registered orbit/sheet identity evidence",
+          "dimension": "orbit_sheet_identity",
+          "evidence": [],
+          "status": "scientifically_unresolved"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "numerical_correction",
+          "evidence": [
+            {
+              "id": "global-event-network-artifact",
+              "kind": "actions_artifact",
+              "role": "critical_graph",
+              "sha256": "c1921c9334d5282a112f3b73c8264baa181cd2456ddd7ad374225b54741da163",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "direct_continuation_topology",
+          "evidence": [
+            {
+              "id": "global-event-network-artifact",
+              "kind": "actions_artifact",
+              "role": "critical_graph",
+              "sha256": "c1921c9334d5282a112f3b73c8264baa181cd2456ddd7ad374225b54741da163",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "no independent physical formulation is registered for this claim",
+          "dimension": "physical_formulation_independence",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no conditioning-margin verdict artifact is registered",
+          "dimension": "conditioning_margin",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no truth-known calibration verdict artifact is registered",
+          "dimension": "truth_known_calibration",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no claim-level mutation verdict artifact is registered",
+          "dimension": "mutation_metamorphic_coverage",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no blind N-version evidence is registered for this claim",
+          "dimension": "blind_n_version",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no platform-systematics verdict artifact is registered",
+          "dimension": "platform_systematics_envelope",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "novelty status is 'pending', not 'pass'",
+          "dimension": "literature_novelty",
+          "evidence": [
+            {
+              "id": "novelty-audit",
+              "kind": "repository_file",
+              "path": "research/NOVELTY_AUDIT.md",
+              "role": "novelty_audit",
+              "sha256": "8f7e9ea8f7b4ae509b3fbc4ce5e730d9ccf7f5ad19e1f071f6b8c474a3ee961b",
+              "valid": true
+            }
+          ],
+          "status": "scientifically_unresolved"
+        },
+        {
+          "detail": "no theorem-grade certificate verdict artifact is registered",
+          "dimension": "rigorous_certificate",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+          "dimension": "unresolved_contradictions",
+          "evidence": [],
+          "status": "scientifically_unresolved"
+        }
+      ],
+      "claim_id": "coarse-event-network",
+      "claim_status": "candidate",
+      "readiness": {
+        "numerical_paper": {
+          "blockers": [
+            {
+              "detail": "no source-lineage verdict artifact is registered",
+              "dimension": "source_data_lineage",
+              "status": "not_run"
+            },
+            {
+              "detail": "claim has no registered orbit/sheet identity evidence",
+              "dimension": "orbit_sheet_identity",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "no independent physical formulation is registered for this claim",
+              "dimension": "physical_formulation_independence",
+              "status": "not_run"
+            },
+            {
+              "detail": "no conditioning-margin verdict artifact is registered",
+              "dimension": "conditioning_margin",
+              "status": "not_run"
+            },
+            {
+              "detail": "no truth-known calibration verdict artifact is registered",
+              "dimension": "truth_known_calibration",
+              "status": "not_run"
+            },
+            {
+              "detail": "no claim-level mutation verdict artifact is registered",
+              "dimension": "mutation_metamorphic_coverage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no blind N-version evidence is registered for this claim",
+              "dimension": "blind_n_version",
+              "status": "not_run"
+            },
+            {
+              "detail": "no platform-systematics verdict artifact is registered",
+              "dimension": "platform_systematics_envelope",
+              "status": "not_run"
+            },
+            {
+              "detail": "novelty status is 'pending', not 'pass'",
+              "dimension": "literature_novelty",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "dimension": "unresolved_contradictions",
+              "status": "scientifically_unresolved"
+            }
+          ],
+          "ready": false,
+          "required_dimensions": [
+            "source_data_lineage",
+            "spec_conformance",
+            "orbit_sheet_identity",
+            "numerical_correction",
+            "direct_continuation_topology",
+            "physical_formulation_independence",
+            "conditioning_margin",
+            "truth_known_calibration",
+            "mutation_metamorphic_coverage",
+            "blind_n_version",
+            "platform_systematics_envelope",
+            "literature_novelty",
+            "unresolved_contradictions"
+          ]
+        },
+        "theorem_grade": {
+          "blockers": [
+            {
+              "detail": "no source-lineage verdict artifact is registered",
+              "dimension": "source_data_lineage",
+              "status": "not_run"
+            },
+            {
+              "detail": "claim has no registered orbit/sheet identity evidence",
+              "dimension": "orbit_sheet_identity",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "no independent physical formulation is registered for this claim",
+              "dimension": "physical_formulation_independence",
+              "status": "not_run"
+            },
+            {
+              "detail": "no conditioning-margin verdict artifact is registered",
+              "dimension": "conditioning_margin",
+              "status": "not_run"
+            },
+            {
+              "detail": "no truth-known calibration verdict artifact is registered",
+              "dimension": "truth_known_calibration",
+              "status": "not_run"
+            },
+            {
+              "detail": "no claim-level mutation verdict artifact is registered",
+              "dimension": "mutation_metamorphic_coverage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no blind N-version evidence is registered for this claim",
+              "dimension": "blind_n_version",
+              "status": "not_run"
+            },
+            {
+              "detail": "no platform-systematics verdict artifact is registered",
+              "dimension": "platform_systematics_envelope",
+              "status": "not_run"
+            },
+            {
+              "detail": "novelty status is 'pending', not 'pass'",
+              "dimension": "literature_novelty",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "no theorem-grade certificate verdict artifact is registered",
+              "dimension": "rigorous_certificate",
+              "status": "not_run"
+            },
+            {
+              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "dimension": "unresolved_contradictions",
+              "status": "scientifically_unresolved"
+            }
+          ],
+          "ready": false,
+          "required_dimensions": [
+            "source_data_lineage",
+            "spec_conformance",
+            "orbit_sheet_identity",
+            "numerical_correction",
+            "direct_continuation_topology",
+            "physical_formulation_independence",
+            "conditioning_margin",
+            "truth_known_calibration",
+            "mutation_metamorphic_coverage",
+            "blind_n_version",
+            "platform_systematics_envelope",
+            "literature_novelty",
+            "rigorous_certificate",
+            "unresolved_contradictions"
+          ]
+        }
+      }
+    },
+    {
+      "cells": [
+        {
+          "detail": "no source-lineage verdict artifact is registered",
+          "dimension": "source_data_lineage",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "discovery manifest satisfies its executable specification",
+          "dimension": "spec_conformance",
+          "evidence": [
+            {
+              "id": "open-problem",
+              "kind": "repository_file",
+              "path": "research/OPEN_PROBLEM.md",
+              "role": "open_problem",
+              "sha256": "212f19259af8d312880c7db0580a607af4efedfe92ab0841c28b82e00959b01a",
+              "valid": true
+            },
+            {
+              "id": "protocol",
+              "kind": "repository_file",
+              "path": "research/PROTOCOL.md",
+              "role": "protocol",
+              "sha256": "26bba31e90a9c1a742198c9373102dc5ebe0696db6328c474038f157f91cb29f",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim has no registered orbit/sheet identity evidence",
+          "dimension": "orbit_sheet_identity",
+          "evidence": [],
+          "status": "scientifically_unresolved"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "numerical_correction",
+          "evidence": [
+            {
+              "id": "secondary-fold-topology-screen",
+              "kind": "repository_file",
+              "path": "experiments/secondary_minus_fold_topology_screen_2026-08-15.json",
+              "role": "critical_graph",
+              "sha256": "f78bcd07d56fc0866e5cc947fe92545ed0d6d27e4df3ca19c8ef9adf2c84eed6",
+              "valid": true
+            },
+            {
+              "id": "secondary-minus-fold-artifact",
+              "kind": "actions_artifact",
+              "role": "critical_graph",
+              "sha256": "f3a9a4721bffabfa0fa8c1bdc55cffe39f3353d4e43c270429dbcb12e5733718",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "direct_continuation_topology",
+          "evidence": [
+            {
+              "id": "secondary-fold-topology-screen",
+              "kind": "repository_file",
+              "path": "experiments/secondary_minus_fold_topology_screen_2026-08-15.json",
+              "role": "critical_graph",
+              "sha256": "f78bcd07d56fc0866e5cc947fe92545ed0d6d27e4df3ca19c8ef9adf2c84eed6",
+              "valid": true
+            },
+            {
+              "id": "secondary-minus-fold-artifact",
+              "kind": "actions_artifact",
+              "role": "critical_graph",
+              "sha256": "f3a9a4721bffabfa0fa8c1bdc55cffe39f3353d4e43c270429dbcb12e5733718",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "no independent physical formulation is registered for this claim",
+          "dimension": "physical_formulation_independence",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no conditioning-margin verdict artifact is registered",
+          "dimension": "conditioning_margin",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no truth-known calibration verdict artifact is registered",
+          "dimension": "truth_known_calibration",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no claim-level mutation verdict artifact is registered",
+          "dimension": "mutation_metamorphic_coverage",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no blind N-version evidence is registered for this claim",
+          "dimension": "blind_n_version",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no platform-systematics verdict artifact is registered",
+          "dimension": "platform_systematics_envelope",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "novelty status is 'pending', not 'pass'",
+          "dimension": "literature_novelty",
+          "evidence": [
+            {
+              "id": "novelty-audit",
+              "kind": "repository_file",
+              "path": "research/NOVELTY_AUDIT.md",
+              "role": "novelty_audit",
+              "sha256": "8f7e9ea8f7b4ae509b3fbc4ce5e730d9ccf7f5ad19e1f071f6b8c474a3ee961b",
+              "valid": true
+            }
+          ],
+          "status": "scientifically_unresolved"
+        },
+        {
+          "detail": "no theorem-grade certificate verdict artifact is registered",
+          "dimension": "rigorous_certificate",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+          "dimension": "unresolved_contradictions",
+          "evidence": [],
+          "status": "scientifically_unresolved"
+        }
+      ],
+      "claim_id": "secondary-minus-one-fold",
+      "claim_status": "candidate",
+      "readiness": {
+        "numerical_paper": {
+          "blockers": [
+            {
+              "detail": "no source-lineage verdict artifact is registered",
+              "dimension": "source_data_lineage",
+              "status": "not_run"
+            },
+            {
+              "detail": "claim has no registered orbit/sheet identity evidence",
+              "dimension": "orbit_sheet_identity",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "no independent physical formulation is registered for this claim",
+              "dimension": "physical_formulation_independence",
+              "status": "not_run"
+            },
+            {
+              "detail": "no conditioning-margin verdict artifact is registered",
+              "dimension": "conditioning_margin",
+              "status": "not_run"
+            },
+            {
+              "detail": "no truth-known calibration verdict artifact is registered",
+              "dimension": "truth_known_calibration",
+              "status": "not_run"
+            },
+            {
+              "detail": "no claim-level mutation verdict artifact is registered",
+              "dimension": "mutation_metamorphic_coverage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no blind N-version evidence is registered for this claim",
+              "dimension": "blind_n_version",
+              "status": "not_run"
+            },
+            {
+              "detail": "no platform-systematics verdict artifact is registered",
+              "dimension": "platform_systematics_envelope",
+              "status": "not_run"
+            },
+            {
+              "detail": "novelty status is 'pending', not 'pass'",
+              "dimension": "literature_novelty",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "dimension": "unresolved_contradictions",
+              "status": "scientifically_unresolved"
+            }
+          ],
+          "ready": false,
+          "required_dimensions": [
+            "source_data_lineage",
+            "spec_conformance",
+            "orbit_sheet_identity",
+            "numerical_correction",
+            "direct_continuation_topology",
+            "physical_formulation_independence",
+            "conditioning_margin",
+            "truth_known_calibration",
+            "mutation_metamorphic_coverage",
+            "blind_n_version",
+            "platform_systematics_envelope",
+            "literature_novelty",
+            "unresolved_contradictions"
+          ]
+        },
+        "theorem_grade": {
+          "blockers": [
+            {
+              "detail": "no source-lineage verdict artifact is registered",
+              "dimension": "source_data_lineage",
+              "status": "not_run"
+            },
+            {
+              "detail": "claim has no registered orbit/sheet identity evidence",
+              "dimension": "orbit_sheet_identity",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "no independent physical formulation is registered for this claim",
+              "dimension": "physical_formulation_independence",
+              "status": "not_run"
+            },
+            {
+              "detail": "no conditioning-margin verdict artifact is registered",
+              "dimension": "conditioning_margin",
+              "status": "not_run"
+            },
+            {
+              "detail": "no truth-known calibration verdict artifact is registered",
+              "dimension": "truth_known_calibration",
+              "status": "not_run"
+            },
+            {
+              "detail": "no claim-level mutation verdict artifact is registered",
+              "dimension": "mutation_metamorphic_coverage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no blind N-version evidence is registered for this claim",
+              "dimension": "blind_n_version",
+              "status": "not_run"
+            },
+            {
+              "detail": "no platform-systematics verdict artifact is registered",
+              "dimension": "platform_systematics_envelope",
+              "status": "not_run"
+            },
+            {
+              "detail": "novelty status is 'pending', not 'pass'",
+              "dimension": "literature_novelty",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "no theorem-grade certificate verdict artifact is registered",
+              "dimension": "rigorous_certificate",
+              "status": "not_run"
+            },
+            {
+              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "dimension": "unresolved_contradictions",
+              "status": "scientifically_unresolved"
+            }
+          ],
+          "ready": false,
+          "required_dimensions": [
+            "source_data_lineage",
+            "spec_conformance",
+            "orbit_sheet_identity",
+            "numerical_correction",
+            "direct_continuation_topology",
+            "physical_formulation_independence",
+            "conditioning_margin",
+            "truth_known_calibration",
+            "mutation_metamorphic_coverage",
+            "blind_n_version",
+            "platform_systematics_envelope",
+            "literature_novelty",
+            "rigorous_certificate",
+            "unresolved_contradictions"
+          ]
+        }
+      }
+    },
+    {
+      "cells": [
+        {
+          "detail": "no source-lineage verdict artifact is registered",
+          "dimension": "source_data_lineage",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "discovery manifest satisfies its executable specification",
+          "dimension": "spec_conformance",
+          "evidence": [
+            {
+              "id": "open-problem",
+              "kind": "repository_file",
+              "path": "research/OPEN_PROBLEM.md",
+              "role": "open_problem",
+              "sha256": "212f19259af8d312880c7db0580a607af4efedfe92ab0841c28b82e00959b01a",
+              "valid": true
+            },
+            {
+              "id": "protocol",
+              "kind": "repository_file",
+              "path": "research/PROTOCOL.md",
+              "role": "protocol",
+              "sha256": "26bba31e90a9c1a742198c9373102dc5ebe0696db6328c474038f157f91cb29f",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim has no registered orbit/sheet identity evidence",
+          "dimension": "orbit_sheet_identity",
+          "evidence": [],
+          "status": "scientifically_unresolved"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "numerical_correction",
+          "evidence": [
+            {
+              "id": "lower-plus-one-branch-artifact",
+              "kind": "actions_artifact",
+              "role": "critical_graph",
+              "sha256": "5fad07b3a7f08f1d2dcef5850b3665cb5a7eec3e40a77e59fd4952416fedf5bb",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "direct_continuation_topology",
+          "evidence": [
+            {
+              "id": "lower-plus-one-branch-artifact",
+              "kind": "actions_artifact",
+              "role": "critical_graph",
+              "sha256": "5fad07b3a7f08f1d2dcef5850b3665cb5a7eec3e40a77e59fd4952416fedf5bb",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "no independent physical formulation is registered for this claim",
+          "dimension": "physical_formulation_independence",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no conditioning-margin verdict artifact is registered",
+          "dimension": "conditioning_margin",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no truth-known calibration verdict artifact is registered",
+          "dimension": "truth_known_calibration",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no claim-level mutation verdict artifact is registered",
+          "dimension": "mutation_metamorphic_coverage",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no blind N-version evidence is registered for this claim",
+          "dimension": "blind_n_version",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no platform-systematics verdict artifact is registered",
+          "dimension": "platform_systematics_envelope",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "novelty status is 'pending', not 'pass'",
+          "dimension": "literature_novelty",
+          "evidence": [
+            {
+              "id": "novelty-audit",
+              "kind": "repository_file",
+              "path": "research/NOVELTY_AUDIT.md",
+              "role": "novelty_audit",
+              "sha256": "8f7e9ea8f7b4ae509b3fbc4ce5e730d9ccf7f5ad19e1f071f6b8c474a3ee961b",
+              "valid": true
+            }
+          ],
+          "status": "scientifically_unresolved"
+        },
+        {
+          "detail": "no theorem-grade certificate verdict artifact is registered",
+          "dimension": "rigorous_certificate",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+          "dimension": "unresolved_contradictions",
+          "evidence": [],
+          "status": "scientifically_unresolved"
+        }
+      ],
+      "claim_id": "lower-plus-one-daughter",
+      "claim_status": "candidate",
+      "readiness": {
+        "numerical_paper": {
+          "blockers": [
+            {
+              "detail": "no source-lineage verdict artifact is registered",
+              "dimension": "source_data_lineage",
+              "status": "not_run"
+            },
+            {
+              "detail": "claim has no registered orbit/sheet identity evidence",
+              "dimension": "orbit_sheet_identity",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "no independent physical formulation is registered for this claim",
+              "dimension": "physical_formulation_independence",
+              "status": "not_run"
+            },
+            {
+              "detail": "no conditioning-margin verdict artifact is registered",
+              "dimension": "conditioning_margin",
+              "status": "not_run"
+            },
+            {
+              "detail": "no truth-known calibration verdict artifact is registered",
+              "dimension": "truth_known_calibration",
+              "status": "not_run"
+            },
+            {
+              "detail": "no claim-level mutation verdict artifact is registered",
+              "dimension": "mutation_metamorphic_coverage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no blind N-version evidence is registered for this claim",
+              "dimension": "blind_n_version",
+              "status": "not_run"
+            },
+            {
+              "detail": "no platform-systematics verdict artifact is registered",
+              "dimension": "platform_systematics_envelope",
+              "status": "not_run"
+            },
+            {
+              "detail": "novelty status is 'pending', not 'pass'",
+              "dimension": "literature_novelty",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "dimension": "unresolved_contradictions",
+              "status": "scientifically_unresolved"
+            }
+          ],
+          "ready": false,
+          "required_dimensions": [
+            "source_data_lineage",
+            "spec_conformance",
+            "orbit_sheet_identity",
+            "numerical_correction",
+            "direct_continuation_topology",
+            "physical_formulation_independence",
+            "conditioning_margin",
+            "truth_known_calibration",
+            "mutation_metamorphic_coverage",
+            "blind_n_version",
+            "platform_systematics_envelope",
+            "literature_novelty",
+            "unresolved_contradictions"
+          ]
+        },
+        "theorem_grade": {
+          "blockers": [
+            {
+              "detail": "no source-lineage verdict artifact is registered",
+              "dimension": "source_data_lineage",
+              "status": "not_run"
+            },
+            {
+              "detail": "claim has no registered orbit/sheet identity evidence",
+              "dimension": "orbit_sheet_identity",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "no independent physical formulation is registered for this claim",
+              "dimension": "physical_formulation_independence",
+              "status": "not_run"
+            },
+            {
+              "detail": "no conditioning-margin verdict artifact is registered",
+              "dimension": "conditioning_margin",
+              "status": "not_run"
+            },
+            {
+              "detail": "no truth-known calibration verdict artifact is registered",
+              "dimension": "truth_known_calibration",
+              "status": "not_run"
+            },
+            {
+              "detail": "no claim-level mutation verdict artifact is registered",
+              "dimension": "mutation_metamorphic_coverage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no blind N-version evidence is registered for this claim",
+              "dimension": "blind_n_version",
+              "status": "not_run"
+            },
+            {
+              "detail": "no platform-systematics verdict artifact is registered",
+              "dimension": "platform_systematics_envelope",
+              "status": "not_run"
+            },
+            {
+              "detail": "novelty status is 'pending', not 'pass'",
+              "dimension": "literature_novelty",
+              "status": "scientifically_unresolved"
+            },
+            {
+              "detail": "no theorem-grade certificate verdict artifact is registered",
+              "dimension": "rigorous_certificate",
+              "status": "not_run"
+            },
+            {
+              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "dimension": "unresolved_contradictions",
+              "status": "scientifically_unresolved"
+            }
+          ],
+          "ready": false,
+          "required_dimensions": [
+            "source_data_lineage",
+            "spec_conformance",
+            "orbit_sheet_identity",
+            "numerical_correction",
+            "direct_continuation_topology",
+            "physical_formulation_independence",
+            "conditioning_margin",
+            "truth_known_calibration",
+            "mutation_metamorphic_coverage",
+            "blind_n_version",
+            "platform_systematics_envelope",
+            "literature_novelty",
+            "rigorous_certificate",
+            "unresolved_contradictions"
+          ]
+        }
+      }
+    }
+  ],
+  "dimension_count": 14,
+  "matrix_sha256": "602f484f9590ce555018526303d794906187687116bae1cd0af6ee5221a2bc48",
+  "policy_sha256": "dafb4b6811eb37b47b0495ae77d28e56b64f1efe5b748455e471db47fd1c0f8b",
+  "release_policy": {
+    "numerical_paper_ready": false,
+    "release_claim_ids": [
+      "one-continuation-family",
+      "principal-lower-plus-one",
+      "principal-upper-hamiltonian-hopf",
+      "three-mixed-organizers"
+    ],
+    "rule": "every required cell must pass; states are never averaged",
+    "theorem_grade_ready": false
+  },
+  "schema": "atlas.claim-assurance-matrix.v1",
+  "source_manifest_sha256": "8f26fab113db82a2aa4112cd4705e6eb96e67847dc11a5caa303f470a626f6e8",
+  "status_vocabulary": [
+    "fail",
+    "infrastructure_blocked",
+    "not_applicable",
+    "not_run",
+    "pass",
+    "scientifically_unresolved"
+  ],
+  "views": {
+    "completeness_matrix": [
+      "coarse-event-network"
+    ],
+    "edge_node_matrix": [
+      "principal-lower-plus-one",
+      "principal-upper-hamiltonian-hopf",
+      "three-mixed-organizers",
+      "secondary-minus-one-fold",
+      "lower-plus-one-daughter"
+    ],
+    "headline_claims": [
+      "one-continuation-family",
+      "principal-lower-plus-one",
+      "principal-upper-hamiltonian-hopf",
+      "three-mixed-organizers"
+    ],
+    "independence_common_mode": {
+      "coarse-event-network": [
+        {
+          "detail": "no independent physical formulation is registered for this claim",
+          "dimension": "physical_formulation_independence",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no blind N-version evidence is registered for this claim",
+          "dimension": "blind_n_version",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no platform-systematics verdict artifact is registered",
+          "dimension": "platform_systematics_envelope",
+          "evidence": [],
+          "status": "not_run"
+        }
+      ],
+      "lower-plus-one-daughter": [
+        {
+          "detail": "no independent physical formulation is registered for this claim",
+          "dimension": "physical_formulation_independence",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no blind N-version evidence is registered for this claim",
+          "dimension": "blind_n_version",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no platform-systematics verdict artifact is registered",
+          "dimension": "platform_systematics_envelope",
+          "evidence": [],
+          "status": "not_run"
+        }
+      ],
+      "one-continuation-family": [
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "physical_formulation_independence",
+          "evidence": [
+            {
+              "id": "generic-bridge-artifact",
+              "kind": "actions_artifact",
+              "role": "family_connectivity",
+              "sha256": "d2b76fa7e0a73791a662a54202f7e50202b7ade6c67e4d21f2816dde328748dd",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "blind_n_version",
+          "evidence": [
+            {
+              "id": "generic-bridge-artifact",
+              "kind": "actions_artifact",
+              "role": "family_connectivity",
+              "sha256": "d2b76fa7e0a73791a662a54202f7e50202b7ade6c67e4d21f2816dde328748dd",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "no platform-systematics verdict artifact is registered",
+          "dimension": "platform_systematics_envelope",
+          "evidence": [],
+          "status": "not_run"
+        }
+      ],
+      "principal-lower-plus-one": [
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "physical_formulation_independence",
+          "evidence": [
+            {
+              "id": "canonical-lower-plus-one",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_CANONICAL_LOWER_PLUS_ONE_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "212c7b835cb734145e5f00208cc11c7625cac07e113742894771015855a9eada",
+              "valid": true
+            },
+            {
+              "id": "physical-sp4-artifact",
+              "kind": "actions_artifact",
+              "role": "independent_verification",
+              "sha256": "83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "blind_n_version",
+          "evidence": [
+            {
+              "id": "canonical-lower-plus-one",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_CANONICAL_LOWER_PLUS_ONE_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "212c7b835cb734145e5f00208cc11c7625cac07e113742894771015855a9eada",
+              "valid": true
+            },
+            {
+              "id": "physical-sp4-artifact",
+              "kind": "actions_artifact",
+              "role": "independent_verification",
+              "sha256": "83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "no platform-systematics verdict artifact is registered",
+          "dimension": "platform_systematics_envelope",
+          "evidence": [],
+          "status": "not_run"
+        }
+      ],
+      "principal-upper-hamiltonian-hopf": [
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "physical_formulation_independence",
+          "evidence": [
+            {
+              "id": "canonical-upper-collision",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_CANONICAL_UPPER_COLLISION_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "afcb4748c24c19746209f1339eeb5f5fce0bf9f62570652c53077044d8d71e1d",
+              "valid": true
+            },
+            {
+              "id": "physical-sp4-artifact",
+              "kind": "actions_artifact",
+              "role": "independent_verification",
+              "sha256": "83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "blind_n_version",
+          "evidence": [
+            {
+              "id": "canonical-upper-collision",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_CANONICAL_UPPER_COLLISION_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "afcb4748c24c19746209f1339eeb5f5fce0bf9f62570652c53077044d8d71e1d",
+              "valid": true
+            },
+            {
+              "id": "physical-sp4-artifact",
+              "kind": "actions_artifact",
+              "role": "independent_verification",
+              "sha256": "83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "no platform-systematics verdict artifact is registered",
+          "dimension": "platform_systematics_envelope",
+          "evidence": [],
+          "status": "not_run"
+        }
+      ],
+      "secondary-minus-one-fold": [
+        {
+          "detail": "no independent physical formulation is registered for this claim",
+          "dimension": "physical_formulation_independence",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no blind N-version evidence is registered for this claim",
+          "dimension": "blind_n_version",
+          "evidence": [],
+          "status": "not_run"
+        },
+        {
+          "detail": "no platform-systematics verdict artifact is registered",
+          "dimension": "platform_systematics_envelope",
+          "evidence": [],
+          "status": "not_run"
+        }
+      ],
+      "three-mixed-organizers": [
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "physical_formulation_independence",
+          "evidence": [
+            {
+              "id": "mixed-canonical-principal-left",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_LEFT_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "6682978d1aedb4290e239ed5ec9403b67dc708c83ffc35fa4d29d57741c45737",
+              "valid": true
+            },
+            {
+              "id": "mixed-canonical-principal-right",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_RIGHT_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "b79e3a52e633fada412c6e7c82be9406dab526957ae521b6df8f607456f48d59",
+              "valid": true
+            },
+            {
+              "id": "mixed-canonical-secondary-left",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_MIXED_CANONICAL_SECONDARY_LEFT_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "2a46962601f67a8724511c6e58656dec8621076a08d7c6aaa2a897947758610b",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "claim references immutable evidence for this dimension",
+          "dimension": "blind_n_version",
+          "evidence": [
+            {
+              "id": "mixed-canonical-principal-left",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_LEFT_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "6682978d1aedb4290e239ed5ec9403b67dc708c83ffc35fa4d29d57741c45737",
+              "valid": true
+            },
+            {
+              "id": "mixed-canonical-principal-right",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_RIGHT_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "b79e3a52e633fada412c6e7c82be9406dab526957ae521b6df8f607456f48d59",
+              "valid": true
+            },
+            {
+              "id": "mixed-canonical-secondary-left",
+              "kind": "repository_file",
+              "path": "research/evidence/V1_MIXED_CANONICAL_SECONDARY_LEFT_2026-08-15.json",
+              "role": "independent_verification",
+              "sha256": "2a46962601f67a8724511c6e58656dec8621076a08d7c6aaa2a897947758610b",
+              "valid": true
+            }
+          ],
+          "status": "pass"
+        },
+        {
+          "detail": "no platform-systematics verdict artifact is registered",
+          "dimension": "platform_systematics_envelope",
+          "evidence": [],
+          "status": "not_run"
+        }
+      ]
+    },
+    "numerical_paper_readiness": {
+      "coarse-event-network": {
+        "blockers": [
+          {
+            "detail": "no source-lineage verdict artifact is registered",
+            "dimension": "source_data_lineage",
+            "status": "not_run"
+          },
+          {
+            "detail": "claim has no registered orbit/sheet identity evidence",
+            "dimension": "orbit_sheet_identity",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "no independent physical formulation is registered for this claim",
+            "dimension": "physical_formulation_independence",
+            "status": "not_run"
+          },
+          {
+            "detail": "no conditioning-margin verdict artifact is registered",
+            "dimension": "conditioning_margin",
+            "status": "not_run"
+          },
+          {
+            "detail": "no truth-known calibration verdict artifact is registered",
+            "dimension": "truth_known_calibration",
+            "status": "not_run"
+          },
+          {
+            "detail": "no claim-level mutation verdict artifact is registered",
+            "dimension": "mutation_metamorphic_coverage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no blind N-version evidence is registered for this claim",
+            "dimension": "blind_n_version",
+            "status": "not_run"
+          },
+          {
+            "detail": "no platform-systematics verdict artifact is registered",
+            "dimension": "platform_systematics_envelope",
+            "status": "not_run"
+          },
+          {
+            "detail": "novelty status is 'pending', not 'pass'",
+            "dimension": "literature_novelty",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "dimension": "unresolved_contradictions",
+            "status": "scientifically_unresolved"
+          }
+        ],
+        "ready": false,
+        "required_dimensions": [
+          "source_data_lineage",
+          "spec_conformance",
+          "orbit_sheet_identity",
+          "numerical_correction",
+          "direct_continuation_topology",
+          "physical_formulation_independence",
+          "conditioning_margin",
+          "truth_known_calibration",
+          "mutation_metamorphic_coverage",
+          "blind_n_version",
+          "platform_systematics_envelope",
+          "literature_novelty",
+          "unresolved_contradictions"
+        ]
+      },
+      "lower-plus-one-daughter": {
+        "blockers": [
+          {
+            "detail": "no source-lineage verdict artifact is registered",
+            "dimension": "source_data_lineage",
+            "status": "not_run"
+          },
+          {
+            "detail": "claim has no registered orbit/sheet identity evidence",
+            "dimension": "orbit_sheet_identity",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "no independent physical formulation is registered for this claim",
+            "dimension": "physical_formulation_independence",
+            "status": "not_run"
+          },
+          {
+            "detail": "no conditioning-margin verdict artifact is registered",
+            "dimension": "conditioning_margin",
+            "status": "not_run"
+          },
+          {
+            "detail": "no truth-known calibration verdict artifact is registered",
+            "dimension": "truth_known_calibration",
+            "status": "not_run"
+          },
+          {
+            "detail": "no claim-level mutation verdict artifact is registered",
+            "dimension": "mutation_metamorphic_coverage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no blind N-version evidence is registered for this claim",
+            "dimension": "blind_n_version",
+            "status": "not_run"
+          },
+          {
+            "detail": "no platform-systematics verdict artifact is registered",
+            "dimension": "platform_systematics_envelope",
+            "status": "not_run"
+          },
+          {
+            "detail": "novelty status is 'pending', not 'pass'",
+            "dimension": "literature_novelty",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "dimension": "unresolved_contradictions",
+            "status": "scientifically_unresolved"
+          }
+        ],
+        "ready": false,
+        "required_dimensions": [
+          "source_data_lineage",
+          "spec_conformance",
+          "orbit_sheet_identity",
+          "numerical_correction",
+          "direct_continuation_topology",
+          "physical_formulation_independence",
+          "conditioning_margin",
+          "truth_known_calibration",
+          "mutation_metamorphic_coverage",
+          "blind_n_version",
+          "platform_systematics_envelope",
+          "literature_novelty",
+          "unresolved_contradictions"
+        ]
+      },
+      "one-continuation-family": {
+        "blockers": [
+          {
+            "detail": "no source-lineage verdict artifact is registered",
+            "dimension": "source_data_lineage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no conditioning-margin verdict artifact is registered",
+            "dimension": "conditioning_margin",
+            "status": "not_run"
+          },
+          {
+            "detail": "no truth-known calibration verdict artifact is registered",
+            "dimension": "truth_known_calibration",
+            "status": "not_run"
+          },
+          {
+            "detail": "no claim-level mutation verdict artifact is registered",
+            "dimension": "mutation_metamorphic_coverage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no platform-systematics verdict artifact is registered",
+            "dimension": "platform_systematics_envelope",
+            "status": "not_run"
+          },
+          {
+            "detail": "novelty status is 'pending', not 'pass'",
+            "dimension": "literature_novelty",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "dimension": "unresolved_contradictions",
+            "status": "scientifically_unresolved"
+          }
+        ],
+        "ready": false,
+        "required_dimensions": [
+          "source_data_lineage",
+          "spec_conformance",
+          "orbit_sheet_identity",
+          "numerical_correction",
+          "direct_continuation_topology",
+          "physical_formulation_independence",
+          "conditioning_margin",
+          "truth_known_calibration",
+          "mutation_metamorphic_coverage",
+          "blind_n_version",
+          "platform_systematics_envelope",
+          "literature_novelty",
+          "unresolved_contradictions"
+        ]
+      },
+      "principal-lower-plus-one": {
+        "blockers": [
+          {
+            "detail": "no source-lineage verdict artifact is registered",
+            "dimension": "source_data_lineage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no direct continuation/topology evidence is registered for this claim",
+            "dimension": "direct_continuation_topology",
+            "status": "not_run"
+          },
+          {
+            "detail": "no conditioning-margin verdict artifact is registered",
+            "dimension": "conditioning_margin",
+            "status": "not_run"
+          },
+          {
+            "detail": "no truth-known calibration verdict artifact is registered",
+            "dimension": "truth_known_calibration",
+            "status": "not_run"
+          },
+          {
+            "detail": "no claim-level mutation verdict artifact is registered",
+            "dimension": "mutation_metamorphic_coverage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no platform-systematics verdict artifact is registered",
+            "dimension": "platform_systematics_envelope",
+            "status": "not_run"
+          },
+          {
+            "detail": "novelty status is 'pending', not 'pass'",
+            "dimension": "literature_novelty",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "dimension": "unresolved_contradictions",
+            "status": "scientifically_unresolved"
+          }
+        ],
+        "ready": false,
+        "required_dimensions": [
+          "source_data_lineage",
+          "spec_conformance",
+          "orbit_sheet_identity",
+          "numerical_correction",
+          "direct_continuation_topology",
+          "physical_formulation_independence",
+          "conditioning_margin",
+          "truth_known_calibration",
+          "mutation_metamorphic_coverage",
+          "blind_n_version",
+          "platform_systematics_envelope",
+          "literature_novelty",
+          "unresolved_contradictions"
+        ]
+      },
+      "principal-upper-hamiltonian-hopf": {
+        "blockers": [
+          {
+            "detail": "no source-lineage verdict artifact is registered",
+            "dimension": "source_data_lineage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no direct continuation/topology evidence is registered for this claim",
+            "dimension": "direct_continuation_topology",
+            "status": "not_run"
+          },
+          {
+            "detail": "no conditioning-margin verdict artifact is registered",
+            "dimension": "conditioning_margin",
+            "status": "not_run"
+          },
+          {
+            "detail": "no truth-known calibration verdict artifact is registered",
+            "dimension": "truth_known_calibration",
+            "status": "not_run"
+          },
+          {
+            "detail": "no claim-level mutation verdict artifact is registered",
+            "dimension": "mutation_metamorphic_coverage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no platform-systematics verdict artifact is registered",
+            "dimension": "platform_systematics_envelope",
+            "status": "not_run"
+          },
+          {
+            "detail": "novelty status is 'pending', not 'pass'",
+            "dimension": "literature_novelty",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "dimension": "unresolved_contradictions",
+            "status": "scientifically_unresolved"
+          }
+        ],
+        "ready": false,
+        "required_dimensions": [
+          "source_data_lineage",
+          "spec_conformance",
+          "orbit_sheet_identity",
+          "numerical_correction",
+          "direct_continuation_topology",
+          "physical_formulation_independence",
+          "conditioning_margin",
+          "truth_known_calibration",
+          "mutation_metamorphic_coverage",
+          "blind_n_version",
+          "platform_systematics_envelope",
+          "literature_novelty",
+          "unresolved_contradictions"
+        ]
+      },
+      "secondary-minus-one-fold": {
+        "blockers": [
+          {
+            "detail": "no source-lineage verdict artifact is registered",
+            "dimension": "source_data_lineage",
+            "status": "not_run"
+          },
+          {
+            "detail": "claim has no registered orbit/sheet identity evidence",
+            "dimension": "orbit_sheet_identity",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "no independent physical formulation is registered for this claim",
+            "dimension": "physical_formulation_independence",
+            "status": "not_run"
+          },
+          {
+            "detail": "no conditioning-margin verdict artifact is registered",
+            "dimension": "conditioning_margin",
+            "status": "not_run"
+          },
+          {
+            "detail": "no truth-known calibration verdict artifact is registered",
+            "dimension": "truth_known_calibration",
+            "status": "not_run"
+          },
+          {
+            "detail": "no claim-level mutation verdict artifact is registered",
+            "dimension": "mutation_metamorphic_coverage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no blind N-version evidence is registered for this claim",
+            "dimension": "blind_n_version",
+            "status": "not_run"
+          },
+          {
+            "detail": "no platform-systematics verdict artifact is registered",
+            "dimension": "platform_systematics_envelope",
+            "status": "not_run"
+          },
+          {
+            "detail": "novelty status is 'pending', not 'pass'",
+            "dimension": "literature_novelty",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "dimension": "unresolved_contradictions",
+            "status": "scientifically_unresolved"
+          }
+        ],
+        "ready": false,
+        "required_dimensions": [
+          "source_data_lineage",
+          "spec_conformance",
+          "orbit_sheet_identity",
+          "numerical_correction",
+          "direct_continuation_topology",
+          "physical_formulation_independence",
+          "conditioning_margin",
+          "truth_known_calibration",
+          "mutation_metamorphic_coverage",
+          "blind_n_version",
+          "platform_systematics_envelope",
+          "literature_novelty",
+          "unresolved_contradictions"
+        ]
+      },
+      "three-mixed-organizers": {
+        "blockers": [
+          {
+            "detail": "no source-lineage verdict artifact is registered",
+            "dimension": "source_data_lineage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no conditioning-margin verdict artifact is registered",
+            "dimension": "conditioning_margin",
+            "status": "not_run"
+          },
+          {
+            "detail": "no truth-known calibration verdict artifact is registered",
+            "dimension": "truth_known_calibration",
+            "status": "not_run"
+          },
+          {
+            "detail": "no claim-level mutation verdict artifact is registered",
+            "dimension": "mutation_metamorphic_coverage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no platform-systematics verdict artifact is registered",
+            "dimension": "platform_systematics_envelope",
+            "status": "not_run"
+          },
+          {
+            "detail": "novelty status is 'pending', not 'pass'",
+            "dimension": "literature_novelty",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "dimension": "unresolved_contradictions",
+            "status": "scientifically_unresolved"
+          }
+        ],
+        "ready": false,
+        "required_dimensions": [
+          "source_data_lineage",
+          "spec_conformance",
+          "orbit_sheet_identity",
+          "numerical_correction",
+          "direct_continuation_topology",
+          "physical_formulation_independence",
+          "conditioning_margin",
+          "truth_known_calibration",
+          "mutation_metamorphic_coverage",
+          "blind_n_version",
+          "platform_systematics_envelope",
+          "literature_novelty",
+          "unresolved_contradictions"
+        ]
+      }
+    },
+    "theorem_grade_readiness": {
+      "coarse-event-network": {
+        "blockers": [
+          {
+            "detail": "no source-lineage verdict artifact is registered",
+            "dimension": "source_data_lineage",
+            "status": "not_run"
+          },
+          {
+            "detail": "claim has no registered orbit/sheet identity evidence",
+            "dimension": "orbit_sheet_identity",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "no independent physical formulation is registered for this claim",
+            "dimension": "physical_formulation_independence",
+            "status": "not_run"
+          },
+          {
+            "detail": "no conditioning-margin verdict artifact is registered",
+            "dimension": "conditioning_margin",
+            "status": "not_run"
+          },
+          {
+            "detail": "no truth-known calibration verdict artifact is registered",
+            "dimension": "truth_known_calibration",
+            "status": "not_run"
+          },
+          {
+            "detail": "no claim-level mutation verdict artifact is registered",
+            "dimension": "mutation_metamorphic_coverage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no blind N-version evidence is registered for this claim",
+            "dimension": "blind_n_version",
+            "status": "not_run"
+          },
+          {
+            "detail": "no platform-systematics verdict artifact is registered",
+            "dimension": "platform_systematics_envelope",
+            "status": "not_run"
+          },
+          {
+            "detail": "novelty status is 'pending', not 'pass'",
+            "dimension": "literature_novelty",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "no theorem-grade certificate verdict artifact is registered",
+            "dimension": "rigorous_certificate",
+            "status": "not_run"
+          },
+          {
+            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "dimension": "unresolved_contradictions",
+            "status": "scientifically_unresolved"
+          }
+        ],
+        "ready": false,
+        "required_dimensions": [
+          "source_data_lineage",
+          "spec_conformance",
+          "orbit_sheet_identity",
+          "numerical_correction",
+          "direct_continuation_topology",
+          "physical_formulation_independence",
+          "conditioning_margin",
+          "truth_known_calibration",
+          "mutation_metamorphic_coverage",
+          "blind_n_version",
+          "platform_systematics_envelope",
+          "literature_novelty",
+          "rigorous_certificate",
+          "unresolved_contradictions"
+        ]
+      },
+      "lower-plus-one-daughter": {
+        "blockers": [
+          {
+            "detail": "no source-lineage verdict artifact is registered",
+            "dimension": "source_data_lineage",
+            "status": "not_run"
+          },
+          {
+            "detail": "claim has no registered orbit/sheet identity evidence",
+            "dimension": "orbit_sheet_identity",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "no independent physical formulation is registered for this claim",
+            "dimension": "physical_formulation_independence",
+            "status": "not_run"
+          },
+          {
+            "detail": "no conditioning-margin verdict artifact is registered",
+            "dimension": "conditioning_margin",
+            "status": "not_run"
+          },
+          {
+            "detail": "no truth-known calibration verdict artifact is registered",
+            "dimension": "truth_known_calibration",
+            "status": "not_run"
+          },
+          {
+            "detail": "no claim-level mutation verdict artifact is registered",
+            "dimension": "mutation_metamorphic_coverage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no blind N-version evidence is registered for this claim",
+            "dimension": "blind_n_version",
+            "status": "not_run"
+          },
+          {
+            "detail": "no platform-systematics verdict artifact is registered",
+            "dimension": "platform_systematics_envelope",
+            "status": "not_run"
+          },
+          {
+            "detail": "novelty status is 'pending', not 'pass'",
+            "dimension": "literature_novelty",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "no theorem-grade certificate verdict artifact is registered",
+            "dimension": "rigorous_certificate",
+            "status": "not_run"
+          },
+          {
+            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "dimension": "unresolved_contradictions",
+            "status": "scientifically_unresolved"
+          }
+        ],
+        "ready": false,
+        "required_dimensions": [
+          "source_data_lineage",
+          "spec_conformance",
+          "orbit_sheet_identity",
+          "numerical_correction",
+          "direct_continuation_topology",
+          "physical_formulation_independence",
+          "conditioning_margin",
+          "truth_known_calibration",
+          "mutation_metamorphic_coverage",
+          "blind_n_version",
+          "platform_systematics_envelope",
+          "literature_novelty",
+          "rigorous_certificate",
+          "unresolved_contradictions"
+        ]
+      },
+      "one-continuation-family": {
+        "blockers": [
+          {
+            "detail": "no source-lineage verdict artifact is registered",
+            "dimension": "source_data_lineage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no conditioning-margin verdict artifact is registered",
+            "dimension": "conditioning_margin",
+            "status": "not_run"
+          },
+          {
+            "detail": "no truth-known calibration verdict artifact is registered",
+            "dimension": "truth_known_calibration",
+            "status": "not_run"
+          },
+          {
+            "detail": "no claim-level mutation verdict artifact is registered",
+            "dimension": "mutation_metamorphic_coverage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no platform-systematics verdict artifact is registered",
+            "dimension": "platform_systematics_envelope",
+            "status": "not_run"
+          },
+          {
+            "detail": "novelty status is 'pending', not 'pass'",
+            "dimension": "literature_novelty",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "no theorem-grade certificate verdict artifact is registered",
+            "dimension": "rigorous_certificate",
+            "status": "not_run"
+          },
+          {
+            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "dimension": "unresolved_contradictions",
+            "status": "scientifically_unresolved"
+          }
+        ],
+        "ready": false,
+        "required_dimensions": [
+          "source_data_lineage",
+          "spec_conformance",
+          "orbit_sheet_identity",
+          "numerical_correction",
+          "direct_continuation_topology",
+          "physical_formulation_independence",
+          "conditioning_margin",
+          "truth_known_calibration",
+          "mutation_metamorphic_coverage",
+          "blind_n_version",
+          "platform_systematics_envelope",
+          "literature_novelty",
+          "rigorous_certificate",
+          "unresolved_contradictions"
+        ]
+      },
+      "principal-lower-plus-one": {
+        "blockers": [
+          {
+            "detail": "no source-lineage verdict artifact is registered",
+            "dimension": "source_data_lineage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no direct continuation/topology evidence is registered for this claim",
+            "dimension": "direct_continuation_topology",
+            "status": "not_run"
+          },
+          {
+            "detail": "no conditioning-margin verdict artifact is registered",
+            "dimension": "conditioning_margin",
+            "status": "not_run"
+          },
+          {
+            "detail": "no truth-known calibration verdict artifact is registered",
+            "dimension": "truth_known_calibration",
+            "status": "not_run"
+          },
+          {
+            "detail": "no claim-level mutation verdict artifact is registered",
+            "dimension": "mutation_metamorphic_coverage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no platform-systematics verdict artifact is registered",
+            "dimension": "platform_systematics_envelope",
+            "status": "not_run"
+          },
+          {
+            "detail": "novelty status is 'pending', not 'pass'",
+            "dimension": "literature_novelty",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "no theorem-grade certificate verdict artifact is registered",
+            "dimension": "rigorous_certificate",
+            "status": "not_run"
+          },
+          {
+            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "dimension": "unresolved_contradictions",
+            "status": "scientifically_unresolved"
+          }
+        ],
+        "ready": false,
+        "required_dimensions": [
+          "source_data_lineage",
+          "spec_conformance",
+          "orbit_sheet_identity",
+          "numerical_correction",
+          "direct_continuation_topology",
+          "physical_formulation_independence",
+          "conditioning_margin",
+          "truth_known_calibration",
+          "mutation_metamorphic_coverage",
+          "blind_n_version",
+          "platform_systematics_envelope",
+          "literature_novelty",
+          "rigorous_certificate",
+          "unresolved_contradictions"
+        ]
+      },
+      "principal-upper-hamiltonian-hopf": {
+        "blockers": [
+          {
+            "detail": "no source-lineage verdict artifact is registered",
+            "dimension": "source_data_lineage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no direct continuation/topology evidence is registered for this claim",
+            "dimension": "direct_continuation_topology",
+            "status": "not_run"
+          },
+          {
+            "detail": "no conditioning-margin verdict artifact is registered",
+            "dimension": "conditioning_margin",
+            "status": "not_run"
+          },
+          {
+            "detail": "no truth-known calibration verdict artifact is registered",
+            "dimension": "truth_known_calibration",
+            "status": "not_run"
+          },
+          {
+            "detail": "no claim-level mutation verdict artifact is registered",
+            "dimension": "mutation_metamorphic_coverage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no platform-systematics verdict artifact is registered",
+            "dimension": "platform_systematics_envelope",
+            "status": "not_run"
+          },
+          {
+            "detail": "novelty status is 'pending', not 'pass'",
+            "dimension": "literature_novelty",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "no theorem-grade certificate verdict artifact is registered",
+            "dimension": "rigorous_certificate",
+            "status": "not_run"
+          },
+          {
+            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "dimension": "unresolved_contradictions",
+            "status": "scientifically_unresolved"
+          }
+        ],
+        "ready": false,
+        "required_dimensions": [
+          "source_data_lineage",
+          "spec_conformance",
+          "orbit_sheet_identity",
+          "numerical_correction",
+          "direct_continuation_topology",
+          "physical_formulation_independence",
+          "conditioning_margin",
+          "truth_known_calibration",
+          "mutation_metamorphic_coverage",
+          "blind_n_version",
+          "platform_systematics_envelope",
+          "literature_novelty",
+          "rigorous_certificate",
+          "unresolved_contradictions"
+        ]
+      },
+      "secondary-minus-one-fold": {
+        "blockers": [
+          {
+            "detail": "no source-lineage verdict artifact is registered",
+            "dimension": "source_data_lineage",
+            "status": "not_run"
+          },
+          {
+            "detail": "claim has no registered orbit/sheet identity evidence",
+            "dimension": "orbit_sheet_identity",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "no independent physical formulation is registered for this claim",
+            "dimension": "physical_formulation_independence",
+            "status": "not_run"
+          },
+          {
+            "detail": "no conditioning-margin verdict artifact is registered",
+            "dimension": "conditioning_margin",
+            "status": "not_run"
+          },
+          {
+            "detail": "no truth-known calibration verdict artifact is registered",
+            "dimension": "truth_known_calibration",
+            "status": "not_run"
+          },
+          {
+            "detail": "no claim-level mutation verdict artifact is registered",
+            "dimension": "mutation_metamorphic_coverage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no blind N-version evidence is registered for this claim",
+            "dimension": "blind_n_version",
+            "status": "not_run"
+          },
+          {
+            "detail": "no platform-systematics verdict artifact is registered",
+            "dimension": "platform_systematics_envelope",
+            "status": "not_run"
+          },
+          {
+            "detail": "novelty status is 'pending', not 'pass'",
+            "dimension": "literature_novelty",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "no theorem-grade certificate verdict artifact is registered",
+            "dimension": "rigorous_certificate",
+            "status": "not_run"
+          },
+          {
+            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "dimension": "unresolved_contradictions",
+            "status": "scientifically_unresolved"
+          }
+        ],
+        "ready": false,
+        "required_dimensions": [
+          "source_data_lineage",
+          "spec_conformance",
+          "orbit_sheet_identity",
+          "numerical_correction",
+          "direct_continuation_topology",
+          "physical_formulation_independence",
+          "conditioning_margin",
+          "truth_known_calibration",
+          "mutation_metamorphic_coverage",
+          "blind_n_version",
+          "platform_systematics_envelope",
+          "literature_novelty",
+          "rigorous_certificate",
+          "unresolved_contradictions"
+        ]
+      },
+      "three-mixed-organizers": {
+        "blockers": [
+          {
+            "detail": "no source-lineage verdict artifact is registered",
+            "dimension": "source_data_lineage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no conditioning-margin verdict artifact is registered",
+            "dimension": "conditioning_margin",
+            "status": "not_run"
+          },
+          {
+            "detail": "no truth-known calibration verdict artifact is registered",
+            "dimension": "truth_known_calibration",
+            "status": "not_run"
+          },
+          {
+            "detail": "no claim-level mutation verdict artifact is registered",
+            "dimension": "mutation_metamorphic_coverage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no platform-systematics verdict artifact is registered",
+            "dimension": "platform_systematics_envelope",
+            "status": "not_run"
+          },
+          {
+            "detail": "novelty status is 'pending', not 'pass'",
+            "dimension": "literature_novelty",
+            "status": "scientifically_unresolved"
+          },
+          {
+            "detail": "no theorem-grade certificate verdict artifact is registered",
+            "dimension": "rigorous_certificate",
+            "status": "not_run"
+          },
+          {
+            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "dimension": "unresolved_contradictions",
+            "status": "scientifically_unresolved"
+          }
+        ],
+        "ready": false,
+        "required_dimensions": [
+          "source_data_lineage",
+          "spec_conformance",
+          "orbit_sheet_identity",
+          "numerical_correction",
+          "direct_continuation_topology",
+          "physical_formulation_independence",
+          "conditioning_margin",
+          "truth_known_calibration",
+          "mutation_metamorphic_coverage",
+          "blind_n_version",
+          "platform_systematics_envelope",
+          "literature_novelty",
+          "rigorous_certificate",
+          "unresolved_contradictions"
+        ]
+      }
+    }
+  }
+}
