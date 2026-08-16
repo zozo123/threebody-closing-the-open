@@ -1,0 +1,332 @@
+{
+  "$defs": {
+    "BoundaryCoordinate": {
+      "additionalProperties": false,
+      "properties": {
+        "axis": {
+          "title": "Axis",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "axis",
+        "value"
+      ],
+      "title": "BoundaryCoordinate",
+      "type": "object"
+    },
+    "EvidenceIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_sha256s": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Artifact Sha256S",
+          "type": "array"
+        },
+        "level": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Level"
+        },
+        "passed": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Passed"
+        },
+        "payload_sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Payload Sha256"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Status"
+        }
+      },
+      "title": "EvidenceIdentity",
+      "type": "object"
+    },
+    "MechanismEdge": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceIdentity"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        },
+        "mechanism": {
+          "title": "Mechanism",
+          "type": "string"
+        },
+        "multiplicity": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Multiplicity",
+          "type": "integer"
+        },
+        "orientation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Orientation"
+        },
+        "sheet_id": {
+          "title": "Sheet Id",
+          "type": "string"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "source_sector": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Sector"
+        },
+        "target": {
+          "title": "Target",
+          "type": "string"
+        },
+        "target_sector": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Sector"
+        }
+      },
+      "required": [
+        "id",
+        "source",
+        "target",
+        "kind",
+        "mechanism",
+        "sheet_id"
+      ],
+      "title": "MechanismEdge",
+      "type": "object"
+    },
+    "MechanismNode": {
+      "additionalProperties": false,
+      "properties": {
+        "boundary_coordinate": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BoundaryCoordinate"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "coordinates": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Coordinates"
+        },
+        "domain_face": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Domain Face"
+        },
+        "evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceIdentity"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "local_sectors": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Local Sectors",
+          "type": "array"
+        },
+        "mechanism": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mechanism"
+        },
+        "physical_class": {
+          "title": "Physical Class",
+          "type": "string"
+        },
+        "sheet_id": {
+          "title": "Sheet Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "physical_class",
+        "sheet_id"
+      ],
+      "title": "MechanismNode",
+      "type": "object"
+    }
+  },
+  "$id": "https://threebody-atlas.invalid/schema/atlas.mechanism-multigraph.v1.json",
+  "additionalProperties": false,
+  "properties": {
+    "coordinate_axes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Coordinate Axes",
+      "type": "array"
+    },
+    "coordinate_system": {
+      "title": "Coordinate System",
+      "type": "string"
+    },
+    "declared_domain": {
+      "additionalProperties": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "string"
+          }
+        ],
+        "type": "array"
+      },
+      "title": "Declared Domain",
+      "type": "object"
+    },
+    "edges": {
+      "items": {
+        "$ref": "#/$defs/MechanismEdge"
+      },
+      "title": "Edges",
+      "type": "array"
+    },
+    "nodes": {
+      "items": {
+        "$ref": "#/$defs/MechanismNode"
+      },
+      "title": "Nodes",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "atlas.mechanism-multigraph.v1",
+      "default": "atlas.mechanism-multigraph.v1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "coordinate_system",
+    "coordinate_axes",
+    "declared_domain",
+    "nodes",
+    "edges"
+  ],
+  "title": "ATLAS canonical sheet-aware mechanism multigraph",
+  "type": "object"
+}

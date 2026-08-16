@@ -1,0 +1,172 @@
+{
+  "baseline_canonical_sha256": {
+    "evidence_equivalent": "44d3730232dd6de28184a23b21ad1d9354ae0e4031de53993794bbe5003069f4",
+    "mechanism_labeled": "935c137bebf602836ea08fad4177da335c533bd6567f6ae5b0a5fc6a669d325c",
+    "oriented": "24cd20a7fb2b4530b188c01aeaa896e69d5e99d54742dc45fa913955712662dd",
+    "sheet_aware": "8c43a94baee711cf68bd0c895af99d88aae77c3773e9ff803e517bcb94bd23ff",
+    "topology_only": "4214f53b9c1284a6d929566c5413d57054accfc6762c7a7d3c1f4b721a25a69f"
+  },
+  "canonical_schema_sha256": "c38c516883c2a5ba2132fe815c9a992dc0c3ff75c979382280ff2e095e5e775e",
+  "case_count": 12,
+  "cases": [
+    {
+      "levels": {
+        "evidence_equivalent": {
+          "equivalent": true,
+          "mapping_size": 12,
+          "same_canonical_sha256": true
+        },
+        "mechanism_labeled": {
+          "equivalent": true,
+          "mapping_size": 12,
+          "same_canonical_sha256": true
+        },
+        "oriented": {
+          "equivalent": true,
+          "mapping_size": 12,
+          "same_canonical_sha256": true
+        },
+        "sheet_aware": {
+          "equivalent": true,
+          "mapping_size": 12,
+          "same_canonical_sha256": true
+        },
+        "topology_only": {
+          "equivalent": true,
+          "mapping_size": 12,
+          "same_canonical_sha256": true
+        }
+      },
+      "name": "id-and-input-order-invariance",
+      "passed": true
+    },
+    {
+      "baseline_sha256": "4214f53b9c1284a6d929566c5413d57054accfc6762c7a7d3c1f4b721a25a69f",
+      "equivalent": false,
+      "expected_difference": "added_edge",
+      "level": "topology_only",
+      "mutated_sha256": "8eec816db91542c07b5cf16f920106ddde737506c10cd67e58404118373681e5",
+      "name": "parallel-edge-added",
+      "observed_differences": [
+        "added_edge"
+      ],
+      "passed": true
+    },
+    {
+      "baseline_sha256": "4214f53b9c1284a6d929566c5413d57054accfc6762c7a7d3c1f4b721a25a69f",
+      "equivalent": false,
+      "expected_difference": "removed_edge",
+      "level": "topology_only",
+      "mutated_sha256": "7fcb3cbaa4da294bd4a2afa431489dc0bd9cd9cb91940f2a58a1976ba410fc17",
+      "name": "edge-removed",
+      "observed_differences": [
+        "removed_edge"
+      ],
+      "passed": true
+    },
+    {
+      "baseline_sha256": "4214f53b9c1284a6d929566c5413d57054accfc6762c7a7d3c1f4b721a25a69f",
+      "equivalent": false,
+      "expected_difference": "changed_endpoint",
+      "level": "topology_only",
+      "mutated_sha256": "16c95a6658b9ee9172a4e0c9e7446d6a19d0723c993359e9b46b810a94f55512",
+      "name": "endpoint-rewired",
+      "observed_differences": [
+        "changed_endpoint"
+      ],
+      "passed": true
+    },
+    {
+      "baseline_sha256": "935c137bebf602836ea08fad4177da335c533bd6567f6ae5b0a5fc6a669d325c",
+      "equivalent": false,
+      "expected_difference": "changed_mechanism",
+      "level": "mechanism_labeled",
+      "mutated_sha256": "a5e4f63a2ea0298bc4c411997e1503636568dba4607d499ba84aa640b064654a",
+      "name": "active-mechanism-changed",
+      "observed_differences": [
+        "changed_mechanism"
+      ],
+      "passed": true
+    },
+    {
+      "baseline_sha256": "24cd20a7fb2b4530b188c01aeaa896e69d5e99d54742dc45fa913955712662dd",
+      "equivalent": false,
+      "expected_difference": "orientation_flip",
+      "level": "oriented",
+      "mutated_sha256": "cabedbc56f300286ee7febba51d4df55883111dc80b9f4c1f1a6672d4e59f48d",
+      "name": "orientation-flipped",
+      "observed_differences": [
+        "orientation_flip"
+      ],
+      "passed": true
+    },
+    {
+      "baseline_sha256": "8c43a94baee711cf68bd0c895af99d88aae77c3773e9ff803e517bcb94bd23ff",
+      "equivalent": false,
+      "expected_difference": "sheet_reassignment",
+      "level": "sheet_aware",
+      "mutated_sha256": "8e02b6518324358228e901a32dd8334b18a5e25a74b99cc5e73f017caeeab3ff",
+      "name": "node-sheet-reassigned",
+      "observed_differences": [
+        "sheet_reassignment"
+      ],
+      "passed": true
+    },
+    {
+      "baseline_sha256": "4214f53b9c1284a6d929566c5413d57054accfc6762c7a7d3c1f4b721a25a69f",
+      "equivalent": false,
+      "expected_difference": "node_split",
+      "level": "topology_only",
+      "mutated_sha256": "ab472c275004437ea0975f6a58299f090e5e221eaef7c4ce0021bee7df237ee6",
+      "name": "node-split",
+      "observed_differences": [
+        "node_split"
+      ],
+      "passed": true
+    },
+    {
+      "baseline_sha256": "4214f53b9c1284a6d929566c5413d57054accfc6762c7a7d3c1f4b721a25a69f",
+      "equivalent": false,
+      "expected_difference": "node_merge",
+      "level": "topology_only",
+      "mutated_sha256": "cce6e97743167bd7e7e405dcd890bef123fcd9a5b14323ad1c5b70fdfe8bc992",
+      "name": "nodes-merged",
+      "observed_differences": [
+        "node_merge"
+      ],
+      "passed": true
+    },
+    {
+      "baseline_sha256": "44d3730232dd6de28184a23b21ad1d9354ae0e4031de53993794bbe5003069f4",
+      "equivalent": false,
+      "expected_difference": "evidence_changed",
+      "level": "evidence_equivalent",
+      "mutated_sha256": "948a9139699fbc74b6e99814f4b238a3e1e5c7c34a19333b81c5d2831233ba61",
+      "name": "evidence-content-substituted",
+      "observed_differences": [
+        "evidence_changed"
+      ],
+      "passed": true
+    },
+    {
+      "name": "coordinate-tolerance-after-physical-identity",
+      "outside_differences": [
+        "coordinate_shift"
+      ],
+      "outside_tolerance_equivalent": false,
+      "passed": true,
+      "within_tolerance_equivalent": true
+    },
+    {
+      "evidence_equivalent": false,
+      "name": "evidence-excluded-from-pure-graph-levels",
+      "passed": true,
+      "sheet_aware_equivalent": true
+    }
+  ],
+  "generated_on": "2026-08-16",
+  "passed": true,
+  "schema": "atlas.graph-isomorphism-mutation-audit.v1",
+  "source_graph": "research/evidence/V1_CRITICAL_GRAPH.json",
+  "source_graph_sha256": "a48f3f565b01c88635bf447569224f3f67fda7bb783a3f8a37ca3dab5bd62fb5"
+}
