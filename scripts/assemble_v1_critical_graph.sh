@@ -104,31 +104,62 @@
 # NOT relax anything, because every gate still runs inside the assembler.
 set -euo pipefail
 
+# LEFT_BIRTH and COMPLETENESS may be overridden by environment variable so
+# scripts/close_v1_gates.py can point this pinned invocation at the artifacts it
+# has just produced from live CI runs, rather than keeping a second evidence
+# list that could drift from this one.  Overriding relaxes nothing: every gate
+# still runs inside the assembler.
+#
+# PRINT_INPUTS=1 prints the evidence files this invocation would read, one per
+# line, and exits without assembling.  The closure runner uses it to hash every
+# assembler input for the provenance ledger without duplicating the list.
+LEFT_BIRTH="${LEFT_BIRTH:-research/evidence/V1_LEFT_BIRTH_CLASS_2026-08-16.json}"
+COMPLETENESS="${COMPLETENESS:-research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json}"
+
+EVIDENCE_ARGS=(
+  --roots research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json
+  --left-birth "$LEFT_BIRTH"
+  --right-death research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json
+  --daughter research/evidence/V1_DAUGHTER_CLASS_2026-08-16.json
+  --germs research/evidence/V1_MIXED_GERMS_PRINCIPAL_LEFT_2026-08-16.json
+  --germs research/evidence/V1_MIXED_GERMS_SECONDARY_LEFT_2026-08-16.json
+  --germs research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json
+  --germs research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json
+  --completeness "$COMPLETENESS"
+  --sign-topology research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json
+  --sign-topology research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json
+)
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$REPO_ROOT"
+
+if [[ "${PRINT_INPUTS:-0}" == "1" ]]; then
+  for index in "${!EVIDENCE_ARGS[@]}"; do
+    case "${EVIDENCE_ARGS[$index]}" in
+      --*) continue ;;
+      *) printf '%s\n' "${EVIDENCE_ARGS[$index]}" ;;
+    esac
+  done
+  exit 0
+fi
+
 if [[ $# -ne 1 ]]; then
   echo "usage: $(basename "$0") <output-path>" >&2
   exit 64
 fi
 
 OUTPUT="$1"
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$REPO_ROOT"
+case "$OUTPUT" in
+  /*) ;;
+  *) OUTPUT="$PWD/$OUTPUT" ;;
+esac
 
 # Relative evidence paths are load-bearing: the assembler stores str(path) in the
 # graph's "evidence" and "source_artifact" fields, so the emitted JSON only
 # reproduces byte-for-byte when these stay repo-relative and the cwd is the repo
-# root.  That is why this script cd's above.
+# root.  That is why this script cd's above, and why OUTPUT is absolutised first.
 read -r -a PYTHON_CMD <<<"${PYTHON:-uv run --no-sync python}"
 
 "${PYTHON_CMD[@]}" scripts/assemble_critical_graph.py \
   --output "$OUTPUT" \
-  --roots research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json \
-  --left-birth "${LEFT_BIRTH:-research/evidence/V1_LEFT_BIRTH_CLASS_2026-08-16.json}" \
-  --right-death research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json \
-  --daughter research/evidence/V1_DAUGHTER_CLASS_2026-08-16.json \
-  --germs research/evidence/V1_MIXED_GERMS_PRINCIPAL_LEFT_2026-08-16.json \
-  --germs research/evidence/V1_MIXED_GERMS_SECONDARY_LEFT_2026-08-16.json \
-  --germs research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json \
-  --germs research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json \
-  --completeness "${COMPLETENESS:-research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json}" \
-  --sign-topology research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json \
-  --sign-topology research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json
+  "${EVIDENCE_ARGS[@]}"
