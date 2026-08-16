@@ -768,9 +768,19 @@ def test_published_caveats_match_the_committed_evidence() -> None:
         if start and end:
             parent[find(start)] = find(end)
     components = {find(name) for name in incident}
-    assert len(components) > 1, "known_limitations claims the edge incidence is disconnected"
     isolated = [n["id"] for n in graph["nodes"] if n["id"] not in incident]
-    assert len(isolated) == 5
+    # These two assertions are tripwires, not permanent truths. When the four
+    # unclassified edge ends are genuinely closed the graph becomes connected
+    # and this test SHOULD fail -- the correct response is to update the
+    # known_limitations prose to match the new graph, never to relax the test.
+    assert len(components) > 1, (
+        "the committed graph's edge incidence is now connected; "
+        "update the 'assembled graph is not yet one connected object' limitation"
+    )
+    assert len(isolated) == 5, (
+        f"{len(isolated)} nodes now carry no edge incidence, not 5; "
+        "update the known_limitations wording to match"
+    )
     assert "five further declared nodes" in known
 
 
