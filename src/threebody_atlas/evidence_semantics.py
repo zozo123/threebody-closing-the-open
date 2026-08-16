@@ -85,6 +85,8 @@ def validate_registry(registry: Any) -> list[str]:
     if not isinstance(criteria, dict) or not criteria:
         errors.append("registry criteria must be a non-empty object")
         criteria = {}
+    if CERTIFICATE_CRITERION not in criteria:
+        errors.append(f"registry criteria must include {CERTIFICATE_CRITERION!r}")
     for criterion_id, item in criteria.items():
         if not isinstance(criterion_id, str) or not _VERSIONED_ID.fullmatch(criterion_id):
             errors.append(f"criterion id {criterion_id!r} must end in an explicit /vN")
@@ -99,6 +101,8 @@ def validate_registry(registry: Any) -> list[str]:
     if not isinstance(requirements, dict) or not requirements:
         errors.append("registry requirements must be a non-empty object")
         requirements = {}
+    if RELEASE_REQUIREMENT not in requirements:
+        errors.append(f"registry requirements must include {RELEASE_REQUIREMENT!r}")
     for requirement_id, item in requirements.items():
         if not isinstance(requirement_id, str) or not _VERSIONED_ID.fullmatch(requirement_id):
             errors.append(f"requirement id {requirement_id!r} must end in an explicit /vN")
@@ -143,12 +147,19 @@ def criterion_claims(registry: dict[str, Any], criterion_id: str) -> dict[str, b
     return claims
 
 
+def criterion_contract_digest(registry: dict[str, Any], criterion_id: str) -> str:
+    """Bind an artifact to every semantic field of one criterion version."""
+    criterion_claims(registry, criterion_id)
+    return _canonical_digest({"criterion": {criterion_id: registry["criteria"][criterion_id]}})
+
+
 def artifact_semantics(repo_root: Path, criterion_id: str) -> dict[str, Any]:
     """Return the canonical semantics block a new producer should emit."""
     registry = load_registry(repo_root)
     return {
         "criterion_id": criterion_id,
         "claim_scope": criterion_claims(registry, criterion_id),
+        "semantic_contract_sha256": criterion_contract_digest(registry, criterion_id),
     }
 
 
@@ -201,6 +212,13 @@ def classify_artifact(
         if actual != expected:
             raise SemanticContractError(
                 f"source {role!r} claim_scope disagrees with registry criterion {criterion_id!r}"
+            )
+    if isinstance(block, dict) and "semantic_contract_sha256" in block:
+        expected_digest = criterion_contract_digest(registry, criterion_id)
+        if block.get("semantic_contract_sha256") != expected_digest:
+            raise SemanticContractError(
+                f"source {role!r} semantic_contract_sha256 is stale for criterion "
+                f"{criterion_id!r}"
             )
     origin = "declared" if declared is not None else "frozen_binding" if bound else "legacy_role"
     return criterion_id, origin

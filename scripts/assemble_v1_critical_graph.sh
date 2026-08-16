@@ -91,11 +91,10 @@
 #                re-reads each declared source and recomputes its sha256, so editing
 #                a source after sealing -- or re-sealing over an edited source --
 #                fails.  A self-sealed record with no real sources also fails.
-#                Note the schema is /2 as of the tamper-evidence work: a /2
-#                record is only accepted if the assembler can re-read every
-#                source it names, re-hash it to the recorded sha256, and
-#                re-derive the AL and neck predicates itself.  Sealing alone
-#                proves nothing.
+#                A schema /3 record is only accepted if the assembler can re-read
+#                every source it names, re-hash it to the recorded sha256, re-derive
+#                the AL and neck predicates, and validate its semantic scope.
+#                Sealing alone proves nothing.
 #
 # LEFT_BIRTH and COMPLETENESS may be overridden by environment variable.  That
 # exists so scripts/close_v1_gates.py can point this pinned invocation at the

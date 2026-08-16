@@ -309,6 +309,7 @@ def test_the_shard_artifact_carries_the_probe_records_it_concluded_from():
     document = _document(probes)
     assert [p["m2"] for p in document["probes"]] == [p["m2"] for p in probes]
     assert all("alpha" in p and "beta" in p and "chart" in p for p in document["probes"])
+    assert len(document["search_semantics"]["semantic_contract_sha256"]) == 64
     # Round-tripping through JSON must not lose the evidence either.
     reloaded = json.loads(json.dumps(document))
     merged, _duplicates = MERGE.merge_probes([reloaded])
