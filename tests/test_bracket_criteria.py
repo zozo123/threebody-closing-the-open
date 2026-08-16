@@ -117,10 +117,11 @@ def _synthetic_slice():
     """alpha = 8, beta = 44 + s: G_minus = 32 + s crosses zero at s = -32.
 
     With alpha = 8 the trace polynomial is P(t) = t^2 - 4t + (beta - 24), so at
-    beta = 44 + s the trace roots are 2 +- sqrt(4 - (20 + s)) -- a real pair
-    straddling t = -2 as s passes -32, i.e. exactly one pair leaves the unit
-    circle while the other stays off it.  n_unstable steps 2 -> 1 and both rows
-    are therefore published U.
+    beta = 44 + s the trace roots are 2 +- sqrt(4 - (20 + s)).  As s rises past
+    -32 the lower root crosses t = -2 inwards, so that reciprocal pair returns to
+    the unit circle while the upper root sits at t ~ 6 and its pair stays off it.
+    n_unstable therefore steps 2 -> 1 with no row ever reaching 0, and every row
+    is published U.
     """
     out = []
     for k, s in enumerate((-36.0, -34.0, -32.5, -31.5, -30.0)):

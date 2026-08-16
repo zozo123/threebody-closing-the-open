@@ -334,6 +334,14 @@ def event_sign_brackets(
     keeps every sign change, since a spurious bracket is cheap (the localizer
     rejects it at the frozen gates) while a missed one is exactly the failure
     this module exists to prevent.
+
+    "Adjacent" means adjacent *in the supplied sequence*, so pass a contiguous
+    run of published rows.  A sparse or strided sample still yields correct
+    brackets, but wider ones, and it can merge two nearby crossings of the same
+    event into a single interval across which the sign does not change -- the
+    same even-crossing-count blindness every sign criterion has, now at the
+    sampling density rather than at the label.  Rows that fail closure are
+    skipped, which likewise widens the neighbouring interval.
     """
     for component in components:
         if component not in EVENT_COMPONENTS:
