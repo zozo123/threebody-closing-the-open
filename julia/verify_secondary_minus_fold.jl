@@ -41,8 +41,18 @@ end
 
 minus_event(s)=critical_event(s,"minus_one")
 
+const CORRECTED_CACHE=Dict{Any,Any}()
+const CORRECTED_CACHE_HITS=Ref(0)
+
 function corrected_at(m1,m2,m3,pguess;tol,target)
-    corrected_sample(m1,m2,m3,pguess;tol=tol,target=target)
+    key=(m1,m2,m3,tol,target)
+    if haskey(CORRECTED_CACHE,key)
+        CORRECTED_CACHE_HITS[]+=1
+        return CORRECTED_CACHE[key]
+    end
+    sample=corrected_sample(m1,m2,m3,pguess;tol=tol,target=target)
+    CORRECTED_CACHE[key]=sample
+    sample
 end
 
 function five_point_m2(center;h,tol,target)
@@ -175,6 +185,8 @@ function main()
     bits=ceil(Int,dps*log2(10))+32
 
     setprecision(BigFloat,bits) do
+        empty!(CORRECTED_CACHE)
+        CORRECTED_CACHE_HITS[]=0
         tol=parse(BigFloat,"1e-$(tol_exp)")
         target=parse(BigFloat,"1e-$(closure_exp)")
         event_target=parse(BigFloat,"1e-$(event_exp)")
@@ -225,6 +237,8 @@ function main()
                 "  \"discriminant\": \"",root.disc,"\",\n",
                 "  \"mass_shift_from_screening_seed\": \"",shift,"\",\n",
                 "  \"newton_iterations\": ",iters,",\n",
+                "  \"correction_cache_entries\": ",length(CORRECTED_CACHE),",\n",
+                "  \"correction_cache_hits\": ",CORRECTED_CACHE_HITS[],",\n",
                 "  \"stencil_audit\": ",audit_json(audit),",\n",
                 "  \"passed\": true\n",
                 "}\n")

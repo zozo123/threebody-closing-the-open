@@ -194,10 +194,17 @@ def validate_manifest(
                     continue
                 if graph.get("release_ready") is True:
                     ready = True
-                    digest = item.get("sha256")
-                    if digest:
+                    digest = str(item.get("sha256") or "").lower()
+                    valid_digest = len(digest) == 64 and all(
+                        character in "0123456789abcdef" for character in digest
+                    )
+                    if not valid_digest:
+                        errors.append(
+                            f"release-ready critical graph {item.get('path')} needs a hexadecimal sha256 digest"
+                        )
+                    else:
                         actual = sha256_file(graph_path)
-                        if str(digest).lower() != actual:
+                        if digest != actual:
                             errors.append(
                                 f"critical graph sha256 mismatch for {item.get('path')}: "
                                 f"manifest={digest} file={actual}"

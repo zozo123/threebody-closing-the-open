@@ -62,6 +62,8 @@ def from_julia(
     masses = row.get("masses")
     if masses is None:
         masses = [row.get("m1"), row.get("m2"), row.get("m3")]
+    source_run = row.get("source_run") or (provenance or {}).get("source_run")
+    source_sha = row.get("source_sha") or (provenance or {}).get("source_sha")
     out = {
         "cell_id": cell_id,
         "status": "ok" if passed else "missed_gate",
@@ -79,6 +81,8 @@ def from_julia(
         "estimator": "julia_bigfloat",
         "passed": passed,
         "source": "julia_bigfloat_vern9",
+        "source_run": source_run,
+        "source_sha": source_sha,
         "raw_bigfloat": {
             key: row.get(key)
             for key in (
@@ -98,8 +102,8 @@ def from_julia(
             if row.get(key) is not None
         },
         "provenance": {
-            "source_run": row.get("source_run") or (provenance or {}).get("source_run"),
-            "source_sha": row.get("source_sha") or (provenance or {}).get("source_sha"),
+            "source_run": source_run,
+            "source_sha": source_sha,
             "implementation": (provenance or {}).get("implementation") or row.get("implementation"),
             "dps": (provenance or {}).get("dps") or row.get("dps"),
         },
@@ -182,12 +186,9 @@ def main() -> None:
                 raise SystemExit(f"duplicate Julia result for cell {cell_id}")
             seen_julia.add(cell_id)
             screening = attempt_by_cell.get(cell_id)
-            if (
-                screening is not None
-                and screening.get("status") == "ok"
-                and cell_id in merged
-                and not args.audit
-            ):
+            if screening is None:
+                raise SystemExit(f"Julia cell {cell_id} has no original float64 attempt")
+            if screening.get("status") == "ok" and not args.audit:
                 raise SystemExit(
                     f"Julia may not replace accepted float64 cell {cell_id} without --audit"
                 )

@@ -121,6 +121,8 @@ def solve_seed(seed: dict, max_nfev: int) -> dict:
         "direct_nfev": int(result.nfev),
         "optimality": float(result.optimality),
         "cost": float(result.cost),
+        "optimizer_success": bool(result.optimizer_success),
+        "optimizer_message": result.optimizer_message,
         "mass_bounds": [list(mass_bounds[0]), list(mass_bounds[1])],
     }
 

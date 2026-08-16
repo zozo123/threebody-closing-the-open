@@ -39,9 +39,10 @@ Pass only when:
 
 - all 620 catalog S/U cells are localized and each belongs to exactly one mechanism-specific polyline;
 - mixed germs come from continuation artifacts, not nearby-root heuristics;
-- secondary-left birth and secondary-right death are classified (fold, mixed, or domain boundary);
+- secondary-left birth is classified as a fold, two-arc alternative, or mixed organizer;
+- secondary-right death is classified as a mixed organizer, fold, or declared domain boundary;
 - completeness is frozen;
-- the lower +1 daughter is not a v1-graph blocker unless it is shown to change this critical set;
+- the lower +1 daughter is classified, with `no_branch_attachment` accepted as a valid close;
 - no endpoint is `Newton failed`;
 - `research/evidence/V1_CRITICAL_GRAPH.json` reports `release_ready: true`.
 

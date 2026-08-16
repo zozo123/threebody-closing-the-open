@@ -25,7 +25,7 @@ These statements are allowed in the manuscript because they have independent con
 2. Secondary-left `G-` birth classified as a nondegenerate `m1`-projection fold or a documented alternative.
 3. Secondary-right death classified as a mixed organizer, separate folds, or a domain boundary. `Newton failed` is forbidden.
 4. Event-specific `+1`/`-1` continuation germs through every retained mixed node (not nearby-root heuristics).
-5. Lower `+1` daughter is a follow-up, not a v1-graph blocker, unless it changes the critical-set topology.
+5. Lower `+1` daughter classified as reconnecting, closed loop, distinct branch, obstruction, no branch attachment, or falsified.
 6. Completeness screens (neck, off-grid) frozen and negative at the declared resolution.
 7. `V1_CRITICAL_GRAPH.json` reports `release_ready: true`.
 8. Same-day novelty audit and `--require-solved` on the tagged commit.

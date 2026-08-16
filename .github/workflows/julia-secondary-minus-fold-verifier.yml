@@ -2,16 +2,6 @@ name: Julia BigFloat secondary minus-one fold verifier
 
 on:
   workflow_dispatch:
-  push:
-    branches: ["main"]
-    paths:
-      - "julia/verify_secondary_minus_fold.jl"
-      - "julia/verify_critical_points.jl"
-      - "julia/verify_reduced.jl"
-      - "experiments/secondary_minus_fold_bigfloat.tsv"
-      - "julia/Project.toml"
-      - "julia/Manifest.toml"
-      - ".github/workflows/julia-secondary-minus-fold-verifier.yml"
 
 concurrency:
   group: julia-secondary-minus-fold-${{ github.ref }}

@@ -155,22 +155,34 @@ def serialize(p: LocalizedCriticalPoint) -> dict[str, Any]:
     }
 
 
+def write_json_atomic(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    temporary.replace(path)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("brackets_tsv")
     parser.add_argument("output_json")
     parser.add_argument("output_seed_tsv")
     parser.add_argument("--seed-m1", type=float, default=1.042)
-    parser.add_argument("--m1-step", type=float, default=2e-5)
-    parser.add_argument("--steps", type=int, default=50)
+    parser.add_argument("--m1-step", type=float, default=1e-4)
+    parser.add_argument("--steps", type=int, default=12)
     parser.add_argument("--m2-min", type=float, default=1.0)
     parser.add_argument("--m2-max", type=float, default=1.07)
     parser.add_argument("--max-m2-jump", type=float, default=0.004)
+    parser.add_argument("--mixed-seed-m1", type=float, default=1.04306)
+    parser.add_argument("--mixed-seed-m2", type=float, default=1.04640)
+    parser.add_argument("--direct-max-nfev", type=int, default=250)
     args = parser.parse_args()
 
     with Path(args.brackets_tsv).open(encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle, delimiter="\t"))
-    candidates: dict[str, LocalizedCriticalPoint] = {}
+    for cell_id, row in enumerate(rows):
+        row["_cell_id"] = str(cell_id)
+    candidates: dict[str, tuple[LocalizedCriticalPoint, dict[str, str]]] = {}
     for row in rows:
         if abs(float(row["m1"]) - args.seed_m1) > 5e-10:
             continue
@@ -179,21 +191,70 @@ def main() -> None:
             continue
         modes = sign_modes(row)
         if len(modes) == 1 and modes[0] in ("plus_one", "minus_one"):
-            candidates[modes[0]] = localize(row, modes[0])
+            candidates[modes[0]] = (localize(row, modes[0]), row)
     if set(candidates) != {"plus_one", "minus_one"}:
         raise RuntimeError(f"did not isolate secondary +1/-1 seed roots: {sorted(candidates)}")
 
-    plus = candidates["plus_one"]
-    minus = candidates["minus_one"]
+    plus, plus_row = candidates["plus_one"]
+    minus, minus_row = candidates["minus_one"]
+    endpoint_bindings = [
+        {
+            "cell_id": int(plus_row["_cell_id"]),
+            "side": "end",
+            "mechanism": "plus_one",
+            "orientation": f'{plus_row["left_label"]}->{plus_row["right_label"]}',
+        },
+        {
+            "cell_id": int(minus_row["_cell_id"]),
+            "side": "end",
+            "mechanism": "minus_one",
+            "orientation": f'{minus_row["left_label"]}->{minus_row["right_label"]}',
+        },
+    ]
+    direct_attempt_errors: list[str] = []
+    direct = None
+    initial_seed = 0.5 * (vector(plus) + vector(minus))
+    # Put the two free masses at the recorded wall-interpolation hypothesis.
+    # Averaging the separated wall masses seeds m2 about 5.7e-3 below the
+    # predicted intersection and needlessly spends the direct Newton budget.
+    initial_seed[4] = args.mixed_seed_m1
+    initial_seed[5] = args.mixed_seed_m2
+    try:
+        direct = solve_direct_vertex(
+            initial_seed,
+            "mixed_plus_minus_one",
+            m3=1.0,
+            mass_bounds=((1.0415, 1.0435), (1.02, 1.06)),
+            max_nfev=args.direct_max_nfev,
+        )
+    except Exception as exc:
+        direct_attempt_errors.append(f"initial_midpoint: {type(exc).__name__}: {exc}")
+
     approach: list[dict[str, Any]] = []
     best_pair = (float("inf"), plus, minus)
     continuation_error: str | None = None
-    for step in range(args.steps + 1):
+    requested_steps = 0 if direct is not None else args.steps
+    output_path = Path(args.output_json)
+    for step in range(requested_steps + 1):
         gap = float(np.linalg.norm(np.asarray(plus.sample.point.masses[:2]) - np.asarray(minus.sample.point.masses[:2])))
         approach.append({"step": step, "plus": serialize(plus), "minus": serialize(minus), "mass_gap": gap})
         if gap < best_pair[0]:
             best_pair = (gap, plus, minus)
-        if step == args.steps:
+        write_json_atomic(
+            output_path,
+            {
+                "claim_status": "partial checkpoint; endpoint classification forbidden",
+                "completed_wall_continuation": False,
+                "closest_approach_mass_gap": best_pair[0],
+                "continuation_error": continuation_error,
+                "approach": approach,
+                "direct_candidate": None,
+                "direct_attempt_errors": direct_attempt_errors,
+                "initial_mixed_seed": [float(value) for value in initial_seed],
+                "edge_endpoint_bindings": endpoint_bindings,
+            },
+        )
+        if step == requested_steps:
             break
         target_m1 = args.seed_m1 + (step + 1) * args.m1_step
         try:
@@ -214,30 +275,41 @@ def main() -> None:
         "approach": approach,
         "direct_candidate": None,
         "direct_error": None,
+        "direct_attempt_errors": direct_attempt_errors,
+        "initial_mixed_seed": [float(value) for value in initial_seed],
+        "completed_wall_continuation": True,
+        "edge_endpoint_bindings": endpoint_bindings,
     }
-    Path(args.output_json).parent.mkdir(parents=True, exist_ok=True)
 
-    seed = 0.5 * (vector(close_plus) + vector(close_minus))
-    try:
-        direct = solve_direct_vertex(
-            seed,
-            "mixed_plus_minus_one",
-            m3=1.0,
-            mass_bounds=((1.0415, 1.0435), (1.02, 1.06)),
-            max_nfev=100,
-        )
-    except Exception as exc:
-        result["direct_error"] = f"{type(exc).__name__}: {exc}"
-        Path(args.output_json).write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
-        print(json.dumps({
-            "closest_approach_mass_gap": closest_gap,
-            "continuation_error": continuation_error,
-            "direct_error": result["direct_error"],
-        }, indent=2))
-        raise SystemExit(1) from exc
+    if direct is None:
+        seed = 0.5 * (vector(close_plus) + vector(close_minus))
+        try:
+            direct = solve_direct_vertex(
+                seed,
+                "mixed_plus_minus_one",
+                m3=1.0,
+                mass_bounds=((1.0415, 1.0435), (1.02, 1.06)),
+                max_nfev=args.direct_max_nfev,
+            )
+        except Exception as exc:
+            result["direct_error"] = f"{type(exc).__name__}: {exc}"
+            result["direct_attempt_errors"].append(
+                f"closest_approach: {result['direct_error']}"
+            )
+            write_json_atomic(output_path, result)
+            print(json.dumps({
+                "closest_approach_mass_gap": closest_gap,
+                "continuation_error": continuation_error,
+                "direct_error": result["direct_error"],
+            }, indent=2))
+            raise SystemExit(1) from exc
+
+    if direct is None:  # Defensive type narrowing; both solve paths returned above on failure.
+        raise RuntimeError("mixed solver returned no result")
 
     result["claim_status"] = "float64 direct mixed candidate only; independent Julia BigFloat/canonical verification required"
     result["direct_candidate"] = {
+        "success": True,
         "masses": [float(x) for x in direct.point.masses],
         "x1": float(direct.point.x1),
         "v1": float(direct.point.v1),
@@ -249,8 +321,10 @@ def main() -> None:
         "event_values": [float(x) for x in direct.event_values],
         "invariant_error": float(direct.invariant_error),
         "nfev": int(direct.nfev),
+        "optimizer_success": bool(direct.optimizer_success),
+        "optimizer_message": direct.optimizer_message,
     }
-    Path(args.output_json).write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    write_json_atomic(output_path, result)
 
     q = direct.point
     with Path(args.output_seed_tsv).open("w", encoding="utf-8", newline="") as handle:

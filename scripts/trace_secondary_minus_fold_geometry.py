@@ -53,6 +53,26 @@ def orientation(row: dict[str, str]) -> str:
     return f'{row["left_label"]}->{row["right_label"]}'
 
 
+def select_secondary_pair(
+    roots: list[tuple[str, dict[str, str], LocalizedCriticalPoint]],
+) -> tuple[
+    tuple[str, dict[str, str], LocalizedCriticalPoint],
+    tuple[str, dict[str, str], LocalizedCriticalPoint],
+]:
+    """Select the first adjacent stable interval, never the slice extremes."""
+    pairs = [
+        (lower, upper)
+        for lower, upper in zip(roots, roots[1:], strict=False)
+        if lower[0] == "U->S" and upper[0] == "S->U"
+    ]
+    if not pairs:
+        raise RuntimeError(
+            "expected an adjacent U->S / S->U secondary pair; "
+            f"found {[item[0] for item in roots]}"
+        )
+    return pairs[0]
+
+
 def localize_minus(row: dict[str, str]) -> LocalizedCriticalPoint:
     left = family_point(row, "left")
     right = family_point(row, "right")
@@ -265,6 +285,8 @@ def main() -> None:
 
     with Path(args.brackets_tsv).open(encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle, delimiter="\t"))
+    for cell_id, row in enumerate(rows):
+        row["_cell_id"] = str(cell_id)
 
     def minus_roots_at(target_m1: float) -> list[tuple[str, dict[str, str], LocalizedCriticalPoint]]:
         found: list[tuple[str, dict[str, str], LocalizedCriticalPoint]] = []
@@ -280,12 +302,21 @@ def main() -> None:
 
     seed_rows = minus_roots_at(args.seed_m1)
     orientation_rows = minus_roots_at(args.orientation_m1)
-    if len(seed_rows) < 2:
-        raise RuntimeError(f"expected two secondary minus-one roots at m1={args.seed_m1}, found {len(seed_rows)}")
-    lower_seed = seed_rows[0][2]
-    upper_seed = seed_rows[-1][2]
-    lower_orient = orientation_rows[0][2] if len(orientation_rows) >= 2 else None
-    upper_orient = orientation_rows[-1][2] if len(orientation_rows) >= 2 else None
+    lower_seed_row, upper_seed_row = select_secondary_pair(seed_rows)
+    lower_seed = lower_seed_row[2]
+    upper_seed = upper_seed_row[2]
+
+    def nearby_orientation_seed(
+        kind: str, seed: LocalizedCriticalPoint
+    ) -> LocalizedCriticalPoint | None:
+        candidates = [item[2] for item in orientation_rows if item[0] == kind]
+        if not candidates:
+            return None
+        nearest = min(candidates, key=lambda point: mass_gap(point, seed))
+        return nearest if mass_gap(nearest, seed) <= 0.02 else None
+
+    lower_orient = nearby_orientation_seed("U->S", lower_seed)
+    upper_orient = nearby_orientation_seed("S->U", upper_seed)
 
     lower_branch, lower_reason = descend_branch(
         lower_seed,
@@ -366,7 +397,32 @@ def main() -> None:
         "seed_orientations": [x[0] for x in seed_rows],
         "orientation_seed_count": len(orientation_rows),
         "trace_error": trace_error,
-        "localized_seeds": [record(lower_seed), record(upper_seed)],
+        "localized_seeds": [
+            {
+                **record(lower_seed),
+                "source_cell_id": int(lower_seed_row[1]["_cell_id"]),
+                "orientation": lower_seed_row[0],
+            },
+            {
+                **record(upper_seed),
+                "source_cell_id": int(upper_seed_row[1]["_cell_id"]),
+                "orientation": upper_seed_row[0],
+            },
+        ],
+        "edge_endpoint_bindings": [
+            {
+                "cell_id": int(lower_seed_row[1]["_cell_id"]),
+                "side": "start",
+                "mechanism": MODE,
+                "orientation": lower_seed_row[0],
+            },
+            {
+                "cell_id": int(upper_seed_row[1]["_cell_id"]),
+                "side": "start",
+                "mechanism": MODE,
+                "orientation": upper_seed_row[0],
+            },
+        ],
         "fixed_m1_descent": {
             "m1_step": args.m1_step,
             "lower": [record(x) for x in lower_branch],

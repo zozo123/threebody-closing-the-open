@@ -1,13 +1,17 @@
 {
   "id": "secondary_left_birth",
   "kind": "endpoint",
-  "class": "two_separate_arcs",
-  "passed": true,
-  "status": "classified_from_geometry_screen",
+  "class": null,
+  "passed": false,
+  "status": "invalidated_wrong_branch_pair",
   "estimator": "float64_geometry_screen",
-  "note": "Two G- roots exist at the birth slice and the fold/reconnection screen failed; fold hypothesis falsified at this resolution.",
+  "evidence_level": "invalid",
+  "requires_independent_verification": true,
+  "note": "Invalidated on audit: the geometry screen selected the lowest and highest minus-one roots at m1=0.996 and skipped the intervening S->U secondary-lobe wall. No endpoint class follows from that run. The corrected adjacent U->S / S->U continuation must be rerun.",
   "source_claim_status": "event-specific float64/JAX-derivative geometry screen; independent BigFloat fold/nondegeneracy verification required",
   "generic_m1_fold_screen": false,
   "opposite_branch_reconnection_screen": false,
-  "trace_error": null
+  "trace_error": null,
+  "invalidated_reason": "wrong_branch_pair",
+  "invalidated_by": "adjacent-orientation audit"
 }

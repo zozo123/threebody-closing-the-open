@@ -11,7 +11,7 @@
     "baseline": "Li, Li & Liao (2021), arXiv:2007.10184 / Science China Physics, Mechanics & Astronomy 64, 219511. The published 135,445-orbit catalog and its 13,315 stable labels are baseline facts, not ATLAS discoveries."
   },
   "decision": {
-    "summary": "OPEN. Gate C passed: one continuation-connected family; the 2023 two-set plot is a folded projection. Gate A passed for the mechanism words the paper is allowed to use: physical +1 crossing, opposite-Krein Hamiltonian-Hopf, and three mixed (4,4) organizers. Gate B pending: 620-cell census, left birth XOR, right death XOR, mixed germs, and bounded completeness. The daughter is deferred and not required to close the v1 graph. Gate D pending.",
+    "summary": "OPEN. Gate C passed: one continuation-connected family; the 2023 two-set plot is a folded projection. Gate A passed for the mechanism words the paper is allowed to use: physical +1 crossing, opposite-Krein Hamiltonian-Hopf, and three mixed (4,4) organizers. The 620-cell census is complete and assigned to seven slice-connected mechanism polylines; all twelve mixed germs are frozen. Gate B still requires the corrected left birth, right death, daughter class, and bounded completeness. Gate D remains pending.",
     "solved_at": null
   },
   "gates": [
@@ -170,10 +170,9 @@
     }
   ],
   "blockers": [
-    "Localize all 620 S/U cells and assign each to exactly one mechanism polyline (#109 / #126).",
     "Classify the secondary-left G- birth (#110).",
     "Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127).",
-    "Attach +1/-1 arcs through the three known mixed roots (#114).",
+    "Classify the lower +1 daughter, including no_branch_attachment as a valid close.",
     "Freeze completeness (neck raster) and flip release_ready only via the assembler (#116 / #128).",
     "Then #118: same-day novelty, manuscript from release_claim records, --require-solved."
   ],
@@ -402,7 +401,7 @@
       "kind": "repository_file",
       "role": "critical_graph",
       "path": "research/evidence/V1_CRITICAL_GRAPH.json",
-      "description": "Partial v1 critical graph: headline nodes frozen; 620 cells are samples not edges; left birth, right death, mixed germs, and completeness still open. Daughter is deferred and not a v1-graph blocker. release_ready is false."
+      "description": "Partial v1 critical graph: all 620 cells are assigned exactly once to seven slice-connected mechanism polylines and all twelve continuation germs are present. Four secondary edge ends, the daughter class, and completeness remain open; release_ready is false."
     },
     {
       "id": "al-pocket-screen",

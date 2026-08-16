@@ -115,6 +115,15 @@ def test_solved_manifest_requires_assembler_release_ready() -> None:
         validate_manifest(manifest, ROOT, today=date(2026, 8, 15))
 
 
+def test_solved_manifest_requires_hashed_release_ready_graph() -> None:
+    manifest = _closed_manifest()
+    for item in manifest["evidence"]:
+        if item.get("id") == "critical-graph-fixture":
+            item.pop("sha256")
+    with pytest.raises(DiscoveryValidationError, match="needs a hexadecimal sha256"):
+        validate_manifest(manifest, ROOT, today=date(2026, 8, 15))
+
+
 def test_solved_manifest_requires_fresh_novelty_search() -> None:
     manifest = _closed_manifest()
     manifest["novelty"]["last_search_date"] = "2026-08-01"
