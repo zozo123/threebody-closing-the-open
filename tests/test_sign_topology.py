@@ -387,9 +387,11 @@ def test_two_uncommitted_curves_cross_where_the_graph_has_a_dangling_endpoint():
     At m1 = 0.925 the minus_one zero lies below the plus_one zero; by
     m1 = 0.9295 the order has reversed.  Two continuous curves that swap order
     have crossed, and at the crossing P(+2) = P(-2) = 0 simultaneously -- a
-    codimension-two organizer with reduced multipliers {+1, +1, -1, -1}.  The
-    committed graph has no node there; it has plus_one_u_to_s_0's unclassified
-    dangling endpoint instead.
+    codimension-two organizer with reduced multipliers {+1, +1, -1, -1}.
+    That crossing is mixed_principal_left (m1 = 0.929239).  Reconstructing
+    polylines from sample cells alone left a one-step hole at 0.9295; the
+    auditor now extends each incident edge to the organizer, so the
+    committed plus_one sweep covers the reversal.
     """
     crossing = json.loads(SHIPPED_CROSSING.read_text())
     certified: dict[tuple[float, str], float] = {}
@@ -413,9 +415,49 @@ def test_two_uncommitted_curves_cross_where_the_graph_has_a_dangling_endpoint():
     assert plus_at_925 is not None
     assert minus_at_925 < plus_at_925
 
-    # ... and no committed edge covers the reversal
+    # the catalog plus_one arc still stops at the organizer; the event-sign
+    # continuation, extended to mixed_principal_left, covers 0.9295
     assert plus_edge.m1_max < 0.9295
-    assert all(e.m2_at(0.9295) is None or e.m2_at(0.9295) > 0.9 for e in edges)
+    sweep = next(e for e in edges if e.edge_id == "plus_one_sweep_component_10")
+    assert sweep.m2_at(0.9295) is not None
+    assert abs(sweep.m2_at(0.9295) - plus_at_9295) < 0.002
+
+
+def test_auditor_extends_polylines_through_mixed_organizers() -> None:
+    """A 0.001 hole next to a named mixed vertex is not a missing curve."""
+    graph = {
+        "edges": [
+            {
+                "id": "plus_one_left",
+                "kind": "mechanism_polyline",
+                "mechanism": "plus_one",
+                "cell_ids": [0],
+                "endpoints": {"start": {}, "end": {"node": "mixed_principal_left"}},
+            },
+            {
+                "id": "plus_one_right",
+                "kind": "mechanism_polyline",
+                "mechanism": "plus_one",
+                "cell_ids": [1],
+                "endpoints": {"start": {"node": "mixed_principal_left"}, "end": {}},
+            },
+        ],
+        "nodes": [
+            {
+                "id": "mixed_principal_left",
+                "kind": "mixed_organizer",
+                "masses": [0.929239, 0.885366, 1.0],
+            }
+        ],
+    }
+    roots = [
+        {"cell_id": 0, "masses": [0.929, 0.88508, 1.0]},
+        {"cell_id": 1, "masses": [0.930, 0.88627, 1.0]},
+    ]
+    edges = AST.edges_from_graph(graph, roots)
+    right = next(e for e in edges if e.edge_id == "plus_one_right")
+    assert right.m1_min == pytest.approx(0.929239)
+    assert right.m2_at(0.9295) == pytest.approx(0.885676, abs=1e-4)
 
 
 @pytest.mark.skipif(not SHIPPED_CROSSING.exists(), reason="crossing artifact not present")
