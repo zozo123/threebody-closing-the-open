@@ -15,10 +15,10 @@ permissions:
 
 jobs:
   reproduce-label-invisible-roots:
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-latest
     timeout-minutes: 240
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
       - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
@@ -63,7 +63,7 @@ jobs:
           assert len(corridor['results']) == 17, len(corridor['results'])
           print('independent BigFloat roots verified:', 1 + len(corridor['results']))
           PY
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: label-invisible-bigfloat-${{ github.sha }}
