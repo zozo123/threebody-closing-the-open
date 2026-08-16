@@ -110,10 +110,23 @@ also why it has never fired.
 ## What this does and does not invalidate
 
 **Does not**: the root *locations*.  A root's `m2` error from an event error is
-`|dEvent| / |dEvent/dm2|`.  With `|dEvent/dm2|` of order 1-50 on the arcs
-measured in this branch, an event error of 1e-6 displaces the root by ~1e-7 in
-`m2`, against cell widths of 1e-3.  The brackets, the sign changes, the 620/620
-localization, and the S/U transition structure are not challenged by this.
+`|dEvent| / |dEvent/dm2|`, and `dEvent/dm2` is exactly what
+`mass_sensitivity.py` computes.  Measured at the worst-conditioned cells:
+
+```
+cell  79  ||M||=1.9e4  dEvent/dm2 = -441.10   1e-6 event error -> 2.3e-09 in m2
+cell  96  ||M||=1.9e4  dEvent/dm2 = +117.80   1e-6 event error -> 8.5e-09 in m2
+cell  36  ||M||=2.3e4  dEvent/dm2 = +250.30   1e-6 event error -> 4.0e-09 in m2
+cell 112  ||M||=1.5e4  dEvent/dm2 = +101.59   1e-6 event error -> 9.8e-09 in m2
+cell 158  ||M||=7.7e3  dEvent/dm2 = +111.19   1e-6 event error -> 9.0e-09 in m2
+cell 192  ||M||=5.2e3  dEvent/dm2 = +133.42   1e-6 event error -> 7.5e-09 in m2
+```
+
+against cell widths of `1e-3`: five to six orders of margin.  The stiff cells
+are, if anything, the *best* conditioned in the `m2 -> event` direction -- the
+large `||M||` that wrecks the certificate also makes the event steep.  The
+brackets, the sign changes, the 620/620 localization, and the S/U transition
+structure are not challenged by this.
 
 **Does**: any claim of the form "this root satisfies `|event| <= 2e-8`" for a
 float64-estimated root with large `||M||`, and the use of `max |event|` as a
@@ -142,6 +155,27 @@ that; 462 do not.  This audit quantifies what the missing 462 actually cost.
    as `M` -- e.g. accumulate `sum_ij M_ij M_ji` in compensated (Kahan/two-product)
    arithmetic, which costs nothing next to the integration and recovers most of
    the lost digits.
+
+## The obvious objection, and the answer
+
+*"The recorded event came from `_precise_evaluate` at `rtol = 5e-13`, at that
+same chart, with that same code.  Your `rtol = 5e-13` row should therefore
+reproduce it bit for bit.  It doesn't, so your setup differs from theirs."*
+
+Correct that it doesn't reproduce, and I cannot fully account for the
+provenance difference: this run uses numpy 2.5.2 / scipy 1.18.0, and some roots
+went through the hybrid/augmented continuation whose event is evaluated at
+`screening_rtol = 3e-10`, not `5e-13`.  Either could explain a *different*
+answer.
+
+But the objection does not touch the load-bearing observation, which needs no
+provenance at all: **the value does not converge under tolerance refinement.**
+Cell 79 goes `+7.5e-7 -> -7.4e-7 -> -2.5e-6` as `rtol` goes `5e-13 -> 1e-13 ->
+3e-14`.  Truncation error shrinks monotonically under refinement; round-off does
+not.  A quantity whose answer moves by 3e-6 when you *improve* the integration
+is not determined to 2e-8 by that integration, whoever runs it.  Indeed, the
+fact that a different scipy build gives a different answer at the same tolerance
+is the finding restated, not a rebuttal of it.
 
 ## Honest limits of this audit
 
