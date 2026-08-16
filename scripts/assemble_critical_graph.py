@@ -27,11 +27,6 @@ except ModuleNotFoundError:  # running from a source checkout without an install
     from threebody_atlas.completeness import verification_report
     from threebody_atlas.conditioning import summarize_conditioning
 
-# The frozen event gate, mirrored here for reporting only.  It is never used to
-# relax any acceptance decision and may only ever be made stricter.
-EVENT_GATE = 2e-8
-
-
 REQUIRED_HEADLINE_IDS = (
     "mixed_principal_left",
     "mixed_secondary_left",

@@ -441,7 +441,11 @@ def _loosen_classifier_event_gate(tree: Path) -> None:
         "src/threebody_atlas/critical_manifold.py",
         "event_tolerance: float = 2e-8",
         "event_tolerance: float = 2e-7",
-        count=2,
+        # 3 since the conditioning work added a third entry point carrying the
+        # same default.  The count is asserted, not inferred, so that a NEW
+        # declaration of the gate cannot appear without this mutation being
+        # re-checked against it.
+        count=3,
     )
 
 
