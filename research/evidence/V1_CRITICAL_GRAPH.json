@@ -396,7 +396,11 @@
             0.8873042213883066,
             1.0
           ],
-          "node": null
+          "node": "mixed_principal_left",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.0018702612485896907,
+          "germ_direction": "-",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_LEFT_2026-08-16.json"
         },
         "end": {
           "cell_id": 592,
@@ -405,9 +409,13 @@
             1.128527000337954,
             1.0
           ],
-          "node": null
+          "node": "mixed_principal_right",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.0006769572312035477,
+          "germ_direction": "-",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json"
         },
-        "classified": false
+        "classified": true
       }
     },
     {
@@ -444,7 +452,11 @@
             0.9645756252404868,
             1.0
           ],
-          "node": null
+          "node": "mixed_secondary_left",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.006837449100337747,
+          "germ_direction": "-",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_SECONDARY_LEFT_2026-08-16.json"
         },
         "classified": false
       }
@@ -704,9 +716,13 @@
             0.8850799079881937,
             1.0
           ],
-          "node": null
+          "node": "mixed_principal_left",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.00019940499810883135,
+          "germ_direction": "-",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_LEFT_2026-08-16.json"
         },
-        "classified": false
+        "classified": true
       }
     },
     {
@@ -779,7 +795,11 @@
             0.9562525449533762,
             1.0
           ],
-          "node": null
+          "node": "mixed_secondary_left",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.0003770985337341274,
+          "germ_direction": "-",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_SECONDARY_LEFT_2026-08-16.json"
         },
         "end": {
           "cell_id": 576,
@@ -793,7 +813,7 @@
           "binding_class": "mixed_organizer",
           "binding_evidence": "research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json"
         },
-        "classified": false
+        "classified": true
       }
     },
     {
@@ -843,7 +863,11 @@
             1.131789193875551,
             1.0
           ],
-          "node": null
+          "node": "mixed_principal_right",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.0016454247413813707,
+          "germ_direction": "-",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json"
         },
         "end": {
           "cell_id": 619,
@@ -857,7 +881,7 @@
           "domain_face": "domain_m2_max",
           "distance_to_domain_face": 3.9744646735506706e-05
         },
-        "classified": false
+        "classified": true
       }
     },
     {
@@ -1167,26 +1191,20 @@
       "direction": "+",
       "ends_on": "mixed_principal_left",
       "masses": [
-        0.928,
-        0.8838772895243089,
+        0.9293506830945889,
+        0.8854998118957786,
         1.0
       ],
       "status": "traced",
-      "canonical_bound": null,
-      "canonical_bracketed": null,
-      "canonical_distance": null,
-      "closure": null,
-      "event": null,
-      "stopped_reason": "requested_steps_completed",
-      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": false,
-      "invalid_reasons": [
-        "canonical_bound",
-        "canonical_bracketed",
-        "canonical_distance",
-        "closure",
-        "event"
-      ]
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.00017381685283434875,
+      "closure": 1.9457223627587654e-12,
+      "event": 2.2043238345759164e-09,
+      "stopped_reason": null,
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_LEFT_2026-08-16.json",
+      "valid": true,
+      "invalid_reasons": []
     },
     {
       "mixed_node": "mixed_principal_left",
@@ -1194,26 +1212,20 @@
       "direction": "-",
       "ends_on": "mixed_principal_left",
       "masses": [
-        0.9321359250557786,
-        0.8887992542218717,
+        0.9291277232138585,
+        0.8852330390886026,
         1.0
       ],
       "status": "traced",
-      "canonical_bound": null,
-      "canonical_bracketed": null,
-      "canonical_distance": null,
-      "closure": null,
-      "event": null,
-      "stopped_reason": "requested_steps_completed",
-      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": false,
-      "invalid_reasons": [
-        "canonical_bound",
-        "canonical_bracketed",
-        "canonical_distance",
-        "closure",
-        "event"
-      ]
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.0001738594955329978,
+      "closure": 1.821898394499006e-12,
+      "event": -9.528520195090096e-10,
+      "stopped_reason": null,
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_LEFT_2026-08-16.json",
+      "valid": true,
+      "invalid_reasons": []
     },
     {
       "mixed_node": "mixed_principal_left",
@@ -1221,26 +1233,20 @@
       "direction": "+",
       "ends_on": "mixed_principal_left",
       "masses": [
-        0.931,
-        0.8898115763326967,
+        0.9291623775610586,
+        0.8851693414237709,
         1.0
       ],
       "status": "traced",
-      "canonical_bound": null,
-      "canonical_bracketed": null,
-      "canonical_distance": null,
-      "closure": null,
-      "event": null,
-      "stopped_reason": "requested_steps_completed",
-      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": false,
-      "invalid_reasons": [
-        "canonical_bound",
-        "canonical_bracketed",
-        "canonical_distance",
-        "closure",
-        "event"
-      ]
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.00021155896872851942,
+      "closure": 3.725763326441032e-12,
+      "event": -4.4081538419504795e-10,
+      "stopped_reason": null,
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_LEFT_2026-08-16.json",
+      "valid": true,
+      "invalid_reasons": []
     },
     {
       "mixed_node": "mixed_principal_left",
@@ -1248,80 +1254,20 @@
       "direction": "-",
       "ends_on": "mixed_principal_left",
       "masses": [
-        0.9278582139401068,
-        0.881780332833661,
+        0.9293160785231009,
+        0.8855634949447169,
         1.0
       ],
       "status": "traced",
-      "canonical_bound": null,
-      "canonical_bracketed": null,
-      "canonical_distance": null,
-      "closure": null,
-      "event": null,
-      "stopped_reason": "requested_steps_completed",
-      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": false,
-      "invalid_reasons": [
-        "canonical_bound",
-        "canonical_bracketed",
-        "canonical_distance",
-        "closure",
-        "event"
-      ]
-    },
-    {
-      "mixed_node": "mixed_secondary_left",
-      "event_mode": "minus_one",
-      "direction": "+",
-      "ends_on": "mixed_secondary_left",
-      "masses": [
-        0.992,
-        0.9932270129814613,
-        1.0
-      ],
-      "status": "traced",
-      "canonical_bound": null,
-      "canonical_bracketed": null,
-      "canonical_distance": null,
-      "closure": null,
-      "event": null,
-      "stopped_reason": "requested_steps_completed",
-      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": false,
-      "invalid_reasons": [
-        "canonical_bound",
-        "canonical_bracketed",
-        "canonical_distance",
-        "closure",
-        "event"
-      ]
-    },
-    {
-      "mixed_node": "mixed_secondary_left",
-      "event_mode": "minus_one",
-      "direction": "-",
-      "ends_on": "mixed_secondary_left",
-      "masses": [
-        0.9965211066328196,
-        0.9582464395071473,
-        1.0
-      ],
-      "status": "traced",
-      "canonical_bound": null,
-      "canonical_bracketed": null,
-      "canonical_distance": null,
-      "closure": null,
-      "event": null,
-      "stopped_reason": "requested_steps_completed",
-      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": false,
-      "invalid_reasons": [
-        "canonical_bound",
-        "canonical_bracketed",
-        "canonical_distance",
-        "closure",
-        "event"
-      ]
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.0002115024850095015,
+      "closure": 1.01770314707033e-12,
+      "event": 8.671552365058233e-11,
+      "stopped_reason": null,
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_LEFT_2026-08-16.json",
+      "valid": true,
+      "invalid_reasons": []
     },
     {
       "mixed_node": "mixed_secondary_left",
@@ -1329,26 +1275,20 @@
       "direction": "+",
       "ends_on": "mixed_secondary_left",
       "masses": [
-        0.998,
-        0.9572604586484187,
+        0.9962703415252936,
+        0.9555189503675668,
         1.0
       ],
       "status": "traced",
-      "canonical_bound": null,
-      "canonical_bracketed": null,
-      "canonical_distance": null,
-      "closure": null,
-      "event": null,
-      "stopped_reason": "requested_steps_completed",
-      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": false,
-      "invalid_reasons": [
-        "canonical_bound",
-        "canonical_bracketed",
-        "canonical_distance",
-        "closure",
-        "event"
-      ]
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.0007058842226596463,
+      "closure": 2.0135084412526885e-12,
+      "event": -9.213252383233339e-10,
+      "stopped_reason": null,
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_SECONDARY_LEFT_2026-08-16.json",
+      "valid": true,
+      "invalid_reasons": []
     },
     {
       "mixed_node": "mixed_secondary_left",
@@ -1356,80 +1296,62 @@
       "direction": "-",
       "ends_on": "mixed_secondary_left",
       "masses": [
-        0.9935167332488387,
-        0.9527620520643765,
+        0.9972657222169908,
+        0.9565201173875728,
         1.0
       ],
       "status": "traced",
-      "canonical_bound": null,
-      "canonical_bracketed": null,
-      "canonical_distance": null,
-      "closure": null,
-      "event": null,
-      "stopped_reason": "requested_steps_completed",
-      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": false,
-      "invalid_reasons": [
-        "canonical_bound",
-        "canonical_bracketed",
-        "canonical_distance",
-        "closure",
-        "event"
-      ]
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.0007058942147739553,
+      "closure": 1.4151269845301285e-12,
+      "event": -1.120348258609738e-10,
+      "stopped_reason": null,
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_SECONDARY_LEFT_2026-08-16.json",
+      "valid": true,
+      "invalid_reasons": []
     },
     {
-      "mixed_node": "mixed_principal_right",
+      "mixed_node": "mixed_secondary_left",
       "event_mode": "minus_one",
       "direction": "+",
-      "ends_on": "mixed_principal_right",
+      "ends_on": "mixed_secondary_left",
       "masses": [
-        1.048,
-        1.126804401432563,
+        0.9969854603376225,
+        0.954273591542174,
         1.0
       ],
       "status": "traced",
-      "canonical_bound": null,
-      "canonical_bracketed": null,
-      "canonical_distance": null,
-      "closure": null,
-      "event": null,
-      "stopped_reason": "requested_steps_completed",
-      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": false,
-      "invalid_reasons": [
-        "canonical_bound",
-        "canonical_bracketed",
-        "canonical_distance",
-        "closure",
-        "event"
-      ]
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.0017592357138297076,
+      "closure": 2.64094736075622e-12,
+      "event": 1.1278871170361526e-09,
+      "stopped_reason": null,
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_SECONDARY_LEFT_2026-08-16.json",
+      "valid": true,
+      "invalid_reasons": []
     },
     {
-      "mixed_node": "mixed_principal_right",
+      "mixed_node": "mixed_secondary_left",
       "event_mode": "minus_one",
       "direction": "-",
-      "ends_on": "mixed_principal_right",
+      "ends_on": "mixed_secondary_left",
       "masses": [
-        1.0550536128477475,
-        1.1387583089648676,
+        0.9965719856946319,
+        0.9577621428294986,
         1.0
       ],
       "status": "traced",
-      "canonical_bound": null,
-      "canonical_bracketed": null,
-      "canonical_distance": null,
-      "closure": null,
-      "event": null,
-      "stopped_reason": "requested_steps_completed",
-      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": false,
-      "invalid_reasons": [
-        "canonical_bound",
-        "canonical_bracketed",
-        "canonical_distance",
-        "closure",
-        "event"
-      ]
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.0017537934118035477,
+      "closure": 1.3312809301703442e-12,
+      "event": -1.7252332895623113e-10,
+      "stopped_reason": null,
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_SECONDARY_LEFT_2026-08-16.json",
+      "valid": true,
+      "invalid_reasons": []
     },
     {
       "mixed_node": "mixed_principal_right",
@@ -1437,27 +1359,20 @@
       "direction": "+",
       "ends_on": "mixed_principal_right",
       "masses": [
-        1.051,
-        1.1366655420692178,
+        1.0494219936471718,
+        1.1287784414964483,
         1.0
       ],
       "status": "traced",
-      "canonical_bound": null,
-      "canonical_bracketed": null,
-      "canonical_distance": null,
-      "closure": null,
-      "event": null,
-      "stopped_reason": "pseudo-arclength correction failed: augmented least-squares failed: The maximum number of function evaluations is exceeded.",
-      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": false,
-      "invalid_reasons": [
-        "stopped_reason_records_nonconvergence",
-        "canonical_bound",
-        "canonical_bracketed",
-        "canonical_distance",
-        "closure",
-        "event"
-      ]
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.0007095989576407625,
+      "closure": 6.928848710797978e-12,
+      "event": 6.392227192009159e-09,
+      "stopped_reason": null,
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json",
+      "valid": true,
+      "invalid_reasons": []
     },
     {
       "mixed_node": "mixed_principal_right",
@@ -1465,27 +1380,62 @@
       "direction": "-",
       "ends_on": "mixed_principal_right",
       "masses": [
-        1.05,
-        1.131789195654533,
+        1.0496861427634678,
+        1.130173979891391,
         1.0
       ],
       "status": "traced",
-      "canonical_bound": null,
-      "canonical_bracketed": null,
-      "canonical_distance": null,
-      "closure": null,
-      "event": null,
-      "stopped_reason": "pseudo-arclength correction failed: augmented least-squares failed: The maximum number of function evaluations is exceeded.",
-      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": false,
-      "invalid_reasons": [
-        "stopped_reason_records_nonconvergence",
-        "canonical_bound",
-        "canonical_bracketed",
-        "canonical_distance",
-        "closure",
-        "event"
-      ]
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.0007107195527159452,
+      "closure": 4.290992963941044e-12,
+      "event": -1.4118342051006039e-09,
+      "stopped_reason": null,
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json",
+      "valid": true,
+      "invalid_reasons": []
+    },
+    {
+      "mixed_node": "mixed_principal_right",
+      "event_mode": "minus_one",
+      "direction": "+",
+      "ends_on": "mixed_principal_right",
+      "masses": [
+        1.0497655238931634,
+        1.1298391906314342,
+        1.0
+      ],
+      "status": "traced",
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.00042087353567809655,
+      "closure": 3.497513826062347e-11,
+      "event": -1.2002594473869976e-09,
+      "stopped_reason": null,
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json",
+      "valid": true,
+      "invalid_reasons": []
+    },
+    {
+      "mixed_node": "mixed_principal_right",
+      "event_mode": "minus_one",
+      "direction": "-",
+      "ends_on": "mixed_principal_right",
+      "masses": [
+        1.0493408032586744,
+        1.1291119142049084,
+        1.0
+      ],
+      "status": "traced",
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.0004213370467169547,
+      "closure": 9.699643044054252e-12,
+      "event": 5.102282152336102e-09,
+      "stopped_reason": null,
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json",
+      "valid": true,
+      "invalid_reasons": []
     },
     {
       "mixed_node": "secondary_right_death",
@@ -1580,20 +1530,7 @@
     "edge_count": 7,
     "cells_on_edges": 620,
     "duplicate_cell_ids": [],
-    "missing_mixed_germs": [
-      "mixed_principal_left:plus_one:+",
-      "mixed_principal_left:plus_one:-",
-      "mixed_principal_left:minus_one:+",
-      "mixed_principal_left:minus_one:-",
-      "mixed_principal_right:plus_one:+",
-      "mixed_principal_right:plus_one:-",
-      "mixed_principal_right:minus_one:+",
-      "mixed_principal_right:minus_one:-",
-      "mixed_secondary_left:plus_one:+",
-      "mixed_secondary_left:plus_one:-",
-      "mixed_secondary_left:minus_one:+",
-      "mixed_secondary_left:minus_one:-"
-    ],
+    "missing_mixed_germs": [],
     "newton_failed": 0,
     "completeness_passed": false,
     "completeness_verification_errors": [
@@ -1604,38 +1541,8 @@
     "completeness_sources_in_repository": null,
     "unclassified_edge_endpoints": [
       {
-        "edge": "minus_one_u_to_s_0",
-        "side": "start",
-        "masses": [
-          0.93,
-          0.8873042213883066,
-          1.0
-        ],
-        "reserved_for": null
-      },
-      {
-        "edge": "minus_one_u_to_s_0",
-        "side": "end",
-        "masses": [
-          1.049,
-          1.128527000337954,
-          1.0
-        ],
-        "reserved_for": null
-      },
-      {
         "edge": "minus_one_u_to_s_1",
         "side": "start",
-        "masses": [
-          0.996,
-          0.9645756252404868,
-          1.0
-        ],
-        "reserved_for": null
-      },
-      {
-        "edge": "minus_one_u_to_s_1",
-        "side": "end",
         "masses": [
           0.996,
           0.9645756252404868,
@@ -1652,36 +1559,6 @@
           1.0
         ],
         "reserved_for": null
-      },
-      {
-        "edge": "plus_one_u_to_s_0",
-        "side": "end",
-        "masses": [
-          0.929,
-          0.8850799079881937,
-          1.0
-        ],
-        "reserved_for": null
-      },
-      {
-        "edge": "plus_one_u_to_s_1",
-        "side": "start",
-        "masses": [
-          0.997,
-          0.9562525449533762,
-          1.0
-        ],
-        "reserved_for": null
-      },
-      {
-        "edge": "plus_one_u_to_s_2",
-        "side": "start",
-        "masses": [
-          1.05,
-          1.131789193875551,
-          1.0
-        ],
-        "reserved_for": null
       }
     ],
     "classification_binding_errors": [],
@@ -1690,29 +1567,35 @@
   "incidence": {
     "node_count": 12,
     "edge_count": 7,
-    "attached_endpoints": 6,
+    "attached_endpoints": 12,
     "nodes_touching_more_than_one_edge": {
+      "mixed_principal_left": [
+        "minus_one_u_to_s_0:start",
+        "plus_one_u_to_s_0:end"
+      ],
+      "mixed_principal_right": [
+        "minus_one_u_to_s_0:end",
+        "plus_one_u_to_s_2:start"
+      ],
+      "mixed_secondary_left": [
+        "minus_one_u_to_s_1:end",
+        "plus_one_u_to_s_1:start"
+      ],
       "secondary_right_death": [
         "minus_one_s_to_u_0:end",
         "plus_one_u_to_s_1:end"
       ]
     },
-    "edge_component_count": 6,
+    "edge_component_count": 3,
     "edge_components": [
       [
         "minus_one_s_to_u_0",
+        "minus_one_u_to_s_1",
         "plus_one_u_to_s_1"
       ],
       [
-        "minus_one_u_to_s_0"
-      ],
-      [
-        "minus_one_u_to_s_1"
-      ],
-      [
-        "plus_one_u_to_s_0"
-      ],
-      [
+        "minus_one_u_to_s_0",
+        "plus_one_u_to_s_0",
         "plus_one_u_to_s_2"
       ],
       [

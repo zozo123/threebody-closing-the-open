@@ -91,10 +91,27 @@ def solve_direct_vertex(
     max_nfev: int = 35,
     screening_rtol: float = 3e-10,
     screening_atol: float = 3e-12,
+    closure_scale: float = 1e-6,
 ) -> DirectVertexResult:
-    """Solve an isolated Floquet vertex directly in the six-variable chart."""
+    """Solve an isolated Floquet vertex directly in the six-variable chart.
+
+    ``closure_scale`` is the Gauss-Newton weight of the eight closure residuals
+    relative to the two event residuals.  It is CONDITIONING, not a gate: the
+    accepted point is always judged by ``max_closure`` / ``max_event`` /
+    ``max_invariant_error``, which the caller freezes.
+
+    The default 1e-6 assumes the closure can be driven far below the closure
+    gate.  For long-period orbits it cannot: float64 DOP853 floors the closure
+    norm near 1e-11, which the 1e-6 weight inflates to the same size as the
+    event term, so the iteration stalls with the events an order of magnitude
+    above where they could be.  A caller that sees the frozen event gate missed
+    for that reason may re-solve with a larger ``closure_scale``; the closure it
+    then reports must still clear the same frozen ``max_closure``.
+    """
     if mode not in VERTEX_EVENTS:
         raise ValueError(f"unsupported vertex mode: {mode}")
+    if not closure_scale > 0.0:
+        raise ValueError("closure_scale must be positive")
     y0 = np.asarray(seed, dtype=float)
     if y0.shape != (6,):
         raise ValueError("vertex seed must have six components")
@@ -103,7 +120,6 @@ def solve_direct_vertex(
 
     event_a, event_b = VERTEX_EVENTS[mode]
     scales = _scales(y0)
-    closure_scale = 1e-6
     event_scale = 2e-4
 
     def residual(y: Array) -> Array:

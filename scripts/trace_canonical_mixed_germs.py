@@ -7,6 +7,15 @@ orientation of the local tangent.  Two signed pseudo-arclength correctors are
 then launched from the organizer.  The output is accepted only when both
 directions are distinct in the mass plane and every new solution satisfies the
 frozen event and periodic-closure gates.
+
+The float64 centre those correctors start from comes from the accompanying
+screen artifact, under either ``direct_candidate`` (the wall-continuation
+screen) or ``direct_mixed_vertex_retry`` (the junction screen's own direct
+solve).  Both are float64 pipelines that never read the canonical BigFloat
+chart.  That is what makes the 1e-4 centre/organizer agreement check below an
+independent cross-pipeline test.  Seeding the centre FROM the canonical chart
+would make the same check near-tautological; do not do it without stamping the
+provenance and withdrawing the independence claim.
 """
 from __future__ import annotations
 
@@ -31,6 +40,32 @@ from threebody_atlas.liao_family import FamilyPoint
 MODES = ("plus_one", "minus_one")
 EVENT_GATE = 2e-8
 CLOSURE_GATE = 1e-7
+# Every float64 screen key that can supply an INDEPENDENT mixed-vertex centre,
+# in priority order.  ``direct_candidate`` is the wall-continuation screen
+# (scripts/locate_secondary_right_mixed.py); ``direct_mixed_vertex_retry`` is
+# the junction screen's own final direct solve
+# (scripts/trace_junction_organizer.py, replayed by
+# scripts/retry_direct_mixed_vertex.py).  Both are seeded from a float64
+# pipeline that never reads the canonical BigFloat chart, so the 1e-4
+# agreement check below stays a genuine independent-agreement test.
+CANDIDATE_KEYS = ("direct_candidate", "direct_mixed_vertex_retry")
+# Gauss-Newton CONDITIONING for the centre refinement, tried in this fixed order.
+# Neither entry is a gate: whichever weighting is used, the refined centre is
+# accepted only if it clears CLOSURE_GATE and EVENT_GATE below, unchanged.
+#
+# 1e-6 is the historical weight and is kept first so every centre that already
+# converged under it keeps converging under it.  It presumes the closure can be
+# pushed far below the closure gate.  For the ~8.0-period principal-right orbit
+# it cannot: float64 DOP853 floors the closure norm near 1e-11, the 1e-6 weight
+# inflates that floor to the size of the event term, and the iteration stalls at
+# |plus_one| = 2.3e-8 -- outside the frozen 2e-8 event gate while the closure is
+# four orders of magnitude inside its own gate.  Weighting the closure block at
+# 1e-4 spends that unused closure margin on the binding constraint: the closure
+# lands at 1.2e-8 (still 8x inside the frozen 1e-7) and both events at ~4e-9
+# (5x inside the frozen 2e-8).
+CENTER_CLOSURE_SCALES = (1e-6, 1e-4)
+ACCEPTED_CANDIDATE_STATUSES = frozenset({"accepted_screening_candidate", "accepted", "passed"})
+REQUIRED_CANDIDATE_FIELDS = ("x1", "v1", "v2", "period")
 
 
 def sha256_file(path: Path) -> str:
@@ -88,17 +123,43 @@ def localized(row: dict[str, Any], mode: str) -> LocalizedCriticalPoint:
     )
 
 
+def accepted_candidate(screen: dict[str, Any]) -> tuple[str, dict[str, Any]]:
+    """Return the first accepted independent float64 mixed-vertex candidate.
+
+    Two float64 pipelines emit a mixed ``(alpha, beta) = (4, 4)`` candidate in
+    the same six-variable chart, under two different keys.  Either is a valid
+    centre seed; neither ever consults the canonical BigFloat organizer.
+    """
+    rejections: list[str] = []
+    for key in CANDIDATE_KEYS:
+        candidate = screen.get(key)
+        if not isinstance(candidate, dict):
+            continue
+        status = str(candidate.get("status") or "")
+        if candidate.get("success") is not True and status not in ACCEPTED_CANDIDATE_STATUSES:
+            rejections.append(f"{key}: not accepted (success={candidate.get('success')!r} status={status!r})")
+            continue
+        if len(candidate.get("masses") or []) < 3:
+            rejections.append(f"{key}: needs three masses")
+            continue
+        missing = [field for field in REQUIRED_CANDIDATE_FIELDS if candidate.get(field) is None]
+        if missing:
+            rejections.append(f"{key}: missing chart fields {missing}")
+            continue
+        return key, candidate
+    detail = "; ".join(rejections) if rejections else f"none of {list(CANDIDATE_KEYS)} present"
+    raise SystemExit(f"screen record needs an accepted direct mixed candidate ({detail})")
+
+
 def center_points(
     screen: dict[str, Any], canonical: dict[str, Any]
-) -> tuple[dict[str, LocalizedCriticalPoint], float]:
+) -> tuple[dict[str, LocalizedCriticalPoint], float, str, float]:
     """Refine the Float64 center and bind it to the independent organizer."""
     if canonical.get("passed") is not True:
         raise SystemExit("canonical organizer record is not passed")
-    candidate = screen.get("direct_candidate") or {}
+    candidate_key, candidate = accepted_candidate(screen)
     masses = canonical.get("masses") or []
     candidate_masses = candidate.get("masses") or []
-    if candidate.get("success") is not True or len(candidate_masses) < 3:
-        raise SystemExit("screen record needs a successful direct mixed candidate")
     if len(masses) < 3:
         raise SystemExit("canonical organizer record needs three masses")
     seed = np.asarray(
@@ -121,61 +182,74 @@ def center_points(
         raise SystemExit(
             f"Float64 mixed seed is not bound to the canonical organizer: {initial_shift:.3e}"
         )
-    direct = solve_direct_vertex(
-        seed,
-        "mixed_plus_minus_one",
-        m3=float(masses[2]),
-        mass_bounds=(
-            (float(masses[0]) - 0.002, float(masses[0]) + 0.002),
-            (float(masses[1]) - 0.002, float(masses[1]) + 0.002),
-        ),
-        max_closure=CLOSURE_GATE,
-        max_event=EVENT_GATE,
-        max_invariant_error=2e-8,
-        max_nfev=80,
-        screening_rtol=5e-13,
-        screening_atol=5e-15,
-    )
-    refined_mass = np.asarray(direct.point.masses[:2], dtype=float)
-    refined_shift = float(np.linalg.norm(refined_mass - canonical_mass))
-    if refined_shift > 1e-4:
-        raise SystemExit(
-            f"refined Float64 center left the canonical organizer: {refined_shift:.3e}"
-        )
-    closure_vector, floquet = _flow_for_vector(
-        direct.vector,
-        m3=float(masses[2]),
-        rtol=5e-13,
-        atol=5e-15,
-    )
-    closure = float(np.linalg.norm(closure_vector))
-    center_point = FamilyPoint(
-        masses=direct.point.masses,
-        x1=direct.point.x1,
-        v1=direct.point.v1,
-        v2=direct.point.v2,
-        period=direct.point.period,
-        residual_norm=closure,
-        nfev=direct.point.nfev,
-        success=True,
-    )
-    if closure > CLOSURE_GATE:
-        raise SystemExit(f"refined Float64 center closure gate failed: {closure:.3e}")
-    sample = BoundarySample(center_point, floquet, 0.0)
-    points: dict[str, LocalizedCriticalPoint] = {}
-    for mode in MODES:
-        value = event_value(sample.floquet, mode)
-        if abs(value) > EVENT_GATE:
-            raise SystemExit(
-                f"refined Float64 center {mode} reevaluation fails event gate: {value:.3e}"
+    failures: list[str] = []
+    for closure_scale in CENTER_CLOSURE_SCALES:
+        try:
+            direct = solve_direct_vertex(
+                seed,
+                "mixed_plus_minus_one",
+                m3=float(masses[2]),
+                mass_bounds=(
+                    (float(masses[0]) - 0.002, float(masses[0]) + 0.002),
+                    (float(masses[1]) - 0.002, float(masses[1]) + 0.002),
+                ),
+                max_closure=CLOSURE_GATE,
+                max_event=EVENT_GATE,
+                max_invariant_error=2e-8,
+                max_nfev=80,
+                screening_rtol=5e-13,
+                screening_atol=5e-15,
+                closure_scale=closure_scale,
             )
-        points[mode] = LocalizedCriticalPoint(
-            sample=sample,
-            event_mode=mode,
-            event_value=float(value),
-            source_width=0.0,
+        except RuntimeError as exc:
+            failures.append(f"closure_scale={closure_scale:.0e}: {exc}")
+            continue
+        refined_mass = np.asarray(direct.point.masses[:2], dtype=float)
+        refined_shift = float(np.linalg.norm(refined_mass - canonical_mass))
+        if refined_shift > 1e-4:
+            raise SystemExit(
+                f"refined Float64 center left the canonical organizer: {refined_shift:.3e}"
+            )
+        closure_vector, floquet = _flow_for_vector(
+            direct.vector,
+            m3=float(masses[2]),
+            rtol=5e-13,
+            atol=5e-15,
         )
-    return points, refined_shift
+        closure = float(np.linalg.norm(closure_vector))
+        events = {mode: float(event_value(floquet, mode)) for mode in MODES}
+        worst_event = max(abs(value) for value in events.values())
+        if closure > CLOSURE_GATE or worst_event > EVENT_GATE:
+            failures.append(
+                f"closure_scale={closure_scale:.0e}: reevaluation closure={closure:.3e} "
+                f"worst_event={worst_event:.3e}"
+            )
+            continue
+        center_point = FamilyPoint(
+            masses=direct.point.masses,
+            x1=direct.point.x1,
+            v1=direct.point.v1,
+            v2=direct.point.v2,
+            period=direct.point.period,
+            residual_norm=closure,
+            nfev=direct.point.nfev,
+            success=True,
+        )
+        sample = BoundarySample(center_point, floquet, 0.0)
+        points = {
+            mode: LocalizedCriticalPoint(
+                sample=sample,
+                event_mode=mode,
+                event_value=events[mode],
+                source_width=0.0,
+            )
+            for mode in MODES
+        }
+        return points, refined_shift, candidate_key, float(closure_scale)
+    raise SystemExit(
+        "no Gauss-Newton conditioning drove the Float64 center inside the frozen gates "
+        f"(closure<={CLOSURE_GATE:.0e}, event<={EVENT_GATE:.0e}): " + "; ".join(failures)
+    )
 
 
 def serialize_germ(
@@ -242,9 +316,20 @@ def main() -> None:
     parser.add_argument("--cell", action="append", type=int, required=True)
     parser.add_argument("--step", type=float, default=7.5e-4)
     parser.add_argument("--max-canonical-distance", type=float, default=0.008)
+    parser.add_argument(
+        "--min-canonical-distance",
+        type=float,
+        default=1e-5,
+        help=(
+            "reject a germ that is numerically indistinguishable from the organizer; a germ that "
+            "never left the vertex is not a germ, it is the vertex reported twice"
+        ),
+    )
     args = parser.parse_args()
     if args.step <= 0.0:
         raise SystemExit("--step must be positive")
+    if not 0.0 <= args.min_canonical_distance < args.max_canonical_distance:
+        raise SystemExit("--min-canonical-distance must be below --max-canonical-distance")
 
     roots_path = Path(args.roots_json)
     screen_path = Path(args.screen_json)
@@ -265,7 +350,9 @@ def main() -> None:
     if set(by_mode) != set(MODES):
         raise SystemExit(f"source cells must supply one root for each of {MODES}: {sorted(by_mode)}")
 
-    centers, center_shift = center_points(screen, canonical)
+    centers, center_shift, center_seed_source, center_closure_scale = center_points(
+        screen, canonical
+    )
     center_mass = np.asarray(centers["plus_one"].sample.point.masses[:2], dtype=float)
     canonical_mass = np.asarray(
         [float(canonical["masses"][0]), float(canonical["masses"][1])],
@@ -301,7 +388,14 @@ def main() -> None:
             if germ["canonical_distance"] > args.max_canonical_distance:
                 raise SystemExit(
                     f"{mode}:{direction} leaves the local germ radius: "
-                    f"{germ['canonical_distance']:.3e}"
+                    f"{germ['canonical_distance']:.3e} > {args.max_canonical_distance:.3e}; "
+                    "re-run this organizer at a smaller --step"
+                )
+            if germ["canonical_distance"] < args.min_canonical_distance:
+                raise SystemExit(
+                    f"{mode}:{direction} is degenerate at the organizer: "
+                    f"{germ['canonical_distance']:.3e} < {args.min_canonical_distance:.3e}; "
+                    "re-run this organizer at a larger --step"
                 )
             germs.append(germ)
 
@@ -317,9 +411,20 @@ def main() -> None:
         "canonical_masses": [float(value) for value in canonical_mass] + [1.0],
         "float64_center_masses": [float(value) for value in center_mass] + [1.0],
         "center_shift_from_canonical": center_shift,
+        "center_seed_source": center_seed_source,
+        "center_seed_independent_of_canonical": True,
+        "center_residual_closure_scale": center_closure_scale,
         "frozen_gates": {"event": EVENT_GATE, "closure": CLOSURE_GATE},
+        "germ_radius_bounds": {
+            "min_canonical_distance": float(args.min_canonical_distance),
+            "max_canonical_distance": float(args.max_canonical_distance),
+        },
+        "signed_arclength_step": float(args.step),
+        "source_roots": str(roots_path),
         "source_roots_sha256": sha256_file(roots_path),
+        "screen": str(screen_path),
         "screen_sha256": sha256_file(screen_path),
+        "canonical": str(canonical_path),
         "canonical_sha256": sha256_file(canonical_path),
         "directional_audit": audit,
         "germs": germs,
@@ -331,8 +436,13 @@ def main() -> None:
             {
                 "mixed_node": args.mixed_node,
                 "germs": len(germs),
+                "center_seed_source": center_seed_source,
+                "center_residual_closure_scale": center_closure_scale,
+                "center_shift_from_canonical": center_shift,
+                "step": float(args.step),
                 "max_closure": max(row["closure"] for row in germs),
                 "max_event": max(abs(row["event"]) for row in germs),
+                "min_canonical_distance": min(row["canonical_distance"] for row in germs),
                 "max_canonical_distance": max(row["canonical_distance"] for row in germs),
             },
             indent=2,

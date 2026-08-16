@@ -1,0 +1,183 @@
+{
+  "schema": "atlas.v1.mixed-germs/1",
+  "claim_status": "four canonical-centered float64 pseudo-arclength germs; organizer truth is supplied by the independently reproduced canonical artifact",
+  "passed": true,
+  "mixed_node": "mixed_principal_left",
+  "canonical_masses": [
+    0.9292391921118185,
+    0.8853664625084905,
+    1.0
+  ],
+  "float64_center_masses": [
+    0.9292391926374619,
+    0.8853664638497964,
+    1.0
+  ],
+  "center_shift_from_canonical": 1.4406257904084013e-09,
+  "center_seed_source": "direct_mixed_vertex_retry",
+  "center_seed_independent_of_canonical": true,
+  "center_residual_closure_scale": 1e-06,
+  "frozen_gates": {
+    "event": 2e-08,
+    "closure": 1e-07
+  },
+  "germ_radius_bounds": {
+    "min_canonical_distance": 1e-05,
+    "max_canonical_distance": 0.008
+  },
+  "signed_arclength_step": 0.00075,
+  "source_roots": "research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json",
+  "source_roots_sha256": "7af919e07761307cf58d812700beddcb1bbed1bda60743261e63021ce234fbf9",
+  "screen": "research/evidence/V1_MIXED_DIRECT_RETRY_PRINCIPAL_LEFT_2026-08-16.json",
+  "screen_sha256": "46d73fde666b8dba82fb8b7e78652cba2fed811238d9d860b6219c250b447a19",
+  "canonical": "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_LEFT_2026-08-15.json",
+  "canonical_sha256": "6682978d1aedb4290e239ed5ec9403b67dc708c83ffc35fa4d29d57741c45737",
+  "directional_audit": {
+    "plus_one": {
+      "mass_displacement_dot_product": -3.0219708184063695e-08,
+      "canonical_distances": [
+        0.00017381548664505137,
+        0.0001738608618927911
+      ],
+      "opposite_mass_directions": true
+    },
+    "minus_one": {
+      "mass_displacement_dot_product": -4.474524261288236e-08,
+      "canonical_distances": [
+        0.00021156040935166887,
+        0.00021150104438521727
+      ],
+      "opposite_mass_directions": true
+    }
+  },
+  "germs": [
+    {
+      "mixed_node": "mixed_principal_left",
+      "event_mode": "plus_one",
+      "direction": "+",
+      "status": "traced",
+      "ends_on": "mixed_principal_left",
+      "masses": [
+        0.9293506830945889,
+        0.8854998118957786,
+        1.0
+      ],
+      "x1": -0.25854503128274897,
+      "v1": 1.598677333345373,
+      "v2": 0.43092613278254627,
+      "period": 6.664524461151194,
+      "closure": 1.9457223627587654e-12,
+      "event": 2.2043238345759164e-09,
+      "arclength_residual": 7.2570743926313765e-09,
+      "scaled_tangent": [
+        -0.7391438585881172,
+        -0.5464045666160052,
+        0.17438535092303079,
+        0.24196644509978024,
+        0.15978911930695971,
+        0.20153866148453337
+      ],
+      "signed_arclength_step": 0.00075,
+      "source_cell_id": 256,
+      "canonical_bound": true,
+      "canonical_distance": 0.00017381685283434875,
+      "canonical_bracketed": true
+    },
+    {
+      "mixed_node": "mixed_principal_left",
+      "event_mode": "plus_one",
+      "direction": "-",
+      "status": "traced",
+      "ends_on": "mixed_principal_left",
+      "masses": [
+        0.9291277232138585,
+        0.8852330390886026,
+        1.0
+      ],
+      "x1": -0.2582580569949494,
+      "v1": 1.5999843449027895,
+      "v2": 0.43081338954772896,
+      "period": 6.662103771468254,
+      "closure": 1.821898394499006e-12,
+      "event": -9.528520195090096e-10,
+      "arclength_residual": -1.7415206174411423e-09,
+      "scaled_tangent": [
+        -0.7391438585881172,
+        -0.5464045666160052,
+        0.17438535092303079,
+        0.24196644509978024,
+        0.15978911930695971,
+        0.20153866148453337
+      ],
+      "signed_arclength_step": -0.00075,
+      "source_cell_id": 256,
+      "canonical_bound": true,
+      "canonical_distance": 0.0001738594955329978,
+      "canonical_bracketed": true
+    },
+    {
+      "mixed_node": "mixed_principal_left",
+      "event_mode": "minus_one",
+      "direction": "+",
+      "status": "traced",
+      "ends_on": "mixed_principal_left",
+      "masses": [
+        0.9291623775610586,
+        0.8851693414237709,
+        1.0
+      ],
+      "x1": -0.25825568410531696,
+      "v1": 1.5999692847357412,
+      "v2": 0.430853575419263,
+      "period": 6.662224896339637,
+      "closure": 3.725763326441032e-12,
+      "event": -4.4081538419504795e-10,
+      "arclength_residual": -1.2667545650469855e-14,
+      "scaled_tangent": [
+        0.7536457577876159,
+        0.5308697081484884,
+        -0.05081755350434408,
+        -0.21832982627708467,
+        -0.11076704378695565,
+        -0.296100911790928
+      ],
+      "signed_arclength_step": 0.00075,
+      "source_cell_id": 260,
+      "canonical_bound": true,
+      "canonical_distance": 0.00021155896872851942,
+      "canonical_bracketed": true
+    },
+    {
+      "mixed_node": "mixed_principal_left",
+      "event_mode": "minus_one",
+      "direction": "-",
+      "status": "traced",
+      "ends_on": "mixed_principal_left",
+      "masses": [
+        0.9293160785231009,
+        0.8855634949447169,
+        1.0
+      ],
+      "x1": -0.2585474015801942,
+      "v1": 1.5986923901970551,
+      "v2": 0.4308859878211649,
+      "period": 6.664403499866546,
+      "closure": 1.01770314707033e-12,
+      "event": 8.671552365058233e-11,
+      "arclength_residual": -5.192843229618613e-09,
+      "scaled_tangent": [
+        0.7536457577876159,
+        0.5308697081484884,
+        -0.05081755350434408,
+        -0.21832982627708467,
+        -0.11076704378695565,
+        -0.296100911790928
+      ],
+      "signed_arclength_step": -0.00075,
+      "source_cell_id": 260,
+      "canonical_bound": true,
+      "canonical_distance": 0.0002115024850095015,
+      "canonical_bracketed": true
+    }
+  ]
+}

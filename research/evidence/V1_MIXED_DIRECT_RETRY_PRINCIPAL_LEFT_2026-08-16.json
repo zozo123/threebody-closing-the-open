@@ -1,0 +1,42 @@
+{
+  "schema": "atlas.v1.direct-mixed-vertex-retry/1",
+  "claim_status": "float64 direct mixed-vertex screen replayed from a committed junction trace with the accelerated extra installed; independent BigFloat/canonical reproduction still required",
+  "mixed_node": "mixed_principal_left",
+  "source_junction": "research/evidence/V1_JUNCTION_PRINCIPAL_LEFT_2026-08-15.json",
+  "source_junction_sha256": "d262431d9579ca20cfac33c804f123860b8567c08eb0a41934a3bd597b9f72f6",
+  "requested_center": [
+    0.9295,
+    0.8865
+  ],
+  "direct_mass_padding": 0.012,
+  "max_nfev": 60,
+  "seed_sample_index": 2,
+  "seed_masses": [
+    0.9292228795128347,
+    0.8853471254116582,
+    1.0
+  ],
+  "seed_spectral_distance_to_mixed_vertex": 0.0014749943641279447,
+  "seed_provenance": "junction_trace_closest_to_alpha_beta_four",
+  "direct_mixed_vertex_retry": {
+    "status": "accepted_screening_candidate",
+    "masses": [
+      0.9292393229462838,
+      0.8853668019557868,
+      1.0
+    ],
+    "x1": -0.2584017712226169,
+    "v1": 1.5993295803512246,
+    "v2": 0.4308697864541536,
+    "period": 6.663315869726881,
+    "shooting_residual": 4.5711124468612637e-10,
+    "alpha": 4.000000001918055,
+    "beta": 4.000000003528444,
+    "event_values": [
+      -7.9798851970736e-09,
+      -3.076658927625431e-10
+    ],
+    "invariant_error": 4.0160744097582165e-09,
+    "nfev": 46
+  }
+}

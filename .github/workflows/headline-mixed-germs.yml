@@ -1,0 +1,243 @@
+name: Headline mixed germs
+
+# The three headline mixed organizers -- mixed_principal_left,
+# mixed_secondary_left, mixed_principal_right -- each owe four local
+# continuation germs (G+ and G-, in both signed directions).  Twelve germs.
+#
+# The twelve that used to be on disk carried no closure, no event value and no
+# canonical binding, because scripts/build_mixed_germs_from_junction.py was run
+# without --canonical and took its fallback branch.  The assembler's uniform
+# germ validation rejected all twelve, which cost two release predicates at
+# once: missing_mixed_germs listed all twelve, and six edge endpoints had no
+# organizer to attach to.
+#
+# They are now produced by scripts/trace_canonical_mixed_germs.py, the same
+# primitive that produced the passing secondary_right germs.  That needs a
+# float64 mixed-vertex centre, and the three headline junction screens record
+# theirs under direct_mixed_vertex_retry.  Two of the three recorded
+#
+#     "RuntimeError: JAX + Diffrax are required; install the accelerated extra"
+#
+# instead of a candidate -- a MISSING DEPENDENCY, not a missing vertex.  This
+# workflow installs the accelerated extra and replays that one step
+# (scripts/retry_direct_mixed_vertex.py) before tracing the germs.
+#
+# What this job is allowed to conclude:
+#   * it re-derives the germs on a clean locked runner and checks them against
+#     the frozen gates and against the committed artifacts NUMERICALLY;
+#   * it does NOT byte-diff them.  float64 + JAX results differ in the last
+#     couple of digits across platforms, and pretending otherwise would turn a
+#     platform difference into a science failure.
+# research/evidence/V1_CRITICAL_GRAPH.json is the byte-diffed artifact; that is
+# critical-graph-assembly.yml's job, not this one.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "scripts/retry_direct_mixed_vertex.py"
+      - "scripts/trace_canonical_mixed_germs.py"
+      - "src/threebody_atlas/hybrid_vertices.py"
+      - "src/threebody_atlas/critical_manifold.py"
+      - "research/evidence/V1_JUNCTION_*.json"
+      - "research/evidence/V1_MIXED_CANONICAL_*.json"
+      - "research/evidence/V1_MIXED_DIRECT_RETRY_*.json"
+      - "research/evidence/V1_MIXED_GERMS_*.json"
+      - "tests/test_mixed_germ_center_seed.py"
+      - ".github/workflows/headline-mixed-germs.yml"
+      - "uv.lock"
+  push:
+    branches: ["main"]
+    paths:
+      - "scripts/retry_direct_mixed_vertex.py"
+      - "scripts/trace_canonical_mixed_germs.py"
+      - "src/threebody_atlas/hybrid_vertices.py"
+      - "src/threebody_atlas/critical_manifold.py"
+      - "research/evidence/V1_JUNCTION_*.json"
+      - "research/evidence/V1_MIXED_CANONICAL_*.json"
+      - "research/evidence/V1_MIXED_DIRECT_RETRY_*.json"
+      - "research/evidence/V1_MIXED_GERMS_*.json"
+      - "tests/test_mixed_germ_center_seed.py"
+      - ".github/workflows/headline-mixed-germs.yml"
+      - "uv.lock"
+
+concurrency:
+  group: headline-mixed-germs-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON: "3.13"
+  JAX_ENABLE_X64: "true"
+
+jobs:
+  germs:
+    name: Re-derive the twelve headline mixed germs
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+
+      - run: uv python install 3.13
+      # The accelerated extra is the whole point of this job: without it the
+      # direct mixed-vertex solve is the RuntimeError quoted above.
+      - run: uv sync --locked --extra accelerated
+
+      - name: Replay the direct mixed-vertex solve the junction screens could not run
+        run: |
+          mkdir -p artifacts/headline-mixed-germs
+          for node in PRINCIPAL_LEFT SECONDARY_LEFT PRINCIPAL_RIGHT; do
+            lower=$(echo "${node}" | tr 'A-Z' 'a-z')
+            uv run --no-sync python scripts/retry_direct_mixed_vertex.py \
+              "research/evidence/V1_JUNCTION_${node}_2026-08-15.json" \
+              "artifacts/headline-mixed-germs/V1_MIXED_DIRECT_RETRY_${node}_2026-08-16.json" \
+              --mixed-node "mixed_${lower}"
+          done
+
+      - name: Trace four canonical-centred germs per headline organizer
+        # --cell picks the frozen catalog root that orients the local tangent;
+        # it is the nearest root of that event mode that still re-evaluates
+        # inside the frozen gates.  Cell 258 does not (event 3.3e-8), so the
+        # principal-left plus_one tangent is taken from cell 256 instead.
+        #
+        # --step is chosen per organizer and asserted on the RESULT, never
+        # predicted from a mass-displacement rate: the measured rate varies by
+        # a factor of ~2.5 between these arcs.  secondary_left needs the larger
+        # 0.003 because its minus_one edge endpoint (cell 392) sits 8.59e-3 from
+        # the organizer, so a germ that only moves 4.4e-4 cannot reach inside
+        # the 0.008 attachment radius of that endpoint.
+        run: |
+          trace_germs () {
+            node="$1"; id="$2"; cell_plus="$3"; cell_minus="$4"; step="$5"
+            uv run --no-sync python scripts/trace_canonical_mixed_germs.py \
+              research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json \
+              "artifacts/headline-mixed-germs/V1_MIXED_DIRECT_RETRY_${node}_2026-08-16.json" \
+              "research/evidence/V1_MIXED_CANONICAL_${node}_2026-08-15.json" \
+              "artifacts/headline-mixed-germs/V1_MIXED_GERMS_${node}_2026-08-16.json" \
+              --mixed-node "${id}" \
+              --cell "${cell_plus}" --cell "${cell_minus}" \
+              --step "${step}"
+          }
+          trace_germs PRINCIPAL_LEFT  mixed_principal_left  256 260 0.00075
+          trace_germs SECONDARY_LEFT  mixed_secondary_left  396 392 0.003
+          trace_germs PRINCIPAL_RIGHT mixed_principal_right 594 592 0.00075
+
+      - name: Enforce the twelve-germ contract and cross-check the committed evidence
+        run: |
+          uv run --no-sync python - <<'PY'
+          import json
+          import math
+          from pathlib import Path
+
+          EVENT_GATE = 2e-8
+          CLOSURE_GATE = 1e-7
+          ATTACH = 0.008
+          FRESH = Path("artifacts/headline-mixed-germs")
+          COMMITTED = Path("research/evidence")
+          NODES = {
+              "PRINCIPAL_LEFT": "mixed_principal_left",
+              "SECONDARY_LEFT": "mixed_secondary_left",
+              "PRINCIPAL_RIGHT": "mixed_principal_right",
+          }
+          REQUIRED = {
+              (mode, direction)
+              for mode in ("plus_one", "minus_one")
+              for direction in ("+", "-")
+          }
+
+          total = 0
+          for node, node_id in NODES.items():
+              name = f"V1_MIXED_GERMS_{node}_2026-08-16.json"
+              fresh = json.loads((FRESH / name).read_text())
+              committed = json.loads((COMMITTED / name).read_text())
+              if fresh.get("passed") is not True:
+                  raise SystemExit(f"{node}: germ artifact did not pass")
+              if fresh.get("mixed_node") != node_id:
+                  raise SystemExit(f"{node}: wrong mixed_node {fresh.get('mixed_node')}")
+              if fresh.get("center_shift_from_canonical", 1.0) > 1e-4:
+                  raise SystemExit(f"{node}: centre is not bound to the canonical organizer")
+              keys = {(row["event_mode"], row["direction"]) for row in fresh["germs"]}
+              if keys != REQUIRED:
+                  raise SystemExit(f"{node}: germ key mismatch {sorted(keys)}")
+              for row in fresh["germs"]:
+                  if row.get("status") != "traced":
+                      raise SystemExit(f"{node}: germ is not traced: {row}")
+                  if row.get("canonical_bound") is not True or row.get("canonical_bracketed") is not True:
+                      raise SystemExit(f"{node}: germ is not canonically bound/bracketed: {row}")
+                  if abs(float(row["event"])) > EVENT_GATE:
+                      raise SystemExit(f"{node}: germ misses the frozen event gate: {row}")
+                  if abs(float(row["closure"])) > CLOSURE_GATE:
+                      raise SystemExit(f"{node}: germ misses the frozen closure gate: {row}")
+                  distance = float(row["canonical_distance"])
+                  if not 0.0 < distance <= ATTACH:
+                      raise SystemExit(f"{node}: germ radius {distance:.3e} is degenerate or outside {ATTACH}")
+              # Bracketing: the two signed germs must leave the organizer in
+              # opposite mass directions, or they are one germ counted twice.
+              centre = [float(v) for v in fresh["float64_center_masses"][:2]]
+              for mode in ("plus_one", "minus_one"):
+                  rows = {r["direction"]: r for r in fresh["germs"] if r["event_mode"] == mode}
+                  plus = [float(rows["+"]["masses"][i]) - centre[i] for i in (0, 1)]
+                  minus = [float(rows["-"]["masses"][i]) - centre[i] for i in (0, 1)]
+                  if plus[0] * minus[0] + plus[1] * minus[1] >= 0.0:
+                      raise SystemExit(f"{node}:{mode} germs do not bracket the organizer")
+              # Cross-check the committed evidence numerically, not byte-wise.
+              index = {(r["event_mode"], r["direction"]): r for r in committed["germs"]}
+              for row in fresh["germs"]:
+                  other = index[(row["event_mode"], row["direction"])]
+                  gap = math.dist(
+                      [float(v) for v in row["masses"][:2]],
+                      [float(v) for v in other["masses"][:2]],
+                  )
+                  if gap > 1e-6:
+                      raise SystemExit(
+                          f"{node}:{row['event_mode']}:{row['direction']} re-derives "
+                          f"{gap:.3e} away from the committed germ"
+                      )
+              total += len(fresh["germs"])
+          if total != 12:
+              raise SystemExit(f"expected twelve headline germs, produced {total}")
+          print("verified_headline_germs=", total)
+          PY
+
+      - name: Report the germ numbers
+        if: always()
+        run: |
+          uv run --no-sync python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+
+          print("## Headline mixed germs\n")
+          print("| organizer | centre seed | centre shift | max |event| | max closure | germ radius |")
+          print("| --- | --- | --- | --- | --- | --- |")
+          for node in ("PRINCIPAL_LEFT", "SECONDARY_LEFT", "PRINCIPAL_RIGHT"):
+              path = Path("artifacts/headline-mixed-germs") / f"V1_MIXED_GERMS_{node}_2026-08-16.json"
+              if not path.exists():
+                  print(f"| {node} | (not produced) | | | | |")
+                  continue
+              payload = json.loads(path.read_text())
+              germs = payload["germs"]
+              radius = [row["canonical_distance"] for row in germs]
+              print(
+                  f"| `{payload['mixed_node']}` | `{payload['center_seed_source']}` "
+                  f"| {payload['center_shift_from_canonical']:.3e} "
+                  f"| {max(abs(row['event']) for row in germs):.3e} "
+                  f"| {max(row['closure'] for row in germs):.3e} "
+                  f"| {min(radius):.3e} .. {max(radius):.3e} |"
+              )
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: headline-mixed-germs-${{ github.sha }}
+          path: artifacts/headline-mixed-germs/**
+          if-no-files-found: error
+          retention-days: 90
