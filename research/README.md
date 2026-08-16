@@ -15,6 +15,10 @@
   precision/rounding metadata, units, strict parsing, and canonical hash semantics for
   release-facing numerical evidence. Its Python/Julia round-trip matrix and hostile
   mutation audit live beside it.
+- `graph/V1_GRAPH_SEMANTICS.md` freezes the sheet-aware labeled-multigraph
+  invariants, canonical ordering, isomorphism levels, decimal coordinate matching,
+  and structured graph-difference classes used to compare independent critical-graph
+  reconstructions.
 
-Gates: A pass (mechanism words the paper is allowed to use), B pending (critical graph), C pass (one family), D pending (solved freeze).
-The repository must not label the frozen v1 problem `SOLVED` until `V1_CRITICAL_GRAPH.json` is `release_ready` and `--require-solved` passes.
+Gates: A pass, B pass (`release_ready` true on the 13-edge graph), C pass, D pending (human-signed same-day novelty + `--require-solved`).
+The repository must not label the frozen v1 problem `SOLVED` until `--require-solved` passes on a tagged commit.
