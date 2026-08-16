@@ -1,0 +1,75 @@
+name: Label-invisible root BigFloat reproduction
+
+on:
+  push:
+    branches:
+      - agent/continuous-event-witnesses
+    paths:
+      - "experiments/label_invisible_marginal_plus_one.tsv"
+      - "scripts/extract_low_minus_corridor_seeds.py"
+      - ".github/workflows/label-invisible-bigfloat.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce-label-invisible-roots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
+        with:
+          version: "1.11.9"
+      - name: Instantiate exact independent stack
+        run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile(); Pkg.status()'
+      - name: Extract the Float64-dropped low-minus corridor
+        run: |
+          mkdir -p artifacts/label-invisible-bigfloat
+          python3 scripts/extract_low_minus_corridor_seeds.py \
+            research/evidence/V1_FULL_DOMAIN_SIGN_SWEEP_2026-08-16.json \
+            artifacts/label-invisible-bigfloat/low-minus-corridor.tsv
+          python3 - <<'PY'
+          from pathlib import Path
+          rows = [line for line in Path('artifacts/label-invisible-bigfloat/low-minus-corridor.tsv').read_text().splitlines() if line]
+          assert len(rows) == 18, len(rows)  # header + 17 contiguous m1 slices
+          assert all(len(line.split('\t')) == 10 for line in rows), 'BigFloat verifier requires exactly 10 columns'
+          PY
+      - name: Reproduce m1=0.930 G+ root at 60 digits
+        run: |
+          julia --project=julia julia/verify_critical_points.jl \
+            experiments/label_invisible_marginal_plus_one.tsv \
+            artifacts/label-invisible-bigfloat/m1-0p930-plus-one.json \
+            60 25 18 10 5 4
+      - name: Reproduce all 17 low-minus corridor roots at 60 digits
+        run: |
+          julia --project=julia julia/verify_critical_points.jl \
+            artifacts/label-invisible-bigfloat/low-minus-corridor.tsv \
+            artifacts/label-invisible-bigfloat/low-minus-corridor.json \
+            60 25 18 10 5 4
+      - name: Assert independent corridor count
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          marginal = json.loads(Path('artifacts/label-invisible-bigfloat/m1-0p930-plus-one.json').read_text())
+          corridor = json.loads(Path('artifacts/label-invisible-bigfloat/low-minus-corridor.json').read_text())
+          assert marginal['dps'] == 60
+          assert corridor['dps'] == 60
+          assert len(marginal['results']) == 1
+          assert len(corridor['results']) == 17, len(corridor['results'])
+          print('independent BigFloat roots verified:', 1 + len(corridor['results']))
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: label-invisible-bigfloat-${{ github.sha }}
+          path: |
+            artifacts/label-invisible-bigfloat/m1-0p930-plus-one.json
+            artifacts/label-invisible-bigfloat/low-minus-corridor.tsv
+            artifacts/label-invisible-bigfloat/low-minus-corridor.json
+          if-no-files-found: warn
+          retention-days: 90
