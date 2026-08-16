@@ -2,10 +2,10 @@
 """Extract the low-m2 G- corridor that Float64 intermittently drops.
 
 The full-domain sign sweep contains a smooth sequence of vertical G- brackets
-from the certified component-1 endpoint at m1=1.042 through m1=1.074.  Most of
+from the certified component-1 endpoint at m1=1.042 through m1=1.074. Most of
 the intermediate localized charts have closure ~1e-10 but were excluded from
 the supplemental graph because the cancellation-sensitive Float64 event
-residual happened to exceed 2e-8.  Preserve those charts as seeds for the
+residual happened to exceed 2e-8. Preserve those charts as seeds for the
 independent Julia BigFloat slice verifier; do not change any gate.
 """
 from __future__ import annotations
@@ -45,11 +45,11 @@ def main() -> None:
             continue
         if any(row.get(key) is None for key in FIELDS):
             continue
-        # The independent verifier is allowed to see both the one already-passed
-        # anchor and the Float64 gate misses.  Localizer failures without a chart
-        # are deliberately excluded rather than fabricated.
+        # The independent verifier sees both the already-passed anchor and the
+        # Float64 gate misses. Localizer failures without a chart are excluded
+        # rather than fabricated.
         status = str(row.get("status") or "")
-        if status != "passed" and status != "missed_frozen_gates":
+        if status not in {"passed", "missed_frozen_gates"}:
             continue
         rows.append(row)
 
@@ -64,7 +64,8 @@ def main() -> None:
 
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
-    lines = ["name\tevent_mode\tm1\tm2\tm3\tx1\tv1\tv2\tperiod\tscreening_event\tscreening_status"]
+    # verify_critical_points.jl deliberately accepts exactly these ten columns.
+    lines = ["name\tevent_mode\tm1\tm2\tm3\tx1\tv1\tv2\tperiod\tscreening_event"]
     for row in rows:
         m1, m2, m3 = row["masses"][:3]
         lines.append(
@@ -80,7 +81,6 @@ def main() -> None:
                     repr(float(row["v2"])),
                     repr(float(row["period"])),
                     repr(float(row.get("event_value") or row.get("event") or 0.0)),
-                    str(row.get("status")),
                 )
             )
         )
@@ -93,6 +93,10 @@ def main() -> None:
                 "seeds": len(rows),
                 "float64_gate_misses": len(misses),
                 "m1_range": [observed[0], observed[-1]],
+                "statuses": {
+                    status: sum(1 for row in rows if row.get("status") == status)
+                    for status in sorted({str(row.get("status")) for row in rows})
+                },
                 "max_abs_float64_event": max(
                     abs(float(row.get("event_value") or row.get("event") or 0.0))
                     for row in rows
