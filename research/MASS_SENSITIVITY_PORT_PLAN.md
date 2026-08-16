@@ -20,7 +20,11 @@ differencing *complete independent periodic corrections*:
 | `five_point_m2(h)` / `five_point_m1(h)` | 4 corrections each | ~27 min per stencil |
 | `fold_vector` | 1 `five_point_m2` | ~27 min |
 | `fold_mass_jacobian` | 2 outer corrections + 2 `fold_vector` | dominates a ~92 min Newton step |
-| `audit_fold(hs=[8e-5,4e-5,2e-5,1e-5])` | 20 distinct corrections after cache hits | ~154 min measured |
+| `audit_fold(hs=[8e-5,4e-5,2e-5,1e-5])` | 20 distinct corrections after `CORRECTED_CACHE` hits | ~154 min measured |
+
+(20 nodes at the nominal 5.5 min is 110 min against the 154 min the orchestrator
+measured, so some nodes cost more than the nominal four Newton iterations.  The
+projections below use the measured 154 min, i.e. ~28 correction-equivalents.)
 
 One BigFloat `corrected_at` is ~5.5 min (four ~82 s Newton iterations).  This is
 the finite differencing that killed three CI runs on the 120 min job wall.
@@ -56,6 +60,17 @@ consistent) 8x4 closure system, and the period contributes
 
 ## 3. Validation actually performed (float64, this branch)
 
+Five parameter points, all corrected first with the float64 Gauss--Newton chart
+corrector (closure 3e-13 … 6e-12):
+
+| point | masses (m1, m2) | `dG-/dm1` | `dG-/dm2` |
+| --- | --- | --- | --- |
+| `fold_root` | 0.9957049740, 0.9742604327 | 28.04556482 | 1.7e-07 (zero) |
+| `fold_root_offset_m1_+1e-3` | 0.9967049740, 0.9742604327 | 31.43452486 | -1.19241597 |
+| `fold_root_offset_m2_-2e-3` | 0.9957049740, 0.9722604327 | 30.38445987 | 0.39216189 |
+| `branch_lower_cell392` | 0.996, 0.9645756252 | 39.88094515 | 2.45177095 |
+| `branch_upper_cell393` | 0.996, 0.9841352873 | 16.73931325 | -0.99010697 |
+
 At the frozen fold root
 `m1=0.995704974019022863…`, `m2=0.974260432692528563…`, `m3=1`:
 
@@ -67,9 +82,22 @@ At the frozen fold root
 | complex-step chain rule `dG/dm = ∂G/∂m + ∂G/∂p · dp/dm` | the Psi-with-total-initial-condition construction, independently | **1.8e-8 to 7.3e-7 relative** |
 | Richardson-extrapolated corrected central difference — *the thing being replaced* | everything, end to end | **~1e-7 relative** on `dG-/dm1`, noise-floor limited |
 
+Across all five points the worst numbers were: complex-step frozen-chart
+agreement **2.8e-9** relative, chain-rule agreement **1.7e-6**, `dp/dm`
+finite-difference agreement **8.1e-7**, Richardson-vs-analytic **6.3e-6**
+relative (worst case is the smallest derivative, `dG-/dm2 = 0.392`, where the
+absolute residual is 2.5e-6).  On `dG-/dm1`, which is O(20-40) everywhere, the
+Richardson agreement is **1.6e-8 to 1.8e-7** relative.
+
 Nothing disagreed beyond finite-difference truncation/round-off.  The
 disagreements do not shrink with `h`, and they change sign between step sizes,
 which is the signature of a float64 noise floor rather than a derivation error.
+
+A sixth check, Clairaut symmetry of the mass Hessian: each row is one central
+difference of the *exact* gradient, so `d2G-/dm1 dm2` is obtained twice along
+different axes.  At the fold root they agree to **8.5e-6** relative at `h=5e-4`
+and **3.9e-6** at `h=2e-4` -- improving like the outer difference's own `O(h^2)`,
+which is what a correct construction looks like.
 
 Values at the fold root (float64, DOP853 rtol 1e-13 / atol 1e-15):
 
@@ -81,14 +109,27 @@ d2G-/dm2^2  = -173.103          (converged over h = 1e-3, 5e-4, 2e-4)
 m1''        =  6.1722           (= -d2G-/dm2^2 / (dG-/dm1))
 ```
 
-The two published newborn cell roots give screening-seed secant curvatures
-`2 dm1 / dm2^2` of **6.291** (cell 392) and **6.051** (cell 393).  The local
-curvature computed from exact derivatives, **6.1722**, lies between them.  This
-is an independent float64 corroboration of the fold geometry that the Julia
-verifier is trying to establish, obtained in ~90 s instead of ~2.5 h.
+Both newborn branch roots were then re-solved to `G- = 0` at `m1 = 0.996` using
+the *exact* `dG-/dm2` as the Newton slope -- two iterations each, inside their
+published brackets, and with no derivative stencil at all
+(`solve_branch_event` currently spends two extra corrected samples per iteration
+just to estimate that slope):
 
-**It is a corroboration, not a substitute.** It is float64, and it does not
-satisfy any release gate.  The BigFloat verifier remains required.
+```
+cell392 (U->S)  m2* = 0.9645748736853440   secant curvature 2 dm1/dm2^2 = 6.289859
+cell393 (S->U)  m2* = 0.9841356178020694   secant curvature 2 dm1/dm2^2 = 6.050618
+relative curvature disagreement = 0.0380     (Julia gate <= 0.15)  PASS
+both curvatures >= 0.1                       (Julia gate)          PASS
+```
+
+The local curvature computed from exact derivatives, **6.1722**, lies between the
+two secants.  That is an independent float64 corroboration of the fold geometry
+the Julia verifier is trying to establish, obtained in ~3 minutes instead of
+~2.5 hours.
+
+**It is a corroboration, not a substitute.** It is float64, it does not satisfy
+any release gate, and section 8 shows exactly why float64 cannot be trusted for
+this class of quantity in general.  The BigFloat verifier remains required.
 
 ## 4. Measured cost, honestly
 
@@ -190,7 +231,51 @@ should not inherit float64's tolerance choices.
   nodes.  A full second-order variational system would remove them, at the cost
   of a third-derivative tensor of the Newtonian kernel.
 
-## 7. Scope discipline
+## 7. A test of the polyline assumption that this makes cheap
+
+The brief names the single largest unverified assumption in the critical graph:
+`polyline_edges()` chains consecutive `m1` slices under `MASS_JUMP`, and an
+adversarial audit found `edge_count` stays 7 for `MASS_JUMP` anywhere in
+`[0.0112, 0.096]`, so the reconstruction performs essentially no branch
+discrimination.  "Nearby roots really are one continuous critical curve" is
+assumed, not tested.
+
+Exact mass sensitivities give a direct test.  On a critical curve `G = 0` the
+analytic tangent is
+
+    dm2/dm1 = -(dG/dm1) / (dG/dm2)
+
+so for two consecutive census roots that genuinely lie on ONE smooth curve, the
+secant slope must equal the midpoint of the two endpoint tangents to `O(h^2)`.
+If a chained pair actually straddles two branches, the secant is unrelated to
+either tangent and the test fails loudly.
+
+Run on the 19 consecutive `minus_one`, `U->S` census roots spanning
+`m1 = 1.031 … 1.049` (cells 534…592, slice spacing `h = 0.001`), all 18 chained
+pairs agree:
+
+```
+tangent slope falls monotonically 1.96597 -> 1.71769
+secant vs midpoint-of-tangents relative disagreement: 8.5e-6 … 5.4e-5
+```
+
+which is exactly the `O(h^2)` midpoint-rule error.  **On this arm the chaining
+assumption survives.**  The test has real discriminating power -- a mis-chain
+would miss by O(1), not by 3e-5 -- and it costs one correction plus one
+sensitivity per root, ~7 s each in float64.  Running it over all 620 census
+roots is roughly 50 minutes of float64 and would convert the graph's largest
+assumption into a measurement.  That is the highest-value follow-on this branch
+enables and it was **not** run here.
+
+## 8. FALSIFIED: float64 cannot evaluate these events to the frozen 2e-8 gate
+
+See section 9 for the numbers.  Summary: the float64 event floor is set by
+round-off in `tr(M^2)` inside `beta`, i.e. `eps * ||M||^2`, and `||M||` for these
+orbits ranges from ~1e3 to ~2.2e4.  At `||M|| = 2.1e4` the floor is ~1e-7,
+**five times the frozen 2e-8 event gate**, and `trace_collision` amplifies it by
+a further factor of 4 through `disc = (alpha-4)^2 - 4(beta - 4 alpha + 8)`.
+
+## 9. Scope discipline
 
 * No numerical gate was loosened.  `mass_sensitivity.corrected_sample` adds a
   `max_closure = 1e-9` guard, which is two orders **stricter** than the project's
