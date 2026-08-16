@@ -3,7 +3,7 @@ name: Floquet rank-event structural audit
 on:
   push:
     branches:
-      - agent/continuous-event-witnesses
+      - compute/continuous-event-canary
     paths:
       - "src/threebody_atlas/floquet_rank_events.py"
       - "tests/test_floquet_rank_events.py"
@@ -46,11 +46,7 @@ jobs:
       fail-fast: false
       max-parallel: 2
       matrix:
-        m1:
-          - "1.042"
-          - "1.064"
-          - "1.066"
-          - "1.074"
+        m1: ["1.042", "1.064", "1.066", "1.074"]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -84,9 +80,7 @@ jobs:
       fail-fast: false
       max-parallel: 2
       matrix:
-        m1:
-          - "0.930"
-          - "0.970"
+        m1: ["0.930", "0.970"]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
