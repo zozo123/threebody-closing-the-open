@@ -38,10 +38,25 @@ The final object is a graph, not a cloud, and it need not be connected just beca
 Pass only when:
 
 - all 620 catalog S/U cells are localized and each belongs to exactly one mechanism-specific polyline;
-- mixed germs come from continuation artifacts, not nearby-root heuristics;
+- mixed germs come from continuation artifacts, not nearby-root heuristics. The assembler
+  enforces this uniformly: every germ, including one attached to a base headline organizer,
+  must carry `canonical_bound`/`canonical_bracketed`, a `canonical_distance` inside
+  `GERM_ATTACH_DISTANCE`, and closure/event inside the frozen gates, and is rejected outright if
+  its own `stopped_reason` records a nonconvergent trace. `research/evidence/V1_MIXED_GERMS_2026-08-15.json`
+  fails all twelve of these checks; the `mixed_principal_right` `plus_one` pair additionally
+  records a pseudo-arclength least-squares failure whose junction trace
+  (`V1_JUNCTION_PRINCIPAL_RIGHT_2026-08-15.json`) has zero continuation points. Re-running
+  `scripts/trace_canonical_mixed_germs.py` for the three headline organizers -- the script that
+  produced the numerics-complete `V1_SECONDARY_RIGHT_GERMS_2026-08-16.json` -- is the remediation;
+- each declared-domain terminus is a distinct exit, not a shared face: two curves that leave the
+  box through the same wall at different places are two nodes, not one;
 - secondary-left birth is classified as a fold, two-arc alternative, or mixed organizer;
 - secondary-right death is classified as a mixed organizer, fold, or declared domain boundary;
-- completeness is frozen;
+- completeness is frozen *and independently re-verifiable*: the assembler re-reads every source
+  artifact named in the certificate (`active_learning` and `neck_scan` are both mandatory),
+  re-hashes it, and re-derives the AL pocket-screen and neck-raster predicates from the artifact
+  itself. A certificate sealed only with a digest over its own content is not evidence, and
+  re-sealing a certificate after editing a source artifact does not launder it;
 - the lower +1 daughter is classified, with `no_branch_attachment` accepted as a valid close;
 - no endpoint is `Newton failed`;
 - `research/evidence/V1_CRITICAL_GRAPH.json` reports `release_ready: true`.

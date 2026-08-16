@@ -1,8 +1,28 @@
 {
-  "schema": "atlas.v1.critical-graph/2",
+  "schema": "atlas.v1.critical-graph/3",
   "claim_status": "partial graph: 620 cells are samples, not edges; unresolved gates are enumerated by the artifact",
   "release_ready": false,
   "family_component": "one continuation-connected Li-Li-Liao catalog sheet",
+  "topology": {
+    "free_group_word": "bABabaBAba",
+    "role": "catalog topology metadata; topology is not used as family identity",
+    "source": "research/OPEN_PROBLEM.md"
+  },
+  "declared_mass_domain": {
+    "m1": [
+      0.8,
+      1.1
+    ],
+    "m2": [
+      0.7,
+      1.2
+    ],
+    "m3": 1.0
+  },
+  "frozen_numerical_gates": {
+    "maximum_absolute_event": 2e-08,
+    "maximum_periodic_closure": 1e-07
+  },
   "source_transition_cells": 620,
   "localized_roots": 620,
   "nodes": [
@@ -88,36 +108,147 @@
     {
       "id": "secondary_right_death",
       "kind": "endpoint",
-      "status": "unresolved",
-      "masses": null,
-      "mechanism": "unknown",
-      "note": "Allowed classes: mixed_organizer, projection_fold, domain_boundary. Newton-failed is forbidden.",
-      "passed": false
+      "status": "independently_reproduced",
+      "masses": [
+        "1.0426234457894453029006607865151261094124167952193571963283940451010535",
+        "1.0460039217640023612037763287793607507467547209940905010670534829673121",
+        "1.0"
+      ],
+      "mechanism": "mixed_organizer",
+      "note": "The two secondary walls end at an independently reproduced physical mixed (+1,-1) organizer.",
+      "passed": true,
+      "evidence": "research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json",
+      "estimator": "independent Julia BigFloat root solve + canonical Jacobi Vern9 + physical E^omega/E quotient + GenericSchur",
+      "evidence_level": "physical",
+      "screening_passed": true,
+      "edge_endpoint_bindings": [
+        {
+          "cell_id": 576,
+          "side": "end",
+          "mechanism": "plus_one",
+          "orientation": "U->S"
+        },
+        {
+          "cell_id": 577,
+          "side": "end",
+          "mechanism": "minus_one",
+          "orientation": "S->U"
+        }
+      ]
     },
     {
       "id": "lower_plus_one_daughter",
       "kind": "branch",
-      "status": "unresolved",
+      "status": "independently_reproduced",
       "masses": null,
-      "mechanism": "unknown",
-      "note": "Classify the lower +1 daughter as reconnecting, closed_loop, distinct_branch, obstruction, no_branch_attachment, or falsified.",
-      "passed": false
+      "mechanism": "distinct_branch",
+      "note": "The physical soft direction defines a generic strict-periodic branch distinct from the same-mass Li parent; its reversing-symmetry partner is the same daughter.",
+      "passed": true,
+      "evidence": "research/evidence/V1_DAUGHTER_CLASS_2026-08-16.json",
+      "estimator": "independent Julia BigFloat + Vern9 + full 8D variational generic trust-region Levenberg-Marquardt",
+      "evidence_level": "independently_reproduced",
+      "screening_passed": true,
+      "edge_endpoint_bindings": []
     },
     {
-      "id": "domain_m1_min",
+      "id": "domain_m1_min_m2_0p756",
       "kind": "declared_domain_boundary",
       "status": "frozen_domain",
       "masses": null,
       "passed": true,
-      "evidence_level": "definition"
+      "evidence_level": "definition",
+      "domain_face": "domain_m1_min",
+      "exit_coordinate": {
+        "axis": "m2",
+        "grid_value": 0.756
+      },
+      "observed_exits": [
+        {
+          "edge": "plus_one_u_to_s_0",
+          "side": "start",
+          "masses": [
+            0.8,
+            0.7557199219114411,
+            1.0
+          ],
+          "distance_to_face": 0.0
+        }
+      ]
     },
     {
-      "id": "domain_m2_max",
+      "id": "domain_m1_min_m2_0p761",
       "kind": "declared_domain_boundary",
       "status": "frozen_domain",
       "masses": null,
       "passed": true,
-      "evidence_level": "definition"
+      "evidence_level": "definition",
+      "domain_face": "domain_m1_min",
+      "exit_coordinate": {
+        "axis": "m2",
+        "grid_value": 0.761
+      },
+      "observed_exits": [
+        {
+          "edge": "trace_collision_s_to_u_0",
+          "side": "start",
+          "masses": [
+            0.8,
+            0.7607259420854386,
+            1.0
+          ],
+          "distance_to_face": 0.0
+        }
+      ]
+    },
+    {
+      "id": "domain_m2_max_m1_1p053",
+      "kind": "declared_domain_boundary",
+      "status": "frozen_domain",
+      "masses": null,
+      "passed": true,
+      "evidence_level": "definition",
+      "domain_face": "domain_m2_max",
+      "exit_coordinate": {
+        "axis": "m1",
+        "grid_value": 1.053
+      },
+      "observed_exits": [
+        {
+          "edge": "trace_collision_s_to_u_0",
+          "side": "end",
+          "masses": [
+            1.053,
+            1.1995833507161973,
+            1.0
+          ],
+          "distance_to_face": 0.0004166492838026947
+        }
+      ]
+    },
+    {
+      "id": "domain_m2_max_m1_1p071",
+      "kind": "declared_domain_boundary",
+      "status": "frozen_domain",
+      "masses": null,
+      "passed": true,
+      "evidence_level": "definition",
+      "domain_face": "domain_m2_max",
+      "exit_coordinate": {
+        "axis": "m1",
+        "grid_value": 1.071
+      },
+      "observed_exits": [
+        {
+          "edge": "plus_one_u_to_s_2",
+          "side": "end",
+          "masses": [
+            1.071,
+            1.1999602553532644,
+            1.0
+          ],
+          "distance_to_face": 3.9744646735506706e-05
+        }
+      ]
     }
   ],
   "edges": [
@@ -265,11 +396,7 @@
             0.8873042213883066,
             1.0
           ],
-          "node": "mixed_principal_left",
-          "attachment": "continuation_germ",
-          "distance_to_germ": 0.0026994126800394336,
-          "germ_direction": "+",
-          "binding_evidence": "research/evidence/V1_MIXED_GERMS_2026-08-15.json"
+          "node": null
         },
         "end": {
           "cell_id": 592,
@@ -278,13 +405,9 @@
             1.128527000337954,
             1.0
           ],
-          "node": "mixed_principal_right",
-          "attachment": "continuation_germ",
-          "distance_to_germ": 0.0019918200191918673,
-          "germ_direction": "+",
-          "binding_evidence": "research/evidence/V1_MIXED_GERMS_2026-08-15.json"
+          "node": null
         },
-        "classified": true
+        "classified": false
       }
     },
     {
@@ -321,11 +444,7 @@
             0.9645756252404868,
             1.0
           ],
-          "node": "mixed_secondary_left",
-          "attachment": "continuation_germ",
-          "distance_to_germ": 0.006350601874616059,
-          "germ_direction": "-",
-          "binding_evidence": "research/evidence/V1_MIXED_GERMS_2026-08-15.json"
+          "node": null
         },
         "classified": false
       }
@@ -410,7 +529,10 @@
             1.0454414398297092,
             1.0
           ],
-          "node": null
+          "node": "secondary_right_death",
+          "attachment": "verified_classification_artifact",
+          "binding_class": "mixed_organizer",
+          "binding_evidence": "research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json"
         },
         "classified": false
       }
@@ -570,8 +692,10 @@
             0.7557199219114411,
             1.0
           ],
-          "node": "domain_m1_min",
-          "attachment": "declared_domain_boundary"
+          "node": "domain_m1_min_m2_0p756",
+          "attachment": "declared_domain_boundary",
+          "domain_face": "domain_m1_min",
+          "distance_to_domain_face": 0.0
         },
         "end": {
           "cell_id": 258,
@@ -580,13 +704,9 @@
             0.8850799079881937,
             1.0
           ],
-          "node": "mixed_principal_left",
-          "attachment": "continuation_germ",
-          "distance_to_germ": 0.0015640623931533733,
-          "germ_direction": "+",
-          "binding_evidence": "research/evidence/V1_MIXED_GERMS_2026-08-15.json"
+          "node": null
         },
-        "classified": true
+        "classified": false
       }
     },
     {
@@ -659,11 +779,7 @@
             0.9562525449533762,
             1.0
           ],
-          "node": "mixed_secondary_left",
-          "attachment": "continuation_germ",
-          "distance_to_germ": 0.001419820417043725,
-          "germ_direction": "+",
-          "binding_evidence": "research/evidence/V1_MIXED_GERMS_2026-08-15.json"
+          "node": null
         },
         "end": {
           "cell_id": 576,
@@ -672,7 +788,10 @@
             1.0359819791033056,
             1.0
           ],
-          "node": null
+          "node": "secondary_right_death",
+          "attachment": "verified_classification_artifact",
+          "binding_class": "mixed_organizer",
+          "binding_evidence": "research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json"
         },
         "classified": false
       }
@@ -724,11 +843,7 @@
             1.131789193875551,
             1.0
           ],
-          "node": "mixed_principal_right",
-          "attachment": "continuation_germ",
-          "distance_to_germ": 1.7789818507196742e-09,
-          "germ_direction": "-",
-          "binding_evidence": "research/evidence/V1_MIXED_GERMS_2026-08-15.json"
+          "node": null
         },
         "end": {
           "cell_id": 619,
@@ -737,10 +852,12 @@
             1.1999602553532644,
             1.0
           ],
-          "node": "domain_m2_max",
-          "attachment": "declared_domain_boundary"
+          "node": "domain_m2_max_m1_1p071",
+          "attachment": "declared_domain_boundary",
+          "domain_face": "domain_m2_max",
+          "distance_to_domain_face": 3.9744646735506706e-05
         },
-        "classified": true
+        "classified": false
       }
     },
     {
@@ -1022,8 +1139,10 @@
             0.7607259420854386,
             1.0
           ],
-          "node": "domain_m1_min",
-          "attachment": "declared_domain_boundary"
+          "node": "domain_m1_min_m2_0p761",
+          "attachment": "declared_domain_boundary",
+          "domain_face": "domain_m1_min",
+          "distance_to_domain_face": 0.0
         },
         "end": {
           "cell_id": 601,
@@ -1032,8 +1151,10 @@
             1.1995833507161973,
             1.0
           ],
-          "node": "domain_m2_max",
-          "attachment": "declared_domain_boundary"
+          "node": "domain_m2_max_m1_1p053",
+          "attachment": "declared_domain_boundary",
+          "domain_face": "domain_m2_max",
+          "distance_to_domain_face": 0.0004166492838026947
         },
         "classified": true
       }
@@ -1051,8 +1172,21 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
+      "stopped_reason": "requested_steps_completed",
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": true
+      "valid": false,
+      "invalid_reasons": [
+        "canonical_bound",
+        "canonical_bracketed",
+        "canonical_distance",
+        "closure",
+        "event"
+      ]
     },
     {
       "mixed_node": "mixed_principal_left",
@@ -1065,8 +1199,21 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
+      "stopped_reason": "requested_steps_completed",
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": true
+      "valid": false,
+      "invalid_reasons": [
+        "canonical_bound",
+        "canonical_bracketed",
+        "canonical_distance",
+        "closure",
+        "event"
+      ]
     },
     {
       "mixed_node": "mixed_principal_left",
@@ -1079,8 +1226,21 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
+      "stopped_reason": "requested_steps_completed",
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": true
+      "valid": false,
+      "invalid_reasons": [
+        "canonical_bound",
+        "canonical_bracketed",
+        "canonical_distance",
+        "closure",
+        "event"
+      ]
     },
     {
       "mixed_node": "mixed_principal_left",
@@ -1093,8 +1253,21 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
+      "stopped_reason": "requested_steps_completed",
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": true
+      "valid": false,
+      "invalid_reasons": [
+        "canonical_bound",
+        "canonical_bracketed",
+        "canonical_distance",
+        "closure",
+        "event"
+      ]
     },
     {
       "mixed_node": "mixed_secondary_left",
@@ -1107,8 +1280,21 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
+      "stopped_reason": "requested_steps_completed",
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": true
+      "valid": false,
+      "invalid_reasons": [
+        "canonical_bound",
+        "canonical_bracketed",
+        "canonical_distance",
+        "closure",
+        "event"
+      ]
     },
     {
       "mixed_node": "mixed_secondary_left",
@@ -1121,8 +1307,21 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
+      "stopped_reason": "requested_steps_completed",
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": true
+      "valid": false,
+      "invalid_reasons": [
+        "canonical_bound",
+        "canonical_bracketed",
+        "canonical_distance",
+        "closure",
+        "event"
+      ]
     },
     {
       "mixed_node": "mixed_secondary_left",
@@ -1135,8 +1334,21 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
+      "stopped_reason": "requested_steps_completed",
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": true
+      "valid": false,
+      "invalid_reasons": [
+        "canonical_bound",
+        "canonical_bracketed",
+        "canonical_distance",
+        "closure",
+        "event"
+      ]
     },
     {
       "mixed_node": "mixed_secondary_left",
@@ -1149,8 +1361,21 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
+      "stopped_reason": "requested_steps_completed",
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": true
+      "valid": false,
+      "invalid_reasons": [
+        "canonical_bound",
+        "canonical_bracketed",
+        "canonical_distance",
+        "closure",
+        "event"
+      ]
     },
     {
       "mixed_node": "mixed_principal_right",
@@ -1163,8 +1388,21 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
+      "stopped_reason": "requested_steps_completed",
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": true
+      "valid": false,
+      "invalid_reasons": [
+        "canonical_bound",
+        "canonical_bracketed",
+        "canonical_distance",
+        "closure",
+        "event"
+      ]
     },
     {
       "mixed_node": "mixed_principal_right",
@@ -1177,8 +1415,21 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
+      "stopped_reason": "requested_steps_completed",
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": true
+      "valid": false,
+      "invalid_reasons": [
+        "canonical_bound",
+        "canonical_bracketed",
+        "canonical_distance",
+        "closure",
+        "event"
+      ]
     },
     {
       "mixed_node": "mixed_principal_right",
@@ -1191,8 +1442,22 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
+      "stopped_reason": "pseudo-arclength correction failed: augmented least-squares failed: The maximum number of function evaluations is exceeded.",
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": true
+      "valid": false,
+      "invalid_reasons": [
+        "stopped_reason_records_nonconvergence",
+        "canonical_bound",
+        "canonical_bracketed",
+        "canonical_distance",
+        "closure",
+        "event"
+      ]
     },
     {
       "mixed_node": "mixed_principal_right",
@@ -1205,8 +1470,106 @@
         1.0
       ],
       "status": "traced",
+      "canonical_bound": null,
+      "canonical_bracketed": null,
+      "canonical_distance": null,
+      "closure": null,
+      "event": null,
+      "stopped_reason": "pseudo-arclength correction failed: augmented least-squares failed: The maximum number of function evaluations is exceeded.",
       "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
-      "valid": true
+      "valid": false,
+      "invalid_reasons": [
+        "stopped_reason_records_nonconvergence",
+        "canonical_bound",
+        "canonical_bracketed",
+        "canonical_distance",
+        "closure",
+        "event"
+      ]
+    },
+    {
+      "mixed_node": "secondary_right_death",
+      "event_mode": "plus_one",
+      "direction": "+",
+      "ends_on": "secondary_right_death",
+      "masses": [
+        1.042651372434157,
+        1.046617030544298,
+        1.0
+      ],
+      "status": "traced",
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.0006137444695968634,
+      "closure": 3.818178353343132e-12,
+      "event": -1.3566392453867593e-09,
+      "stopped_reason": null,
+      "source_artifact": "research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json",
+      "valid": true,
+      "invalid_reasons": []
+    },
+    {
+      "mixed_node": "secondary_right_death",
+      "event_mode": "plus_one",
+      "direction": "-",
+      "ends_on": "secondary_right_death",
+      "masses": [
+        1.0425947686784605,
+        1.0453937822175037,
+        1.0
+      ],
+      "status": "traced",
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.0006108130998070707,
+      "closure": 4.063789303578445e-12,
+      "event": 5.1113104859723535e-09,
+      "stopped_reason": null,
+      "source_artifact": "research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json",
+      "valid": true,
+      "invalid_reasons": []
+    },
+    {
+      "mixed_node": "secondary_right_death",
+      "event_mode": "minus_one",
+      "direction": "+",
+      "ends_on": "secondary_right_death",
+      "masses": [
+        1.0427724789708586,
+        1.0461381311066387,
+        1.0
+      ],
+      "status": "traced",
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.00020055681692000173,
+      "closure": 3.894782225757369e-12,
+      "event": 2.9683455693430005e-10,
+      "stopped_reason": null,
+      "source_artifact": "research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json",
+      "valid": true,
+      "invalid_reasons": []
+    },
+    {
+      "mixed_node": "secondary_right_death",
+      "event_mode": "minus_one",
+      "direction": "-",
+      "ends_on": "secondary_right_death",
+      "masses": [
+        1.0424744331415392,
+        1.045869634435641,
+        1.0
+      ],
+      "status": "traced",
+      "canonical_bound": true,
+      "canonical_bracketed": true,
+      "canonical_distance": 0.00020059375811411646,
+      "closure": 1.6624782970405055e-12,
+      "event": 2.822897471332908e-11,
+      "stopped_reason": null,
+      "source_artifact": "research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json",
+      "valid": true,
+      "invalid_reasons": []
     }
   ],
   "root_coverage": {
@@ -1217,13 +1580,62 @@
     "edge_count": 7,
     "cells_on_edges": 620,
     "duplicate_cell_ids": [],
-    "missing_mixed_germs": [],
+    "missing_mixed_germs": [
+      "mixed_principal_left:plus_one:+",
+      "mixed_principal_left:plus_one:-",
+      "mixed_principal_left:minus_one:+",
+      "mixed_principal_left:minus_one:-",
+      "mixed_principal_right:plus_one:+",
+      "mixed_principal_right:plus_one:-",
+      "mixed_principal_right:minus_one:+",
+      "mixed_principal_right:minus_one:-",
+      "mixed_secondary_left:plus_one:+",
+      "mixed_secondary_left:plus_one:-",
+      "mixed_secondary_left:minus_one:+",
+      "mixed_secondary_left:minus_one:-"
+    ],
     "newton_failed": 0,
     "completeness_passed": false,
+    "completeness_verification_errors": [
+      "certificate schema must be 'atlas.v1.completeness-certificate/2', got None",
+      "certificate does not claim passed=true",
+      "certificate sha256_content must be a 64-character hex digest"
+    ],
+    "completeness_sources_in_repository": null,
     "unclassified_edge_endpoints": [
+      {
+        "edge": "minus_one_u_to_s_0",
+        "side": "start",
+        "masses": [
+          0.93,
+          0.8873042213883066,
+          1.0
+        ],
+        "reserved_for": null
+      },
+      {
+        "edge": "minus_one_u_to_s_0",
+        "side": "end",
+        "masses": [
+          1.049,
+          1.128527000337954,
+          1.0
+        ],
+        "reserved_for": null
+      },
       {
         "edge": "minus_one_u_to_s_1",
         "side": "start",
+        "masses": [
+          0.996,
+          0.9645756252404868,
+          1.0
+        ],
+        "reserved_for": null
+      },
+      {
+        "edge": "minus_one_u_to_s_1",
+        "side": "end",
         "masses": [
           0.996,
           0.9645756252404868,
@@ -1242,21 +1654,31 @@
         "reserved_for": null
       },
       {
-        "edge": "minus_one_s_to_u_0",
+        "edge": "plus_one_u_to_s_0",
         "side": "end",
         "masses": [
-          1.042,
-          1.0454414398297092,
+          0.929,
+          0.8850799079881937,
           1.0
         ],
         "reserved_for": null
       },
       {
         "edge": "plus_one_u_to_s_1",
-        "side": "end",
+        "side": "start",
         "masses": [
-          1.042,
-          1.0359819791033056,
+          0.997,
+          0.9562525449533762,
+          1.0
+        ],
+        "reserved_for": null
+      },
+      {
+        "edge": "plus_one_u_to_s_2",
+        "side": "start",
+        "masses": [
+          1.05,
+          1.131789193875551,
           1.0
         ],
         "reserved_for": null
@@ -1265,17 +1687,65 @@
     "classification_binding_errors": [],
     "edge_topology_complete": false
   },
+  "incidence": {
+    "node_count": 12,
+    "edge_count": 7,
+    "attached_endpoints": 6,
+    "nodes_touching_more_than_one_edge": {
+      "secondary_right_death": [
+        "minus_one_s_to_u_0:end",
+        "plus_one_u_to_s_1:end"
+      ]
+    },
+    "edge_component_count": 6,
+    "edge_components": [
+      [
+        "minus_one_s_to_u_0",
+        "plus_one_u_to_s_1"
+      ],
+      [
+        "minus_one_u_to_s_0"
+      ],
+      [
+        "minus_one_u_to_s_1"
+      ],
+      [
+        "plus_one_u_to_s_0"
+      ],
+      [
+        "plus_one_u_to_s_2"
+      ],
+      [
+        "trace_collision_s_to_u_0"
+      ]
+    ]
+  },
   "unexplained_nodes": [
-    "lower_plus_one_daughter",
-    "secondary_left_birth",
-    "secondary_right_death"
+    "secondary_left_birth"
   ],
   "missing_required_nodes": [],
-  "organizer_count": 3,
+  "organizer_count": 4,
   "daughter_classification": {
     "required_for_v1_graph": true,
-    "status": "unresolved",
-    "class": "unknown"
+    "status": "independently_reproduced",
+    "class": "distinct_branch"
   },
-  "completeness": null
+  "completeness": {
+    "passed": false,
+    "note": "AL pocket screen only; neck raster and vertex harvest still required",
+    "attempted": 12,
+    "accepted": 12,
+    "screening_stable": 0
+  },
+  "completeness_verification": {
+    "schema": "atlas.v1.completeness-certificate/2",
+    "passed": false,
+    "errors": [
+      "certificate schema must be 'atlas.v1.completeness-certificate/2', got None",
+      "certificate does not claim passed=true",
+      "certificate sha256_content must be a 64-character hex digest"
+    ],
+    "sources_in_repository": null,
+    "certificate_path": null
+  }
 }

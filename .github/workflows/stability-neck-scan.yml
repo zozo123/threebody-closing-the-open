@@ -6,6 +6,7 @@ on:
     paths:
       - "scripts/scan_stability_neck.py"
       - "scripts/merge_stability_neck_scans.py"
+      - "scripts/neck_topology.py"
       - "src/threebody_atlas/**"
       - "pyproject.toml"
       - "uv.lock"
@@ -15,6 +16,7 @@ on:
     paths:
       - "scripts/scan_stability_neck.py"
       - "scripts/merge_stability_neck_scans.py"
+      - "scripts/neck_topology.py"
       - "src/threebody_atlas/**"
       - "pyproject.toml"
       - "uv.lock"
@@ -30,23 +32,37 @@ jobs:
   scan:
     name: m1=${{ matrix.m1_min }}..${{ matrix.m1_max }}
     runs-on: ubuntu-latest
-    # A 7x131 tile takes about 110 minutes on the hosted runner.  The previous
-    # 50-minute cap froze only three of seven lines and was therefore guaranteed
-    # to produce inadmissible partial checkpoints.
+    # Cost model, calibrated on run 31932398616: the slowest 7x131 tile took
+    # 113.9 min, i.e. 7.45 s per corrected sample.  The m2 window now spans
+    # [0.993, 1.012] = 191 samples per m1 line -> 23.7 min per line.  Three
+    # lines per tile is 71.1 min, 47% of the 150-minute cap, and 21 lines / 3
+    # = 7 tiles, so max-parallel: 7 runs every tile in a single wave.
     timeout-minutes: 150
     strategy:
       fail-fast: false
-      max-parallel: 3
+      max-parallel: 7
       matrix:
         include:
           - tile: "0"
             m1_min: "0.9970"
-            m1_max: "0.9976"
+            m1_max: "0.9972"
           - tile: "1"
-            m1_min: "0.9977"
-            m1_max: "0.9983"
+            m1_min: "0.9973"
+            m1_max: "0.9975"
           - tile: "2"
-            m1_min: "0.9984"
+            m1_min: "0.9976"
+            m1_max: "0.9978"
+          - tile: "3"
+            m1_min: "0.9979"
+            m1_max: "0.9981"
+          - tile: "4"
+            m1_min: "0.9982"
+            m1_max: "0.9984"
+          - tile: "5"
+            m1_min: "0.9985"
+            m1_max: "0.9987"
+          - tile: "6"
+            m1_min: "0.9988"
             m1_max: "0.9990"
     steps:
       - uses: actions/checkout@v7
@@ -73,13 +89,33 @@ jobs:
               raise SystemExit(f'baseline source changed: {got}')
           print('source_git_blob=',got,'sha256=',hashlib.sha256(raw).hexdigest())
           PY
+      # m2 window.  The secondary lobe is opened by the minus-one U->S wall,
+      # which the float64 critical census (V1_FLOAT64_CRITICAL_CENSUS_2026-08-15)
+      # localizes at m2=0.9992401 (m1=0.997), m2=1.0023251 (m1=0.998) and
+      # m2=1.0080934 (m1=0.999).  Note m2=1.0004182 at m1=0.998 is NOT this wall:
+      # the census gives that root orientation S->U, i.e. it *closes* the main
+      # lobe (its m1=0.997 and m1=0.999 partners are 0.9951873 and 1.0015853).
+      # The old m2-max of 1.006 sat *below* the U->S wall for m1 >= 0.9987, so
+      # the second lobe was outside the raster and the merge test was being
+      # evaluated on an object the raster did not contain.
+      # 1.012 clears the highest in-range wall (1.0080934) by 0.0039066 =~ 39
+      # grid steps.
+      # m2-min stays at 0.993: the lower edge of the main stable region is the
+      # plus-one U->S wall at m2 = 0.9562525 (m1=0.997), 0.9572605 (m1=0.998),
+      # 0.9582715 (m1=0.999) -- between 0.0367475 (m1=0.997) and 0.0347285
+      # (m1=0.999) below the window.  Reaching it would add ~375 samples per line
+      # (566 samples = 70.3 min per line, forcing one line per tile and ~25 h of
+      # runner time) and would buy nothing: the merge test needs the *interior*
+      # unstable gap between the two lobes, which lies entirely inside
+      # [0.993, 1.012].  The bottom truncation is now reported explicitly by
+      # any_stable_interval_touches_boundary / truncated_at_m2_min.
       - name: Warm-start one checkpointed ten-times-finer mass tile
         run: |
           uv run --no-sync python scripts/scan_stability_neck.py \
             data/raw/non-hierarchical-3b-supplementary_data.txt \
             "artifacts/stability-neck-tile-${{ matrix.tile }}.json" \
             --m1-min "${{ matrix.m1_min }}" --m1-max "${{ matrix.m1_max }}" \
-            --m2-min 0.993 --m2-max 1.006 \
+            --m2-min 0.993 --m2-max 1.012 \
             --step 0.0001 --max-residual 1e-7
       - uses: actions/upload-artifact@v4
         if: always()
@@ -109,7 +145,7 @@ jobs:
             artifacts/stability-neck-scan.json \
             artifacts/neck-tiles/*.json \
             --expected-m1-min 0.997 --expected-m1-max 0.999 \
-            --expected-m2-min 0.993 --expected-m2-max 1.006 \
+            --expected-m2-min 0.993 --expected-m2-max 1.012 \
             --step 0.0001
       - uses: actions/upload-artifact@v4
         with:

@@ -10,12 +10,19 @@ release_ready without the mandatory artifacts.
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
-import string
+import math
+import sys
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
+
+
+try:  # pragma: no cover - exercised implicitly by both install layouts
+    from threebody_atlas.completeness import verification_report
+except ModuleNotFoundError:  # running from a source checkout without an install
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+    from threebody_atlas.completeness import verification_report
 
 
 REQUIRED_HEADLINE_IDS = (
@@ -50,11 +57,117 @@ DAUGHTER_CLASSES = frozenset(
         "falsified",
     }
 )
+
+# ---------------------------------------------------------------------------
+# Frozen numerical gates.  These are the project-wide gates; they are repeated
+# here (not re-derived) so germ records are held to exactly the same bar as
+# localized roots.  They may only ever be made STRICTER.
+# ---------------------------------------------------------------------------
+EVENT_GATE = 2e-8
+CLOSURE_GATE = 1e-7
+
+# ---------------------------------------------------------------------------
+# Mass-plane grid.
+#
+# The 620 catalog transition cells are sampled on a uniform mass grid whose
+# step is 0.001 in BOTH m1 and m2.  Verified against the release root set
+# research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json: its 620 localized
+# roots occupy 272 distinct m1 values whose ONLY successive difference is
+# exactly 0.001, and every ``source_m2_bracket`` has width exactly 0.001.
+#
+# Every tolerance below is a multiple of this one step, so a future regrid can
+# be reasoned about rather than guessed at.  ``tests/test_critical_graph.py``
+# pins the grid and the empirical margin of each constant.
+# ---------------------------------------------------------------------------
+MASS_GRID_STEP = 0.001
+GRID_DECIMALS = max(0, -int(round(math.log10(MASS_GRID_STEP))))
+
+# MASS_JUMP -- 25 grid steps.
+# Maximum mass-plane distance at which two roots living in linkable m1 slices
+# may be joined into the same mechanism polyline.
+# Empirical margin on the release root set: the largest link actually ACCEPTED
+# is 0.011097 (minus_one S->U, cells 393 -> 397); the smallest cross-slice link
+# it REJECTS is 0.096141 (plus_one U->S, cells 576 -> 594).  Admissible window
+# [0.011097, 0.096141), a factor of 8.66; 0.025 sits 2.25x above the largest
+# accepted and 3.85x below the smallest rejected.
+# LOAD-BEARING ON THE LOW SIDE: lowering it below 0.011097 splits minus_one
+# S->U into two edges (edge_count 8 instead of 7).  On the high side it and
+# M1_SLICE_GAP guard the same two joins redundantly -- relaxing either one
+# alone leaves edge_count at 7, while relaxing BOTH (jump >= 0.096141 and
+# slice_gap >= 0.008) merges plus_one_u_to_s_1 into plus_one_u_to_s_2.
+# Pinned by test_mass_jump_window_is_pinned.
 MASS_JUMP = 0.025
+
+# M1_SLICE_GAP -- 1.5 grid steps.
+# Two consecutive m1 slices may only be linked when they are grid-adjacent.
+# Empirical margin on the release root set: the successive-slice gaps that
+# actually occur are exactly {0.001, 0.008, 0.068}.  0.0015 sits at 1.5x the
+# adjacent step and 5.33x below the smallest genuine gap, an admissible window
+# 8x wide.
+# CURRENTLY REDUNDANT WITH MASS_JUMP: both non-adjacent slice pairs it excludes
+# (the 0.008 gap and the 0.068 gap in plus_one U->S) are already excluded by
+# MASS_JUMP, because their closest cross-slice pairs are 0.096141 and 0.098435
+# apart.  Relaxing it all the way to 0.068 leaves edge_count at 7.  It is
+# retained as an independent, purely topological guard -- only grid-adjacent
+# slices may link, whatever the mass-plane distance happens to be -- and its
+# redundancy is pinned by test_m1_slice_gap_is_currently_redundant so that a
+# future data set in which it starts biting is noticed rather than assumed.
 M1_SLICE_GAP = 0.0015
+
+# GERM_ATTACH_DISTANCE -- 8 grid steps.  Two jobs:
+#   (a) the maximum mass-plane distance at which an edge endpoint may be
+#       attached to a continuation germ, and
+#   (b) the maximum canonical_distance a germ may sit from its organizer.
+# Empirical margin on the release configuration: the largest ACCEPTED
+# attachment is 0.006351 (minus_one_u_to_s_1 end -> mixed_secondary_left,
+# minus_one/-) and the nearest REJECTED candidate is 0.009933
+# (minus_one_s_to_u_0 start <-> mixed_secondary_left, minus_one/+).  The
+# admissible window is only 1.564x wide; 0.008 sits 1.26x above the largest
+# accepted and 1.24x below the nearest rejected.
+# THE REJECTED CANDIDATE IS LOAD-BEARING: minus_one_s_to_u_0's start endpoint
+# is the secondary_left_birth blocker.  Widening this constant past 0.009933
+# would silently "resolve" that blocked endpoint by gluing it to
+# mixed_secondary_left instead of demanding its classification artifact.
+# Pinned by test_germ_attach_distance_window_is_pinned.
 GERM_ATTACH_DISTANCE = 0.008
+
+# DOMAIN_TOLERANCE -- 1.5 grid steps.
+# How close an edge endpoint must sit to a declared face of the mass box for
+# the terminus to count as a declared domain exit.
+# Empirical margin on the release configuration: the four real boundary exits
+# sit 0.0, 0.0, 3.97e-5 and 4.17e-4 from their face, while the nearest
+# non-boundary endpoint is 0.05 away -- a margin better than 100x.  This
+# constant is not delicate; it is the LUMPING of distinct exits onto one node
+# that used to be wrong, and that is fixed by domain_exit_node_id below.
 DOMAIN_TOLERANCE = 0.0015
+
 DECLARED_DOMAIN = {"m1": (0.8, 1.1), "m2": (0.7, 1.2)}
+
+# Substrings that mark a stopped_reason as a recorded *failure* of the
+# continuation that produced the germ.  A germ whose own artifact records that
+# its corrector never converged is not evidence of a germ, whatever its
+# ``status`` field says.  Absence of a stopped_reason is not treated as a
+# failure -- germ tracers that emit full numerics (closure/event/canonical
+# binding) do not always emit one -- but those numerics are required of every
+# germ regardless, so omission cannot buy a pass.
+GERM_FAILURE_TOKENS = (
+    "fail",
+    "error",
+    "exceed",
+    "diverg",
+    "nonconverg",
+    "non-converg",
+    "not converg",
+    "unconverged",
+    "abort",
+    "singular",
+    "timeout",
+    "stall",
+    "max_iter",
+    "maximum number",
+    "could not",
+    "unable",
+)
 RELEASE_EVIDENCE_LEVELS = frozenset(
     {"independently_reproduced", "physical", "continuation", "definition"}
 )
@@ -185,7 +298,12 @@ def load_classification(
     )
 
 
-def polyline_edges(roots: list[dict[str, Any]], *, jump: float = MASS_JUMP) -> list[dict[str, Any]]:
+def polyline_edges(
+    roots: list[dict[str, Any]],
+    *,
+    jump: float = MASS_JUMP,
+    slice_gap: float = M1_SLICE_GAP,
+) -> list[dict[str, Any]]:
     grouped: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
     for root in roots:
         grouped[
@@ -219,7 +337,7 @@ def polyline_edges(roots: list[dict[str, Any]], *, jump: float = MASS_JUMP) -> l
 
         slice_keys = sorted(by_slice)
         for left_key, right_key in zip(slice_keys, slice_keys[1:], strict=False):
-            if right_key - left_key > M1_SLICE_GAP:
+            if right_key - left_key > slice_gap:
                 continue
             candidates: list[tuple[float, int, int]] = []
             for left in by_slice[left_key]:
@@ -295,18 +413,62 @@ def mass_distance(left: list[Any] | None, right: list[Any] | None) -> float:
     return ((float(left[0]) - float(right[0])) ** 2 + (float(left[1]) - float(right[1])) ** 2) ** 0.5
 
 
-def domain_node(masses: list[Any] | None) -> str | None:
+def snap_to_grid(value: float) -> float:
+    """Round a mass coordinate onto the sampling grid."""
+    return round(round(float(value) / MASS_GRID_STEP) * MASS_GRID_STEP, GRID_DECIMALS + 3)
+
+
+def grid_label(value: float) -> str:
+    """Filename/id-safe label for a grid-snapped mass coordinate."""
+    return f"{snap_to_grid(value):.{GRID_DECIMALS}f}".replace("-", "neg").replace(".", "p")
+
+
+def domain_face_hit(masses: list[Any] | None) -> dict[str, Any] | None:
+    """Locate the declared face a terminus ran into, if any.
+
+    Returns the face, the distance to it, and the coordinate that runs ALONG
+    that face -- the coordinate which distinguishes one exit from another.
+    """
     if not masses or len(masses) < 2:
         return None
     m1, m2 = float(masses[0]), float(masses[1])
     candidates = (
-        (abs(m1 - DECLARED_DOMAIN["m1"][0]), "domain_m1_min"),
-        (abs(m1 - DECLARED_DOMAIN["m1"][1]), "domain_m1_max"),
-        (abs(m2 - DECLARED_DOMAIN["m2"][0]), "domain_m2_min"),
-        (abs(m2 - DECLARED_DOMAIN["m2"][1]), "domain_m2_max"),
+        (abs(m1 - DECLARED_DOMAIN["m1"][0]), "domain_m1_min", "m2", m2),
+        (abs(m1 - DECLARED_DOMAIN["m1"][1]), "domain_m1_max", "m2", m2),
+        (abs(m2 - DECLARED_DOMAIN["m2"][0]), "domain_m2_min", "m1", m1),
+        (abs(m2 - DECLARED_DOMAIN["m2"][1]), "domain_m2_max", "m1", m1),
     )
-    distance, node_id = min(candidates)
-    return node_id if distance <= DOMAIN_TOLERANCE else None
+    distance, face, along_axis, along = min(candidates)
+    if distance > DOMAIN_TOLERANCE:
+        return None
+    return {
+        "face": face,
+        "distance_to_face": distance,
+        "along_axis": along_axis,
+        "along": along,
+        "along_grid": snap_to_grid(along),
+    }
+
+
+def domain_exit_node_id(hit: dict[str, Any]) -> str:
+    """Name a domain exit by its face AND the grid cell where it left the box.
+
+    Two curves that both run into the same wall at different places are two
+    different termini, not one graph node.  Collapsing them onto a bare face id
+    manufactures incidence between curves that never meet: on the release
+    configuration it glued plus_one_u_to_s_0 (exit m2=0.75572) to
+    trace_collision_s_to_u_0 (exit m2=0.76073), five grid steps away, and
+    plus_one_u_to_s_2 (exit m1=1.071) to trace_collision_s_to_u_0 (exit
+    m1=1.053), eighteen grid steps away.  The exit coordinate is snapped to the
+    sampling grid, which is the finest distinction the data supports.
+    """
+    return f"{hit['face']}_{hit['along_axis']}_{grid_label(hit['along'])}"
+
+
+def domain_node(masses: list[Any] | None) -> str | None:
+    """Per-exit declared-domain-boundary node id, or None if not a domain exit."""
+    hit = domain_face_hit(masses)
+    return None if hit is None else domain_exit_node_id(hit)
 
 
 def apply_classification_bindings(
@@ -393,18 +555,37 @@ def attach_edge_endpoints(
     mixed_node_ids: frozenset[str],
 ) -> tuple[list[dict[str, Any]], list[str]]:
     binding_errors = apply_classification_bindings(edges, nodes)
-    used_domains: set[str] = set()
+    used_domains: dict[str, dict[str, Any]] = {}
     for edge in edges:
         for side in ("start", "end"):
             endpoint = edge["endpoints"][side]
             if endpoint.get("node") or endpoint.get("reserved_for"):
                 continue
             masses = endpoint.get("masses")
-            boundary = domain_node(masses)
-            if boundary:
+            hit = domain_face_hit(masses)
+            if hit:
+                boundary = domain_exit_node_id(hit)
                 endpoint["node"] = boundary
                 endpoint["attachment"] = "declared_domain_boundary"
-                used_domains.add(boundary)
+                endpoint["domain_face"] = hit["face"]
+                endpoint["distance_to_domain_face"] = hit["distance_to_face"]
+                record = used_domains.setdefault(
+                    boundary,
+                    {
+                        "face": hit["face"],
+                        "along_axis": hit["along_axis"],
+                        "along_grid": hit["along_grid"],
+                        "exits": [],
+                    },
+                )
+                record["exits"].append(
+                    {
+                        "edge": edge["id"],
+                        "side": side,
+                        "masses": masses,
+                        "distance_to_face": hit["distance_to_face"],
+                    }
+                )
 
     passed_nodes = {str(item["id"]) for item in nodes if item.get("passed")}
     candidates: list[tuple[float, str, str, int, str]] = []
@@ -441,6 +622,7 @@ def attach_edge_endpoints(
     existing = {str(item["id"]) for item in nodes}
     for node_id in sorted(used_domains):
         if node_id not in existing:
+            info = used_domains[node_id]
             nodes.append(
                 node(
                     node_id,
@@ -449,6 +631,12 @@ def attach_edge_endpoints(
                     masses=None,
                     passed=True,
                     evidence_level="definition",
+                    domain_face=info["face"],
+                    exit_coordinate={
+                        "axis": info["along_axis"],
+                        "grid_value": info["along_grid"],
+                    },
+                    observed_exits=info["exits"],
                 )
             )
     unclassified: list[dict[str, Any]] = []
@@ -492,37 +680,80 @@ def collect_germs(paths: list[Path]) -> list[dict[str, Any]]:
     return germs
 
 
-def valid_germ(record: dict[str, Any], mixed_node_ids: frozenset[str]) -> bool:
-    masses = record.get("masses")
-    mixed_node = record.get("mixed_node")
+def germ_trace_failed(record: dict[str, Any]) -> bool:
+    """True when the germ's own artifact records a failed/nonconvergent trace.
+
+    ``status`` is a label the producer writes; ``stopped_reason`` is what the
+    continuation actually reported.  When the two disagree the reported failure
+    wins.  research/evidence/V1_MIXED_GERMS_2026-08-15.json is exactly this
+    case: mixed_principal_right / plus_one / +- both carry
+    status="traced" alongside "pseudo-arclength correction failed: augmented
+    least-squares failed: The maximum number of function evaluations is
+    exceeded."  The underlying trace in
+    research/evidence/V1_JUNCTION_PRINCIPAL_RIGHT_2026-08-15.json has zero
+    continuation points -- the corrector failed on the first step -- so those
+    two "germs" are just the two localized seed cells relabelled G+/G-.
+    """
+    text = str(record.get("stopped_reason") or "").lower()
+    return any(token in text for token in GERM_FAILURE_TOKENS)
+
+
+def germ_numbers(record: dict[str, Any]) -> tuple[float, float, float]:
+    """(canonical_distance, |closure|, |event|); infinite when absent or unparsable."""
     try:
         canonical_distance = float(record.get("canonical_distance", float("inf")))
         closure = abs(float(record.get("closure", float("inf"))))
         event = abs(float(record.get("event", float("inf"))))
     except (TypeError, ValueError):
-        canonical_distance = float("inf")
-        closure = float("inf")
-        event = float("inf")
-    dynamic_binding_ok = bool(
-        mixed_node in BASE_MIXED_NODE_IDS
-        or (
-            record.get("canonical_bound") is True
-            and record.get("canonical_bracketed") is True
-            and canonical_distance <= GERM_ATTACH_DISTANCE
-            and closure <= 1e-7
-            and event <= 2e-8
-        )
-    )
-    return bool(
-        record.get("status") in {"traced", "verified", "passed"}
-        and mixed_node in mixed_node_ids
-        and dynamic_binding_ok
-        and record.get("event_mode") in {"plus_one", "minus_one"}
-        and record.get("direction") in {"+", "-"}
-        and isinstance(masses, list)
-        and len(masses) >= 2
-        and record.get("source_artifact")
-    )
+        return (float("inf"), float("inf"), float("inf"))
+    return (canonical_distance, closure, event)
+
+
+def germ_rejections(
+    record: dict[str, Any], mixed_node_ids: frozenset[str]
+) -> list[str]:
+    """Every reason this germ record fails validation, in a stable order.
+
+    The numeric and status checks apply UNIFORMLY.  Membership in
+    BASE_MIXED_NODE_IDS used to short-circuit the canonical-binding and frozen
+    gate checks; that exemption meant the three headline organizers could
+    contribute germs carrying no closure, no event value, no canonical binding
+    and an explicitly nonconvergent stopped_reason, and still be counted.  A
+    base mixed node is a node like any other: it does not exempt a germ from
+    having to show its numbers.
+    """
+    reasons: list[str] = []
+    if record.get("status") not in {"traced", "verified", "passed"}:
+        reasons.append("status")
+    if germ_trace_failed(record):
+        reasons.append("stopped_reason_records_nonconvergence")
+    if record.get("mixed_node") not in mixed_node_ids:
+        reasons.append("mixed_node")
+    if record.get("event_mode") not in {"plus_one", "minus_one"}:
+        reasons.append("event_mode")
+    if record.get("direction") not in {"+", "-"}:
+        reasons.append("direction")
+    masses = record.get("masses")
+    if not isinstance(masses, list) or len(masses) < 2:
+        reasons.append("masses")
+    if not record.get("source_artifact"):
+        reasons.append("source_artifact")
+    if record.get("canonical_bound") is not True:
+        reasons.append("canonical_bound")
+    if record.get("canonical_bracketed") is not True:
+        reasons.append("canonical_bracketed")
+    canonical_distance, closure, event = germ_numbers(record)
+    if not canonical_distance <= GERM_ATTACH_DISTANCE:
+        reasons.append("canonical_distance")
+    if not closure <= CLOSURE_GATE:
+        reasons.append("closure")
+    if not event <= EVENT_GATE:
+        reasons.append("event")
+    return reasons
+
+
+def valid_germ(record: dict[str, Any], mixed_node_ids: frozenset[str]) -> bool:
+    return not germ_rejections(record, mixed_node_ids)
 
 
 def retained_mixed_nodes(nodes: list[dict[str, Any]]) -> frozenset[str]:
@@ -561,24 +792,84 @@ def missing_mixed_germs(
     return missing
 
 
-def valid_completeness_certificate(record: dict[str, Any] | None) -> bool:
-    """Verify the completeness freezer schema and canonical content digest."""
-    if not isinstance(record, dict):
-        return False
-    digest = record.get("sha256_content")
-    if (
-        record.get("schema") != "atlas.v1.completeness-certificate/1"
-        or record.get("passed") is not True
-        or not isinstance(digest, str)
-        or len(digest) != 64
-        or any(character not in string.hexdigits for character in digest)
-    ):
-        return False
-    canonical_record = dict(record)
-    canonical_record.pop("sha256_content", None)
-    canonical = json.dumps(canonical_record, sort_keys=True, separators=(",", ":"))
-    expected = hashlib.sha256(canonical.encode()).hexdigest()
-    return digest.lower() == expected
+def incidence_summary(
+    edges: list[dict[str, Any]], nodes: list[dict[str, Any]]
+) -> dict[str, Any]:
+    """Report which nodes are actually shared, and how many pieces the graph has.
+
+    This is diagnostic output only -- it feeds no release gate.  It exists so
+    that a change in how termini are named (for example splitting one lumped
+    declared-domain node into the distinct exits it was hiding) shows up as a
+    visible change in incidence and component count instead of silently
+    reshaping the topology.
+    """
+    node_to_edges: dict[str, list[str]] = defaultdict(list)
+    for edge in edges:
+        for side in ("start", "end"):
+            attached = edge["endpoints"][side].get("node")
+            if attached:
+                node_to_edges[str(attached)].append(f"{edge['id']}:{side}")
+
+    parent = {str(edge["id"]): str(edge["id"]) for edge in edges}
+
+    def find(item: str) -> str:
+        while parent[item] != item:
+            parent[item] = parent[parent[item]]
+            item = parent[item]
+        return item
+
+    for members in node_to_edges.values():
+        edge_ids = sorted({name.split(":")[0] for name in members})
+        for other in edge_ids[1:]:
+            a, b = find(edge_ids[0]), find(other)
+            if a != b:
+                parent[max(a, b)] = min(a, b)
+
+    components: dict[str, list[str]] = defaultdict(list)
+    for edge in edges:
+        components[find(str(edge["id"]))].append(str(edge["id"]))
+    shared = {
+        node_id: sorted(members)
+        for node_id, members in sorted(node_to_edges.items())
+        if len({name.split(":")[0] for name in members}) > 1
+    }
+    return {
+        "node_count": len(nodes),
+        "edge_count": len(edges),
+        "attached_endpoints": sum(len(members) for members in node_to_edges.values()),
+        "nodes_touching_more_than_one_edge": shared,
+        "edge_component_count": len(components),
+        "edge_components": sorted(sorted(members) for members in components.values()),
+    }
+
+
+def completeness_verification(
+    record: dict[str, Any] | None,
+    *,
+    root: Path,
+    certificate_path: Path | None,
+) -> dict[str, Any]:
+    """Re-verify a completeness certificate against the artifacts it names.
+
+    A self-consistent digest proves only that the record was not edited after
+    sealing; it says nothing about whether an AL screen and a neck raster
+    actually support the claim.  The verifier therefore re-reads every declared
+    source, re-hashes it, and re-derives the AL and neck predicates.  A record
+    that was re-sealed after a source file changed still fails, because the
+    recomputed source digest no longer matches the one inside the record.
+    """
+    return verification_report(record, repo_root=root, certificate_path=certificate_path)
+
+
+def valid_completeness_certificate(
+    record: dict[str, Any] | None,
+    *,
+    root: Path,
+    certificate_path: Path | None = None,
+) -> bool:
+    return bool(
+        completeness_verification(record, root=root, certificate_path=certificate_path)["passed"]
+    )
 
 
 def main() -> None:
@@ -640,8 +931,10 @@ def main() -> None:
     missing_germs = missing_mixed_germs(germs, mixed_node_ids)
 
     completeness = None
+    completeness_path = None
     if args.completeness:
-        completeness = load(Path(args.completeness))
+        completeness_path = Path(args.completeness)
+        completeness = load(completeness_path)
     elif args.al_screen:
         al = load(Path(args.al_screen))
         accepted = al.get("accepted_candidates", [])
@@ -663,6 +956,9 @@ def main() -> None:
     unclassified_edge_endpoints, classification_binding_errors = attach_edge_endpoints(
         edges, nodes, germs, mixed_node_ids
     )
+    completeness_report = completeness_verification(
+        completeness, root=root, certificate_path=completeness_path
+    )
     cell_ids = [int(root["cell_id"]) for root in roots]
     assigned = [cell for edge in edges for cell in edge["cell_ids"]]
     duplicates = sorted({cell for cell in assigned if assigned.count(cell) > 1})
@@ -676,7 +972,9 @@ def main() -> None:
         "duplicate_cell_ids": duplicates,
         "missing_mixed_germs": missing_germs,
         "newton_failed": len(newton_failed),
-        "completeness_passed": valid_completeness_certificate(completeness),
+        "completeness_passed": bool(completeness_report["passed"]),
+        "completeness_verification_errors": completeness_report["errors"],
+        "completeness_sources_in_repository": completeness_report["sources_in_repository"],
         "unclassified_edge_endpoints": unclassified_edge_endpoints,
         "classification_binding_errors": classification_binding_errors,
         "edge_topology_complete": not unclassified_edge_endpoints
@@ -711,7 +1009,10 @@ def main() -> None:
         and all(item.get("passed") for item in nodes if item["id"] in REQUIRED_HEADLINE_IDS)
     )
     graph = {
-        "schema": "atlas.v1.critical-graph/2",
+        # /3: declared-domain termini are named per exit rather than per face,
+        # and germ validation is uniform (no base-organizer exemption).  Both
+        # change node identity, so the schema version moves with them.
+        "schema": "atlas.v1.critical-graph/3",
         "claim_status": (
             "release_ready complete mechanism-resolved Floquet critical graph on the connected family sheet"
             if release_ready
@@ -750,17 +1051,21 @@ def main() -> None:
                 "canonical_distance": row.get("canonical_distance"),
                 "closure": row.get("closure"),
                 "event": row.get("event"),
+                "stopped_reason": row.get("stopped_reason"),
                 "source_artifact": row.get("source_artifact"),
                 "valid": valid_germ(row, mixed_node_ids),
+                "invalid_reasons": germ_rejections(row, mixed_node_ids),
             }
             for row in germs
         ],
         "root_coverage": coverage,
+        "incidence": incidence_summary(edges, nodes),
         "unexplained_nodes": unexplained,
         "missing_required_nodes": missing_required,
         "organizer_count": organizer_count,
         "daughter_classification": daughter_status,
         "completeness": completeness,
+        "completeness_verification": completeness_report,
     }
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -774,6 +1079,8 @@ def main() -> None:
                 "localized_roots": coverage["localized_roots"],
                 "edge_count": coverage["edge_count"],
                 "missing_mixed_germs": coverage["missing_mixed_germs"],
+                "completeness_passed": coverage["completeness_passed"],
+                "completeness_verification_errors": coverage["completeness_verification_errors"],
             },
             indent=2,
         )

@@ -394,6 +394,60 @@ def test_completeness_passes_with_neck_and_clean_al(tmp_path) -> None:
                 "grid": {"m1": [0.997, 0.999], "m2": [0.993, 1.006], "step": 0.0001, "samples": 12},
                 "minimum_resolved_unstable_gap": 0.0002,
                 "any_vertical_merge": False,
+                "any_boundary_truncated_merge_test": False,
+                "any_line_without_stable_sample": False,
+                "any_stable_interval_touches_boundary": False,
+                "all_lines_separated": True,
+                "max_shooting_residual": 1e-9,
+                "line_summaries": [
+                    {
+                        "m1": 0.997,
+                        "stable_intervals": [[0.994, 0.996], [0.998, 1.0]],
+                        "interior_unstable_gaps": [0.0019],
+                        "merge_verdict": "separated",
+                    }
+                ],
+            }
+        )
+    )
+    out = tmp_path / "comp.json"
+    assert _run("freeze_completeness_certificate.py", [str(out), "--al-screen", str(al), "--neck-scan", str(neck)]) == 0
+    record = json.loads(out.read_text())
+    assert record["passed"] is True
+    assert record["schema"] == "atlas.v1.completeness-certificate/2"
+    assert record["active_learning"]["screening_stable_hidden_pockets"] == 0
+    assert {row["role"] for row in record["sources"]} == {"active_learning", "neck_scan"}
+
+
+def test_freezer_downgrades_a_certificate_it_cannot_re_verify(tmp_path) -> None:
+    """The freezer never writes passed=true for sources the assembler cannot find.
+
+    The neck raster here sits outside both the repository and the directory the
+    certificate is written to, so the assembler could never re-hash it.  A
+    certificate claiming completeness on unreachable evidence must not exist.
+    """
+    al = ROOT / "research/evidence/V1_AL_POCKET_SCREEN_2026-08-15.json"
+    neck = tmp_path / "neck.json"
+    neck.write_text(
+        json.dumps(
+            {
+                "completed": True,
+                "grid": {"m1": [0.997, 0.999], "m2": [0.993, 1.006], "step": 0.0001, "samples": 12},
+                "minimum_resolved_unstable_gap": 0.0002,
+                "any_vertical_merge": False,
+                # Genuinely clean, so the ONLY reason this certificate is
+                # downgraded is the unreachable source path under test.
+                "any_boundary_truncated_merge_test": False,
+                "any_line_without_stable_sample": False,
+                "any_stable_interval_touches_boundary": False,
+                "all_lines_separated": True,
+                "merge_verdict_counts": {
+                    "separated": 1,
+                    "interior_merge": 0,
+                    "truncation_undecidable": 0,
+                    "no_stable_sample": 0,
+                },
+                "boundary_truncated_lines": [],
                 "max_shooting_residual": 1e-9,
                 "line_summaries": [
                     {
@@ -405,11 +459,14 @@ def test_completeness_passes_with_neck_and_clean_al(tmp_path) -> None:
             }
         )
     )
-    out = tmp_path / "comp.json"
-    assert _run("freeze_completeness_certificate.py", [str(out), "--al-screen", str(al), "--neck-scan", str(neck)]) == 0
+    out = tmp_path / "elsewhere" / "comp.json"
+    assert _run(
+        "freeze_completeness_certificate.py",
+        [str(out), "--al-screen", str(al), "--neck-scan", str(neck)],
+    ) == 2
     record = json.loads(out.read_text())
-    assert record["passed"] is True
-    assert record["active_learning"]["screening_stable_hidden_pockets"] == 0
+    assert record["passed"] is False
+    assert record["self_verification_errors"]
 
 
 def test_completeness_rejects_vertical_merge(tmp_path) -> None:

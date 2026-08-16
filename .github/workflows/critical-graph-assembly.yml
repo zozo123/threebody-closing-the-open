@@ -1,0 +1,136 @@
+name: Critical graph assembly
+
+# research/evidence/V1_CRITICAL_GRAPH.json carries release_ready, the single bit
+# that gates the scientific release.  scripts/assemble_critical_graph.py is the
+# only thing allowed to set it.  Until this workflow existed, that assembler ran
+# on somebody's laptop and never in CI, which meant the committed graph could
+# silently drift away from the evidence it claims to summarise.
+#
+# This workflow re-derives the graph from the committed evidence and fails if the
+# result differs from the committed file.  Staleness is now a CI error.
+#
+# The distinction that matters:
+#   * assembled fine but NOT release_ready (assembler exit 2)  -> SUCCESS.
+#     The science is legitimately open; CI must not pressure anyone to fake it.
+#   * assembled output differs from the committed graph          -> FAILURE.
+#   * assembler crashed (any exit other than 0 or 2)             -> FAILURE.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "scripts/assemble_critical_graph.py"
+      - "scripts/assemble_v1_critical_graph.sh"
+      - "research/evidence/**"
+      - "src/threebody_atlas/**"
+      - "tests/test_critical_graph.py"
+      - ".github/workflows/critical-graph-assembly.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - "scripts/assemble_critical_graph.py"
+      - "scripts/assemble_v1_critical_graph.sh"
+      - "research/evidence/**"
+      - "src/threebody_atlas/**"
+      - "tests/test_critical_graph.py"
+      - ".github/workflows/critical-graph-assembly.yml"
+
+concurrency:
+  group: critical-graph-assembly-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON: "3.13"
+
+jobs:
+  assemble:
+    name: Re-derive and diff the v1 critical graph
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+
+      - run: uv python install 3.13
+      - run: uv sync --locked
+
+      - name: Re-derive the critical graph from committed evidence
+        id: assemble
+        run: |
+          mkdir -p artifacts/critical-graph
+          status=0
+          scripts/assemble_v1_critical_graph.sh \
+            artifacts/critical-graph/V1_CRITICAL_GRAPH.json \
+            > artifacts/critical-graph/assembler-summary.json || status=$?
+          cat artifacts/critical-graph/assembler-summary.json || true
+          echo "assembler exit status: ${status}"
+          case "${status}" in
+            0)
+              echo "release_ready=true" >> "$GITHUB_OUTPUT"
+              ;;
+            2)
+              # Not release_ready is an honest scientific state, not a build break.
+              echo "release_ready=false" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "::error::assemble_critical_graph.py failed with exit ${status}; this is a tooling failure, not an open-science result"
+              exit "${status}"
+              ;;
+          esac
+          test -s artifacts/critical-graph/V1_CRITICAL_GRAPH.json
+
+      - name: Fail if the committed graph is stale
+        run: |
+          if diff -u \
+            research/evidence/V1_CRITICAL_GRAPH.json \
+            artifacts/critical-graph/V1_CRITICAL_GRAPH.json; then
+            echo "committed graph matches the freshly assembled graph"
+          else
+            echo "::error file=research/evidence/V1_CRITICAL_GRAPH.json::Committed critical graph is stale. Regenerate with: scripts/assemble_v1_critical_graph.sh research/evidence/V1_CRITICAL_GRAPH.json -- and never hand-edit it."
+            exit 1
+          fi
+
+      - name: Report release_ready and the remaining blockers
+        if: always() && steps.assemble.outcome == 'success'
+        run: |
+          uv run --no-sync python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+
+          graph = json.loads(
+              Path("artifacts/critical-graph/V1_CRITICAL_GRAPH.json").read_text()
+          )
+          coverage = graph["root_coverage"]
+          print("## v1 critical graph\n")
+          print(f"- `release_ready`: **{graph['release_ready']}**")
+          print(f"- localized roots: {graph['localized_roots']} / {graph['source_transition_cells']}")
+          print(f"- edges: {coverage['edge_count']}, organizers: {graph['organizer_count']}")
+          print(f"- unexplained nodes: {graph['unexplained_nodes'] or 'none'}")
+          print(f"- missing mixed germs: {coverage['missing_mixed_germs'] or 'none'}")
+          print(f"- completeness_passed: {coverage['completeness_passed']}")
+          unclassified = coverage["unclassified_edge_endpoints"]
+          print(f"- unclassified edge endpoints: {len(unclassified)}")
+          for endpoint in unclassified:
+              print(f"  - `{endpoint['edge']}` {endpoint['side']} at masses {endpoint['masses']}")
+          if not graph["release_ready"]:
+              print(
+                  "\nNot release_ready. That is a legitimate open scientific state and "
+                  "this job passes anyway; only a stale committed graph fails it."
+              )
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v1-critical-graph-${{ github.sha }}
+          path: artifacts/critical-graph/**
+          if-no-files-found: error
+          retention-days: 90

@@ -1,5 +1,21 @@
 # Mass checkpoint independently solved in GHA run 31929886661.  That run
 # rejected its curvature stencil after the root itself met closure, event, and
 # stationarity gates.  The original Float64 chart remains only a correction seed.
+#
+# WARM START (2026-08-16).  The masses below are the Newton iterate 2 emitted by
+# julia/verify_secondary_minus_fold.jl itself in GHA run 31932398513, job
+# bigfloat-fold (log line "fold iter=2"), where the fold root met every frozen
+# target with margin:
+#     G-      = 4.4098134534962445e-18   (target 1e-12)
+#     dG/dm2  = -1.454266131718497e-17   (target 1e-8)
+#     closure = 4.2242631333232167e-21   (target 1e-18)
+# That job was then SIGKILLed by its 120-minute job wall ~33 s later, before
+# audit_fold and the two branch solves ever ran, so no artifact was written.
+# Seeding from the solver's own converged iterate is a warm start only: the
+# verifier re-corrects the orbit from scratch and must still satisfy every gate
+# (closure, event, stationarity, stencil convergence, transversality, branch
+# straddle and curvature agreement) independently.  It removes one ~92-minute
+# Newton step, not a single check.  The previous seed differed from this one at
+# the 13th significant digit and failed |G-| <= 1e-12 by a factor of 1.6.
 name	m1	m2	m3	x1	v1	v2	period
-secondary_minus_fold	0.9957049740189651397252692730916746351950874759474	0.974260432695226244745399663824701874663580206180178	1.0	-0.35850520191051544	1.2496554002627902	0.45738583902640956	7.455322355760655
+secondary_minus_fold	0.99570497401902286347943897515365414417943247746666915723061112683929439	0.97426043269252856357695668982517342681864426504710985325848382038181221	1.0	-0.35850520191051544	1.2496554002627902	0.45738583902640956	7.455322355760655

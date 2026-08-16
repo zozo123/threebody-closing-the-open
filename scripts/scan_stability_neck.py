@@ -14,11 +14,16 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 from threebody_atlas.baseline import iter_baseline
 from threebody_atlas.boundary import evaluate
 from threebody_atlas.liao_family import correct_family_point
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from neck_topology import summarize  # noqa: E402
 
 
 def frange(start: float, stop: float, step: float) -> list[float]:
@@ -41,8 +46,14 @@ def payload_for(
         for gap in summary["interior_unstable_gaps"]
         if gap >= 0.0
     ]
+    annotated, verdicts = summarize(
+        summaries,
+        m2_min=args.m2_min,
+        m2_max=args.m2_max,
+        step=args.step,
+    )
     return {
-        "schema": "atlas.v1.stability-neck-scan/2",
+        "schema": "atlas.v1.stability-neck-scan/3",
         "completed": completed,
         "completed_m1_lines": len(summaries),
         "expected_m1_lines": len(m1_values),
@@ -54,8 +65,8 @@ def payload_for(
         },
         "max_shooting_residual": max_closure,
         "minimum_resolved_unstable_gap": min(positive_gaps) if positive_gaps else None,
-        "any_vertical_merge": any(len(s["stable_intervals"]) <= 1 for s in summaries),
-        "line_summaries": summaries,
+        **verdicts,
+        "line_summaries": annotated,
         "samples": samples,
         "claim_status": (
             "completed float64 subgrid topology screen; critical boundaries require "
@@ -190,7 +201,12 @@ def main() -> None:
         "max_shooting_residual": max_closure,
         "minimum_resolved_unstable_gap": payload["minimum_resolved_unstable_gap"],
         "any_vertical_merge": payload["any_vertical_merge"],
-        "summaries": summaries,
+        "any_boundary_truncated_merge_test": payload["any_boundary_truncated_merge_test"],
+        "any_line_without_stable_sample": payload["any_line_without_stable_sample"],
+        "any_stable_interval_touches_boundary": payload["any_stable_interval_touches_boundary"],
+        "all_lines_separated": payload["all_lines_separated"],
+        "merge_verdict_counts": payload["merge_verdict_counts"],
+        "summaries": payload["line_summaries"],
     }, indent=2))
 
 
