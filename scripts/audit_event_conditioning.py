@@ -62,6 +62,18 @@ EPS = float(np.finfo(float).eps)
 JITTER_FIRST_STEPS = (None, 1e-4, 3e-4, 1e-3, 3e-3)
 
 
+def roundoff_floor(monodromy_norm: float, mode: str) -> float:
+    """Float64 round-off floor of the event value.
+
+    ``beta = (alpha^2 - tr M^2)/2`` is a cancellation against ``tr(M^2)``, whose
+    entries are of order ``||M||^2``, so ``beta`` carries an absolute error of
+    order ``eps * ||M||^2``.  ``Delta = (alpha-4)^2 - 4(beta - 4 alpha + 8)``
+    multiplies that by 4; ``G+`` and ``G-`` inherit it unscaled.
+    """
+    floor = EPS * monodromy_norm * monodromy_norm
+    return 4.0 * floor if mode == "trace_collision" else floor
+
+
 def _event_with_first_step(root, first_step, *, rtol, atol) -> float:
     """Integrate at a FIXED tolerance, varying only the integrator's opening step.
 
@@ -118,9 +130,7 @@ def audit_root(root, *, rtol, atol, coarse_rtol, coarse_atol, with_coarse=True, 
             _event_with_first_step(root, fs, rtol=rtol, atol=atol) for fs in JITTER_FIRST_STEPS
         ]
         jitter_spread = float(max(vals) - min(vals))
-    floor = EPS * norm_m * norm_m
-    if mode == "trace_collision":
-        floor *= 4.0  # Delta = (alpha-4)^2 - 4(beta - 4 alpha + 8)
+    floor = roundoff_floor(norm_m, mode)
     return {
         "cell_id": root["cell_id"],
         "estimator": root["estimator"],
