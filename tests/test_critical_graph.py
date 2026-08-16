@@ -317,6 +317,186 @@ def _run_assembler(
     return json.loads(output.read_text())
 
 
+AL_SCREEN = ROOT / "research/evidence/V1_AL_POCKET_SCREEN_2026-08-15.json"
+
+
+def _write_clean_neck_scan(path: Path) -> dict:
+    """A neck raster that legitimately supports a bounded completeness claim."""
+    neck = {
+        "completed": True,
+        "grid": {"m1": [0.997, 0.999], "m2": [0.993, 1.006], "step": 0.0001, "samples": 12},
+        "minimum_resolved_unstable_gap": 0.0002,
+        "any_vertical_merge": False,
+        "max_shooting_residual": 1e-9,
+        "line_summaries": [
+            {
+                "m1": 0.997,
+                "stable_intervals": [[0.994, 0.996], [0.998, 1.0]],
+                "interior_unstable_gaps": [0.0019],
+            }
+        ],
+    }
+    path.write_text(json.dumps(neck, indent=2) + "\n")
+    return neck
+
+
+def _freeze_certificate(tmp_path, *, neck_path: Path | None = None) -> Path:
+    """Produce a genuine certificate with scripts/freeze_completeness_certificate.py."""
+    import runpy
+    import sys
+
+    if neck_path is None:
+        neck_path = tmp_path / "neck.json"
+        _write_clean_neck_scan(neck_path)
+    certificate = tmp_path / "completeness.json"
+    argv = sys.argv
+    sys.argv = [
+        "freeze_completeness_certificate.py",
+        str(certificate),
+        "--al-screen",
+        str(AL_SCREEN),
+        "--neck-scan",
+        str(neck_path),
+    ]
+    exit_code = 0
+    try:
+        try:
+            runpy.run_path(
+                str(ROOT / "scripts/freeze_completeness_certificate.py"), run_name="__main__"
+            )
+        except SystemExit as exc:
+            exit_code = int(exc.code or 0)
+    finally:
+        sys.argv = argv
+    assert exit_code == 0, "the freezer must accept a clean AL screen plus a clean neck raster"
+    return certificate
+
+
+def _reseal(path: Path, record: dict) -> None:
+    """Re-seal a certificate after editing it, exactly as a forger would."""
+    body = {key: value for key, value in record.items() if key != "sha256_content"}
+    canonical = json.dumps(body, sort_keys=True, separators=(",", ":"))
+    body["sha256_content"] = hashlib.sha256(canonical.encode()).hexdigest()
+    path.write_text(json.dumps(body, indent=2) + "\n")
+
+
+def _completeness_state(tmp_path, certificate: Path) -> dict:
+    graph = _run_assembler(tmp_path, ["--completeness", str(certificate)])
+    return graph["root_coverage"]
+
+
+def test_hand_written_self_sealed_certificate_is_rejected(tmp_path) -> None:
+    """The two-key forgery that used to satisfy the completeness gate."""
+    certificate = tmp_path / "forged.json"
+    for schema in (
+        "atlas.v1.completeness-certificate/1",
+        "atlas.v1.completeness-certificate/2",
+    ):
+        _reseal(certificate, {"schema": schema, "passed": True})
+        coverage = _completeness_state(tmp_path, certificate)
+        assert coverage["completeness_passed"] is False
+        assert coverage["completeness_verification_errors"]
+
+
+def test_certificate_without_neck_scan_source_is_rejected(tmp_path) -> None:
+    certificate = _freeze_certificate(tmp_path)
+    record = json.loads(certificate.read_text())
+    record["sources"] = [row for row in record["sources"] if row["role"] != "neck_scan"]
+    _reseal(certificate, record)
+    coverage = _completeness_state(tmp_path, certificate)
+    assert coverage["completeness_passed"] is False
+    assert any("neck_scan" in error for error in coverage["completeness_verification_errors"])
+
+
+def test_certificate_fails_when_a_source_changes_after_sealing(tmp_path) -> None:
+    neck_path = tmp_path / "neck.json"
+    neck = _write_clean_neck_scan(neck_path)
+    certificate = _freeze_certificate(tmp_path, neck_path=neck_path)
+    assert _completeness_state(tmp_path, certificate)["completeness_passed"] is True
+
+    neck["minimum_resolved_unstable_gap"] = 0.0005
+    neck_path.write_text(json.dumps(neck, indent=2) + "\n")
+    coverage = _completeness_state(tmp_path, certificate)
+    assert coverage["completeness_passed"] is False
+    assert any("sha256 mismatch" in error for error in coverage["completeness_verification_errors"])
+
+
+def test_resealed_certificate_over_a_modified_source_still_fails(tmp_path) -> None:
+    """Re-hashing the source and re-sealing the record does not launder it."""
+    neck_path = tmp_path / "neck.json"
+    neck = _write_clean_neck_scan(neck_path)
+    certificate = _freeze_certificate(tmp_path, neck_path=neck_path)
+    record = json.loads(certificate.read_text())
+
+    # (a) source edited, its digest refreshed, record re-sealed, but the
+    # certificate's own recorded numbers now disagree with the artifact.
+    neck["minimum_resolved_unstable_gap"] = 0.0005
+    neck_path.write_text(json.dumps(neck, indent=2) + "\n")
+    for row in record["sources"]:
+        if row["role"] == "neck_scan":
+            row["sha256"] = hashlib.sha256(neck_path.read_bytes()).hexdigest()
+    _reseal(certificate, record)
+    coverage = _completeness_state(tmp_path, certificate)
+    assert coverage["completeness_passed"] is False
+    assert any(
+        "minimum_resolved_unstable_gap" in error
+        for error in coverage["completeness_verification_errors"]
+    )
+
+    # (b) a fully self-consistent re-seal over a neck raster that merges
+    # vertically: the re-derived predicate, not the self-report, decides.
+    neck["minimum_resolved_unstable_gap"] = 0.0002
+    neck["any_vertical_merge"] = True
+    neck_path.write_text(json.dumps(neck, indent=2) + "\n")
+    record = json.loads(certificate.read_text())
+    record["neck"]["any_vertical_merge"] = True
+    record["neck"]["minimum_resolved_unstable_gap"] = 0.0002
+    for row in record["sources"]:
+        if row["role"] == "neck_scan":
+            row["sha256"] = hashlib.sha256(neck_path.read_bytes()).hexdigest()
+    _reseal(certificate, record)
+    coverage = _completeness_state(tmp_path, certificate)
+    assert coverage["completeness_passed"] is False
+    assert any(
+        "neck raster does not support" in error
+        for error in coverage["completeness_verification_errors"]
+    )
+
+
+def test_certificate_source_paths_may_not_escape_the_allowed_roots(tmp_path) -> None:
+    outside = tmp_path.parent / "outside_neck.json"
+    _write_clean_neck_scan(outside)
+    certificate = _freeze_certificate(tmp_path)
+    record = json.loads(certificate.read_text())
+    for row in record["sources"]:
+        if row["role"] == "neck_scan":
+            row["path"] = str(outside)
+            row["sha256"] = hashlib.sha256(outside.read_bytes()).hexdigest()
+    _reseal(certificate, record)
+    coverage = _completeness_state(tmp_path, certificate)
+    assert coverage["completeness_passed"] is False
+
+    record["sources"] = [
+        {**row, "path": "../" + row["path"]} if row["role"] == "neck_scan" else row
+        for row in record["sources"]
+    ]
+    _reseal(certificate, record)
+    coverage = _completeness_state(tmp_path, certificate)
+    assert coverage["completeness_passed"] is False
+    assert any("'..'" in error for error in coverage["completeness_verification_errors"])
+
+
+def test_frozen_certificate_from_the_freezer_is_accepted(tmp_path) -> None:
+    certificate = _freeze_certificate(tmp_path)
+    record = json.loads(certificate.read_text())
+    assert record["schema"] == "atlas.v1.completeness-certificate/2"
+    assert record["passed"] is True
+    assert {row["role"] for row in record["sources"]} == {"active_learning", "neck_scan"}
+    coverage = _completeness_state(tmp_path, certificate)
+    assert coverage["completeness_passed"] is True
+    assert coverage["completeness_verification_errors"] == []
+
+
 def test_assembler_emits_edges_but_stays_unready_with_partial_roots(tmp_path) -> None:
     roots = tmp_path / "roots.json"
     roots.write_text(
@@ -617,15 +797,12 @@ def test_assembler_is_the_only_path_to_a_fully_ready_graph(tmp_path) -> None:
             }
         )
     )
-    completeness = tmp_path / "completeness.json"
-    certificate = {
-        "schema": "atlas.v1.completeness-certificate/1",
-        "passed": True,
-        "sources": [{"role": "negative_screen", "sha256": "a" * 64}],
-    }
-    canonical = json.dumps(certificate, sort_keys=True, separators=(",", ":"))
-    certificate["sha256_content"] = hashlib.sha256(canonical.encode()).hexdigest()
-    completeness.write_text(json.dumps(certificate))
+    # The completeness certificate has to be a real one: the assembler re-hashes
+    # every source it names and re-derives the AL and neck predicates, so a
+    # hand-written self-sealed record cannot stand in for it here.
+    neck_path = tmp_path / "neck.json"
+    _write_clean_neck_scan(neck_path)
+    completeness = _freeze_certificate(tmp_path, neck_path=neck_path)
 
     right_germs = _secondary_right_germ_fixture(tmp_path / "right-germs.json")
 
@@ -702,8 +879,13 @@ def test_assembler_is_the_only_path_to_a_fully_ready_graph(tmp_path) -> None:
         "maximum_periodic_closure": 1e-7,
     }
 
-    certificate["sources"][0]["sha256"] = "b" * 64
-    completeness.write_text(json.dumps(certificate))
+    # Tampering with a source digest breaks the release, and so does re-sealing
+    # the tampered record: the assembler recomputes the digest from the file.
+    record = json.loads(completeness.read_text())
+    for row in record["sources"]:
+        if row["role"] == "neck_scan":
+            row["sha256"] = "b" * 64
+    completeness.write_text(json.dumps(record))
     graph = _run_assembler(
         tmp_path,
         [
