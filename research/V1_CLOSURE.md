@@ -43,11 +43,19 @@ Pass only when:
   must carry `canonical_bound`/`canonical_bracketed`, a `canonical_distance` inside
   `GERM_ATTACH_DISTANCE`, and closure/event inside the frozen gates, and is rejected outright if
   its own `stopped_reason` records a nonconvergent trace. `research/evidence/V1_MIXED_GERMS_2026-08-15.json`
-  fails all twelve of these checks; the `mixed_principal_right` `plus_one` pair additionally
-  records a pseudo-arclength least-squares failure whose junction trace
-  (`V1_JUNCTION_PRINCIPAL_RIGHT_2026-08-15.json`) has zero continuation points. Re-running
-  `scripts/trace_canonical_mixed_germs.py` for the three headline organizers -- the script that
-  produced the numerics-complete `V1_SECONDARY_RIGHT_GERMS_2026-08-16.json` -- is the remediation;
+  failed all twelve of these checks; the `mixed_principal_right` `plus_one` pair additionally
+  recorded a pseudo-arclength least-squares failure whose junction trace
+  (`V1_JUNCTION_PRINCIPAL_RIGHT_2026-08-15.json`) has zero continuation points. **Remediated.**
+  The twelve are now `V1_MIXED_GERMS_{PRINCIPAL_LEFT,SECONDARY_LEFT,PRINCIPAL_RIGHT}_2026-08-16.json`,
+  produced by `scripts/trace_canonical_mixed_germs.py` -- the same script that produced the
+  numerics-complete `V1_SECONDARY_RIGHT_GERMS_2026-08-16.json`. The 2026-08-15 file is retained as
+  history and is no longer an assembler input. The float64 organizer centre those germs are
+  launched from is the junction screens' own `direct_mixed_vertex_retry` candidate; two of the
+  three had recorded only `RuntimeError: JAX + Diffrax are required` -- a missing dependency, not a
+  missing vertex -- and `scripts/retry_direct_mixed_vertex.py` replays that one step with the
+  accelerated extra installed. The centre is therefore still produced by a float64 pipeline that
+  never reads the BigFloat chart, so the 1e-4 centre/organizer agreement stays an independent
+  cross-pipeline test (measured: 1.4e-9, 9.5e-11, 1.8e-7);
 - each declared-domain terminus is a distinct exit, not a shared face: two curves that leave the
   box through the same wall at different places are two nodes, not one;
 - secondary-left birth is classified as a fold, two-arc alternative, or mixed organizer;

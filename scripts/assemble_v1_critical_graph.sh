@@ -47,7 +47,20 @@
 #   --daughter   V1_DAUGHTER_CLASS_2026-08-16.json
 #                distinct_branch, evidence_level independently_reproduced.
 #
-#   --germs      V1_MIXED_GERMS_2026-08-15.json          (12 headline-organizer germs)
+#   --germs      V1_MIXED_GERMS_PRINCIPAL_LEFT_2026-08-16.json
+#                V1_MIXED_GERMS_SECONDARY_LEFT_2026-08-16.json
+#                V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json
+#                The twelve headline-organizer germs, four per organizer,
+#                produced by scripts/trace_canonical_mixed_germs.py.
+#                They REPLACE V1_MIXED_GERMS_2026-08-15.json, which is kept on
+#                disk as history but is no longer an assembler input: those
+#                twelve rows carried only (mixed_node, event_mode, direction,
+#                status, ends_on, masses, stopped_reason).  They had no closure,
+#                no event value and no canonical binding, two of them sat
+#                outside GERM_ATTACH_DISTANCE entirely, and four of them recorded
+#                a nonconvergent stopped_reason, so germ_rejections() rejected
+#                all twelve and missing_mixed_germs listed all twelve.
+#
 #                V1_SECONDARY_RIGHT_GERMS_2026-08-16.json (the 4 germs the newly
 #                retained secondary_right_death organizer owes; it is a retained
 #                mixed node and may not borrow the headline twelve)
@@ -103,6 +116,8 @@ read -r -a PYTHON_CMD <<<"${PYTHON:-uv run --no-sync python}"
   --left-birth research/evidence/V1_LEFT_BIRTH_CLASS_2026-08-15.json \
   --right-death research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json \
   --daughter research/evidence/V1_DAUGHTER_CLASS_2026-08-16.json \
-  --germs research/evidence/V1_MIXED_GERMS_2026-08-15.json \
+  --germs research/evidence/V1_MIXED_GERMS_PRINCIPAL_LEFT_2026-08-16.json \
+  --germs research/evidence/V1_MIXED_GERMS_SECONDARY_LEFT_2026-08-16.json \
+  --germs research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json \
   --germs research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json \
   --completeness research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json
