@@ -202,18 +202,10 @@
             "claim:one-continuation-family",
             "dimension:blind_n_version"
           ],
-          "detail": "claim references immutable evidence for this dimension",
+          "detail": "no blind N-version evidence is registered for this claim",
           "dimension": "blind_n_version",
-          "evidence": [
-            {
-              "id": "generic-bridge-artifact",
-              "kind": "actions_artifact",
-              "role": "family_connectivity",
-              "sha256": "d2b76fa7e0a73791a662a54202f7e50202b7ade6c67e4d21f2816dde328748dd",
-              "valid": true
-            }
-          ],
-          "status": "pass"
+          "evidence": [],
+          "status": "not_run"
         },
         {
           "derivation_refs": [
@@ -295,6 +287,11 @@
               "status": "not_run"
             },
             {
+              "detail": "no blind N-version evidence is registered for this claim",
+              "dimension": "blind_n_version",
+              "status": "not_run"
+            },
+            {
               "detail": "no platform-systematics verdict artifact is registered",
               "dimension": "platform_systematics_envelope",
               "status": "not_run"
@@ -347,6 +344,11 @@
             {
               "detail": "no claim-level mutation verdict artifact is registered",
               "dimension": "mutation_metamorphic_coverage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no blind N-version evidence is registered for this claim",
+              "dimension": "blind_n_version",
               "status": "not_run"
             },
             {
@@ -562,26 +564,10 @@
             "claim:principal-lower-plus-one",
             "dimension:blind_n_version"
           ],
-          "detail": "claim references immutable evidence for this dimension",
+          "detail": "no blind N-version evidence is registered for this claim",
           "dimension": "blind_n_version",
-          "evidence": [
-            {
-              "id": "canonical-lower-plus-one",
-              "kind": "repository_file",
-              "path": "research/evidence/V1_CANONICAL_LOWER_PLUS_ONE_2026-08-15.json",
-              "role": "independent_verification",
-              "sha256": "212c7b835cb734145e5f00208cc11c7625cac07e113742894771015855a9eada",
-              "valid": true
-            },
-            {
-              "id": "physical-sp4-artifact",
-              "kind": "actions_artifact",
-              "role": "independent_verification",
-              "sha256": "83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7",
-              "valid": true
-            }
-          ],
-          "status": "pass"
+          "evidence": [],
+          "status": "not_run"
         },
         {
           "derivation_refs": [
@@ -668,6 +654,11 @@
               "status": "not_run"
             },
             {
+              "detail": "no blind N-version evidence is registered for this claim",
+              "dimension": "blind_n_version",
+              "status": "not_run"
+            },
+            {
               "detail": "no platform-systematics verdict artifact is registered",
               "dimension": "platform_systematics_envelope",
               "status": "not_run"
@@ -725,6 +716,11 @@
             {
               "detail": "no claim-level mutation verdict artifact is registered",
               "dimension": "mutation_metamorphic_coverage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no blind N-version evidence is registered for this claim",
+              "dimension": "blind_n_version",
               "status": "not_run"
             },
             {
@@ -940,26 +936,10 @@
             "claim:principal-upper-hamiltonian-hopf",
             "dimension:blind_n_version"
           ],
-          "detail": "claim references immutable evidence for this dimension",
+          "detail": "no blind N-version evidence is registered for this claim",
           "dimension": "blind_n_version",
-          "evidence": [
-            {
-              "id": "canonical-upper-collision",
-              "kind": "repository_file",
-              "path": "research/evidence/V1_CANONICAL_UPPER_COLLISION_2026-08-15.json",
-              "role": "independent_verification",
-              "sha256": "afcb4748c24c19746209f1339eeb5f5fce0bf9f62570652c53077044d8d71e1d",
-              "valid": true
-            },
-            {
-              "id": "physical-sp4-artifact",
-              "kind": "actions_artifact",
-              "role": "independent_verification",
-              "sha256": "83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7",
-              "valid": true
-            }
-          ],
-          "status": "pass"
+          "evidence": [],
+          "status": "not_run"
         },
         {
           "derivation_refs": [
@@ -1046,6 +1026,11 @@
               "status": "not_run"
             },
             {
+              "detail": "no blind N-version evidence is registered for this claim",
+              "dimension": "blind_n_version",
+              "status": "not_run"
+            },
+            {
               "detail": "no platform-systematics verdict artifact is registered",
               "dimension": "platform_systematics_envelope",
               "status": "not_run"
@@ -1103,6 +1088,11 @@
             {
               "detail": "no claim-level mutation verdict artifact is registered",
               "dimension": "mutation_metamorphic_coverage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no blind N-version evidence is registered for this claim",
+              "dimension": "blind_n_version",
               "status": "not_run"
             },
             {
@@ -1362,35 +1352,10 @@
             "claim:three-mixed-organizers",
             "dimension:blind_n_version"
           ],
-          "detail": "claim references immutable evidence for this dimension",
+          "detail": "no blind N-version evidence is registered for this claim",
           "dimension": "blind_n_version",
-          "evidence": [
-            {
-              "id": "mixed-canonical-principal-left",
-              "kind": "repository_file",
-              "path": "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_LEFT_2026-08-15.json",
-              "role": "independent_verification",
-              "sha256": "6682978d1aedb4290e239ed5ec9403b67dc708c83ffc35fa4d29d57741c45737",
-              "valid": true
-            },
-            {
-              "id": "mixed-canonical-principal-right",
-              "kind": "repository_file",
-              "path": "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_RIGHT_2026-08-15.json",
-              "role": "independent_verification",
-              "sha256": "b79e3a52e633fada412c6e7c82be9406dab526957ae521b6df8f607456f48d59",
-              "valid": true
-            },
-            {
-              "id": "mixed-canonical-secondary-left",
-              "kind": "repository_file",
-              "path": "research/evidence/V1_MIXED_CANONICAL_SECONDARY_LEFT_2026-08-15.json",
-              "role": "independent_verification",
-              "sha256": "2a46962601f67a8724511c6e58656dec8621076a08d7c6aaa2a897947758610b",
-              "valid": true
-            }
-          ],
-          "status": "pass"
+          "evidence": [],
+          "status": "not_run"
         },
         {
           "derivation_refs": [
@@ -1472,6 +1437,11 @@
               "status": "not_run"
             },
             {
+              "detail": "no blind N-version evidence is registered for this claim",
+              "dimension": "blind_n_version",
+              "status": "not_run"
+            },
+            {
               "detail": "no platform-systematics verdict artifact is registered",
               "dimension": "platform_systematics_envelope",
               "status": "not_run"
@@ -1524,6 +1494,11 @@
             {
               "detail": "no claim-level mutation verdict artifact is registered",
               "dimension": "mutation_metamorphic_coverage",
+              "status": "not_run"
+            },
+            {
+              "detail": "no blind N-version evidence is registered for this claim",
+              "dimension": "blind_n_version",
               "status": "not_run"
             },
             {
@@ -2665,7 +2640,7 @@
     },
     "dimension:blind_n_version": {
       "kind": "assurance_policy_dimension",
-      "sha256": "22643cf20495b18d79b55b13a79cd09b7e984eed632250137d9a24242b23f9f5"
+      "sha256": "376b667b1e99bb21523dbc155b0fc47593110032936f66072a71d09cbf4db321"
     },
     "dimension:conditioning_margin": {
       "kind": "assurance_policy_dimension",
@@ -2725,8 +2700,8 @@
     }
   },
   "dimension_count": 14,
-  "matrix_sha256": "d6e6919a01bb85c07bfb4b13103bca1392d618f68d795f0fb6c93ae4784df0fd",
-  "policy_sha256": "dafb4b6811eb37b47b0495ae77d28e56b64f1efe5b748455e471db47fd1c0f8b",
+  "matrix_sha256": "2e3dac513679357811250cc054787ae2d1d90355d10113f31956a369cfb0a435",
+  "policy_sha256": "8b9d7e2cabd1512fe161309fd589b4789680f8630a4d0fccf1a77f1377e80542",
   "release_policy": {
     "numerical_paper_ready": false,
     "release_claim_ids": [
@@ -2862,18 +2837,10 @@
             "claim:one-continuation-family",
             "dimension:blind_n_version"
           ],
-          "detail": "claim references immutable evidence for this dimension",
+          "detail": "no blind N-version evidence is registered for this claim",
           "dimension": "blind_n_version",
-          "evidence": [
-            {
-              "id": "generic-bridge-artifact",
-              "kind": "actions_artifact",
-              "role": "family_connectivity",
-              "sha256": "d2b76fa7e0a73791a662a54202f7e50202b7ade6c67e4d21f2816dde328748dd",
-              "valid": true
-            }
-          ],
-          "status": "pass"
+          "evidence": [],
+          "status": "not_run"
         },
         {
           "derivation_refs": [
@@ -2921,26 +2888,10 @@
             "claim:principal-lower-plus-one",
             "dimension:blind_n_version"
           ],
-          "detail": "claim references immutable evidence for this dimension",
+          "detail": "no blind N-version evidence is registered for this claim",
           "dimension": "blind_n_version",
-          "evidence": [
-            {
-              "id": "canonical-lower-plus-one",
-              "kind": "repository_file",
-              "path": "research/evidence/V1_CANONICAL_LOWER_PLUS_ONE_2026-08-15.json",
-              "role": "independent_verification",
-              "sha256": "212c7b835cb734145e5f00208cc11c7625cac07e113742894771015855a9eada",
-              "valid": true
-            },
-            {
-              "id": "physical-sp4-artifact",
-              "kind": "actions_artifact",
-              "role": "independent_verification",
-              "sha256": "83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7",
-              "valid": true
-            }
-          ],
-          "status": "pass"
+          "evidence": [],
+          "status": "not_run"
         },
         {
           "derivation_refs": [
@@ -2988,26 +2939,10 @@
             "claim:principal-upper-hamiltonian-hopf",
             "dimension:blind_n_version"
           ],
-          "detail": "claim references immutable evidence for this dimension",
+          "detail": "no blind N-version evidence is registered for this claim",
           "dimension": "blind_n_version",
-          "evidence": [
-            {
-              "id": "canonical-upper-collision",
-              "kind": "repository_file",
-              "path": "research/evidence/V1_CANONICAL_UPPER_COLLISION_2026-08-15.json",
-              "role": "independent_verification",
-              "sha256": "afcb4748c24c19746209f1339eeb5f5fce0bf9f62570652c53077044d8d71e1d",
-              "valid": true
-            },
-            {
-              "id": "physical-sp4-artifact",
-              "kind": "actions_artifact",
-              "role": "independent_verification",
-              "sha256": "83f86a01ca8b9e7018d299ada86a7ba1fa0b8038ba36b51a25c2320ae43bfad7",
-              "valid": true
-            }
-          ],
-          "status": "pass"
+          "evidence": [],
+          "status": "not_run"
         },
         {
           "derivation_refs": [
@@ -3099,35 +3034,10 @@
             "claim:three-mixed-organizers",
             "dimension:blind_n_version"
           ],
-          "detail": "claim references immutable evidence for this dimension",
+          "detail": "no blind N-version evidence is registered for this claim",
           "dimension": "blind_n_version",
-          "evidence": [
-            {
-              "id": "mixed-canonical-principal-left",
-              "kind": "repository_file",
-              "path": "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_LEFT_2026-08-15.json",
-              "role": "independent_verification",
-              "sha256": "6682978d1aedb4290e239ed5ec9403b67dc708c83ffc35fa4d29d57741c45737",
-              "valid": true
-            },
-            {
-              "id": "mixed-canonical-principal-right",
-              "kind": "repository_file",
-              "path": "research/evidence/V1_MIXED_CANONICAL_PRINCIPAL_RIGHT_2026-08-15.json",
-              "role": "independent_verification",
-              "sha256": "b79e3a52e633fada412c6e7c82be9406dab526957ae521b6df8f607456f48d59",
-              "valid": true
-            },
-            {
-              "id": "mixed-canonical-secondary-left",
-              "kind": "repository_file",
-              "path": "research/evidence/V1_MIXED_CANONICAL_SECONDARY_LEFT_2026-08-15.json",
-              "role": "independent_verification",
-              "sha256": "2a46962601f67a8724511c6e58656dec8621076a08d7c6aaa2a897947758610b",
-              "valid": true
-            }
-          ],
-          "status": "pass"
+          "evidence": [],
+          "status": "not_run"
         },
         {
           "derivation_refs": [
@@ -3306,6 +3216,11 @@
             "status": "not_run"
           },
           {
+            "detail": "no blind N-version evidence is registered for this claim",
+            "dimension": "blind_n_version",
+            "status": "not_run"
+          },
+          {
             "detail": "no platform-systematics verdict artifact is registered",
             "dimension": "platform_systematics_envelope",
             "status": "not_run"
@@ -3366,6 +3281,11 @@
             "status": "not_run"
           },
           {
+            "detail": "no blind N-version evidence is registered for this claim",
+            "dimension": "blind_n_version",
+            "status": "not_run"
+          },
+          {
             "detail": "no platform-systematics verdict artifact is registered",
             "dimension": "platform_systematics_envelope",
             "status": "not_run"
@@ -3423,6 +3343,11 @@
           {
             "detail": "no claim-level mutation verdict artifact is registered",
             "dimension": "mutation_metamorphic_coverage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no blind N-version evidence is registered for this claim",
+            "dimension": "blind_n_version",
             "status": "not_run"
           },
           {
@@ -3548,6 +3473,11 @@
           {
             "detail": "no claim-level mutation verdict artifact is registered",
             "dimension": "mutation_metamorphic_coverage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no blind N-version evidence is registered for this claim",
+            "dimension": "blind_n_version",
             "status": "not_run"
           },
           {
@@ -3760,6 +3690,11 @@
             "status": "not_run"
           },
           {
+            "detail": "no blind N-version evidence is registered for this claim",
+            "dimension": "blind_n_version",
+            "status": "not_run"
+          },
+          {
             "detail": "no platform-systematics verdict artifact is registered",
             "dimension": "platform_systematics_envelope",
             "status": "not_run"
@@ -3826,6 +3761,11 @@
             "status": "not_run"
           },
           {
+            "detail": "no blind N-version evidence is registered for this claim",
+            "dimension": "blind_n_version",
+            "status": "not_run"
+          },
+          {
             "detail": "no platform-systematics verdict artifact is registered",
             "dimension": "platform_systematics_envelope",
             "status": "not_run"
@@ -3889,6 +3829,11 @@
           {
             "detail": "no claim-level mutation verdict artifact is registered",
             "dimension": "mutation_metamorphic_coverage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no blind N-version evidence is registered for this claim",
+            "dimension": "blind_n_version",
             "status": "not_run"
           },
           {
@@ -4026,6 +3971,11 @@
           {
             "detail": "no claim-level mutation verdict artifact is registered",
             "dimension": "mutation_metamorphic_coverage",
+            "status": "not_run"
+          },
+          {
+            "detail": "no blind N-version evidence is registered for this claim",
+            "dimension": "blind_n_version",
             "status": "not_run"
           },
           {

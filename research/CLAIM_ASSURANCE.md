@@ -36,7 +36,11 @@ uv run --no-sync python scripts/build_claim_assurance.py --check
 ```
 
 Register new calibration, conditioning, mutation, platform-systematics, lineage,
-or rigorous-certificate results as repository-file evidence with the role named
-in the policy and a top-level boolean `passed`. Opaque or missing verdicts become
+or rigorous-certificate results as `repository_file` evidence with the role named
+in the policy and a top-level boolean `passed`. Verdict roles are re-derived only
+from `repository_file` evidence; an `actions_artifact` in one of those roles is
+`infrastructure_blocked`. Opaque or missing verdicts become
 `infrastructure_blocked`; absence remains `not_run`; a false bound verdict is
-`fail`.
+`fail`. Blind N-version evidence must use the distinct `blind_n_version` role;
+ordinary `independent_verification` evidence is not counted twice as another
+independence lane.

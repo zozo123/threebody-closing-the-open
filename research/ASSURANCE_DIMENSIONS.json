@@ -100,8 +100,7 @@
       "description": "A blind or implementation-independent version supports the claim.",
       "evaluator": {
         "type": "claim_evidence_presence",
-        "roles": ["independent_verification"],
-        "ids": ["generic-bridge-artifact"]
+        "roles": ["blind_n_version"]
       },
       "missing_status": "not_run",
       "missing_detail": "no blind N-version evidence is registered for this claim"

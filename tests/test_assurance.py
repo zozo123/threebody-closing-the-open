@@ -85,6 +85,20 @@ def test_no_scalar_confidence_or_score_is_emitted() -> None:
     assert matrix["release_policy"]["theorem_grade_ready"] is False
 
 
+def test_independence_dimensions_use_distinct_evidence_selectors() -> None:
+    policy = _load(POLICY_PATH)
+    evaluators = {
+        item["id"]: item["evaluator"]
+        for item in policy["dimensions"]
+        if item["id"] in {"physical_formulation_independence", "blind_n_version"}
+    }
+    physical_sources = set(evaluators["physical_formulation_independence"]["roles"])
+    physical_sources.update(evaluators["physical_formulation_independence"].get("ids", []))
+    blind_sources = set(evaluators["blind_n_version"]["roles"])
+    blind_sources.update(evaluators["blind_n_version"].get("ids", []))
+    assert physical_sources.isdisjoint(blind_sources)
+
+
 def test_evidence_parent_mutation_stales_the_matrix_without_manual_edits() -> None:
     manifest = _load(MANIFEST_PATH)
     policy = _load(POLICY_PATH)
