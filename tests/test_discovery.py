@@ -132,6 +132,32 @@ def test_solved_manifest_requires_hashed_release_ready_graph() -> None:
         validate_manifest(manifest, ROOT, today=date(2026, 8, 15))
 
 
+def test_solved_manifest_rejects_a_self_reported_completeness_certificate(tmp_path) -> None:
+    """Only the assembler-verified bit counts.
+
+    A graph may carry a completeness certificate that declares itself passed;
+    that field is sealed with a digest over the certificate itself and proves
+    nothing about the AL screen or the neck raster.  The discovery gate must
+    look at root_coverage.completeness_passed, which the assembler sets only
+    after re-hashing and re-deriving the certificate's sources.
+    """
+    import json
+
+    graph = json.loads((ROOT / "tests/fixtures/solved_critical_graph.json").read_text())
+    graph["root_coverage"]["completeness_passed"] = False
+    graph["completeness"] = {"passed": True, "note": "self-reported only"}
+    forged = tmp_path / "forged_graph.json"
+    forged.write_text(json.dumps(graph, indent=2) + "\n")
+
+    manifest = _closed_manifest()
+    for item in manifest["evidence"]:
+        if item.get("id") == "critical-graph-fixture":
+            item["path"] = str(forged.relative_to(tmp_path))
+            item["sha256"] = sha256_file(forged)
+    with pytest.raises(DiscoveryValidationError, match="assembler-verified completeness"):
+        validate_manifest(manifest, tmp_path, today=date(2026, 8, 15))
+
+
 def test_solved_manifest_requires_fresh_novelty_search() -> None:
     manifest = _closed_manifest()
     manifest["novelty"]["last_search_date"] = "2026-08-01"

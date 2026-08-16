@@ -1,12 +1,39 @@
 #!/usr/bin/env python3
-"""Freeze a bounded completeness certificate from AL + neck raster artifacts."""
+"""Freeze a bounded completeness certificate from AL + neck raster artifacts.
+
+The record is built and sealed by :mod:`threebody_atlas.completeness`, which is
+also what the assembler uses to *re-verify* it.  A sealed certificate is not
+evidence on its own: it only means anything because the assembler re-reads the
+source artifacts named here, re-hashes them, and re-derives the same numbers.
+"""
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
+import sys
 from pathlib import Path
 from typing import Any
+
+
+try:  # pragma: no cover - exercised implicitly by both install layouts
+    from threebody_atlas.completeness import (
+        al_summary,
+        build_record,
+        neck_summary,
+        seal,
+        sha256_file,
+        verify_certificate,
+    )
+except ModuleNotFoundError:  # running from a source checkout without an install
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+    from threebody_atlas.completeness import (
+        al_summary,
+        build_record,
+        neck_summary,
+        seal,
+        sha256_file,
+        verify_certificate,
+    )
 
 
 def main() -> None:
@@ -15,110 +42,66 @@ def main() -> None:
     parser.add_argument("--al-screen", required=True)
     parser.add_argument("--neck-scan")
     args = parser.parse_args()
-    al = json.loads(Path(args.al_screen).read_text(encoding="utf-8"))
-    accepted = al.get("accepted_candidates", [])
-    attempted = al.get("attempted", accepted)
-    stable = [row for row in accepted if row.get("corrected", {}).get("screening_stable")]
+    al_path = Path(args.al_screen)
+    al = json.loads(al_path.read_text(encoding="utf-8"))
     neck = None
+    neck_path = None
     if args.neck_scan:
-        neck = json.loads(Path(args.neck_scan).read_text(encoding="utf-8"))
-    al_clean = bool(
-        len(attempted) >= 12
-        and len(accepted) == len(attempted)
-        and not stable
-        and all(
-            row.get("shooting_success") is True
-            and float(row.get("shooting_residual", float("inf"))) <= 1e-7
-            for row in accepted
-        )
-    )
-    neck_grid = neck.get("grid", {}) if isinstance(neck, dict) else {}
-    neck_step = neck_grid.get("step")
-    neck_gap = neck.get("minimum_resolved_unstable_gap") if isinstance(neck, dict) else None
-    neck_done = bool(
-        isinstance(neck, dict)
-        and neck.get("completed") is True
-        and neck_grid
-        and neck_grid.get("samples")
-        and neck.get("line_summaries")
-        and float(neck.get("max_shooting_residual", float("inf"))) <= 1e-7
-    )
-    neck_clean = bool(
-        neck_done
-        and neck.get("any_vertical_merge") is False
-        and neck_gap is not None
-        and neck_step is not None
-        and float(neck_gap) + 1e-12 >= float(neck_step)
-    )
-    passed = al_clean and neck_clean
-    record: dict[str, Any] = {
-        "schema": "atlas.v1.completeness-certificate/1",
-        "passed": passed,
-        "domain": {
-            "catalog": "Li-Li-Liao unequal-mass non-hierarchical published grid",
-            "neck": None if not neck else neck.get("grid"),
-        },
-        "resolution": None if not neck else neck.get("grid", {}).get("step"),
-        "active_learning": {
-            "attempted": len(attempted),
-            "accepted": len(accepted),
-            "screening_stable_hidden_pockets": len(stable),
-            "interpretation": (
-                "off-grid proposals corrected onto the known sheet; no hidden stable pocket in this sample"
-                if al_clean
-                else "inspect accepted stable points before freezing completeness"
-            ),
-        },
-        "neck": None
-        if not neck
-        else {
-            "samples": neck.get("grid", {}).get("samples"),
-            "minimum_resolved_unstable_gap": neck.get("minimum_resolved_unstable_gap"),
-            "any_vertical_merge": neck.get("any_vertical_merge"),
-            "max_shooting_residual": neck.get("max_shooting_residual"),
-            "completed": neck.get("completed"),
-            "topology_clean": neck_clean,
-        },
-        "note": (
-            "Bounded completeness: no additional stability pocket found in the AL sample "
-            "and the neck raster completed at the declared local resolution."
-            if passed
-            else (
-                "Completeness not frozen: require a completed, closure-gated neck raster with no "
-                "vertical merge and at least one resolved unstable-grid step, plus a clean AL pocket screen."
-            )
-        ),
-        "sources": [
+        neck_path = Path(args.neck_scan)
+        neck = json.loads(neck_path.read_text(encoding="utf-8"))
+
+    sources: list[dict[str, Any]] = [
+        {
+            "role": "active_learning",
+            "path": str(args.al_screen),
+            "sha256": sha256_file(al_path),
+        }
+    ]
+    if neck_path is not None:
+        sources.append(
             {
-                "role": "active_learning",
-                "path": str(args.al_screen),
-                "sha256": hashlib.sha256(Path(args.al_screen).read_bytes()).hexdigest(),
-            },
-            *(
-                [
-                    {
-                        "role": "neck_scan",
-                        "path": str(args.neck_scan),
-                        "sha256": hashlib.sha256(Path(args.neck_scan).read_bytes()).hexdigest(),
-                    }
-                ]
-                if args.neck_scan
-                else []
-            ),
-        ],
-    }
-    canonical = json.dumps(record, sort_keys=True, separators=(",", ":"))
-    record["sha256_content"] = hashlib.sha256(canonical.encode()).hexdigest()
-    text = json.dumps(record, indent=2) + "\n"
-    Path(args.output).parent.mkdir(parents=True, exist_ok=True)
-    Path(args.output).write_text(text, encoding="utf-8")
+                "role": "neck_scan",
+                "path": str(args.neck_scan),
+                "sha256": sha256_file(neck_path),
+            }
+        )
+
+    output = Path(args.output)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    record = seal(build_record(al, neck, sources))
+    passed = record["passed"] is True
+
+    verification_errors: list[str] = []
+    if passed:
+        # A certificate the assembler would reject must never leave this script
+        # claiming to have passed.  This keeps freezer and verifier in lockstep:
+        # if the sources cannot be re-read, re-hashed, and re-derived from where
+        # this record says they are, the claim is downgraded before it is written.
+        repo_root = Path(__file__).resolve().parents[1]
+        passed, verification_errors = verify_certificate(
+            record, repo_root=repo_root, certificate_path=output
+        )
+        if not passed:
+            record["passed"] = False
+            record["self_verification_errors"] = verification_errors
+            record["note"] = (
+                "Completeness not frozen: this record could not be re-verified against the "
+                "artifacts it names. " + "; ".join(verification_errors)
+            )
+            record = seal(record)
+
+    output.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+
+    al_stats = al_summary(al)
+    neck_stats = neck_summary(neck)
     print(
         json.dumps(
             {
                 "passed": passed,
-                "al_clean": al_clean,
-                "neck_done": neck_done,
-                "neck_clean": neck_clean,
+                "al_clean": al_stats["clean"],
+                "neck_done": neck_stats["done"],
+                "neck_clean": neck_stats["clean"],
+                "self_verification_errors": verification_errors,
             },
             indent=2,
         )

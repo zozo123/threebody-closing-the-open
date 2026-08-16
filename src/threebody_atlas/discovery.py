@@ -221,12 +221,18 @@ def validate_manifest(
                             f"{item.get('path')} still has unexplained endpoints: "
                             + ", ".join(str(x) for x in graph["unexplained_nodes"])
                         )
-                    completeness = graph.get("completeness") or {}
-                    if not (
-                        completeness.get("passed")
-                        or coverage.get("completeness_passed")
-                    ):
-                        errors.append(f"{item.get('path')} is missing a passed completeness certificate")
+                    # Only the assembler-verified bit counts.  A certificate's
+                    # own "passed" field is self-reported: the record is sealed
+                    # with a digest over itself, so accepting it would let a
+                    # hand-written certificate satisfy this gate.  The verified
+                    # form in root_coverage is set only after the assembler
+                    # re-hashed every source artifact and re-derived the AL and
+                    # neck predicates from them.
+                    if coverage.get("completeness_passed") is not True:
+                        errors.append(
+                            f"{item.get('path')} is missing an assembler-verified completeness "
+                            "certificate (root_coverage.completeness_passed)"
+                        )
                     if graph.get("organizer_count") is None and "organizer_count" not in coverage:
                         errors.append(f"{item.get('path')} must report organizer_count")
             if not ready:

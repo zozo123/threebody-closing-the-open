@@ -10,12 +10,18 @@ release_ready without the mandatory artifacts.
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
-import string
+import sys
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
+
+
+try:  # pragma: no cover - exercised implicitly by both install layouts
+    from threebody_atlas.completeness import verification_report
+except ModuleNotFoundError:  # running from a source checkout without an install
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+    from threebody_atlas.completeness import verification_report
 
 
 REQUIRED_HEADLINE_IDS = (
@@ -561,24 +567,33 @@ def missing_mixed_germs(
     return missing
 
 
-def valid_completeness_certificate(record: dict[str, Any] | None) -> bool:
-    """Verify the completeness freezer schema and canonical content digest."""
-    if not isinstance(record, dict):
-        return False
-    digest = record.get("sha256_content")
-    if (
-        record.get("schema") != "atlas.v1.completeness-certificate/1"
-        or record.get("passed") is not True
-        or not isinstance(digest, str)
-        or len(digest) != 64
-        or any(character not in string.hexdigits for character in digest)
-    ):
-        return False
-    canonical_record = dict(record)
-    canonical_record.pop("sha256_content", None)
-    canonical = json.dumps(canonical_record, sort_keys=True, separators=(",", ":"))
-    expected = hashlib.sha256(canonical.encode()).hexdigest()
-    return digest.lower() == expected
+def completeness_verification(
+    record: dict[str, Any] | None,
+    *,
+    root: Path,
+    certificate_path: Path | None,
+) -> dict[str, Any]:
+    """Re-verify a completeness certificate against the artifacts it names.
+
+    A self-consistent digest proves only that the record was not edited after
+    sealing; it says nothing about whether an AL screen and a neck raster
+    actually support the claim.  The verifier therefore re-reads every declared
+    source, re-hashes it, and re-derives the AL and neck predicates.  A record
+    that was re-sealed after a source file changed still fails, because the
+    recomputed source digest no longer matches the one inside the record.
+    """
+    return verification_report(record, repo_root=root, certificate_path=certificate_path)
+
+
+def valid_completeness_certificate(
+    record: dict[str, Any] | None,
+    *,
+    root: Path,
+    certificate_path: Path | None = None,
+) -> bool:
+    return bool(
+        completeness_verification(record, root=root, certificate_path=certificate_path)["passed"]
+    )
 
 
 def main() -> None:
@@ -640,8 +655,10 @@ def main() -> None:
     missing_germs = missing_mixed_germs(germs, mixed_node_ids)
 
     completeness = None
+    completeness_path = None
     if args.completeness:
-        completeness = load(Path(args.completeness))
+        completeness_path = Path(args.completeness)
+        completeness = load(completeness_path)
     elif args.al_screen:
         al = load(Path(args.al_screen))
         accepted = al.get("accepted_candidates", [])
@@ -663,6 +680,9 @@ def main() -> None:
     unclassified_edge_endpoints, classification_binding_errors = attach_edge_endpoints(
         edges, nodes, germs, mixed_node_ids
     )
+    completeness_report = completeness_verification(
+        completeness, root=root, certificate_path=completeness_path
+    )
     cell_ids = [int(root["cell_id"]) for root in roots]
     assigned = [cell for edge in edges for cell in edge["cell_ids"]]
     duplicates = sorted({cell for cell in assigned if assigned.count(cell) > 1})
@@ -676,7 +696,9 @@ def main() -> None:
         "duplicate_cell_ids": duplicates,
         "missing_mixed_germs": missing_germs,
         "newton_failed": len(newton_failed),
-        "completeness_passed": valid_completeness_certificate(completeness),
+        "completeness_passed": bool(completeness_report["passed"]),
+        "completeness_verification_errors": completeness_report["errors"],
+        "completeness_sources_in_repository": completeness_report["sources_in_repository"],
         "unclassified_edge_endpoints": unclassified_edge_endpoints,
         "classification_binding_errors": classification_binding_errors,
         "edge_topology_complete": not unclassified_edge_endpoints
@@ -761,6 +783,7 @@ def main() -> None:
         "organizer_count": organizer_count,
         "daughter_classification": daughter_status,
         "completeness": completeness,
+        "completeness_verification": completeness_report,
     }
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -774,6 +797,8 @@ def main() -> None:
                 "localized_roots": coverage["localized_roots"],
                 "edge_count": coverage["edge_count"],
                 "missing_mixed_germs": coverage["missing_mixed_germs"],
+                "completeness_passed": coverage["completeness_passed"],
+                "completeness_verification_errors": coverage["completeness_verification_errors"],
             },
             indent=2,
         )
