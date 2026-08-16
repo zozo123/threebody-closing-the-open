@@ -10,6 +10,7 @@ release_ready without the mandatory artifacts.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import sys
@@ -890,6 +891,84 @@ def valid_completeness_certificate(
     )
 
 
+def sign_topology_report(paths: list[Path]) -> dict[str, Any]:
+    """Require positive evidence that no critical curve is missing from the graph.
+
+    Every other conjunct in release_ready asks whether the objects we ALREADY
+    catalogued are sound.  None of them asks whether the catalogue is the whole
+    catalogue, and on 2026-08-16 that gap became concrete: scripts/audit_sign_topology.py
+    localized seven critical curves absent from the seven committed polylines,
+    each passing the frozen gates, five with |event| below the census's own worst
+    accepted root.
+
+    The cause is structural.  The 620 cells come from transition_brackets, which
+    brackets only where the PUBLISHED S/U label flips between adjacent baseline
+    rows.  A critical curve interior to the unstable region flips no label and so
+    produces no bracket at ANY grid resolution -- at all seven points n_unstable
+    steps 2 -> 1, unstable on both sides.  A denser raster would have returned the
+    same seven-edge graph, faster.  So "no missing curve" cannot be inferred from
+    anything the census contains; it needs its own, independent check.
+
+    This is FAIL-CLOSED on purpose.  With no audit supplied the answer is false,
+    because the absence of a completeness audit is not evidence of completeness.
+    That is the same reasoning that makes an unrun test worthless, and it is the
+    error this project already made once with a certificate that hashed itself.
+    """
+    report: dict[str, Any] = {
+        "passed": False,
+        "audits": [],
+        "errors": [],
+        "missing_critical_curve": None,
+        "forbidden_component_flip": None,
+    }
+    if not paths:
+        report["errors"].append(
+            "no sign-topology audit supplied: completeness of the critical set is "
+            "unestablished, which is not the same as established"
+        )
+        return report
+
+    missing_total = 0
+    forbidden_total = 0
+    for path in paths:
+        if not path.is_file():
+            report["errors"].append(f"sign-topology audit not readable: {path}")
+            continue
+        record = load(path)
+        counts = record.get("violation_counts")
+        if not isinstance(counts, dict):
+            report["errors"].append(f"{path}: no violation_counts block")
+            continue
+        missing = int(counts.get("missing_critical_curve", 0))
+        forbidden = int(counts.get("forbidden_component_flip", 0))
+        missing_total += missing
+        forbidden_total += forbidden
+        report["audits"].append(
+            {
+                "path": str(path),
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                "probes": record.get("probe_count") or record.get("probes"),
+                "missing_critical_curve": missing,
+                "forbidden_component_flip": forbidden,
+            }
+        )
+        if missing:
+            report["errors"].append(
+                f"{path}: {missing} critical curve(s) localized outside the committed "
+                "edges; the graph is not the complete critical set"
+            )
+        if forbidden:
+            report["errors"].append(
+                f"{path}: {forbidden} edge crossing(s) changed a state component the "
+                "edge's mechanism label does not permit"
+            )
+
+    report["missing_critical_curve"] = missing_total
+    report["forbidden_component_flip"] = forbidden_total
+    report["passed"] = not report["errors"]
+    return report
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", default="research/evidence/V1_CRITICAL_GRAPH.json")
@@ -899,6 +978,12 @@ def main() -> None:
     parser.add_argument("--daughter")
     parser.add_argument("--germs", action="append", default=[])
     parser.add_argument("--completeness")
+    parser.add_argument(
+        "--sign-topology",
+        action="append",
+        default=[],
+        help="sign-vector face-consistency audit(s); required for release_ready",
+    )
     parser.add_argument("--al-screen")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
@@ -977,6 +1062,7 @@ def main() -> None:
     completeness_report = completeness_verification(
         completeness, root=root, certificate_path=completeness_path
     )
+    sign_report = sign_topology_report([Path(p) for p in args.sign_topology])
     cell_ids = [int(root["cell_id"]) for root in roots]
     assigned = [cell for edge in edges for cell in edge["cell_ids"]]
     duplicates = sorted({cell for cell in assigned if assigned.count(cell) > 1})
@@ -990,6 +1076,9 @@ def main() -> None:
         "duplicate_cell_ids": duplicates,
         "missing_mixed_germs": missing_germs,
         "newton_failed": len(newton_failed),
+        "sign_topology_clean": bool(sign_report["passed"]),
+        "sign_topology_errors": sign_report["errors"],
+        "sign_topology_audits": sign_report["audits"],
         "completeness_passed": bool(completeness_report["passed"]),
         "completeness_verification_errors": completeness_report["errors"],
         "completeness_sources_in_repository": completeness_report["sources_in_repository"],
@@ -1024,6 +1113,7 @@ def main() -> None:
         and not unclassified_edge_endpoints
         and not classification_binding_errors
         and coverage["completeness_passed"]
+        and coverage["sign_topology_clean"]
         and all(item.get("passed") for item in nodes if item["id"] in REQUIRED_HEADLINE_IDS)
     )
     graph = {

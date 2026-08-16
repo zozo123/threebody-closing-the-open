@@ -27,17 +27,19 @@
 #                V1_FLOAT64_CRITICAL_CENSUS_2026-08-15.json only carries the 462
 #                float64-localized cells, so neither can be the graph's input.
 #
-#   --left-birth V1_LEFT_BIRTH_CLASS_2026-08-15.json
-#                DELIBERATELY passed even though it is INVALIDATED
-#                (class=null, passed=false, evidence_level="invalid",
-#                invalidated_reason="wrong_branch_pair").  Passing it cannot make
-#                anything pass -- load_classification() requires passed=true, an
-#                allowed class, AND an evidence_level in the release set -- so the
-#                node stays "unresolved" either way.  What it buys is provenance:
-#                the graph records the invalidation artifact and its reason instead
-#                of a generic "no artifact supplied" placeholder.  When the live
-#                BigFloat secondary-minus-fold verification lands, swap this path
-#                for the new classification; do not delete the flag.
+#   --left-birth V1_LEFT_BIRTH_CLASS_2026-08-16.json
+#                projection_fold, passed, evidence_level independently_reproduced,
+#                with edge_endpoint_bindings for cells 392 (minus_one U->S) and
+#                393 (minus_one S->U).  Emitted by
+#                scripts/classify_secondary_left_birth.py from the float64/JAX
+#                geometry screen (CI run 31932398513) plus the independent Julia
+#                BigFloat fold verification (CI run 31942940282, 248 min, PASS):
+#                  G-      =  3.9396e-18  (target 1e-12)
+#                  dG/dm2  = -6.0956e-14  (gate 1e-6)
+#                  dG/dm1  = 28.0456      (gate >= 1)
+#                  secant curvatures [6.2899, 6.0506], disagreement 0.0380 (gate 0.15)
+#                It SUPERSEDES V1_LEFT_BIRTH_CLASS_2026-08-15.json, which was
+#                invalidated on audit (wrong_branch_pair) and is kept only as history.
 #
 #   --right-death V1_SECONDARY_RIGHT_CLASS_2026-08-16.json
 #                Independently reproduced physical mixed (+1,-1) organizer, with
@@ -113,11 +115,13 @@ read -r -a PYTHON_CMD <<<"${PYTHON:-uv run --no-sync python}"
 "${PYTHON_CMD[@]}" scripts/assemble_critical_graph.py \
   --output "$OUTPUT" \
   --roots research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json \
-  --left-birth research/evidence/V1_LEFT_BIRTH_CLASS_2026-08-15.json \
+  --left-birth research/evidence/V1_LEFT_BIRTH_CLASS_2026-08-16.json \
   --right-death research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json \
   --daughter research/evidence/V1_DAUGHTER_CLASS_2026-08-16.json \
   --germs research/evidence/V1_MIXED_GERMS_PRINCIPAL_LEFT_2026-08-16.json \
   --germs research/evidence/V1_MIXED_GERMS_SECONDARY_LEFT_2026-08-16.json \
   --germs research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json \
   --germs research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json \
-  --completeness research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json
+  --completeness research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json \
+  --sign-topology research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json \
+  --sign-topology research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json
