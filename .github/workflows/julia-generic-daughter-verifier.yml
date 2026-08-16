@@ -49,11 +49,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@v7
-      - uses: julia-actions/setup-julia@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9 # v2
         with:
           version: "1.11.9"
-      - uses: julia-actions/cache@v2
+      - uses: julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9 # v2
       - name: Instantiate locked independent solver stack
         run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
       - name: Parse independent daughter verifier
@@ -76,7 +76,7 @@ jobs:
             artifacts/lower-plus-one-daughter-class.json \
             --structural research/evidence/V1_DAUGHTER_STRUCTURAL_2026-08-15.json \
             --independent artifacts/daughter-d0-minus-bigfloat.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: generic-daughter-d0-minus-${{ github.sha }}

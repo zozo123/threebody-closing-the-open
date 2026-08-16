@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
         with:
           version: "1.11.9"
@@ -72,7 +72,7 @@ jobs:
             seed_file: experiments/critical_curve_upper_collision.tsv
             output_file: artifacts/critical-curve-upper-trace-collision-bigfloat.json
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
         with:
           version: "1.11.9"
@@ -93,7 +93,7 @@ jobs:
             "$SEED_FILE" \
             "$OUTPUT_FILE" \
             "$DPS" "$TOL_EXP" "$CLOSURE_EXP" "$WIDTH_EXP" 5 4
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: critical-curve-${{ matrix.label }}-${{ github.sha }}

@@ -21,7 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
       - name: Install uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
@@ -30,6 +32,8 @@ jobs:
       - run: uv python install 3.13
       - run: uv sync --locked --group dev
       - run: uv run --no-sync python --version
+      - name: Verify immutable supply-chain inputs
+        run: uv run --no-sync python scripts/build_supply_chain_manifest.py --check
       - run: uv run --no-sync ruff check src tests --output-format github
       - run: uv run --no-sync pytest
       - run: uv build --no-sources
@@ -38,7 +42,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
       - name: Install uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
@@ -47,7 +53,7 @@ jobs:
       - run: uv python install 3.13
       - run: uv sync --locked
       - run: uv run --no-sync threebody-atlas smoke --floquet --output artifacts/figure-eight.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: figure-eight-screening-${{ github.sha }}
           path: artifacts/figure-eight.json
@@ -60,7 +66,9 @@ jobs:
     env:
       JAX_ENABLE_X64: "1"
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
       - name: Install uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:

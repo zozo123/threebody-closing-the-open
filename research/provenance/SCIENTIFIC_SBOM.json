@@ -1,0 +1,2666 @@
+{
+  "bomFormat": "CycloneDX",
+  "components": [
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "5970c86505ae9c07bf5bc521ef2bbbb3849e8b7b"
+        }
+      ],
+      "name": "ADTypes",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "47edcb42-4c32-4615-8424-f2b9edc5f35b"
+        }
+      ],
+      "type": "library",
+      "version": "1.23.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "7063ad1083578215c7c4bf410368150abe8d5524"
+        }
+      ],
+      "name": "Accessors",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "7d9f7c33-5ae7-4f3b-8dc6-eff91059b697"
+        }
+      ],
+      "type": "library",
+      "version": "0.1.45"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "daa72978cd7a624246e894a4f4f067706d4e17e2"
+        }
+      ],
+      "name": "Adapt",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "79e6a3ab-5dfb-504d-930d-738a2a938a0e"
+        }
+      ],
+      "type": "library",
+      "version": "4.7.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "b79a0bd275c2036b3ab9ed42ddef6f5eb48e1902"
+        }
+      ],
+      "name": "ArrayInterface",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "4fba245c-0d91-5ea0-9b3e-6abc04ee57a9"
+        }
+      ],
+      "type": "library",
+      "version": "7.29.0"
+    },
+    {
+      "name": "Artifacts",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.0"
+    },
+    {
+      "name": "Base64",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "25718f410ed710fda29a8122eb8f9dcdb640c5fc"
+        }
+      ],
+      "name": "BinaryHeaps",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "b2a6c25c-c996-4615-94ab-6e519ffb8690"
+        }
+      ],
+      "type": "library",
+      "version": "1.0.4"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "1988c711ecd5b5d970355491a726bc355de9ba6e"
+        }
+      ],
+      "name": "BracketingNonlinearSolve",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "70df07ce-3d50-431d-a3e7-ca6ddb60ac1e"
+        }
+      ],
+      "type": "library",
+      "version": "1.12.5"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "cf963add2340ad9960e5eb22844e61ad8f931fe1"
+        }
+      ],
+      "name": "CommonSolve",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "38540f10-b2f7-11e9-35d8-d573e4eb0ff2"
+        }
+      ],
+      "type": "library",
+      "version": "0.2.13"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "9d8a54ce4b17aa5bdce0ea5c34bc5e7c340d16ad"
+        }
+      ],
+      "name": "Compat",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "34da2185-b29b-5c13-b0c7-acf172513d20"
+        }
+      ],
+      "type": "library",
+      "version": "4.18.1"
+    },
+    {
+      "name": "CompilerSupportLibraries_jll",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "e66e0078-7015-5450-92f7-15fbd957f2ae"
+        }
+      ],
+      "type": "library",
+      "version": "1.1.1+0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "802bb88cd69dfd1509f6670416bd4434015693ad"
+        }
+      ],
+      "name": "CompositionsBase",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "a33af91c-f02d-484b-be07-31d278c5ca2b"
+        }
+      ],
+      "type": "library",
+      "version": "0.1.2"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "804fc3ca1cbfdd5aa52ae3149c0cb0555f875eec"
+        }
+      ],
+      "name": "ConcreteStructs",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "2569d6c7-a4a2-43d3-a901-331e8e4be471"
+        }
+      ],
+      "type": "library",
+      "version": "0.2.7"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "b4b092499347b18a015186eae3042f72267106cb"
+        }
+      ],
+      "name": "ConstructionBase",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "187b0558-2788-49d3-abe0-74a17ed4e7c9"
+        }
+      ],
+      "type": "library",
+      "version": "1.6.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "54b76cbb40d9a0f5368c880725b2f141da77c94f"
+        }
+      ],
+      "name": "Crayons",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "a8cc5b0e-0ffa-5ad4-8c14-923d3ee1735f"
+        }
+      ],
+      "type": "library",
+      "version": "4.2.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "abe83f3a2f1b857aac70ef8b269080af17764bbe"
+        }
+      ],
+      "name": "DataAPI",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "9a962f9c-6df0-11e9-0e5d-c546b8b5ee8a"
+        }
+      ],
+      "type": "library",
+      "version": "1.16.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "bfc1187b79289637fa0ef6d4436ebdfe6905cbd6"
+        }
+      ],
+      "name": "DataValueInterfaces",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "e2d170a0-9d28-54be-80f0-106bbe20a464"
+        }
+      ],
+      "type": "library",
+      "version": "1.0.0"
+    },
+    {
+      "name": "Dates",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "ade2ca70-3891-5945-98fb-dc099432e06a"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "c0484d1fe39e1d86216d7a4eac3eb827b916ef55"
+        }
+      ],
+      "name": "DiffEqBase",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "2b5f629d-d688-5b77-993f-72d75c75574e"
+        }
+      ],
+      "type": "library",
+      "version": "7.15.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "dbd46a5cd0e79a97438b0ebbec42e744e8f436fe"
+        }
+      ],
+      "name": "DifferentiationInterface",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "a0c0ee7d-e4b9-4e03-894e-1c5f64a51d63"
+        }
+      ],
+      "type": "library",
+      "version": "0.7.20"
+    },
+    {
+      "name": "Distributed",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "8ba89e20-285c-5b6f-9357-94700520ee1b"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "7442a5dfe1ebb773c29cc2962a8980f47221d76c"
+        }
+      ],
+      "name": "DocStringExtensions",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
+        }
+      ],
+      "type": "library",
+      "version": "0.9.5"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "c49898e8438c828577f04b92fc9368c388ac783c"
+        }
+      ],
+      "name": "EnumX",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "4e289a0a-7415-4d19-859d-a7e5c4648b56"
+        }
+      ],
+      "type": "library",
+      "version": "1.0.7"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "971d7831cc85f43bc9f51d615a3f7f21270c2f1d"
+        }
+      ],
+      "name": "EnzymeCore",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "f151be2c-9106-41f4-ab19-57ee4f262869"
+        }
+      ],
+      "type": "library",
+      "version": "0.8.21"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "d2e49e7efd29719d6f28b891b0e0e159daa9d2b4"
+        }
+      ],
+      "name": "ExprTools",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "e2ba6199-217a-4e67-a87a-7c52f15ade04"
+        }
+      ],
+      "type": "library",
+      "version": "0.1.11"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "6a97f3e08655ea9df1a946e378770c4d3fb3c4e9"
+        }
+      ],
+      "name": "FastBroadcast",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "7034ab61-46d4-4ed7-9d0f-46aef9175898"
+        }
+      ],
+      "type": "library",
+      "version": "1.3.6"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "acebe244d53ee1b461970f8910c235b259e772ef"
+        }
+      ],
+      "name": "FastClosures",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "9aa1b823-49e4-5ca5-8b0f-3971ec8bab6a"
+        }
+      ],
+      "type": "library",
+      "version": "0.3.2"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "eb92a563909f2d4cb2911e0e2cb247ad17c6e9ae"
+        }
+      ],
+      "name": "FastPower",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "a4df4552-cc26-4903-aec0-212e50a0e84b"
+        }
+      ],
+      "type": "library",
+      "version": "1.4.1"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "bba475ce782fc77777f539cf0b7c029207798db1"
+        }
+      ],
+      "name": "FindFirstFunctions",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "64ca27bc-2ba2-4a57-88aa-44e436879224"
+        }
+      ],
+      "type": "library",
+      "version": "3.2.1"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "d62485945ce5ae9c0c48f124a84998d755bae00e"
+        }
+      ],
+      "name": "FunctionWrappers",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "069b7b12-0de2-55c6-9aab-29f3d0a68a2e"
+        }
+      ],
+      "type": "library",
+      "version": "1.1.3"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "daced009d54a7cf502a9b5ed2f615c341f78af6f"
+        }
+      ],
+      "name": "FunctionWrappersWrappers",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "77dc65aa-8811-40c2-897b-53d922fa7daf"
+        }
+      ],
+      "type": "library",
+      "version": "1.12.1"
+    },
+    {
+      "name": "Future",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "9fa8497b-333b-5362-9e8d-4d0656e87820"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "83cf05ab16a73219e5f6bd1bdfa9848fa24ac627"
+        }
+      ],
+      "name": "GPUArraysCore",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "46192b85-c4d5-4398-a991-12ede77f4527"
+        }
+      ],
+      "type": "library",
+      "version": "0.2.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "a694e2a57394e409f7a11ee0977362a9fafcb8c7"
+        }
+      ],
+      "name": "GenericSchur",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "c145ed77-6b09-5dd9-b285-bf645a82121e"
+        }
+      ],
+      "type": "library",
+      "version": "0.5.6"
+    },
+    {
+      "name": "InteractiveUtils",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "b77e0a4c-d291-57a0-90e8-8db25a27a240"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "a779299d77cd080bf77b97535acecd73e1c5e5cb"
+        }
+      ],
+      "name": "InverseFunctions",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "3587e190-3f89-42d0-90ee-14403ec27112"
+        }
+      ],
+      "type": "library",
+      "version": "0.1.17"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "b2d91fe939cae05960e760110b328288867b5758"
+        }
+      ],
+      "name": "IrrationalConstants",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "92d709cd-6900-40b7-9082-c6be49f344b6"
+        }
+      ],
+      "type": "library",
+      "version": "0.2.6"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "a3f24677c21f5bbe9d2a714f95dcd58337fb2856"
+        }
+      ],
+      "name": "IteratorInterfaceExtensions",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "82899510-4779-5014-852e-03e436cf321d"
+        }
+      ],
+      "type": "library",
+      "version": "1.0.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "dda21b8cbd6a6c40d9d02a73230f9d70fed6918c"
+        }
+      ],
+      "name": "LaTeXStrings",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
+        }
+      ],
+      "type": "library",
+      "version": "1.4.0"
+    },
+    {
+      "name": "Libdl",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "8f399da3-3557-5675-b5ff-fb832c97cbdb"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.0"
+    },
+    {
+      "name": "LinearAlgebra",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "bba2d9aa057d8f126415de240573e86a8f39d2a1"
+        }
+      ],
+      "name": "LogExpFunctions",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "2ab3a3ac-af41-5b50-aa03-7779005ae688"
+        }
+      ],
+      "type": "library",
+      "version": "1.0.1"
+    },
+    {
+      "name": "Logging",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "56ddb016-857b-54e1-b83d-db4d58db5568"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "f00544d95982ea270145636c181ceda21c4e2575"
+        }
+      ],
+      "name": "LoggingExtras",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "e6f89c97-d47a-5376-807f-9c37f3926c36"
+        }
+      ],
+      "type": "library",
+      "version": "1.2.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "1e0228a030642014fe5cfe68c2c0a818f9e3f522"
+        }
+      ],
+      "name": "MacroTools",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
+        }
+      ],
+      "type": "library",
+      "version": "0.5.16"
+    },
+    {
+      "name": "Markdown",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "d6f4376e-aef5-505a-96c1-9c027394607a"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "69ad9ad584510f04f0ce75841253aa4b7c83e6f2"
+        }
+      ],
+      "name": "MaybeInplace",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "bb5d69b7-63fc-4a16-80bd-7e42200c7bdb"
+        }
+      ],
+      "type": "library",
+      "version": "0.1.7"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "283bf85d4a767481dd924dff0eee1735e95f449e"
+        }
+      ],
+      "name": "MuladdMacro",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "46d2c3a1-f734-5fdb-9937-b9b9aeba4221"
+        }
+      ],
+      "type": "library",
+      "version": "0.2.7"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "1c1bc248b49584835b847a56f592210bbbf8ae83"
+        }
+      ],
+      "name": "NonlinearSolveBase",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "be0214bd-f91f-a760-ac4e-3421ce2b2da0"
+        }
+      ],
+      "type": "library",
+      "version": "2.44.0"
+    },
+    {
+      "name": "OpenBLAS_jll",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "4536629a-c528-5b80-bd46-f80d51c5b363"
+        }
+      ],
+      "type": "library",
+      "version": "0.3.27+1"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "05f45c2e0de6259db764adbfd2f1dc6d3f8de13c"
+        }
+      ],
+      "name": "OrderedCollections",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
+        }
+      ],
+      "type": "library",
+      "version": "2.0.1"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "882e0c75c79c058d2dc2f20f8b809d26ec032808"
+        }
+      ],
+      "name": "OrdinaryDiffEqCore",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "bbf590c4-e513-4bbe-9b18-05decba2e5d8"
+        }
+      ],
+      "type": "library",
+      "version": "4.14.3"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "f7ffc12bf6572a1c55fc58d297d864e6d6cb99e6"
+        }
+      ],
+      "name": "OrdinaryDiffEqVerner",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "79d7bb75-1356-48c1-b8c0-6832512096c2"
+        }
+      ],
+      "type": "library",
+      "version": "2.2.2"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "5e1c95fb1366c7f92c44839b22fc362257895a34"
+        }
+      ],
+      "name": "PreallocationTools",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "d236fae5-4411-538c-8e31-a6e3d9e00b46"
+        }
+      ],
+      "type": "library",
+      "version": "1.5.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "5aa36f7049a63a1528fe8f7c3f2113413ffd4e1f"
+        }
+      ],
+      "name": "PrecompileTools",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "aea7be01-6a6a-4083-8856-8a6e6704d82a"
+        }
+      ],
+      "type": "library",
+      "version": "1.2.1"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "8b770b60760d4451834fe79dd483e318eee709c4"
+        }
+      ],
+      "name": "Preferences",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "21216c6a-2e73-6563-6e65-726566657250"
+        }
+      ],
+      "type": "library",
+      "version": "1.5.2"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "4ac881f5432bd93463a41767a814a45245be22b6"
+        }
+      ],
+      "name": "PrettyTables",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "08abe8d2-0d0c-5749-adfa-8a2ac140af0d"
+        }
+      ],
+      "type": "library",
+      "version": "3.4.6"
+    },
+    {
+      "name": "Printf",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "de0858da-6303-5e67-8744-51eddeeeb8d7"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.0"
+    },
+    {
+      "name": "REPL",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.0"
+    },
+    {
+      "name": "Random",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "5c3d09cc4f31f5fc6af001c250bf1278733100ff"
+        }
+      ],
+      "name": "RecipesBase",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
+        }
+      ],
+      "type": "library",
+      "version": "1.3.4"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "ed53f3c9075d1317f1f6c1cf8636c88b24ab2dd6"
+        }
+      ],
+      "name": "RecursiveArrayTools",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "731186ca-8d62-57ce-b412-fbd966d074cd"
+        }
+      ],
+      "type": "library",
+      "version": "4.4.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "45e428421666073eab6f2da5c9d310d99bb12f9b"
+        }
+      ],
+      "name": "Reexport",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "189a3867-3050-52da-a836-e630ba90ab69"
+        }
+      ],
+      "type": "library",
+      "version": "1.2.2"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "a6b8358681ac20a448dc762770487e25c98a5085"
+        }
+      ],
+      "name": "RespecializeParams",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "9fe22ead-9e00-4db2-8b46-706a60d40f5e"
+        }
+      ],
+      "type": "library",
+      "version": "1.2.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "65c9e1142f0372bfc16ba14b9edd57737fe0039f"
+        }
+      ],
+      "name": "RuntimeGeneratedFunctions",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "7e49a35a-f44a-4d26-94aa-eba1b4ca6b47"
+        }
+      ],
+      "type": "library",
+      "version": "0.5.24"
+    },
+    {
+      "name": "SHA",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "ea8e919c-243c-51af-8825-aaa63cd721ce"
+        }
+      ],
+      "type": "library",
+      "version": "0.7.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "55e5c9c07804723db7924afdebfc9075294c71cc"
+        }
+      ],
+      "name": "SciMLBase",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "0bca4576-84f4-4d90-8ffe-ffa030f20462"
+        }
+      ],
+      "type": "library",
+      "version": "3.47.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "ad167d716fc134c0873c76ba0469ede56a678732"
+        }
+      ],
+      "name": "SciMLJacobianOperators",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "19f34311-ddf3-4b8b-af20-060888a46c0e"
+        }
+      ],
+      "type": "library",
+      "version": "0.1.17"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "36be2198d9dc476ac27efb1fe0f789d9e1dca01c"
+        }
+      ],
+      "name": "SciMLLogging",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "a6db7da4-7206-11f0-1eab-35f2a5dbe1d1"
+        }
+      ],
+      "type": "library",
+      "version": "2.0.4"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "144473d0a737d9c1e1bf2dc5ea824dc1be864f33"
+        }
+      ],
+      "name": "SciMLOperators",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "c0aeaf25-5076-4817-a8d5-81caf7dfa961"
+        }
+      ],
+      "type": "library",
+      "version": "1.27.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "cf9aaf8b9ed5db993259ea8b24cf2b7ba9bd3b79"
+        }
+      ],
+      "name": "SciMLPublic",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "431bcebd-1456-4ced-9d72-93c2757fff0b"
+        }
+      ],
+      "type": "library",
+      "version": "1.2.4"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "53bf620cb2c3763d41495b2a145611c6ca400dcd"
+        }
+      ],
+      "name": "SciMLStructures",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "53ae85a6-f571-4167-b2af-e1d143709226"
+        }
+      ],
+      "type": "library",
+      "version": "1.10.4"
+    },
+    {
+      "name": "Serialization",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "9e88b42a-f829-5b0c-bbe9-9e923198166b"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "c5391c6ace3bc430ca630251d02ea9687169ca68"
+        }
+      ],
+      "name": "Setfield",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "efcf1570-3423-57d1-acb7-fd33fddbac46"
+        }
+      ],
+      "type": "library",
+      "version": "1.1.2"
+    },
+    {
+      "name": "Sockets",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "6462fe0b-24de-5631-8697-dd941f90decc"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "6ab403037779dae8c514bad259f32a447262455a"
+        }
+      ],
+      "name": "StaticArraysCore",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "1e83bf80-4336-4d27-bf5d-d5a4f845583c"
+        }
+      ],
+      "type": "library",
+      "version": "1.4.4"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "ae3bb1eb3bba077cd276bc5cfc337cc65c3075c0"
+        }
+      ],
+      "name": "Statistics",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.1"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "8a90c1d77c3277a5d43b83927b3cbe2c70a37484"
+        }
+      ],
+      "name": "StringManipulation",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "892a3eda-7b42-436c-8928-eab12a02cf0e"
+        }
+      ],
+      "type": "library",
+      "version": "0.4.7"
+    },
+    {
+      "name": "StyledStrings",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "f489334b-da3d-4c2e-b8f0-e476e12c162b"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "2167b9913f3013a1485bdc9bb249123eb8b53cb0"
+        }
+      ],
+      "name": "SymbolicIndexingInterface",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "2efcf032-c050-4f8e-a9bb-153293bab1f5"
+        }
+      ],
+      "type": "library",
+      "version": "0.3.54"
+    },
+    {
+      "name": "TOML",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+        }
+      ],
+      "type": "library",
+      "version": "1.0.3"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "c06b2f539df1c6efa794486abfb6ed2022561a39"
+        }
+      ],
+      "name": "TableTraits",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "3783bdb8-4a98-5b6b-af9a-565f29a5fe9c"
+        }
+      ],
+      "type": "library",
+      "version": "1.0.1"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "0f38a06c83f0007bbab3cf911262841c9a0f07e0"
+        }
+      ],
+      "name": "Tables",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
+        }
+      ],
+      "type": "library",
+      "version": "1.13.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "e9b4907b22ce6f51ab0effc321a56dac24614b70"
+        }
+      ],
+      "name": "TimerOutputs",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "a759f4b9-e2f1-59dc-863e-4aeb61b1ea8f"
+        }
+      ],
+      "type": "library",
+      "version": "1.2.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-1",
+          "content": "ea3e54c2bdde39062abf5a9758a23735558705e1"
+        }
+      ],
+      "name": "TruncatedStacktraces",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "781d530d-4396-4725-bb49-402e4bee1e77"
+        }
+      ],
+      "type": "library",
+      "version": "1.4.0"
+    },
+    {
+      "name": "UUIDs",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.0"
+    },
+    {
+      "name": "Unicode",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
+        }
+      ],
+      "type": "library",
+      "version": "1.11.0"
+    },
+    {
+      "name": "libblastrampoline_jll",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "julia/manifest"
+        },
+        {
+          "name": "julia:uuid",
+          "value": "8e850b90-86db-534c-a0d3-1478176c7d93"
+        }
+      ],
+      "type": "library",
+      "version": "5.11.0+0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "13b2beaad985e05e2d6407ee4c4f35590b11f8d693a258a561055cac8f64cab7"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "f072f4d804ea359e4eaf198b1af7a8b0943881a87f31bb764f8bf219bb9419e0"
+        }
+      ],
+      "name": "annotated-types",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/annotated-types@0.8.0",
+      "type": "library",
+      "version": "0.8.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"
+        }
+      ],
+      "name": "colorama",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/colorama@0.4.6",
+      "type": "library",
+      "version": "0.4.6"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "1beee2f991cd049962fe3c89da28f933753aa66d80bef857533276c9f23301ed"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "9adc70fe90dba83f7dd839845839b2531a3dd736a3944fe1aa26598507cfb48e"
+        }
+      ],
+      "name": "diffrax",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/diffrax@0.7.2",
+      "type": "library",
+      "version": "0.7.2"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "ca004348533cc30a63ebe8823d7dd4bb626dce17743d40bbddb89b402ef2a240"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "dd075050018e2dd02e252e9d29d3060f7e67f085622d8d27a8e89e24bb8523db"
+        }
+      ],
+      "name": "equinox",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/equinox@0.13.8",
+      "type": "library",
+      "version": "0.13.8"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "c76315c77db068650d49c5b56314774a7804df16fee4402c1f19d6d15d8c4730"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "f631c04d2c48c52b84d0d0549c99ff3859c98df65b3101406327ecc7d53fbf12"
+        }
+      ],
+      "name": "iniconfig",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/iniconfig@2.3.0",
+      "type": "library",
+      "version": "2.3.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "a2feb7cfa48bb35d36b8ecec16a4ec24044dec01935f779b28b017213697b195"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "b31ed66c4321d5c9e48b861f51a72ed5f7960c93514296202d2041cbb9ac45bf"
+        }
+      ],
+      "name": "jax",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/jax@0.11.0",
+      "type": "library",
+      "version": "0.11.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "112a01c584707a7d0e8634fd55dd7efffe812966e60c2d3ac84e8c24e4571336"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "33dd9405cab05ee4f3ecc3a91289323e9bd2f08d25990e5d45ffb8524f519506"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "88b349aa95e452caa30a6723320e93ec7bd1ab249e9f0bf29000da1b5efae733"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "aced7b1ca4e338b5248821a397d2d53008894672be6fee762f391cfdd7272e1e"
+        }
+      ],
+      "name": "jaxlib",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/jaxlib@0.11.0",
+      "type": "library",
+      "version": "0.11.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "8a4bedc4e3f963fa82df41bd13c7ebc2bad925601eb48614c65798f21329d4e3"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "b09c14acf6686feb9e0df5b0d8c6e7c5b6f8d36bf059ee54cd522a186c2ef050"
+        }
+      ],
+      "name": "jaxtyping",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/jaxtyping@0.3.11",
+      "type": "library",
+      "version": "0.3.11"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "5fc3c5039fc5ca8c0276333a188bbd59d6b7ab37fe6632daa76bc7f9ec18e713"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "8561a3269e6801106863fd0d6d84bb737be9e7631e33aaed3fb9ce5953688da3"
+        }
+      ],
+      "name": "joblib",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/joblib@1.5.3",
+      "type": "library",
+      "version": "1.5.3"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "187b8ea93b8e1099fb792e81c6e71a9c269f4fcadbb5313fe312d5847f581f9d"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "2e399f1674773ab2ba54d76175a618977a554f47abd0a345198d53d92c07beb2"
+        }
+      ],
+      "name": "lineax",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/lineax@0.1.1",
+      "type": "library",
+      "version": "0.1.1"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "084dfe51a7ad58b171f05115f8226ed4233a454a1611371947e806e76f0c638d"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "26b1f1fa4f0435a2946859823f6e2bf06796f1e9f10f5a05b08a5e3c8f46ff69"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "28d676428b104bb9717b0928bc5c5129f2d6b51b6727587cc4289e7bf8713cb5"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "57ed0d6b4ac5e7868361303a9c57fbcf63b768236ee14456f585dfcf260d0292"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "5e60251d32ced5598972e4d5e06a2f044341f9291402551a3f6f0ec44f9299b0"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "fb87f46b4f7ad7b5d3ad8f4b452b024bd4229d44c8ff934798c1fe656210387a"
+        }
+      ],
+      "name": "ml-dtypes",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/ml-dtypes@0.6.0",
+      "type": "library",
+      "version": "0.6.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "dc4f0ea2304480d4a9a48a94c1020571558ade522b44a6912efac63a586e140f"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "efd6d1b75f09d69524a67609949812668b28e81ecbfe0ab449ced8c13e92642e"
+        }
+      ],
+      "name": "mpmath",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/mpmath@1.4.1",
+      "type": "library",
+      "version": "1.4.1"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "42fdedf44e5b2ca7505630d45b4ac3058f38d8485cba9fe1652ca23152df7489"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "b5c0f684ccd9d7475b564111e319a4964abcf2baf79d3cf6b1003d06ac9b828d"
+        }
+      ],
+      "name": "narwhals",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/narwhals@2.24.0",
+      "type": "library",
+      "version": "2.24.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "0aadf13b60048d501e05fa699efaf7734e2494f3498a4c2a5521d822640324f3"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "29b86ff8a6cc556b47ec6b64b194815cc80e6bf5eedcc6cddfd65318cb0b4eee"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "29d81e97f668489cba8ebfd796b9bdd453525d35dd9e162e2daec94bf3fc7740"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "4f9744f9fbdcea0bc552e8f19e1f141f811a3f9bc2be2cc6e86d982cab23e3f4"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "52c808f96484f5571a5cc863775ce50247c17dfb3b0361f8ed6b4b0456f80080"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "6950c4b7dd562453090548ba7f5da7e59f57f85663f15d5dcc60e249192f7e59"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "85aaccb24182c25df891ad0ec333585967e115269d5f1b17f2c9ae005bc96657"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "8e4cb9a754c8a0c62eaa88273a5fba3391f4a610d1dee893c0755da31c083f15"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "afb3f0632d6b2e3ba04dbce8d1e48d321b369138b73830b5ca371a0e8d479d56"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "b9727f472d2f3888053b8a75ab0cb94745a9de224bb5846dbadc0092101bc71d"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "bd68ece1553d2023c09a4226d9e41c586ad2d20594d1a456186c33513d2cb3f2"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "d482d171c406ae88c5b19cad3b6a1c4c5209f886ab74bc44c2c865c23f52d860"
+        }
+      ],
+      "name": "numpy",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/numpy@2.5.2",
+      "type": "library",
+      "version": "2.5.2"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "69bb92469f86a1565195ece4ac0323943e83477171b91d24c35afe028a90d7cd"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "96ca72f1b886d148241348783498194c577fa30a8faac108586b14f1ba4473ac"
+        }
+      ],
+      "name": "opt-einsum",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/opt-einsum@3.4.0",
+      "type": "library",
+      "version": "3.4.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "c8edda7bf7fe48839c93fcd72bce750c950ed9f7033158303150b7ab395add81"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "f05c9104748e87e1dc10a0b4a2be94e427f98c3eab0b1d41ea24a593d76be03d"
+        }
+      ],
+      "name": "optimistix",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/optimistix@0.1.0",
+      "type": "library",
+      "version": "0.1.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "94edc256424af38762eb31306eed28beb9f0efc50a8837492c9d6fd6004aed79"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c"
+        }
+      ],
+      "name": "packaging",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/packaging@26.3",
+      "type": "library",
+      "version": "26.3"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "7dcc130b76258d33b90f61b658791dede3486c3e6bfb003ee5c9bfb396dd22f3"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746"
+        }
+      ],
+      "name": "pluggy",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/pluggy@1.6.0",
+      "type": "library",
+      "version": "1.6.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "45a282cde31d808236fd7ea9d919b128653c8b38b393d1c4ab335c62924d9aba"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "c40756b57adaa8b1efeeced5c196f3f3b7c435f90e84ea7f443901bec8099ef6"
+        }
+      ],
+      "name": "pydantic",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/pydantic@2.13.4",
+      "type": "library",
+      "version": "2.13.4"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "0186750b482eefa11d7f435892b09c5c606193ef3375bcf94aa00ae6bfb66262"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "184c081504d17f1c1066e430e117142b2c77d9448a97f7b65c6ac9fd9aee238d"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "2412e734dcb48da14d4e4006b82b46b74f2518b8a26ee7e58c6844a6cd6d03c4"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "5855698a4856556d86e8e6cd8434bc3ac0314ee8e12089ae0e143f64c6256e4e"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "5d5902252db0d3cedf8d4a1bc68f70eeb430f7e4c7104c8c476753519b423008"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "62f875393d7f270851f20523dd2e29f082bcc82292d66db2b64ea71f64b6e1c1"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "633147d34cf4550417f12e2b1a0383973bdf5cdfde212cb09e9a581cf10820be"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "6b3ace8194b0e5204818c92802dcdca7fc6d88aabbb799d7c795540d9cd6d292"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "82cf5301172168103724d49a1444d3378cb20cdee30b116a1bd6031236298a5d"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "9551187363ffc0de2a00b2e47c25aeaeb1020b69b668762966df15fc5659dd5a"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "9d56801be94b86a9da183e5f3766e6310752b99ff647e38b09a9500d88e46e76"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "9fa8ae11da9e2b3126c6426f147e0fba88d96d65921799bb30c6abd1cb2c97fb"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "c94f0688e7b8d0a67abf40e57a7eaaecd17cc9586706a31b76c031f63df052b4"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "cbaf13819775b7f769bf4a1f066cb6df7a28d4480081a589828ef190226881cd"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "e739fee756ba1010f8bcccb534252e85a35fe45ae92c295a06059ce58b74ccd3"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "f027324c56cd5406ca49c124b0db10e56c69064fec039acc571c29020cc87c76"
+        }
+      ],
+      "name": "pydantic-core",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/pydantic-core@2.46.4",
+      "type": "library",
+      "version": "2.46.4"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "6757cd03768053ff99f3039c1a36d6c0aa0b263438fcab17520b30a303a82b5f"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "81a9e26dd42fd28a23a2d169d86d7ac03b46e2f8b59ed4698fb4785f946d0176"
+        }
+      ],
+      "name": "pygments",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/pygments@2.20.0",
+      "type": "library",
+      "version": "2.20.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "86c0d0b93306b961d58d62a4db4879f27fe25513d4b969df351abdddb3c30e01"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "872f880de3fc3a5bdc88a11b39c9710c3497a547cfa9320bc3c5e62fbf272e79"
+        }
+      ],
+      "name": "pytest",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/pytest@8.4.2",
+      "type": "library",
+      "version": "8.4.2"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "0f29edc409a6392443abf94b9cf89ce99889a1dd5376d94316ae5145dfedd5d6"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "2283a07e2c21a2aa78d9c4442724ec1eb15f5e42a723b99cb3d822d48f5f7ad1"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "5498cd1645aa724a7c71c8f378eb29ebe23da2fc0d7a08071d89469bf1d2defb"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "79005a0d97d5ddabfeeea4cf676af11e647e41d81c9a7722a193022accdb6b7c"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "8da9669d359f02c0b91ccc01cac4a67f16afec0dac22c2ad09f46bee0697eba8"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "a33284e20b78bd4a18c8c2282d549d10bc8408a2a7ff57653c0cf0b9be0afce5"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "d0eae10f8159e8fdad514efdc92d74fd8d682c933a6dd088030f3834bc8e6b26"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "d76623373421df22fb4cf8817020cbb7ef15c725b9d5e45f17e189bfc384190f"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "eda16858a3cab07b80edaf74336ece1f986ba330fdb8ee0d6c0d68fe82bc96be"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "ee2922902c45ae8ccada2c5b501ab86c36525b883eff4255313a253a3160861c"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "f7057c9a337546edc7973c0d3ba84ddcdf0daa14533c2065749c9075001090e6"
+        }
+      ],
+      "name": "pyyaml",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/pyyaml@6.0.3",
+      "type": "library",
+      "version": "6.0.3"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "09571e6d1288ed9be475207a3ac04ada404f1cd898104be0f6ab8d7df438575b"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "0c5710e247a58a4521e66e124ba9a74655b414f61ba3a2e9e3811e11098f48f7"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "294b95c4ae0cda9388525c2047778aa758d6b8d4bb876fd4e9eaa3ebc92343eb"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "2c18c5a101eb540010638cc1ff3c84944d3adb3df62b8d98ca8f22ba484d3413"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "388cdf2166642bd9b13d52b5932d3170f34f8abed7e8d9a855f1d84b83645a0a"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "3d0c7c40c87c2a820509c31ba007968da6e1306468c067b2d82fbfdbcd0e8474"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "8457c44f15033c85ddbb77b15d451df9e24e4bd03b628396dd3610cedc3b8f82"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "9e0b1da805eb043654645d74d5de1e5ce2edc686e40790d2b86f56d71cc06a84"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "9f738c0fdfa8eed0b2ce7fb27ee7258208a92a68d7949e62aa15164bc7b389da"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "a2d85c02f9b8e165d85e6779184d38c4132de12603dab59c51c28e22584f9e4d"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "a37bdea0bbe21780f590bf437d6412c8c4e1b6cd010f91a65c2c40c5e5f5f870"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "b8ca152da82c1acc1fa8d5874b15951935f0eef46f10e6954c83859011b6178a"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "c5536e3acfbf9563085aa2be7b13c629c3077e902afc5b941ac44024dbb9f506"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "e2ed719e14aa64d895c2ee922594a90a43c861a93f0575a95ff8c47cdbd13eb9"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "e76d33a347661a84b5be6d043d0347fdc745dfdcf825a8f4fed64b5e26eebdf2"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "e80a7d69ca2a6d1c4d352ec91458cdca6e56c83cdbcabd93e4abe1e53591d948"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "fb785f0be25abe69d320415cd4f833b59e17ba7613d9ba6a958023b6bceb0a50"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "fe155130631a2471fd2e14a7a664a4dfbd7194b8229c3d7b2a40b21178639081"
+        }
+      ],
+      "name": "ruff",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/ruff@0.16.3",
+      "type": "library",
+      "version": "0.16.3"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "38c3dcb9a1ffb85505ec53d54c7b4aea0cff70050425a7760c2af661ac85df05"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "5808d98f15c6bf6d9d96d2348c1997392a5888ce7097e664105f930c4bca1277"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "5b934c45c252844a91d69fda3a34cff5e7307e1db10d77cb10a3980312c74713"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "80746d63bd4b6eaca54d36fe5feaf4d28bb38dc6f9470f81c7cad7c40155f119"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "8833266989d3a5110178a9fae30783675460724d0e1efb13b14901d2c660c557"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "d77f54c017633791bc0225a43e2f8d03745fdcfe4880268fcc4df15f505dec2e"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "da76d09304a4706db7cc1e3ebaa3b6b98a67365cc11d2996c4f1e58ba47df714"
+        }
+      ],
+      "name": "scikit-learn",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/scikit-learn@1.9.0",
+      "type": "library",
+      "version": "1.9.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "09143f676d157d9f546d663504ef9c1becb819824f1afc018814176411942446"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "0d13bca67c096d89fb95ced0d8921807300fce0275643aef9533cc63a0773468"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "1afac4a847207c7ff8efd321734a50b06d0280b3b2a2c0fc2f413101747ad7c7"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "5aba46108853ddfc77906b6557aac839d2b52e900c1d72a1180adaaab58d265f"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "5efe260f69417b97ddae455bfb5a95e8359f7f66ad7fa9522a60feb66f169520"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "67b2ad2ad54c72ca6d04975a9b2df8c3638c34ddd5b28738e94fc2b57929d378"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "68363b7eaacd8b5dd426df56d782cc156468ac79a127a1b87ca597d6e2e82197"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "a46f9273dbd0eb1cefba61c9b8648b4dfe3cbc14a080176f9a73e44b8336dc7f"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "b6f758e35f12757b5d95c00bc6de2438e229c2664b7a92e96f205959d9f2dfa4"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "c5557d8be5da8e41353fcd4d21491fdbab83b062fc579e94dc09a7c8ab4f669b"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "c5dbddf60e58c2312316d097271a8e73d40eaf2eabfa4d95ed7d3695bbf2ce7b"
+        }
+      ],
+      "name": "scipy",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/scipy@1.18.0",
+      "type": "library",
+      "version": "1.18.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "43a0b8fd5a2928500110039e43a5eed8480b918967083ea48dc3ab9f13c4a7fb"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "8ab8b4aa3491d812b623328249fab5302a68d2d71745c8a4c719a2fcaba9f44e"
+        }
+      ],
+      "name": "threadpoolctl",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/threadpoolctl@3.6.0",
+      "type": "library",
+      "version": "3.6.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5"
+        }
+      ],
+      "name": "typing-extensions",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/typing-extensions@4.16.0",
+      "type": "library",
+      "version": "4.16.0"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "547274fa6b0a561ccf549cc9524b999a578e737d015d8709d021f9d0d13bea47"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "65b8397ba37ccbce054456aaccddfc91e6e3083c92824df348d96ca832f3f147"
+        }
+      ],
+      "name": "typing-inspection",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/typing-inspection@0.4.4",
+      "type": "library",
+      "version": "0.4.4"
+    },
+    {
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "81d14d3fe77d441acf3ebd7f4aefac20c74128bf460e84b512806dccf7b2cd55"
+        },
+        {
+          "alg": "SHA-256",
+          "content": "e3ec83835570fd0a9509f969162aeb9c65618f998b1f42918cfc8d45122fe953"
+        }
+      ],
+      "name": "wadler-lindig",
+      "properties": [
+        {
+          "name": "atlas:ecosystem",
+          "value": "python/uv"
+        }
+      ],
+      "purl": "pkg:pypi/wadler-lindig@0.1.7",
+      "type": "library",
+      "version": "0.1.7"
+    }
+  ],
+  "metadata": {
+    "component": {
+      "name": "threebody-atlas scientific computation environment",
+      "type": "application",
+      "version": "0.1.0"
+    },
+    "properties": [
+      {
+        "name": "atlas:environment-manifest-sha256",
+        "value": "e698f32975a70ce80d04910ef823522f24b2418d0011c4e6ddeb4651d970e031"
+      }
+    ]
+  },
+  "specVersion": "1.6",
+  "version": 1
+}

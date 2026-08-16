@@ -81,7 +81,7 @@ jobs:
             descent_steps: "36"
             arclength_steps: "70"
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/atlas-uv-baseline
         with:
           extra: "--extra accelerated"
@@ -98,7 +98,7 @@ jobs:
             --max-m2-jump 0.004 \
             --reconnect-mass-gap 0.0015 \
             --reconnect-chart-gap 0.02
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: swarm-fold-${{ matrix.label }}-${{ github.sha }}
@@ -175,7 +175,7 @@ jobs:
             steps: "20"
             arclength_step: "0.0020"
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/atlas-uv-baseline
         with:
           extra: "--extra accelerated"
@@ -190,7 +190,7 @@ jobs:
             --radius-m2 0.035 \
             --steps "${{ matrix.steps }}" \
             --arclength-step "${{ matrix.arclength_step }}"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: swarm-junction-${{ matrix.label }}-${{ github.sha }}
@@ -303,7 +303,7 @@ jobs:
             m2_max: "0.756"
             step: "0.0002"
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/atlas-uv-baseline
         with:
           extract_brackets: "false"
@@ -318,7 +318,7 @@ jobs:
             --m2-max "${{ matrix.m2_max }}" \
             --step "${{ matrix.step }}" \
             --max-residual 1e-7
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: swarm-neck-${{ matrix.label }}-${{ github.sha }}
@@ -359,7 +359,7 @@ jobs:
             m1_step: "0.00001"
             steps: "40"
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/atlas-uv-baseline
         with:
           extra: "--extra accelerated"
@@ -374,7 +374,7 @@ jobs:
             --steps "${{ matrix.steps }}" \
             --m2-min 1.0 --m2-max 1.07 \
             --max-m2-jump 0.004
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: swarm-right-${{ matrix.label }}-${{ github.sha }}
@@ -417,7 +417,7 @@ jobs:
             trees: "96"
             candidates: "18"
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/atlas-uv-baseline
         with:
           extra: "--extra ml"
@@ -430,7 +430,7 @@ jobs:
             --trees "${{ matrix.trees }}" \
             --candidates "${{ matrix.candidates }}" \
             --output "artifacts/swarm-${{ matrix.label }}.json"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: swarm-${{ matrix.label }}-${{ github.sha }}
@@ -446,7 +446,7 @@ jobs:
       matrix:
         max_steps: ["80", "120", "160"]
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/atlas-uv-baseline
       - name: Trace secondary loop ${{ matrix.max_steps }}
         run: |
@@ -454,7 +454,7 @@ jobs:
             artifacts/published-transition-brackets.tsv \
             "artifacts/swarm-loop-${{ matrix.max_steps }}.json" \
             --max-steps "${{ matrix.max_steps }}" --step 0.001
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: swarm-loop-${{ matrix.max_steps }}-${{ github.sha }}
@@ -487,7 +487,7 @@ jobs:
             arclength_step: "0.0015"
             sign: "1"
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/atlas-uv-baseline
         with:
           extract_brackets: "false"
@@ -503,7 +503,7 @@ jobs:
             --max-residual 3e-7 \
             --distinct-tolerance 2e-5 \
             --reconnect-tolerance 2e-5
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: swarm-daughter-${{ matrix.label }}-${{ github.sha }}
@@ -544,11 +544,11 @@ jobs:
             dps: "80"
             tol_exp: "32"
     steps:
-      - uses: actions/checkout@v7
-      - uses: julia-actions/setup-julia@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9 # v2
         with:
           version: "1.11.9"
-      - uses: julia-actions/cache@v2
+      - uses: julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9 # v2
       - name: Instantiate locked independent solver stack
         run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
       - name: Canonical mixed ${{ matrix.label }} dps=${{ matrix.dps }}
@@ -558,7 +558,7 @@ jobs:
             "${{ matrix.seed_file }}" \
             "artifacts/swarm-mixed-canonical-${{ matrix.label }}-dps${{ matrix.dps }}.json" \
             "${{ matrix.dps }}" "${{ matrix.tol_exp }}" 18 12
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: swarm-mixed-canonical-${{ matrix.label }}-dps${{ matrix.dps }}-${{ github.sha }}
@@ -586,11 +586,11 @@ jobs:
             seed_file: experiments/critical_curve_upper_collision.tsv
             dps: "80"
     steps:
-      - uses: actions/checkout@v7
-      - uses: julia-actions/setup-julia@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9 # v2
         with:
           version: "1.11.9"
-      - uses: julia-actions/cache@v2
+      - uses: julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9 # v2
       - name: Instantiate locked independent solver stack
         run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
       - name: Critical curve ${{ matrix.label }} dps=${{ matrix.dps }}
@@ -600,7 +600,7 @@ jobs:
             "${{ matrix.seed_file }}" \
             "artifacts/swarm-critical-${{ matrix.label }}-dps${{ matrix.dps }}.json" \
             "${{ matrix.dps }}" 25 18 8 5 4
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: swarm-critical-${{ matrix.label }}-dps${{ matrix.dps }}-${{ github.sha }}
@@ -622,11 +622,11 @@ jobs:
           - label: d1-plus
             seed_file: experiments/daughter_d1_plus_reproduction.tsv
     steps:
-      - uses: actions/checkout@v7
-      - uses: julia-actions/setup-julia@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9 # v2
         with:
           version: "1.11.9"
-      - uses: julia-actions/cache@v2
+      - uses: julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9 # v2
       - name: Instantiate locked independent solver stack
         run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
       - name: Generic daughter ${{ matrix.label }}
@@ -636,7 +636,7 @@ jobs:
             "${{ matrix.seed_file }}" \
             "artifacts/swarm-daughter-${{ matrix.label }}-bigfloat.json" \
             50 25 18 4
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: swarm-daughter-${{ matrix.label }}-bigfloat-${{ github.sha }}

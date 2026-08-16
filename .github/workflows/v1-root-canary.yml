@@ -34,7 +34,7 @@ jobs:
       matrix:
         cell: [0, 1, 2, 3, 4, 5, 10, 15, 20, 30, 50, 100, 148, 200, 300, 400, 500, 600, 610, 619]
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/atlas-uv-baseline
         with:
           extract_brackets: "true"
@@ -46,7 +46,7 @@ jobs:
             --cell-ids "${{ matrix.cell }}" \
             --max-iterations 28 \
             --m2-tolerance 1e-13
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: canary-cell-${{ matrix.cell }}-${{ github.sha }}

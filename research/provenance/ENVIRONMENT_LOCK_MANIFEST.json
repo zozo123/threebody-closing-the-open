@@ -1,0 +1,2956 @@
+{
+  "claim_status": "language dependency locks and third-party Actions are immutable; GitHub-hosted runner images and apt packages remain runtime-observed, not image-digest-pinned",
+  "external_sources": {
+    "baseline_git_blobs": [
+      "79b2963df43e62201c35690bfc22bec166132427"
+    ],
+    "capd_commits": [
+      "731079217a9254ea2948d742df2b170895effe7f"
+    ]
+  },
+  "github_actions": {
+    "all_external_refs_immutable": true,
+    "count": 321,
+    "steps": [
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 16,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/actions/atlas-uv-baseline/action.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 38,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/active-learning.yml"
+      },
+      {
+        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "immutable": true,
+        "line": 42,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "workflow": ".github/workflows/active-learning.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 76,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/active-learning.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 41,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/adversarial-connectivity-edges.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 42,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/adversarial-connectivity-edges.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 60,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/adversarial-connectivity-edges.yml"
+      },
+      {
+        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "immutable": true,
+        "line": 62,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "workflow": ".github/workflows/adversarial-connectivity-edges.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 104,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/adversarial-connectivity-edges.yml"
+      },
+      {
+        "commit": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "immutable": true,
+        "line": 36,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "workflow": ".github/workflows/baseline-reproduction.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 37,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/baseline-reproduction.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 78,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/baseline-reproduction.yml"
+      },
+      {
+        "commit": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "immutable": true,
+        "line": 27,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "workflow": ".github/workflows/boundary-experiment.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 28,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/boundary-experiment.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 57,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/boundary-experiment.yml"
+      },
+      {
+        "commit": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "immutable": true,
+        "line": 38,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "workflow": ".github/workflows/bracket-criterion-comparison.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 41,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/bracket-criterion-comparison.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 86,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/bracket-criterion-comparison.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 38,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/canonical-verifier.yml"
+      },
+      {
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
+        "immutable": true,
+        "line": 39,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
+        "workflow": ".github/workflows/canonical-verifier.yml"
+      },
+      {
+        "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "immutable": true,
+        "line": 42,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "workflow": ".github/workflows/canonical-verifier.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 70,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/canonical-verifier.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 41,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/capd-validated-flow.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 77,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/capd-validated-flow.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 24,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/ci.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 28,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/ci.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 45,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/ci.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 49,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/ci.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 56,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/ci.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 69,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/ci.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 73,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/ci.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 39,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/connectivity-audit.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 40,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/connectivity-audit.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 52,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/connectivity-audit.yml"
+      },
+      {
+        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "immutable": true,
+        "line": 54,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "workflow": ".github/workflows/connectivity-audit.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 96,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/connectivity-audit.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 54,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/critical-graph-assembly.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 57,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/critical-graph-assembly.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 130,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/critical-graph-assembly.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 36,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/critical-manifold-screen.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 40,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/critical-manifold-screen.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 82,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/critical-manifold-screen.yml"
+      },
+      {
+        "commit": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "immutable": true,
+        "line": 24,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "workflow": ".github/workflows/critical-massplane-screen.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 25,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/critical-massplane-screen.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 59,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/critical-massplane-screen.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 32,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/discovery-gate.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 34,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/discovery-gate.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 50,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/discovery-gate.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 46,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/discovery-release.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 50,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/discovery-release.yml"
+      },
+      {
+        "commit": "1e69f48acb82d1966a394da916b4c1698aa569d6",
+        "immutable": true,
+        "line": 108,
+        "local": false,
+        "repository": "actions/attest",
+        "uses": "actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6",
+        "workflow": ".github/workflows/discovery-release.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 117,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/discovery-release.yml"
+      },
+      {
+        "commit": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "immutable": true,
+        "line": 18,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "workflow": ".github/workflows/event-network-audit.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 19,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/event-network-audit.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 50,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/event-network-audit.yml"
+      },
+      {
+        "commit": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "immutable": true,
+        "line": 25,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "workflow": ".github/workflows/extract-critical-seeds.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 26,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/extract-critical-seeds.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 55,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/extract-critical-seeds.yml"
+      },
+      {
+        "commit": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "immutable": true,
+        "line": 20,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "workflow": ".github/workflows/family-identity-audit.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 23,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/family-identity-audit.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 50,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/family-identity-audit.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 28,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/floquet-vertex-search.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 30,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/floquet-vertex-search.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 62,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/floquet-vertex-search.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 39,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 41,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 69,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 87,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 89,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "immutable": true,
+        "line": 95,
+        "local": false,
+        "repository": "actions/download-artifact",
+        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 109,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "immutable": true,
+        "line": 123,
+        "local": false,
+        "repository": "actions/download-artifact",
+        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 222,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 243,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "immutable": true,
+        "line": 244,
+        "local": false,
+        "repository": "actions/download-artifact",
+        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "immutable": true,
+        "line": 248,
+        "local": false,
+        "repository": "actions/download-artifact",
+        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "immutable": true,
+        "line": 252,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "immutable": true,
+        "line": 255,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 308,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 324,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "immutable": true,
+        "line": 325,
+        "local": false,
+        "repository": "actions/download-artifact",
+        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "immutable": true,
+        "line": 329,
+        "local": false,
+        "repository": "actions/download-artifact",
+        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 349,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/full-critical-root-localization.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 72,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/full-domain-critical-sweep.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 74,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/full-domain-critical-sweep.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 153,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/full-domain-critical-sweep.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 155,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/full-domain-critical-sweep.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 208,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/full-domain-critical-sweep.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 224,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/full-domain-critical-sweep.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 226,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/full-domain-critical-sweep.yml"
+      },
+      {
+        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "immutable": true,
+        "line": 247,
+        "local": false,
+        "repository": "actions/download-artifact",
+        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "workflow": ".github/workflows/full-domain-critical-sweep.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 311,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/full-domain-critical-sweep.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 32,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/generic-bridge.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 33,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/generic-bridge.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 45,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/generic-bridge.yml"
+      },
+      {
+        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "immutable": true,
+        "line": 47,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "workflow": ".github/workflows/generic-bridge.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 75,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/generic-bridge.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 38,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/generic-connectivity-edges.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 41,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/generic-connectivity-edges.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 58,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/generic-connectivity-edges.yml"
+      },
+      {
+        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "immutable": true,
+        "line": 62,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "workflow": ".github/workflows/generic-connectivity-edges.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 104,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/generic-connectivity-edges.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 32,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/global-event-network.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 33,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/global-event-network.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 43,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/global-event-network.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 45,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/global-event-network.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 80,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/global-event-network.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 35,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/global-mixed-vertex-search.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 36,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/global-mixed-vertex-search.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 49,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/global-mixed-vertex-search.yml"
+      },
+      {
+        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "immutable": true,
+        "line": 51,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "workflow": ".github/workflows/global-mixed-vertex-search.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 91,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/global-mixed-vertex-search.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 81,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/headline-mixed-germs.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 84,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/headline-mixed-germs.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 237,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/headline-mixed-germs.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 40,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/high-precision-boundary.yml"
+      },
+      {
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
+        "immutable": true,
+        "line": 41,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
+        "workflow": ".github/workflows/high-precision-boundary.yml"
+      },
+      {
+        "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "immutable": true,
+        "line": 44,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "workflow": ".github/workflows/high-precision-boundary.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 75,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/high-precision-boundary.yml"
+      },
+      {
+        "commit": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "immutable": true,
+        "line": 23,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "workflow": ".github/workflows/invariant-bridge.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 24,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/invariant-bridge.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 53,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/invariant-bridge.yml"
+      },
+      {
+        "commit": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "immutable": true,
+        "line": 18,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "workflow": ".github/workflows/invariant-projection-audit.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 19,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/invariant-projection-audit.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 46,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/invariant-projection-audit.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 27,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/jax-diffrax-audit.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 29,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/jax-diffrax-audit.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 46,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/jax-diffrax-audit.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 44,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/julia-critical-canonical-verifier.yml"
+      },
+      {
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
+        "immutable": true,
+        "line": 45,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
+        "workflow": ".github/workflows/julia-critical-canonical-verifier.yml"
+      },
+      {
+        "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "immutable": true,
+        "line": 48,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "workflow": ".github/workflows/julia-critical-canonical-verifier.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 60,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/julia-critical-canonical-verifier.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 53,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/julia-critical-curve-verifier.yml"
+      },
+      {
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
+        "immutable": true,
+        "line": 54,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
+        "workflow": ".github/workflows/julia-critical-curve-verifier.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 75,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/julia-critical-curve-verifier.yml"
+      },
+      {
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
+        "immutable": true,
+        "line": 76,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
+        "workflow": ".github/workflows/julia-critical-curve-verifier.yml"
+      },
+      {
+        "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "immutable": true,
+        "line": 79,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "workflow": ".github/workflows/julia-critical-curve-verifier.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 96,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/julia-critical-curve-verifier.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 52,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/julia-generic-daughter-verifier.yml"
+      },
+      {
+        "commit": "4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "immutable": true,
+        "line": 53,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "workflow": ".github/workflows/julia-generic-daughter-verifier.yml"
+      },
+      {
+        "commit": "d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "immutable": true,
+        "line": 56,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "workflow": ".github/workflows/julia-generic-daughter-verifier.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 79,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/julia-generic-daughter-verifier.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 60,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/julia-mixed-canonical-verifier.yml"
+      },
+      {
+        "commit": "4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "immutable": true,
+        "line": 61,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "workflow": ".github/workflows/julia-mixed-canonical-verifier.yml"
+      },
+      {
+        "commit": "d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "immutable": true,
+        "line": 64,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "workflow": ".github/workflows/julia-mixed-canonical-verifier.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 81,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/julia-mixed-canonical-verifier.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 59,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/julia-mixed-vertex-verifier.yml"
+      },
+      {
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
+        "immutable": true,
+        "line": 60,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
+        "workflow": ".github/workflows/julia-mixed-vertex-verifier.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 84,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/julia-mixed-vertex-verifier.yml"
+      },
+      {
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
+        "immutable": true,
+        "line": 87,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
+        "workflow": ".github/workflows/julia-mixed-vertex-verifier.yml"
+      },
+      {
+        "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "immutable": true,
+        "line": 90,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "workflow": ".github/workflows/julia-mixed-vertex-verifier.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 107,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/julia-mixed-vertex-verifier.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 30,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/julia-remainder-cells.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 67,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/julia-remainder-cells.yml"
+      },
+      {
+        "commit": "4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "immutable": true,
+        "line": 68,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "workflow": ".github/workflows/julia-remainder-cells.yml"
+      },
+      {
+        "commit": "d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "immutable": true,
+        "line": 71,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "workflow": ".github/workflows/julia-remainder-cells.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 115,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/julia-remainder-cells.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 25,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/julia-secondary-minus-fold-verifier.yml"
+      },
+      {
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
+        "immutable": true,
+        "line": 26,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
+        "workflow": ".github/workflows/julia-secondary-minus-fold-verifier.yml"
+      },
+      {
+        "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "immutable": true,
+        "line": 29,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "workflow": ".github/workflows/julia-secondary-minus-fold-verifier.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 42,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/julia-secondary-minus-fold-verifier.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 34,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/julia-verifier.yml"
+      },
+      {
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
+        "immutable": true,
+        "line": 35,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
+        "workflow": ".github/workflows/julia-verifier.yml"
+      },
+      {
+        "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "immutable": true,
+        "line": 38,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "workflow": ".github/workflows/julia-verifier.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 67,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/julia-verifier.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 44,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/junction-organizer-continuation.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 45,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/junction-organizer-continuation.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 75,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/junction-organizer-continuation.yml"
+      },
+      {
+        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "immutable": true,
+        "line": 77,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "workflow": ".github/workflows/junction-organizer-continuation.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 118,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/junction-organizer-continuation.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 45,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/latest-bifurcationkit-crosscheck.yml"
+      },
+      {
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
+        "immutable": true,
+        "line": 46,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
+        "workflow": ".github/workflows/latest-bifurcationkit-crosscheck.yml"
+      },
+      {
+        "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "immutable": true,
+        "line": 49,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "workflow": ".github/workflows/latest-bifurcationkit-crosscheck.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 72,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/latest-bifurcationkit-crosscheck.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 36,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/lower-plus-one-branch-probe.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 37,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/lower-plus-one-branch-probe.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 49,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/lower-plus-one-branch-probe.yml"
+      },
+      {
+        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "immutable": true,
+        "line": 51,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "workflow": ".github/workflows/lower-plus-one-branch-probe.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 65,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/lower-plus-one-branch-probe.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 43,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/lower-plus-one-daughter-continuation.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 44,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/lower-plus-one-daughter-continuation.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 73,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/lower-plus-one-daughter-continuation.yml"
+      },
+      {
+        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "immutable": true,
+        "line": 75,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "workflow": ".github/workflows/lower-plus-one-daughter-continuation.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 94,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/lower-plus-one-daughter-continuation.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 41,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/lower-plus-one-daughter-long.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 43,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/lower-plus-one-daughter-long.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 86,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/lower-plus-one-daughter-long.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 60,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/mutation-suite.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 62,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/mutation-suite.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 93,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/mutation-suite.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 106,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/mutation-suite.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 108,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/mutation-suite.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 136,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/mutation-suite.yml"
+      },
+      {
+        "commit": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "immutable": true,
+        "line": 28,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "workflow": ".github/workflows/paper.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 29,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/paper.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 45,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/paper.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 32,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/physical-sp4-audit.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 33,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/physical-sp4-audit.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 45,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/physical-sp4-audit.yml"
+      },
+      {
+        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "immutable": true,
+        "line": 47,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "workflow": ".github/workflows/physical-sp4-audit.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 75,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/physical-sp4-audit.yml"
+      },
+      {
+        "commit": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "immutable": true,
+        "line": 23,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "workflow": ".github/workflows/precision-crosscheck.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 24,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/precision-crosscheck.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 57,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/precision-crosscheck.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 30,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/refined-shooting-rank.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 31,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/refined-shooting-rank.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 41,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/refined-shooting-rank.yml"
+      },
+      {
+        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "immutable": true,
+        "line": 43,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "workflow": ".github/workflows/refined-shooting-rank.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 70,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/refined-shooting-rank.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 41,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/release.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 45,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/release.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 188,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/release.yml"
+      },
+      {
+        "commit": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "immutable": true,
+        "line": 24,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "workflow": ".github/workflows/secondary-critical-loop.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 25,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/secondary-critical-loop.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 59,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/secondary-critical-loop.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 53,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 54,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 63,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
+      },
+      {
+        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "immutable": true,
+        "line": 65,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 108,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 120,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
+      },
+      {
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
+        "immutable": true,
+        "line": 121,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
+        "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
+      },
+      {
+        "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "immutable": true,
+        "line": 124,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 137,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 150,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
+      },
+      {
+        "commit": "634f93cb2916e3fdff6788551b99b062d0335ce0",
+        "immutable": true,
+        "line": 151,
+        "local": false,
+        "repository": "actions/download-artifact",
+        "uses": "actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0",
+        "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
+      },
+      {
+        "commit": "634f93cb2916e3fdff6788551b99b062d0335ce0",
+        "immutable": true,
+        "line": 155,
+        "local": false,
+        "repository": "actions/download-artifact",
+        "uses": "actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0",
+        "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 165,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
+      },
+      {
+        "commit": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "immutable": true,
+        "line": 18,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "workflow": ".github/workflows/secondary-minus-fold.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 19,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/secondary-minus-fold.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 51,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/secondary-minus-fold.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 56,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
+      },
+      {
+        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "immutable": true,
+        "line": 58,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 99,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 115,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
+      },
+      {
+        "commit": "634f93cb2916e3fdff6788551b99b062d0335ce0",
+        "immutable": true,
+        "line": 116,
+        "local": false,
+        "repository": "actions/download-artifact",
+        "uses": "actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0",
+        "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
+      },
+      {
+        "commit": "4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "immutable": true,
+        "line": 120,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
+      },
+      {
+        "commit": "d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "immutable": true,
+        "line": 123,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 138,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 152,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
+      },
+      {
+        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "immutable": true,
+        "line": 154,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 199,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 32,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/shooting-jacobian-audit.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 33,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/shooting-jacobian-audit.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 43,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/shooting-jacobian-audit.yml"
+      },
+      {
+        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "immutable": true,
+        "line": 45,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "workflow": ".github/workflows/shooting-jacobian-audit.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 73,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/shooting-jacobian-audit.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 68,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/stability-neck-scan.yml"
+      },
+      {
+        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "immutable": true,
+        "line": 70,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "workflow": ".github/workflows/stability-neck-scan.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 120,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/stability-neck-scan.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 133,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/stability-neck-scan.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 134,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/stability-neck-scan.yml"
+      },
+      {
+        "commit": "634f93cb2916e3fdff6788551b99b062d0335ce0",
+        "immutable": true,
+        "line": 137,
+        "local": false,
+        "repository": "actions/download-artifact",
+        "uses": "actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0",
+        "workflow": ".github/workflows/stability-neck-scan.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 150,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/stability-neck-scan.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 45,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/strong-hammers-self-hosted.yml"
+      },
+      {
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
+        "immutable": true,
+        "line": 46,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
+        "workflow": ".github/workflows/strong-hammers-self-hosted.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 60,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/strong-hammers-self-hosted.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 86,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/strong-hammers-self-hosted.yml"
+      },
+      {
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
+        "immutable": true,
+        "line": 87,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
+        "workflow": ".github/workflows/strong-hammers-self-hosted.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 101,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/strong-hammers-self-hosted.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 127,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/strong-hammers-self-hosted.yml"
+      },
+      {
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
+        "immutable": true,
+        "line": 128,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
+        "workflow": ".github/workflows/strong-hammers-self-hosted.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 143,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/strong-hammers-self-hosted.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 169,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/strong-hammers-self-hosted.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 200,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/strong-hammers-self-hosted.yml"
+      },
+      {
+        "commit": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "immutable": true,
+        "line": 18,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+        "workflow": ".github/workflows/transition-topology-audit.yml"
+      },
+      {
+        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "immutable": true,
+        "line": 19,
+        "local": false,
+        "repository": "actions/setup-python",
+        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "workflow": ".github/workflows/transition-topology-audit.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 51,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/transition-topology-audit.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 19,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/uv-lock.yml"
+      },
+      {
+        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "immutable": true,
+        "line": 23,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "workflow": ".github/workflows/uv-lock.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 84,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": null,
+        "immutable": true,
+        "line": 85,
+        "local": true,
+        "repository": null,
+        "uses": "./.github/actions/atlas-uv-baseline",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 101,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 178,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": null,
+        "immutable": true,
+        "line": 179,
+        "local": true,
+        "repository": null,
+        "uses": "./.github/actions/atlas-uv-baseline",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 193,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 306,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": null,
+        "immutable": true,
+        "line": 307,
+        "local": true,
+        "repository": null,
+        "uses": "./.github/actions/atlas-uv-baseline",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 321,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 362,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": null,
+        "immutable": true,
+        "line": 363,
+        "local": true,
+        "repository": null,
+        "uses": "./.github/actions/atlas-uv-baseline",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 377,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 420,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": null,
+        "immutable": true,
+        "line": 421,
+        "local": true,
+        "repository": null,
+        "uses": "./.github/actions/atlas-uv-baseline",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 433,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 449,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": null,
+        "immutable": true,
+        "line": 450,
+        "local": true,
+        "repository": null,
+        "uses": "./.github/actions/atlas-uv-baseline",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 457,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 490,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": null,
+        "immutable": true,
+        "line": 491,
+        "local": true,
+        "repository": null,
+        "uses": "./.github/actions/atlas-uv-baseline",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 506,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 547,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "immutable": true,
+        "line": 548,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "immutable": true,
+        "line": 551,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 561,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 589,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "immutable": true,
+        "line": 590,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "immutable": true,
+        "line": 593,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 603,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 625,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "immutable": true,
+        "line": 626,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "immutable": true,
+        "line": 629,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 639,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/v1-ci-swarm.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 69,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/v1-gate-closure.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 72,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/v1-gate-closure.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 177,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/v1-gate-closure.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 37,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/v1-root-canary.yml"
+      },
+      {
+        "commit": null,
+        "immutable": true,
+        "line": 38,
+        "local": true,
+        "repository": null,
+        "uses": "./.github/actions/atlas-uv-baseline",
+        "workflow": ".github/workflows/v1-root-canary.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 49,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/v1-root-canary.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 35,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/v1-root-julia-cells.yml"
+      },
+      {
+        "commit": "4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "immutable": true,
+        "line": 36,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "workflow": ".github/workflows/v1-root-julia-cells.yml"
+      },
+      {
+        "commit": "d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "immutable": true,
+        "line": 39,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "workflow": ".github/workflows/v1-root-julia-cells.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 56,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/v1-root-julia-cells.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 33,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/v1-root-swat.yml"
+      },
+      {
+        "commit": null,
+        "immutable": true,
+        "line": 34,
+        "local": true,
+        "repository": null,
+        "uses": "./.github/actions/atlas-uv-baseline",
+        "workflow": ".github/workflows/v1-root-swat.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 45,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/v1-root-swat.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 31,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/v1-root-ultra.yml"
+      },
+      {
+        "commit": null,
+        "immutable": true,
+        "line": 32,
+        "local": true,
+        "repository": null,
+        "uses": "./.github/actions/atlas-uv-baseline",
+        "workflow": ".github/workflows/v1-root-ultra.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 44,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/v1-root-ultra.yml"
+      },
+      {
+        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "immutable": true,
+        "line": 58,
+        "local": false,
+        "repository": "actions/download-artifact",
+        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "workflow": ".github/workflows/v1-root-ultra.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 135,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/v1-root-ultra.yml"
+      }
+    ]
+  },
+  "known_unfrozen_layers": [
+    "ubuntu-latest hosted-runner image",
+    "self-hosted runner OS/toolchain",
+    "apt repository snapshot and package builds",
+    "julia-latest adversarial Project.toml intentionally has no Manifest.toml"
+  ],
+  "lockfiles": [
+    {
+      "path": "pyproject.toml",
+      "sha256": "cfa50642ddd7cfe535b2470a1bbd3e890c472e622039ca1917067f66bc440f02"
+    },
+    {
+      "path": "uv.lock",
+      "sha256": "3aeae0d3f88d2edbce10cad8fbfd5a39574fdde1ac6166b5d93c888d9f9fef9b"
+    },
+    {
+      "path": "julia/Project.toml",
+      "sha256": "6b33f36867e25c70793ad85b83844b40475cd0a498f160a1ecab5c1283d7700b"
+    },
+    {
+      "path": "julia/Manifest.toml",
+      "sha256": "b84e341335ca107a5c0bf7e0dab7818473da7a5017cc0ba918a19877e124f43f"
+    },
+    {
+      "path": "julia-latest/Project.toml",
+      "sha256": "85145b9e1b5c1034c80efa17ecd07eb679e523a572b9216b97a36b94bc474284"
+    }
+  ],
+  "manifest_sha256": "e698f32975a70ce80d04910ef823522f24b2418d0011c4e6ddeb4651d970e031",
+  "runner_selectors": {
+    "[self-hosted, Linux, X64]": 4,
+    "ubuntu-latest": 102
+  },
+  "runtimes": {
+    "julia_adversarial_latest": {
+      "locked_manifest": false,
+      "project_compat": "=1.12.6"
+    },
+    "julia_release": {
+      "manifest_project_hash": "1044d9a89553ef066d67052b06e91f63219b5247",
+      "manifest_version": "1.11.9",
+      "project_compat": "=1.11.9"
+    },
+    "python": {
+      "project_requires": ">=3.13,<3.14",
+      "uv_lock_requires": "==3.13.*",
+      "uv_required": ">=0.12.5,<0.13"
+    }
+  },
+  "schema": "atlas.v1.environment-lock-manifest/1"
+}
