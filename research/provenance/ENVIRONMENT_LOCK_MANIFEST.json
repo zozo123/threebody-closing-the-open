@@ -10,7 +10,7 @@
   },
   "github_actions": {
     "all_external_refs_immutable": true,
-    "count": 321,
+    "count": 342,
     "steps": [
       {
         "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
@@ -290,6 +290,24 @@
         "repository": "astral-sh/setup-uv",
         "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "workflow": ".github/workflows/ci.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 21,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/claim-assurance.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 24,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/claim-assurance.yml"
       },
       {
         "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
@@ -1023,6 +1041,24 @@
       {
         "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
         "immutable": true,
+        "line": 24,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/graph-semantics.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 26,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/graph-semantics.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
         "line": 81,
         "local": false,
         "repository": "actions/checkout",
@@ -1750,6 +1786,42 @@
         "workflow": ".github/workflows/mutation-suite.yml"
       },
       {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 21,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/numeric-serialization.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 25,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/numeric-serialization.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 39,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/numeric-serialization.yml"
+      },
+      {
+        "commit": "4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "immutable": true,
+        "line": 42,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "workflow": ".github/workflows/numeric-serialization.yml"
+      },
+      {
         "commit": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
         "immutable": true,
         "line": 28,
@@ -2234,6 +2306,105 @@
         "repository": "actions/upload-artifact",
         "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
         "workflow": ".github/workflows/shooting-jacobian-audit.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 58,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/sign-topology-audit.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 60,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/sign-topology-audit.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 73,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/sign-topology-audit.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 87,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/sign-topology-audit.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 89,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/sign-topology-audit.yml"
+      },
+      {
+        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "immutable": true,
+        "line": 95,
+        "local": false,
+        "repository": "actions/download-artifact",
+        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "workflow": ".github/workflows/sign-topology-audit.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 129,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/sign-topology-audit.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 144,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/sign-topology-audit.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 146,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/sign-topology-audit.yml"
+      },
+      {
+        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "immutable": true,
+        "line": 152,
+        "local": false,
+        "repository": "actions/download-artifact",
+        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "workflow": ".github/workflows/sign-topology-audit.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 186,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/sign-topology-audit.yml"
       },
       {
         "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
@@ -2900,6 +3071,24 @@
         "repository": "actions/upload-artifact",
         "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
         "workflow": ".github/workflows/v1-root-ultra.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 24,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/workflow-integrity.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 26,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/workflow-integrity.yml"
       }
     ]
   },
@@ -2931,10 +3120,10 @@
       "sha256": "85145b9e1b5c1034c80efa17ecd07eb679e523a572b9216b97a36b94bc474284"
     }
   ],
-  "manifest_sha256": "e698f32975a70ce80d04910ef823522f24b2418d0011c4e6ddeb4651d970e031",
+  "manifest_sha256": "95e638a5d32c7a73416587eb8ee09c3d3826cbcfff0b8e27a6d7c9ea2a626fed",
   "runner_selectors": {
     "[self-hosted, Linux, X64]": 4,
-    "ubuntu-latest": 102
+    "ubuntu-latest": 110
   },
   "runtimes": {
     "julia_adversarial_latest": {

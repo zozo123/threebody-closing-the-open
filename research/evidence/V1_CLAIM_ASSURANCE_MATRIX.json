@@ -255,7 +255,7 @@
             "claim:one-continuation-family",
             "dimension:unresolved_contradictions"
           ],
-          "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+          "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
           "dimension": "unresolved_contradictions",
           "evidence": [],
           "status": "scientifically_unresolved"
@@ -302,7 +302,7 @@
               "status": "scientifically_unresolved"
             },
             {
-              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
               "dimension": "unresolved_contradictions",
               "status": "scientifically_unresolved"
             }
@@ -367,7 +367,7 @@
               "status": "not_run"
             },
             {
-              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
               "dimension": "unresolved_contradictions",
               "status": "scientifically_unresolved"
             }
@@ -617,7 +617,7 @@
             "claim:principal-lower-plus-one",
             "dimension:unresolved_contradictions"
           ],
-          "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+          "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
           "dimension": "unresolved_contradictions",
           "evidence": [],
           "status": "scientifically_unresolved"
@@ -669,7 +669,7 @@
               "status": "scientifically_unresolved"
             },
             {
-              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
               "dimension": "unresolved_contradictions",
               "status": "scientifically_unresolved"
             }
@@ -739,7 +739,7 @@
               "status": "not_run"
             },
             {
-              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
               "dimension": "unresolved_contradictions",
               "status": "scientifically_unresolved"
             }
@@ -989,7 +989,7 @@
             "claim:principal-upper-hamiltonian-hopf",
             "dimension:unresolved_contradictions"
           ],
-          "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+          "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
           "dimension": "unresolved_contradictions",
           "evidence": [],
           "status": "scientifically_unresolved"
@@ -1041,7 +1041,7 @@
               "status": "scientifically_unresolved"
             },
             {
-              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
               "dimension": "unresolved_contradictions",
               "status": "scientifically_unresolved"
             }
@@ -1111,7 +1111,7 @@
               "status": "not_run"
             },
             {
-              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
               "dimension": "unresolved_contradictions",
               "status": "scientifically_unresolved"
             }
@@ -1405,7 +1405,7 @@
             "claim:three-mixed-organizers",
             "dimension:unresolved_contradictions"
           ],
-          "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+          "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
           "dimension": "unresolved_contradictions",
           "evidence": [],
           "status": "scientifically_unresolved"
@@ -1452,7 +1452,7 @@
               "status": "scientifically_unresolved"
             },
             {
-              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
               "dimension": "unresolved_contradictions",
               "status": "scientifically_unresolved"
             }
@@ -1517,7 +1517,7 @@
               "status": "not_run"
             },
             {
-              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
               "dimension": "unresolved_contradictions",
               "status": "scientifically_unresolved"
             }
@@ -1735,7 +1735,7 @@
             "claim:coarse-event-network",
             "dimension:unresolved_contradictions"
           ],
-          "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+          "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
           "dimension": "unresolved_contradictions",
           "evidence": [],
           "status": "scientifically_unresolved"
@@ -1792,7 +1792,7 @@
               "status": "scientifically_unresolved"
             },
             {
-              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
               "dimension": "unresolved_contradictions",
               "status": "scientifically_unresolved"
             }
@@ -1867,7 +1867,7 @@
               "status": "not_run"
             },
             {
-              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
               "dimension": "unresolved_contradictions",
               "status": "scientifically_unresolved"
             }
@@ -2101,7 +2101,7 @@
             "claim:secondary-minus-one-fold",
             "dimension:unresolved_contradictions"
           ],
-          "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+          "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
           "dimension": "unresolved_contradictions",
           "evidence": [],
           "status": "scientifically_unresolved"
@@ -2158,7 +2158,7 @@
               "status": "scientifically_unresolved"
             },
             {
-              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
               "dimension": "unresolved_contradictions",
               "status": "scientifically_unresolved"
             }
@@ -2233,7 +2233,7 @@
               "status": "not_run"
             },
             {
-              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
               "dimension": "unresolved_contradictions",
               "status": "scientifically_unresolved"
             }
@@ -2451,7 +2451,7 @@
             "claim:lower-plus-one-daughter",
             "dimension:unresolved_contradictions"
           ],
-          "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+          "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
           "dimension": "unresolved_contradictions",
           "evidence": [],
           "status": "scientifically_unresolved"
@@ -2508,7 +2508,7 @@
               "status": "scientifically_unresolved"
             },
             {
-              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
               "dimension": "unresolved_contradictions",
               "status": "scientifically_unresolved"
             }
@@ -2583,7 +2583,7 @@
               "status": "not_run"
             },
             {
-              "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+              "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
               "dimension": "unresolved_contradictions",
               "status": "scientifically_unresolved"
             }
@@ -2636,7 +2636,7 @@
     },
     "claim:three-mixed-organizers": {
       "kind": "claim",
-      "sha256": "3756fb1184dced5a2980a9ae155799257aaf0e7e43db6cc5b2b7badebe63bb23"
+      "sha256": "e044a8bd53d0f79783d519e23db355f31ac627d58011602605f20a1553b604b1"
     },
     "dimension:blind_n_version": {
       "kind": "assurance_policy_dimension",
@@ -2696,11 +2696,11 @@
     },
     "discovery_manifest": {
       "kind": "claim_registry",
-      "sha256": "8f26fab113db82a2aa4112cd4705e6eb96e67847dc11a5caa303f470a626f6e8"
+      "sha256": "bacfbef3bd697c8b53114e0f757c93bc7bb1601e011cb3cb15b447fbc390b963"
     }
   },
   "dimension_count": 14,
-  "matrix_sha256": "2282429cd80d63ba13aab0f5f97184b77da00f0affc81cd117c3a9a96436be27",
+  "matrix_sha256": "17a000a6813446f063d8bf8e4adc284386ad1b7bf91c8f9985f818bf0633e145",
   "policy_sha256": "b915bf08610ed97b6b07c505ba0ea456e99c6c5b9cc87c511c6039c7259376f5",
   "release_policy": {
     "numerical_paper_ready": false,
@@ -2714,7 +2714,7 @@
     "theorem_grade_ready": false
   },
   "schema": "atlas.claim-assurance-matrix.v1",
-  "source_manifest_sha256": "8f26fab113db82a2aa4112cd4705e6eb96e67847dc11a5caa303f470a626f6e8",
+  "source_manifest_sha256": "bacfbef3bd697c8b53114e0f757c93bc7bb1601e011cb3cb15b447fbc390b963",
   "status_vocabulary": [
     "fail",
     "infrastructure_blocked",
@@ -3101,7 +3101,7 @@
             "status": "scientifically_unresolved"
           },
           {
-            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
             "dimension": "unresolved_contradictions",
             "status": "scientifically_unresolved"
           }
@@ -3171,7 +3171,7 @@
             "status": "scientifically_unresolved"
           },
           {
-            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
             "dimension": "unresolved_contradictions",
             "status": "scientifically_unresolved"
           }
@@ -3231,7 +3231,7 @@
             "status": "scientifically_unresolved"
           },
           {
-            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
             "dimension": "unresolved_contradictions",
             "status": "scientifically_unresolved"
           }
@@ -3296,7 +3296,7 @@
             "status": "scientifically_unresolved"
           },
           {
-            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
             "dimension": "unresolved_contradictions",
             "status": "scientifically_unresolved"
           }
@@ -3361,7 +3361,7 @@
             "status": "scientifically_unresolved"
           },
           {
-            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
             "dimension": "unresolved_contradictions",
             "status": "scientifically_unresolved"
           }
@@ -3431,7 +3431,7 @@
             "status": "scientifically_unresolved"
           },
           {
-            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
             "dimension": "unresolved_contradictions",
             "status": "scientifically_unresolved"
           }
@@ -3491,7 +3491,7 @@
             "status": "scientifically_unresolved"
           },
           {
-            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
             "dimension": "unresolved_contradictions",
             "status": "scientifically_unresolved"
           }
@@ -3568,7 +3568,7 @@
             "status": "not_run"
           },
           {
-            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
             "dimension": "unresolved_contradictions",
             "status": "scientifically_unresolved"
           }
@@ -3644,7 +3644,7 @@
             "status": "not_run"
           },
           {
-            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
             "dimension": "unresolved_contradictions",
             "status": "scientifically_unresolved"
           }
@@ -3710,7 +3710,7 @@
             "status": "not_run"
           },
           {
-            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
             "dimension": "unresolved_contradictions",
             "status": "scientifically_unresolved"
           }
@@ -3781,7 +3781,7 @@
             "status": "not_run"
           },
           {
-            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
             "dimension": "unresolved_contradictions",
             "status": "scientifically_unresolved"
           }
@@ -3852,7 +3852,7 @@
             "status": "not_run"
           },
           {
-            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
             "dimension": "unresolved_contradictions",
             "status": "scientifically_unresolved"
           }
@@ -3928,7 +3928,7 @@
             "status": "not_run"
           },
           {
-            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
             "dimension": "unresolved_contradictions",
             "status": "scientifically_unresolved"
           }
@@ -3994,7 +3994,7 @@
             "status": "not_run"
           },
           {
-            "detail": "open blocker(s): Classify the secondary-left G- birth (#110). | Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127). | Classify the lower +1 daughter, including no_branch_attachment as a valid close. | Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand. | Classify the two unclassified edge ends so the assembled graph's edge incidence is one connected object rather than three components plus four unattached nodes. | Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day. | Then #118: same-day novelty, manuscript from release_claim records, --require-solved.",
+            "detail": "open blocker(s): Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md. | Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit.",
             "dimension": "unresolved_contradictions",
             "status": "scientifically_unresolved"
           }

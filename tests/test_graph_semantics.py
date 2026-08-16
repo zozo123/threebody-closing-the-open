@@ -120,8 +120,8 @@ def test_generated_schema_and_mutation_audit_are_current():
 def test_shipped_graph_adapter_freezes_sheet_domain_nodes_and_edges():
     graph = shipped_graph()
     assert graph.schema_version == SCHEMA_VERSION
-    assert len(graph.nodes) == 12
-    assert len(graph.edges) == 7
+    assert len(graph.nodes) == 18
+    assert len(graph.edges) == 13
     assert graph.coordinate_axes == ("m1", "m2", "m3")
     assert graph.declared_domain == {
         "m1": ("0.8", "1.1"),
@@ -407,4 +407,4 @@ def test_cli_compares_shipped_graph_without_hand_mapping(tmp_path: Path):
     )
     comparison = json.loads(output.read_text(encoding="utf-8"))
     assert comparison["equivalent"] is True
-    assert len(comparison["mapping"]) == 12
+    assert len(comparison["mapping"]) == 18
