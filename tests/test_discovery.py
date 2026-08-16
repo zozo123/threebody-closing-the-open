@@ -296,9 +296,26 @@ def test_float64_evaluation_of_the_canonical_organizers_misses_the_event_gate() 
             f"{name} float64 plus_one event {value:.5e} is unexpectedly small; "
             "the limitation claims float64 cannot reach the 2e-8 gate here"
         )
-    assert abs(events["principal_left"]) == pytest.approx(1.28e-07, rel=0.05)
-    assert abs(events["secondary_left"]) == pytest.approx(2.07e-08, rel=0.10)
-    assert abs(events["principal_right"]) == pytest.approx(2.56e-08, rel=0.05)
+    # Deliberately NO per-organizer magnitude pin.  Measured on three machines:
+    #
+    #                     macOS arm64    CI linux x86_64   NSC linux x86_64
+    #   principal_left    -1.2794e-07    -1.2798e-07       -1.3475e-07
+    #   secondary_left    -1.9582e-08    -2.1803e-08       -2.3001e-08
+    #   principal_right   -2.5556e-08    -4.8931e-08       -8.6599e-08
+    #
+    # principal_right spans a factor of 3.4, and it differs between two x86_64
+    # Linux machines, not merely between architectures.  A quantity that moves
+    # like that under a change of libm/BLAS/CPU is dominated by accumulated
+    # float64 integration error, not by the physics, so ANY tolerance tight
+    # enough to be meaningful is loose enough to be arbitrary.  Three successive
+    # attempts to pin these numbers all went red on a platform they were not
+    # written on.  The honest assertion is the order of magnitude and the gate
+    # membership, and the limitation says exactly that.
+    for name, value in events.items():
+        assert 1e-8 <= abs(value) <= 1e-6, (
+            f"{name} float64 plus_one event {value:.5e} left the order of "
+            "magnitude the limitation describes"
+        )
 
     over_gate = {name for name, value in events.items() if abs(value) > gate}
     assert {"principal_left", "principal_right"} <= over_gate, (
@@ -311,11 +328,14 @@ def test_float64_evaluation_of_the_canonical_organizers_misses_the_event_gate() 
     known = " ".join(manifest["known_limitations"])
     # The manifest must quote the platform-stable values AND disclose that
     # secondary-left straddles the gate depending on platform.
-    for value in ("-1.28e-7", "-2.56e-8", "-1.96e-8", "-2.18e-8"):
+    for value in ("-1.28e-7", "-1.35e-7", "-1.96e-8", "-2.30e-8", "-2.56e-8", "-8.66e-8"):
         assert value in known
-    assert "straddle" in known
+    assert "straddles" in known
+    assert "not reproducible" in known
     assert "re-corrected" in known
-    assert "two of the three canonical organizers do not clear the gate" in known
+    # NOT "two of the three do not clear the gate": which organizers clear it is
+    # itself platform-dependent, which is the whole point of this limitation.
+    assert "must never be used as a gate check" in known
     # The gate itself is untouched.
     graph = json.loads((ROOT / "research/evidence/V1_CRITICAL_GRAPH.json").read_text())
     assert graph["frozen_numerical_gates"]["maximum_absolute_event"] == gate
