@@ -14,6 +14,11 @@ const MATRIX = joinpath(
     "V1_NUMERIC_ROUNDTRIP_MATRIX_2026-08-16.json",
 )
 
+function check(condition, message)
+    condition || error(message)
+    return nothing
+end
+
 function exact_power_ratio(coefficient::BigInt, radix::BigInt, exponent::Int)
     if exponent >= 0
         return (coefficient * radix^exponent) // BigInt(1)
@@ -25,7 +30,7 @@ function float64_ratio(bits::UInt64)
     sign = iszero(bits >> 63) ? BigInt(1) : BigInt(-1)
     exponent = Int((bits >> 52) & 0x7ff)
     fraction = BigInt(bits & 0x000f_ffff_ffff_ffff)
-    @assert exponent != 0x7ff "NaN/infinity escaped the Python validator"
+    check(exponent != 0x7ff, "NaN/infinity escaped the Python validator")
     if exponent == 0
         return exact_power_ratio(sign * fraction, BigInt(2), -1074)
     end
@@ -63,9 +68,12 @@ function verify_value(value)
     if kind == "float64"
         bits = parse(UInt64, String(value.bits), base=16)
         observed = reinterpret(Float64, bits)
-        @assert isfinite(observed)
-        @assert string(reinterpret(UInt64, observed), base=16, pad=16) == String(value.bits)
-        @assert Int(value.precision.bits) == 53
+        check(isfinite(observed), "float64 payload is not finite")
+        check(
+            string(reinterpret(UInt64, observed), base=16, pad=16) == String(value.bits),
+            "float64 bits did not survive reinterpret",
+        )
+        check(Int(value.precision.bits) == 53, "float64 precision must be 53 bits")
         exact_ratio(value)
     elseif kind == "binary"
         significand = parse(BigInt, String(value.significand))
@@ -74,7 +82,10 @@ function verify_value(value)
         expected = exact_ratio(value)
         setprecision(BigFloat, bits) do
             observed = ldexp(BigFloat(significand), exponent)
-            @assert rationalize(BigInt, observed; tol=0) == expected
+            check(
+                rationalize(BigInt, observed; tol=0) == expected,
+                "binary BigFloat reconstruction disagrees with the declared dyadic",
+            )
         end
     elseif kind == "decimal"
         coefficient = parse(BigInt, String(value.coefficient))
@@ -84,28 +95,34 @@ function verify_value(value)
         working_bits = ceil(Int, digits * log2(10)) + 16
         setprecision(BigFloat, working_bits) do
             parsed = parse(BigFloat, "$(coefficient)e$(exponent)")
-            @assert parsed == BigFloat(expected)
+            check(parsed == BigFloat(expected), "decimal reconstruction lost exact value")
         end
     elseif kind == "integer" || kind == "rational"
         exact_ratio(value)
     elseif kind == "interval"
         lower = exact_ratio(value.lower)
         upper = exact_ratio(value.upper)
-        @assert lower <= upper
+        check(lower <= upper, "interval lower bound exceeds upper bound")
         if lower == upper
-            @assert Bool(value.lower_closed) && Bool(value.upper_closed)
+            check(
+                Bool(value.lower_closed) && Bool(value.upper_closed),
+                "degenerate interval must be closed",
+            )
         end
     elseif kind == "hash"
         digest = String(value.digest)
-        @assert occursin(r"^[0-9a-f]{64}$", digest)
-        @assert String(value.algorithm) == "sha256"
+        check(occursin(r"^[0-9a-f]{64}$", digest), "hash digest is not 64 lowercase hex digits")
+        check(String(value.algorithm) == "sha256", "hash algorithm must be sha256")
     elseif kind == "missing"
-        @assert String(value.reason) in (
+        check(
+            String(value.reason) in (
             "not_computed",
             "not_applicable",
             "precision_insufficient",
             "unresolved",
             "invalidated",
+            ),
+            "missing-value reason is not in the frozen vocabulary",
         )
     else
         error("unknown evidence value kind: $kind")
@@ -115,22 +132,31 @@ end
 function main()
     matrix = JSON3.read(read(MATRIX, String))
     spec_sha = bytes2hex(sha256(read(SPEC)))
-    @assert String(matrix.spec_sha256) == spec_sha
-    @assert String(matrix.serialization_schema) == "atlas.numeric-evidence.v1"
-    @assert Int(matrix.case_count) == length(matrix.cases)
+    check(String(matrix.spec_sha256) == spec_sha, "matrix spec digest disagrees with the spec file")
+    check(
+        String(matrix.serialization_schema) == "atlas.numeric-evidence.v1",
+        "matrix schema is not atlas.numeric-evidence.v1",
+    )
+    check(Int(matrix.case_count) == length(matrix.cases), "matrix case_count disagrees with cases")
 
     names = String[]
     for row in matrix.cases
         canonical = String(row.canonical_json)
         parsed = JSON3.read(canonical)
-        @assert JSON3.write(parsed) == canonical
-        @assert bytes2hex(sha256(canonical)) == String(row.canonical_sha256)
-        @assert String(parsed.spec_sha256) == spec_sha
-        @assert String(parsed.schema_version) == "atlas.numeric-evidence.v1"
-        @assert length(parsed.fields) == 1
+        check(JSON3.write(parsed) == canonical, "canonical JSON is not identity-stable")
+        check(
+            bytes2hex(sha256(canonical)) == String(row.canonical_sha256),
+            "canonical JSON digest mismatch",
+        )
+        check(String(parsed.spec_sha256) == spec_sha, "document spec digest is stale")
+        check(
+            String(parsed.schema_version) == "atlas.numeric-evidence.v1",
+            "document schema is not atlas.numeric-evidence.v1",
+        )
+        check(length(parsed.fields) == 1, "conformance row must contain exactly one field")
         field = first(values(parsed.fields))
-        @assert hasproperty(field, :unit)
-        @assert hasproperty(field, :release_critical)
+        check(hasproperty(field, :unit), "field is missing unit")
+        check(hasproperty(field, :release_critical), "field is missing release_critical")
         verify_value(field.value)
         push!(names, String(row.name))
     end
@@ -147,7 +173,7 @@ function main()
         "sha256",
         "unresolved",
     ])
-    @assert Set(names) == expected
+    check(Set(names) == expected, "Julia verifier did not see the frozen case names")
     println("verified $(length(names)) canonical numerical evidence cases in Julia")
 end
 
