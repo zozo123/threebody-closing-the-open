@@ -1,0 +1,134 @@
+{
+  "case_count": 15,
+  "cases": [
+    {
+      "baseline_sha256": "cd8008c7dad88ce6830062cdaafa96775ca94ffae46579b75428ce54de5a9264",
+      "expected": "identity and gate change detected",
+      "mutated_sha256": "906f796dbd8212eff01fa0124a7a09c7cf9b120374f5dcc818439387b338ad1e",
+      "name": "decimal-truncation",
+      "observed": "identity and gate change detected",
+      "passed": true
+    },
+    {
+      "expected": "identity and exact value change detected",
+      "name": "decimal-exponent-loss",
+      "observed": "identity and exact value change detected",
+      "passed": true
+    },
+    {
+      "diagnostic": "document rejected by the numeric-evidence schema",
+      "exception_type": "ValidationError",
+      "expected": "rejected",
+      "name": "locale-decimal-comma",
+      "observed": "rejected",
+      "passed": true,
+      "rejection_code": "ATLAS_NUMERIC_SCHEMA_REJECTED"
+    },
+    {
+      "diagnostic": "duplicate JSON object key 'value'",
+      "exception_type": "NumericEvidenceError",
+      "expected": "rejected",
+      "name": "duplicate-object-key",
+      "observed": "rejected",
+      "passed": true,
+      "rejection_code": "ATLAS_NUMERIC_PARSER_REJECTED"
+    },
+    {
+      "diagnostic": "raw JSON floating-point token '1e-300' is forbidden; use a typed numerical envelope",
+      "exception_type": "NumericEvidenceError",
+      "expected": "rejected",
+      "name": "raw-json-exponent-parser-difference",
+      "observed": "rejected",
+      "passed": true,
+      "rejection_code": "ATLAS_NUMERIC_PARSER_REJECTED"
+    },
+    {
+      "diagnostic": "non-standard JSON constant 'NaN' is forbidden",
+      "exception_type": "NumericEvidenceError",
+      "expected": "rejected",
+      "name": "raw-json-nan",
+      "observed": "rejected",
+      "passed": true,
+      "rejection_code": "ATLAS_NUMERIC_PARSER_REJECTED"
+    },
+    {
+      "diagnostic": "non-standard JSON constant 'Infinity' is forbidden",
+      "exception_type": "NumericEvidenceError",
+      "expected": "rejected",
+      "name": "raw-json-infinity",
+      "observed": "rejected",
+      "passed": true,
+      "rejection_code": "ATLAS_NUMERIC_PARSER_REJECTED"
+    },
+    {
+      "diagnostic": "document rejected by the numeric-evidence schema",
+      "exception_type": "ValidationError",
+      "expected": "rejected",
+      "name": "float64-positive-infinity-bits",
+      "observed": "rejected",
+      "passed": true,
+      "rejection_code": "ATLAS_NUMERIC_SCHEMA_REJECTED"
+    },
+    {
+      "diagnostic": "document rejected by the numeric-evidence schema",
+      "exception_type": "ValidationError",
+      "expected": "rejected",
+      "name": "float64-nan-payload",
+      "observed": "rejected",
+      "passed": true,
+      "rejection_code": "ATLAS_NUMERIC_SCHEMA_REJECTED"
+    },
+    {
+      "expected": "both accepted with distinct identities and signs",
+      "name": "signed-zero",
+      "negative_bits": "8000000000000000",
+      "observed": "both accepted with distinct identities and signs",
+      "passed": true,
+      "positive_bits": "0000000000000000"
+    },
+    {
+      "expected": "accepted and preserved bit-for-bit",
+      "name": "minimum-subnormal",
+      "observed": "accepted and preserved bit-for-bit",
+      "passed": true
+    },
+    {
+      "expected": "canonical identity unchanged",
+      "name": "pretty-print-and-member-order",
+      "observed": "canonical identity unchanged",
+      "passed": true
+    },
+    {
+      "diagnostic": "document rejected by the numeric-evidence schema",
+      "exception_type": "ValidationError",
+      "expected": "rejected",
+      "name": "critical-field-unit-omission",
+      "observed": "rejected",
+      "passed": true,
+      "rejection_code": "ATLAS_NUMERIC_SCHEMA_REJECTED"
+    },
+    {
+      "diagnostic": "document rejected by the numeric-evidence schema",
+      "exception_type": "ValidationError",
+      "expected": "rejected",
+      "name": "critical-field-precision-omission",
+      "observed": "rejected",
+      "passed": true,
+      "rejection_code": "ATLAS_NUMERIC_SCHEMA_REJECTED"
+    },
+    {
+      "diagnostic": "document rejected by the numeric-evidence schema",
+      "exception_type": "ValidationError",
+      "expected": "rejected",
+      "name": "specification-hash-substitution",
+      "observed": "rejected",
+      "passed": true,
+      "rejection_code": "ATLAS_NUMERIC_SCHEMA_REJECTED"
+    }
+  ],
+  "generated_on": "2026-08-16",
+  "passed": true,
+  "schema": "atlas.serialization-mutation-audit.v1",
+  "serialization_schema": "atlas.numeric-evidence.v1",
+  "spec_sha256": "bb93a39787195716603abf45b4fd2f6dfa7b4301c852a9449ff442caefaf54a0"
+}
