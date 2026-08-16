@@ -1,0 +1,108 @@
+{
+  "schema": "atlas.v1.search-scope-registry/1",
+  "criteria": {
+    "published_label_brackets/v1": {
+      "description": "Adjacent published S/U label flips only; interior U-to-U event walls are invisible.",
+      "claim_scope": {
+        "enumerates_label_transition_roots": true,
+        "enumerates_full_critical_set": false,
+        "excludes_even_root_pairs": false,
+        "excludes_tangencies": false,
+        "bounded_resolution_only": true
+      }
+    },
+    "event_sign_brackets/v1": {
+      "description": "Sign-changing event brackets on sampled lines; does not detect even roots or tangencies.",
+      "claim_scope": {
+        "enumerates_label_transition_roots": false,
+        "enumerates_full_critical_set": false,
+        "excludes_even_root_pairs": false,
+        "excludes_tangencies": false,
+        "bounded_resolution_only": true
+      }
+    },
+    "active_learning_pocket/v1": {
+      "description": "Corrected proposals in one bounded acquisition pocket; screening evidence only.",
+      "claim_scope": {
+        "enumerates_label_transition_roots": false,
+        "enumerates_full_critical_set": false,
+        "excludes_even_root_pairs": false,
+        "excludes_tangencies": false,
+        "bounded_resolution_only": true
+      }
+    },
+    "local_neck_raster/v1": {
+      "description": "Finite-resolution topology raster in the declared neck window only.",
+      "claim_scope": {
+        "enumerates_label_transition_roots": false,
+        "enumerates_full_critical_set": false,
+        "excludes_even_root_pairs": false,
+        "excludes_tangencies": false,
+        "bounded_resolution_only": true
+      }
+    },
+    "bounded_completeness_bundle/v1": {
+      "description": "AL pocket plus local neck raster. Valid bounded negative evidence, not a full-domain enumeration.",
+      "claim_scope": {
+        "enumerates_label_transition_roots": false,
+        "enumerates_full_critical_set": false,
+        "excludes_even_root_pairs": false,
+        "excludes_tangencies": false,
+        "bounded_resolution_only": true
+      }
+    },
+    "validated_full_event_cover/v1": {
+      "description": "Future release contract: validated full-domain event cover including even roots and tangencies.",
+      "claim_scope": {
+        "enumerates_label_transition_roots": true,
+        "enumerates_full_critical_set": true,
+        "excludes_even_root_pairs": true,
+        "excludes_tangencies": true,
+        "bounded_resolution_only": false
+      }
+    }
+  },
+  "requirements": {
+    "full_critical_set_release/v1": {
+      "description": "Minimum semantic scope for a release claim that the Floquet critical set is complete.",
+      "required_claims": {
+        "enumerates_full_critical_set": true,
+        "excludes_even_root_pairs": true,
+        "excludes_tangencies": true,
+        "bounded_resolution_only": false
+      }
+    }
+  },
+  "artifact_bindings": [
+    {
+      "path": "research/evidence/V1_AL_POCKET_SCREEN_2026-08-15.json",
+      "sha256": "87a2ae43ac899220f86dea835696101158509b93e675bac2c03842599a247be6",
+      "criterion_id": "active_learning_pocket/v1"
+    },
+    {
+      "path": "research/evidence/V1_NECK_RASTER_2026-08-16.json",
+      "sha256": "616f5fdfc97c1b6fc1bd10391eb8f941efc610b38ffa41c51369191c065fff19",
+      "criterion_id": "local_neck_raster/v1"
+    },
+    {
+      "path": "research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json",
+      "sha256": "7af919e07761307cf58d812700beddcb1bbed1bda60743261e63021ce234fbf9",
+      "criterion_id": "published_label_brackets/v1"
+    },
+    {
+      "path": "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+      "sha256": "6974ce8fa16fb1783931289c483d7607ae2a12bc7cc0cef5d72f95a0c24a1ef5",
+      "criterion_id": "event_sign_brackets/v1"
+    },
+    {
+      "path": "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json",
+      "sha256": "2b5bd88a613018ad5eba6013ee88e1566f86b259971642e4afa72ca5d312ca3c",
+      "criterion_id": "event_sign_brackets/v1"
+    },
+    {
+      "path": "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json",
+      "sha256": "0cad17b2dcf16a1eecf311bc8c75469cbc2ca1521db73e0cce298f3c0283ae16",
+      "criterion_id": "event_sign_brackets/v1"
+    }
+  ]
+}
