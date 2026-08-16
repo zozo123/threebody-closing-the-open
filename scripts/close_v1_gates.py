@@ -821,8 +821,12 @@ def release_conjuncts(graph: dict[str, Any]) -> list[dict[str, Any]]:
         {
             "conjunct": "all_cells_on_edges",
             "satisfied": int(coverage.get("cells_on_edges") or -1) == 620,
-            "detail": coverage.get("cells_on_edges"),
-            "explanation": "every localized cell must sit on exactly one polyline",
+            "detail": {
+                "cells_on_edges": coverage.get("cells_on_edges"),
+                "supplemental_roots": coverage.get("supplemental_roots"),
+                "all_vertices_on_edges": coverage.get("all_vertices_on_edges"),
+            },
+            "explanation": "every catalog S/U cell 0..619 must sit on exactly one polyline",
         },
         {
             "conjunct": "no_duplicate_cells",

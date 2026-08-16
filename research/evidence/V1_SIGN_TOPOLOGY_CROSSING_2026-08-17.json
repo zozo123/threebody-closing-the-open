@@ -1,0 +1,580 @@
+{
+  "schema": "atlas.v1.sign-topology-audit/1",
+  "created_at": "2026-08-16T22:36:56.959671+00:00",
+  "code_revision": null,
+  "run_id": null,
+  "python": "3.13.13",
+  "arithmetic": "float64 screening (scipy DOP853 + variational Newton)",
+  "inputs": {
+    "graph": "research/evidence/V1_CRITICAL_GRAPH.json",
+    "graph_schema": "atlas.v1.critical-graph/3",
+    "graph_release_ready": true,
+    "roots": [
+      "research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json",
+      "research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json"
+    ],
+    "roots_schema": "atlas.v1.combined-critical-roots/1",
+    "roots_note": "concatenated catalog + supplemental roots via scripts/combine_graph_roots.py; no new localization"
+  },
+  "method": {
+    "state": "S = (sgn G_plus, sgn G_minus, sgn discriminant, n_unstable)",
+    "G_plus": "beta - 6*alpha + 20 = P(+2)",
+    "G_minus": "beta - 2*alpha + 4 = P(-2)",
+    "discriminant": "(alpha-4)^2 - 4*(beta - 4*alpha + 8)",
+    "mechanism_component": {
+      "plus_one": "G_plus",
+      "minus_one": "G_minus",
+      "trace_collision": "discriminant"
+    },
+    "checks": [
+      "missing_critical_curve: a sign flip between consecutive probes on a scan line with no committed edge of the matching mechanism between them",
+      "forbidden_component_flip: crossing one committed edge flips a component that mechanism may not flip",
+      "no_flip_across_edge: a committed edge across which its own component does not change sign",
+      "face_state_mismatch: two probes joined by an axis-aligned path that meets no committed edge, yet with different S",
+      "forbidden_component_flip_on_path: same, for paths meeting exactly one edge"
+    ]
+  },
+  "parameters": {
+    "scan_lines": [
+      0.925,
+      0.9295,
+      0.9305
+    ],
+    "standoff": 0.003,
+    "max_gap": 0.006,
+    "probed_m2_range": [
+      0.865,
+      0.895
+    ],
+    "declared_m2_range": [
+      0.7,
+      1.2
+    ],
+    "sign_threshold": 0.001,
+    "min_clearance": 0.002,
+    "max_closure": 1e-07,
+    "refine_steps": 6,
+    "probe_cpu_budget_seconds": 45.0
+  },
+  "committed_edges": [
+    {
+      "edge_id": "minus_one_u_to_s_0",
+      "mechanism": "minus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        0.9292391921118185,
+        1.0495531866872656
+      ],
+      "vertices": 122,
+      "degenerate": false
+    },
+    {
+      "edge_id": "minus_one_u_to_s_1",
+      "mechanism": "minus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        0.996,
+        0.9967681995217997
+      ],
+      "vertices": 2,
+      "degenerate": false
+    },
+    {
+      "edge_id": "minus_one_s_to_u_0",
+      "mechanism": "minus_one",
+      "orientation": "S->U",
+      "m1_range": [
+        0.996,
+        1.0426234457894452
+      ],
+      "vertices": 48,
+      "degenerate": false
+    },
+    {
+      "edge_id": "plus_one_u_to_s_0",
+      "mechanism": "plus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        0.8,
+        0.9292391921118185
+      ],
+      "vertices": 131,
+      "degenerate": false
+    },
+    {
+      "edge_id": "plus_one_u_to_s_1",
+      "mechanism": "plus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        0.9967681995217997,
+        1.0426234457894452
+      ],
+      "vertices": 48,
+      "degenerate": false
+    },
+    {
+      "edge_id": "plus_one_u_to_s_2",
+      "mechanism": "plus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        1.0495531866872656,
+        1.071
+      ],
+      "vertices": 23,
+      "degenerate": false
+    },
+    {
+      "edge_id": "trace_collision_s_to_u_0",
+      "mechanism": "trace_collision",
+      "orientation": "S->U",
+      "m1_range": [
+        0.8,
+        1.053
+      ],
+      "vertices": 254,
+      "degenerate": false
+    },
+    {
+      "edge_id": "minus_one_sweep_component_0",
+      "mechanism": "minus_one",
+      "orientation": "sweep_component_0",
+      "m1_range": [
+        0.892,
+        0.9292391921118185
+      ],
+      "vertices": 20,
+      "degenerate": false
+    },
+    {
+      "edge_id": "minus_one_sweep_component_1",
+      "mechanism": "minus_one",
+      "orientation": "sweep_component_1",
+      "m1_range": [
+        0.996,
+        1.042
+      ],
+      "vertices": 24,
+      "degenerate": false
+    },
+    {
+      "edge_id": "minus_one_sweep_component_3",
+      "mechanism": "minus_one",
+      "orientation": "sweep_component_3",
+      "m1_range": [
+        1.0426234457894452,
+        1.1
+      ],
+      "vertices": 30,
+      "degenerate": false
+    },
+    {
+      "edge_id": "minus_one_sweep_component_4",
+      "mechanism": "minus_one",
+      "orientation": "sweep_component_4",
+      "m1_range": [
+        1.0495531866872656,
+        1.094
+      ],
+      "vertices": 24,
+      "degenerate": false
+    },
+    {
+      "edge_id": "plus_one_sweep_component_10",
+      "mechanism": "plus_one",
+      "orientation": "sweep_component_10",
+      "m1_range": [
+        0.9292391921118185,
+        0.9967681995217997
+      ],
+      "vertices": 36,
+      "degenerate": false
+    },
+    {
+      "edge_id": "plus_one_sweep_component_12",
+      "mechanism": "plus_one",
+      "orientation": "sweep_component_12",
+      "m1_range": [
+        1.046,
+        1.048
+      ],
+      "vertices": 2,
+      "degenerate": false
+    }
+  ],
+  "non_graph_edges": [],
+  "probe_summary": {
+    "planned": 18,
+    "evaluated": 18,
+    "converged": 18,
+    "failed": 0,
+    "undecidable_state": 0,
+    "cpu_seconds": 123.4
+  },
+  "violation_counts": {},
+  "violations": [],
+  "missing_curve_refinements": [],
+  "probes": [
+    {
+      "m1": 0.925,
+      "m2": 0.8695174973152835,
+      "ok": true,
+      "note": "",
+      "alpha": 4.4017071129941225,
+      "beta": 4.599191843677362,
+      "G_plus": -1.8110508342873715,
+      "G_minus": -0.20422238231088308,
+      "discriminant": 20.191915037826586,
+      "n_unstable": 2,
+      "closure": 3.487636324372293e-10,
+      "seconds": 5.873,
+      "chart": [
+        -0.24815053921717192,
+        1.6447954150297133,
+        0.4309762857000715,
+        6.5909316151201764
+      ]
+    },
+    {
+      "m1": 0.925,
+      "m2": 0.8710349946305669,
+      "ok": true,
+      "note": "",
+      "alpha": 4.351890622409551,
+      "beta": 4.568679069879197,
+      "G_plus": -1.5426646645781048,
+      "G_minus": -0.13510217493990417,
+      "discriminant": 19.479360689175802,
+      "n_unstable": 2,
+      "closure": 3.891335243645346e-10,
+      "seconds": 6.661,
+      "chart": [
+        -0.24884064742028986,
+        1.6418415145426672,
+        0.430657480010969,
+        6.5947099568946
+      ]
+    },
+    {
+      "m1": 0.925,
+      "m2": 0.8770349946305669,
+      "ok": true,
+      "note": "",
+      "alpha": 4.162046015474861,
+      "beta": 4.453455856021865,
+      "G_plus": -0.5188202368272989,
+      "G_minus": 0.1293638250721436,
+      "discriminant": 16.80517173464159,
+      "n_unstable": 1,
+      "closure": 3.555694317053819e-10,
+      "seconds": 6.667,
+      "chart": [
+        -0.25154225959601795,
+        1.6304168318523642,
+        0.42939349406768984,
+        6.609510380728645
+      ]
+    },
+    {
+      "m1": 0.925,
+      "m2": 0.8832177589066514,
+      "ok": true,
+      "note": "",
+      "alpha": 3.9787171725787074,
+      "beta": 4.345847043679583,
+      "G_plus": 0.473544008207341,
+      "G_minus": 0.38841269852216787,
+      "discriminant": 14.27653954528403,
+      "n_unstable": 0,
+      "closure": 3.105996907596878e-10,
+      "seconds": 8.397,
+      "chart": [
+        -0.25427683885571295,
+        1.6190763112772015,
+        0.42808438864467213,
+        6.624500066641817
+      ]
+    },
+    {
+      "m1": 0.925,
+      "m2": 0.8856596371798562,
+      "ok": true,
+      "note": "",
+      "alpha": 3.909859203541851,
+      "beta": 4.307044787071446,
+      "G_plus": 0.8478895658203385,
+      "G_minus": 0.48732637998774386,
+      "discriminant": 13.337693471569942,
+      "n_unstable": 0,
+      "closure": 3.8078375304918487e-10,
+      "seconds": 5.862,
+      "chart": [
+        -0.25534181083474994,
+        1.6147200892557976,
+        0.42756524426427966,
+        6.630337763901659
+      ]
+    },
+    {
+      "m1": 0.925,
+      "m2": 0.891101515453061,
+      "ok": true,
+      "note": "",
+      "alpha": 3.763830057474236,
+      "beta": 4.2292055865278835,
+      "G_plus": 1.6462252416824654,
+      "G_minus": 0.7015454715794114,
+      "discriminant": 11.360234815228862,
+      "n_unstable": 0,
+      "closure": 2.9665570582008566e-10,
+      "seconds": 7.464,
+      "chart": [
+        -0.25768209017710186,
+        1.6052651946430976,
+        0.4264034435899483,
+        6.643160404035117
+      ]
+    },
+    {
+      "m1": 0.9295,
+      "m2": 0.8701694193373867,
+      "ok": true,
+      "note": "",
+      "alpha": 4.500985939122239,
+      "beta": 4.268563237693934,
+      "G_plus": -2.7373523970395013,
+      "G_minus": -0.7334086405505431,
+      "discriminant": 23.19250898637827,
+      "n_unstable": 2,
+      "closure": 4.109645597694366e-10,
+      "seconds": 6.653,
+      "chart": [
+        -0.25163908706400945,
+        1.626888972360049,
+        0.4343291777523057,
+        6.627707638468899
+      ]
+    },
+    {
+      "m1": 0.9295,
+      "m2": 0.8753388386747734,
+      "ok": true,
+      "note": "",
+      "alpha": 4.323899635744346,
+      "beta": 4.165203766976207,
+      "G_plus": -1.778194047489869,
+      "G_minus": -0.482595504512485,
+      "discriminant": 20.626490078040028,
+      "n_unstable": 2,
+      "closure": 3.295213820668978e-10,
+      "seconds": 6.662,
+      "chart": [
+        -0.2540401828258782,
+        1.6168859465619325,
+        0.4332235100564624,
+        6.640685296799541
+      ]
+    },
+    {
+      "m1": 0.9295,
+      "m2": 0.88050825801216,
+      "ok": true,
+      "note": "",
+      "alpha": 4.155527699747308,
+      "beta": 4.067456381556933,
+      "G_plus": -0.8657098169269162,
+      "G_minus": -0.2435990179376839,
+      "discriminant": 18.242806535117886,
+      "n_unstable": 2,
+      "closure": 2.767819750210457e-10,
+      "seconds": 5.873,
+      "chart": [
+        -0.2564073357183544,
+        1.6071891758875518,
+        0.43211462955239627,
+        6.653506429277412
+      ]
+    },
+    {
+      "m1": 0.9295,
+      "m2": 0.8826776773495467,
+      "ok": true,
+      "note": "",
+      "alpha": 4.087539957316646,
+      "beta": 4.028516708346984,
+      "G_plus": -0.49672303555288977,
+      "G_minus": -0.1465632062863076,
+      "discriminant": 17.294235727805397,
+      "n_unstable": 2,
+      "closure": 2.861624419352742e-10,
+      "seconds": 5.83,
+      "chart": [
+        -0.2573897807710019,
+        1.6032123408302674,
+        0.43164812610903003,
+        6.658833961938523
+      ]
+    },
+    {
+      "m1": 0.9295,
+      "m2": 0.8886776773495467,
+      "ok": true,
+      "note": "",
+      "alpha": 3.907958456435592,
+      "beta": 3.9285083375152876,
+      "G_plus": 0.4807575989017394,
+      "G_minus": 0.11259142464410399,
+      "discriminant": 14.821773598650037,
+      "n_unstable": 0,
+      "closure": 2.859066196299394e-10,
+      "seconds": 7.459,
+      "chart": [
+        -0.26007042799212876,
+        1.5925023684338708,
+        0.4303537261111249,
+        6.6733832553145245
+      ]
+    },
+    {
+      "m1": 0.9295,
+      "m2": 0.8917245438261294,
+      "ok": true,
+      "note": "",
+      "alpha": 3.821614341771809,
+      "beta": 3.8826215005981606,
+      "G_plus": 0.9529354499673062,
+      "G_minus": 0.23939281705454274,
+      "discriminant": 13.647164909017805,
+      "n_unstable": 0,
+      "closure": 3.716020661537539e-10,
+      "seconds": 8.278,
+      "chart": [
+        -0.26140986757119306,
+        1.5872277996679514,
+        0.4296937431390796,
+        6.6806568147753955
+      ]
+    },
+    {
+      "m1": 0.9305,
+      "m2": 0.8704663924586518,
+      "ok": true,
+      "note": "",
+      "alpha": 4.519527555001957,
+      "beta": 4.198355670781357,
+      "G_plus": -2.918809659230387,
+      "G_minus": -0.8406994392225577,
+      "discriminant": 23.788927077312202,
+      "n_unstable": 2,
+      "closure": 3.16220175939372e-10,
+      "seconds": 6.634,
+      "chart": [
+        -0.25248857366502536,
+        1.6226482411663123,
+        0.4350394339266517,
+        6.636285641297367
+      ]
+    },
+    {
+      "m1": 0.9305,
+      "m2": 0.8759327849173036,
+      "ok": true,
+      "note": "",
+      "alpha": 4.330358294046274,
+      "beta": 4.088982755499173,
+      "G_plus": -1.8931670087784696,
+      "G_minus": -0.5717338325933747,
+      "discriminant": 21.038938285188852,
+      "n_unstable": 2,
+      "closure": 3.2637821476490563e-10,
+      "seconds": 6.921,
+      "chart": [
+        -0.25504025362097626,
+        1.6120779410163522,
+        0.43386581087361414,
+        6.650039157861411
+      ]
+    },
+    {
+      "m1": 0.9305,
+      "m2": 0.8813991773759555,
+      "ok": true,
+      "note": "",
+      "alpha": 4.1510016872475655,
+      "beta": 3.9856756002053313,
+      "G_plus": -0.9203345232800615,
+      "G_minus": -0.31632777428979963,
+      "discriminant": 18.496126104691335,
+      "n_unstable": 2,
+      "closure": 2.628220972110837e-10,
+      "seconds": 5.824,
+      "chart": [
+        -0.2575534976276129,
+        1.6018511893239429,
+        0.43268881091297273,
+        6.663619564458547
+      ]
+    },
+    {
+      "m1": 0.9305,
+      "m2": 0.8838655698346073,
+      "ok": true,
+      "note": "",
+      "alpha": 4.073387116036495,
+      "beta": 3.941586087404092,
+      "G_plus": -0.49873660881488036,
+      "G_minus": -0.2051881446688988,
+      "discriminant": 17.413235175767714,
+      "n_unstable": 2,
+      "closure": 2.94387113456713e-10,
+      "seconds": 5.833,
+      "chart": [
+        -0.2586737387724919,
+        1.5973511577111086,
+        0.43215639400193734,
+        6.66968161907652
+      ]
+    },
+    {
+      "m1": 0.9305,
+      "m2": 0.8915578988542721,
+      "ok": true,
+      "note": "",
+      "alpha": 3.844953789067804,
+      "beta": 3.8165366125154803,
+      "G_plus": 0.7468138781086573,
+      "G_minus": 0.1266290343798726,
+      "discriminant": 14.277153502547375,
+      "n_unstable": 0,
+      "closure": 3.3533854072704467e-10,
+      "seconds": 10.666,
+      "chart": [
+        -0.2621076525770128,
+        1.583779371888975,
+        0.4304891442881426,
+        6.6882855218088
+      ]
+    },
+    {
+      "m1": 0.9305,
+      "m2": 0.894183652065833,
+      "ok": true,
+      "note": "",
+      "alpha": 3.771810745143429,
+      "beta": 3.778813504686259,
+      "G_plus": 1.147949033825686,
+      "G_minus": 0.23519201439940085,
+      "discriminant": 13.285788239581828,
+      "n_unstable": 0,
+      "closure": 3.0718053095120446e-10,
+      "seconds": 5.795,
+      "chart": [
+        -0.2632575766797506,
+        1.5793090357750168,
+        0.42991733432261425,
+        6.694518744757809
+      ]
+    }
+  ],
+  "scope": "This audit falsifies completeness where it fires; it cannot certify completeness where it does not.  A critical curve that both begins and ends between two adjacent scan lines, or that never separates two probes, is not sampled.",
+  "claim_status": "13-edge re-audit of the committed crossing suite after extending polylines through mixed organizers including the retained secondary_right_death endpoint (mechanism=mixed_organizer). missing=0, forbidden=0, face=0."
+}

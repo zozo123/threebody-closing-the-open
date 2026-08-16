@@ -20,8 +20,18 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 REAL_GRAPH = ROOT / "research/evidence/V1_CRITICAL_GRAPH.json"
 REAL_ROOTS = ROOT / "research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json"
+SUPPLEMENTAL_ROOTS = ROOT / "research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json"
 SHIPPED_AUDIT = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json"
 SHIPPED_CROSSING = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json"
+RERUN_AUDIT = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-17.json"
+RERUN_CROSSING = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-17.json"
+
+
+def _all_roots() -> list[dict]:
+    roots = list(json.loads(REAL_ROOTS.read_text())["roots"])
+    if SUPPLEMENTAL_ROOTS.exists():
+        roots.extend(json.loads(SUPPLEMENTAL_ROOTS.read_text())["roots"])
+    return roots
 
 
 def _module():
@@ -329,7 +339,7 @@ def test_state_components_match_the_repository_event_definitions():
 @pytest.mark.skipif(not REAL_GRAPH.exists(), reason="committed graph not present")
 def test_committed_edges_are_graphs_over_m1():
     graph = json.loads(REAL_GRAPH.read_text())
-    roots = json.loads(REAL_ROOTS.read_text())["roots"]
+    roots = _all_roots()
     assert AST.non_graph_edges(graph, roots) == []
     edges = AST.edges_from_graph(graph, roots)
     assert len(edges) == len(graph["edges"])
@@ -337,6 +347,18 @@ def test_committed_edges_are_graphs_over_m1():
         xs = [v[0] for v in edge.vertices]
         assert xs == sorted(xs)
         assert len(set(xs)) == len(xs)
+
+
+@pytest.mark.skipif(not RERUN_AUDIT.exists() or not RERUN_CROSSING.exists(), reason="13-edge re-audit not present")
+def test_thirteen_edge_reaudit_clears_the_release_conjuncts() -> None:
+    """The 2026-08-17 re-audits are what the assembler now reads."""
+    for path in (RERUN_AUDIT, RERUN_CROSSING):
+        audit = json.loads(path.read_text())
+        assert audit["schema"] == AST.SCHEMA
+        assert audit["parameters"]["max_closure"] == 1e-7
+        counts = audit.get("violation_counts") or {}
+        assert int(counts.get("missing_critical_curve", 0)) == 0
+        assert int(counts.get("forbidden_component_flip", 0)) == 0
 
 
 @pytest.mark.skipif(not SHIPPED_AUDIT.exists(), reason="audit artifact not present")
@@ -379,9 +401,11 @@ def test_two_uncommitted_curves_cross_where_the_graph_has_a_dangling_endpoint():
     At m1 = 0.925 the minus_one zero lies below the plus_one zero; by
     m1 = 0.9295 the order has reversed.  Two continuous curves that swap order
     have crossed, and at the crossing P(+2) = P(-2) = 0 simultaneously -- a
-    codimension-two organizer with reduced multipliers {+1, +1, -1, -1}.  The
-    committed graph has no node there; it has plus_one_u_to_s_0's unclassified
-    dangling endpoint instead.
+    codimension-two organizer with reduced multipliers {+1, +1, -1, -1}.
+    That crossing is mixed_principal_left (m1 = 0.929239).  Reconstructing
+    polylines from sample cells alone left a one-step hole at 0.9295; the
+    auditor now extends each incident edge to the organizer, so the
+    committed plus_one sweep covers the reversal.
     """
     crossing = json.loads(SHIPPED_CROSSING.read_text())
     certified: dict[tuple[float, str], float] = {}
@@ -398,16 +422,85 @@ def test_two_uncommitted_curves_cross_where_the_graph_has_a_dangling_endpoint():
     # on the earlier scan line the order is the other way round
     minus_at_925 = certified[(0.925, "minus_one")]
     graph = json.loads(REAL_GRAPH.read_text())
-    roots = json.loads(REAL_ROOTS.read_text())["roots"]
+    roots = _all_roots()
     edges = AST.edges_from_graph(graph, roots)
     plus_edge = next(e for e in edges if e.edge_id == "plus_one_u_to_s_0")
     plus_at_925 = plus_edge.m2_at(0.925)
     assert plus_at_925 is not None
     assert minus_at_925 < plus_at_925
 
-    # ... and no committed edge covers the reversal
+    # the catalog plus_one arc still stops at the organizer; the event-sign
+    # continuation, extended to mixed_principal_left, covers 0.9295
     assert plus_edge.m1_max < 0.9295
-    assert all(e.m2_at(0.9295) is None or e.m2_at(0.9295) > 0.9 for e in edges)
+    sweep = next(e for e in edges if e.edge_id == "plus_one_sweep_component_10")
+    assert sweep.m2_at(0.9295) is not None
+    assert abs(sweep.m2_at(0.9295) - plus_at_9295) < 0.002
+
+
+def test_auditor_extends_polylines_through_mixed_organizers() -> None:
+    """A 0.001 hole next to a named mixed vertex is not a missing curve."""
+    graph = {
+        "edges": [
+            {
+                "id": "plus_one_left",
+                "kind": "mechanism_polyline",
+                "mechanism": "plus_one",
+                "cell_ids": [0],
+                "endpoints": {"start": {}, "end": {"node": "mixed_principal_left"}},
+            },
+            {
+                "id": "plus_one_right",
+                "kind": "mechanism_polyline",
+                "mechanism": "plus_one",
+                "cell_ids": [1],
+                "endpoints": {"start": {"node": "mixed_principal_left"}, "end": {}},
+            },
+        ],
+        "nodes": [
+            {
+                "id": "mixed_principal_left",
+                "kind": "mixed_organizer",
+                "masses": [0.929239, 0.885366, 1.0],
+            }
+        ],
+    }
+    roots = [
+        {"cell_id": 0, "masses": [0.929, 0.88508, 1.0]},
+        {"cell_id": 1, "masses": [0.930, 0.88627, 1.0]},
+    ]
+    edges = AST.edges_from_graph(graph, roots)
+    right = next(e for e in edges if e.edge_id == "plus_one_right")
+    assert right.m1_min == pytest.approx(0.929239)
+    assert right.m2_at(0.9295) == pytest.approx(0.885676, abs=1e-4)
+
+
+def test_auditor_extends_through_classified_mixed_endpoint() -> None:
+    """secondary_right_death is a mixed organizer stored as kind=endpoint."""
+    graph = {
+        "edges": [
+            {
+                "id": "plus_one_u_to_s_1",
+                "kind": "mechanism_polyline",
+                "mechanism": "plus_one",
+                "cell_ids": [576],
+                "endpoints": {"start": {}, "end": {"node": "secondary_right_death"}},
+            }
+        ],
+        "nodes": [
+            {
+                "id": "secondary_right_death",
+                "kind": "endpoint",
+                "mechanism": "mixed_organizer",
+                "masses": [1.0426234457894452, 1.0460039217640023, 1.0],
+            }
+        ],
+    }
+    roots = [{"cell_id": 576, "masses": [1.042, 1.0359819791033056, 1.0]}]
+    edges = AST.edges_from_graph(graph, roots)
+    edge = edges[0]
+    assert edge.m1_max == pytest.approx(1.0426234457894452)
+    # The L-path that fired at m2=1.0396 lives on this climb.
+    assert edge.m2_at(1.0423) == pytest.approx(1.0408, abs=5e-3)
 
 
 @pytest.mark.skipif(not SHIPPED_CROSSING.exists(), reason="crossing artifact not present")
@@ -421,15 +514,20 @@ def test_forbidden_component_flip_fired_on_real_data():
 
 @pytest.mark.skipif(not REAL_GRAPH.exists(), reason="committed graph not present")
 def test_committed_edges_leave_the_declared_domain_uncovered():
-    """The committed edges stop well short of the declared m1 domain.
+    """Catalog polylines still stop short of m1 = 1.1; one sweep edge does not.
 
-    This is a fact about the shipped artifact, asserted so that it cannot be
-    quietly changed without a test going red.
+    The 620-cell census never reached the m1-max face.  The event-sign sweep
+    did: minus_one_sweep_component_3 exits at (1.1, 1.092).  That is a fact
+    about the shipped artifact, asserted so neither side can quietly change.
     """
     graph = json.loads(REAL_GRAPH.read_text())
-    roots = json.loads(REAL_ROOTS.read_text())["roots"]
+    roots = _all_roots()
     edges = AST.edges_from_graph(graph, roots)
     declared_hi = float(graph["declared_mass_domain"]["m1"][1])
-    covered_hi = max(e.m1_max for e in edges)
-    assert covered_hi < declared_hi
-    assert declared_hi - covered_hi > 0.02
+    catalog = [edge for edge in edges if "sweep_component" not in edge.edge_id]
+    sweep = [edge for edge in edges if "sweep_component" in edge.edge_id]
+    catalog_hi = max(edge.m1_max for edge in catalog)
+    assert catalog_hi < declared_hi
+    assert declared_hi - catalog_hi > 0.02
+    assert sweep
+    assert any(abs(edge.m1_max - declared_hi) < 1e-12 for edge in sweep)

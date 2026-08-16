@@ -196,8 +196,42 @@ class PolylineEdge:
         return min(abs(y - lo), abs(y - hi))
 
 
+def mixed_organizer_point(graph: dict[str, Any], node_id: str | None) -> tuple[float, float] | None:
+    """Mass-plane location of a mixed organizer, or None for any other node.
+
+    A mixed (+1, -1) organizer is a point of the committed 1-complex that
+    belongs to every incident plus_one and minus_one edge.  Sample cells stop
+    one grid step short of it; reconstructing the polyline from cell_ids
+    alone therefore leaves a 0.001-wide hole that the audit would report as
+    a missing curve even though the graph already named the vertex.
+    """
+    if not node_id:
+        return None
+    for item in graph.get("nodes", ()):
+        if item.get("id") != node_id:
+            continue
+        kind = str(item.get("kind") or "")
+        mechanism = str(item.get("mechanism") or "")
+        # Headline mixed vertices are kind=mixed_organizer.  The retained
+        # secondary-right death is kind=endpoint with mechanism=mixed_organizer
+        # because it entered through an endpoint classification; physically it
+        # is still a (+1,-1) vertex of every incident plus_one/minus_one edge.
+        if kind != "mixed_organizer" and mechanism != "mixed_organizer":
+            return None
+        masses = item.get("masses") or []
+        if len(masses) < 2:
+            return None
+        return (float(masses[0]), float(masses[1]))
+    return None
+
+
 def edges_from_graph(graph: dict[str, Any], roots: Sequence[dict[str, Any]]) -> list[PolylineEdge]:
-    """Rebuild each committed edge as a polyline from its ``cell_ids``."""
+    """Rebuild each committed edge as a polyline from its ``cell_ids``.
+
+    Classified mixed-organizer endpoints are appended when they extend the
+    sample span.  They are already vertices of the graph; omitting them
+    made the auditor invent a missing curve in the last grid step.
+    """
     by_cell = {int(r["cell_id"]): r for r in roots}
     out: list[PolylineEdge] = []
     for edge in graph.get("edges", ()):
@@ -210,6 +244,13 @@ def edges_from_graph(graph: dict[str, Any], roots: Sequence[dict[str, Any]]) -> 
                 raise KeyError(f"edge {edge['id']} references unknown cell {cell}")
             m1, m2 = float(root["masses"][0]), float(root["masses"][1])
             pts.append((m1, m2))
+        endpoints = edge.get("endpoints") or {}
+        start_org = mixed_organizer_point(graph, (endpoints.get("start") or {}).get("node"))
+        end_org = mixed_organizer_point(graph, (endpoints.get("end") or {}).get("node"))
+        if start_org is not None and (not pts or start_org[0] < min(p[0] for p in pts)):
+            pts.append(start_org)
+        if end_org is not None and (not pts or end_org[0] > max(p[0] for p in pts)):
+            pts.append(end_org)
         pts.sort()
         deduped: list[tuple[float, float]] = []
         for point in pts:
@@ -709,8 +750,20 @@ def evaluate_probes(
         return []
     ordered = sorted(m2_values)
     middle = ordered[len(ordered) // 2]
+    charted = [
+        row
+        for row in seeds
+        if row.get("x1") is not None
+        and row.get("v1") is not None
+        and row.get("v2") is not None
+        and row.get("period") is not None
+    ]
+    if not charted:
+        raise RuntimeError(
+            "no shooting-chart seeds (x1, v1, v2, period) available for this scan line"
+        )
     anchor = min(
-        seeds,
+        charted,
         key=lambda r: (
             abs(float(r["masses"][0]) - m1),
             abs(float(r["masses"][1]) - middle),
