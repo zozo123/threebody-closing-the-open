@@ -77,28 +77,12 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-  audit:
-    name: Audit ${{ matrix.suite }}
+  audit-wide:
+    name: Audit wide
     needs: combine-roots
-    if: ${{ github.event_name != 'workflow_dispatch' || inputs.suite == 'both' || inputs.suite == matrix.suite }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.suite == 'both' || inputs.suite == 'wide' }}
     runs-on: ubuntu-latest
     timeout-minutes: 180
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - suite: wide
-            scan_lines: "0.9,0.92,0.94,0.97,1.0,1.04,1.08"
-            standoff: "0.004"
-            max_gap: "0.08"
-            m2_range: "0.86,1.2"
-            refine_steps: "5"
-          - suite: crossing
-            scan_lines: "0.925,0.9295,0.9305"
-            standoff: "0.003"
-            max_gap: "0.006"
-            m2_range: "0.865,0.895"
-            refine_steps: "6"
     steps:
       - uses: actions/checkout@v7
       - name: Install uv
@@ -112,18 +96,18 @@ jobs:
         with:
           name: combined-roots-${{ github.sha }}
           path: artifacts/sign-topology
-      - name: Run the sign-topology audit
+      - name: Run the wide sign-topology audit
         run: |
           mkdir -p artifacts/sign-topology
           uv run --no-sync python scripts/audit_sign_topology.py \
             --graph research/evidence/V1_CRITICAL_GRAPH.json \
             --roots artifacts/sign-topology/combined-roots.json \
-            --output "artifacts/sign-topology/V1_SIGN_TOPOLOGY_${{ matrix.suite }}.json" \
-            --scan-lines "${{ matrix.scan_lines }}" \
-            --standoff "${{ matrix.standoff }}" \
-            --max-gap "${{ matrix.max_gap }}" \
-            --m2-range "${{ matrix.m2_range }}" \
-            --refine-steps "${{ matrix.refine_steps }}" \
+            --output artifacts/sign-topology/V1_SIGN_TOPOLOGY_wide.json \
+            --scan-lines 0.9,0.92,0.94,0.97,1.0,1.04,1.08 \
+            --standoff 0.004 \
+            --max-gap 0.08 \
+            --m2-range 0.86,1.2 \
+            --refine-steps 5 \
             --max-probes 400 \
             --probe-budget 45
       - name: Summarise violations without failing the job
@@ -131,13 +115,13 @@ jobs:
         run: |
           uv run --no-sync python - <<'PY'
           import json, pathlib, sys
-          path = pathlib.Path("artifacts/sign-topology") / f"V1_SIGN_TOPOLOGY_${{ matrix.suite }}.json"
+          path = pathlib.Path("artifacts/sign-topology/V1_SIGN_TOPOLOGY_wide.json")
           if not path.exists():
               print("no audit artifact")
               sys.exit(0)
           payload = json.loads(path.read_text())
           print(json.dumps({
-              "suite": "${{ matrix.suite }}",
+              "suite": "wide",
               "violation_counts": payload.get("violation_counts"),
               "probe_summary": payload.get("probe_summary"),
           }, indent=2))
@@ -145,7 +129,64 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: sign-topology-${{ matrix.suite }}-${{ github.sha }}
-          path: artifacts/sign-topology/V1_SIGN_TOPOLOGY_${{ matrix.suite }}.json
+          name: sign-topology-wide-${{ github.sha }}
+          path: artifacts/sign-topology/V1_SIGN_TOPOLOGY_wide.json
+          if-no-files-found: warn
+          retention-days: 90
+
+  audit-crossing:
+    name: Audit crossing
+    needs: combine-roots
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.suite == 'both' || inputs.suite == 'crossing' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked
+      - uses: actions/download-artifact@v4
+        with:
+          name: combined-roots-${{ github.sha }}
+          path: artifacts/sign-topology
+      - name: Run the crossing sign-topology audit
+        run: |
+          mkdir -p artifacts/sign-topology
+          uv run --no-sync python scripts/audit_sign_topology.py \
+            --graph research/evidence/V1_CRITICAL_GRAPH.json \
+            --roots artifacts/sign-topology/combined-roots.json \
+            --output artifacts/sign-topology/V1_SIGN_TOPOLOGY_crossing.json \
+            --scan-lines 0.925,0.9295,0.9305 \
+            --standoff 0.003 \
+            --max-gap 0.006 \
+            --m2-range 0.865,0.895 \
+            --refine-steps 6 \
+            --max-probes 400 \
+            --probe-budget 45
+      - name: Summarise violations without failing the job
+        if: always()
+        run: |
+          uv run --no-sync python - <<'PY'
+          import json, pathlib, sys
+          path = pathlib.Path("artifacts/sign-topology/V1_SIGN_TOPOLOGY_crossing.json")
+          if not path.exists():
+              print("no audit artifact")
+              sys.exit(0)
+          payload = json.loads(path.read_text())
+          print(json.dumps({
+              "suite": "crossing",
+              "violation_counts": payload.get("violation_counts"),
+              "probe_summary": payload.get("probe_summary"),
+          }, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sign-topology-crossing-${{ github.sha }}
+          path: artifacts/sign-topology/V1_SIGN_TOPOLOGY_crossing.json
           if-no-files-found: warn
           retention-days: 90
