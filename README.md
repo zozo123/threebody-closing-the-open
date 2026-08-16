@@ -128,6 +128,8 @@ src/threebody_atlas/
   high_precision.py          # arbitrary-precision state closure check
   high_precision_reduced.py  # independent mpmath reduced tangent verifier
   active_learning.py         # AI proposal/acquisition engine
+  metamorphic.py             # oracle-free physics properties + their residuals
+  root_audit.py              # re-derive published roots with the shipped dynamics
   schema.py                  # evidence-state records
   provenance.py              # content hashes/release manifests
 scripts/
@@ -135,11 +137,44 @@ scripts/
   refine_known_boundaries.py
   precision_crosscheck.py
   active_learning_round.py
+  mutation_harness.py        # inject faults, record which detector fires
+  audit_published_root_physics.py
+  probe_graph_invariants.py
+  probe_completeness_certificate.py
 experiments/v1.yaml          # frozen experiment contract
 research/PROTOCOL.md         # scientific claim rules
 paper/                        # claim-gated LaTeX manuscript
 .github/workflows/            # CI, compute, paper and release pipelines
 ```
+
+## Checks that do not depend on the answer
+
+Almost every numerical check here is anchored to an artifact somebody produced,
+so it agrees with that artifact even when the artifact is wrong. Two suites are
+deliberately not built that way.
+
+**Metamorphic physics properties** (`src/threebody_atlas/metamorphic.py`,
+`tests/test_metamorphic_physics.py`) relate two runs of the shipped dynamics to
+each other: permutation covariance, translation and Galilean invariance,
+rotation and reflection covariance, time reversal, Newtonian similarity
+(including invariance of the reduced Floquet multipliers), and covariance of the
+tangent map across the 12D Cartesian, 8D reduced and canonical Jacobi
+formulations. No published number is used, so nothing they say can be wrong for
+the same reason the catalog might be. `python -m threebody_atlas.metamorphic`
+prints the residual table.
+
+**Mutation testing of the truth machinery** (`scripts/mutation_harness.py`)
+injects a deliberate fault into a temporary copy of the tree and requires some
+independent detector to fire — a flipped force sign, a swapped mass
+coefficient, a perturbed Hessian term, a shifted gravitational constant, a
+dropped or duplicated transition cell, a reversed edge orientation, a
+hand-written continuation germ, evidence altered after sealing, a truncated neck
+raster, a loosened frozen gate. Each mutation declares what should catch it, and
+the run fails if reality disagrees in either direction. Anything that survives
+every detector is printed as a gap in the safety net.
+
+Neither suite can make anything pass: they set no release bit, write nothing
+into `research/evidence/`, and never touch a numerical gate.
 
 ## GitHub Actions as research compute
 
@@ -150,6 +185,7 @@ paper/                        # claim-gated LaTeX manuscript
 - **Active learning round**: ranks off-grid points and submits them to deterministic shooting/Floquet screening.
 - **Paper**: compiles `paper/main.tex` and uploads the PDF.
 - **Release**: on a `v*` tag, tests, builds the manuscript/package, generates hashes, and publishes a GitHub release artifact set.
+- **Metamorphic and mutation suite**: prints the metamorphic residual table, then injects every declared fault into throwaway copies of the tree and publishes the kill/gap table to the job summary.
 
 GitHub-hosted runners are useful for reproducible CPU experiments, but expensive sweeps should be explicitly dispatched/sharded rather than triggered by every commit.
 

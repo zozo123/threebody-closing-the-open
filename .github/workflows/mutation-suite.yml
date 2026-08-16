@@ -1,0 +1,142 @@
+name: Metamorphic and mutation suite
+
+# Two suites that need no published answer to be powerful.
+#
+#   metamorphic -- properties the dynamics must satisfy identically whatever the
+#     right answer is (permutation, translation, Galilean, rotation, time
+#     reversal, Newtonian similarity, coordinate covariance of the tangent map).
+#     They compare two runs of the shipped code against each other, so they stay
+#     meaningful even if every published number turned out to be wrong.
+#
+#   mutation -- deliberately inject a fault into a COPY of the tree and require
+#     that some independent detector fires.  On 2026-08-16 three safety checks
+#     that had never been seen catching anything were all found to be wrong on
+#     the same day.  "This check has never caught anything" is evidence against
+#     the check.  This job is how the checks earn their keep.
+#
+# Neither job can make anything pass.  They set no release bit, they write
+# nothing into research/evidence/, and they never touch a numerical gate.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "src/threebody_atlas/**"
+      - "scripts/mutation_harness.py"
+      - "scripts/probe_*.py"
+      - "scripts/audit_published_root_physics.py"
+      - "scripts/assemble_critical_graph.py"
+      - "tests/**"
+      - "research/evidence/**"
+      - ".github/workflows/mutation-suite.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - "src/threebody_atlas/**"
+      - "scripts/mutation_harness.py"
+      - "scripts/probe_*.py"
+      - "scripts/audit_published_root_physics.py"
+      - "scripts/assemble_critical_graph.py"
+      - "tests/**"
+      - "research/evidence/**"
+      - ".github/workflows/mutation-suite.yml"
+
+concurrency:
+  group: mutation-suite-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON: "3.13"
+
+jobs:
+  metamorphic:
+    name: Metamorphic physics properties
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked --group dev
+
+      - name: Metamorphic residual table
+        run: |
+          mkdir -p artifacts/metamorphic
+          uv run --no-sync python -m threebody_atlas.metamorphic \
+            | tee artifacts/metamorphic/residuals.txt
+
+      - name: Publish the residuals to the job summary
+        if: always()
+        run: |
+          {
+            echo '## Metamorphic residuals'
+            echo
+            echo '```'
+            cat artifacts/metamorphic/residuals.txt || echo "(no residual table produced)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Metamorphic and published-root-audit tests
+        run: |
+          uv run --no-sync pytest \
+            tests/test_metamorphic_physics.py \
+            tests/test_published_root_audit.py \
+            -q
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: metamorphic-residuals-${{ github.sha }}
+          path: artifacts/metamorphic/**
+          if-no-files-found: warn
+          retention-days: 30
+
+  mutation:
+    name: Mutation testing of the truth machinery
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked --group dev
+
+      - name: List the mutations this run will inject
+        run: uv run --no-sync python scripts/mutation_harness.py --list
+
+      - name: Inject every mutation and record which detector fires
+        id: mutate
+        run: |
+          mkdir -p artifacts/mutation
+          uv run --no-sync python scripts/mutation_harness.py \
+            --jobs 4 \
+            --report artifacts/mutation/MUTATION_REPORT.md \
+            --json artifacts/mutation/mutation-report.json
+
+      - name: Publish the kill table to the job summary
+        if: always()
+        run: |
+          if [ -f artifacts/mutation/MUTATION_REPORT.md ]; then
+            cat artifacts/mutation/MUTATION_REPORT.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "The mutation harness did not produce a report." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mutation-report-${{ github.sha }}
+          path: artifacts/mutation/**
+          if-no-files-found: warn
+          retention-days: 90
