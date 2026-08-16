@@ -21,6 +21,12 @@ on:
     paths:
       - "scripts/assemble_critical_graph.py"
       - "scripts/assemble_v1_critical_graph.sh"
+      # Certificate acceptance decides root_coverage.completeness_passed, which
+      # feeds release_ready, so anything that moves that contract has to
+      # retrigger the re-derivation.
+      - "scripts/freeze_completeness_certificate.py"
+      - "scripts/neck_topology.py"
+      - "tests/test_completeness.py"
       - "research/evidence/**"
       - "src/threebody_atlas/**"
       - "tests/test_critical_graph.py"
@@ -30,6 +36,12 @@ on:
     paths:
       - "scripts/assemble_critical_graph.py"
       - "scripts/assemble_v1_critical_graph.sh"
+      # Certificate acceptance decides root_coverage.completeness_passed, which
+      # feeds release_ready, so anything that moves that contract has to
+      # retrigger the re-derivation.
+      - "scripts/freeze_completeness_certificate.py"
+      - "scripts/neck_topology.py"
+      - "tests/test_completeness.py"
       - "research/evidence/**"
       - "src/threebody_atlas/**"
       - "tests/test_critical_graph.py"
@@ -100,15 +112,29 @@ jobs:
 
       - name: Report release_ready and the remaining blockers
         if: always() && steps.assemble.outcome == 'success'
+        env:
+          # The assembler's exit-status verdict, cross-checked below against the
+          # graph the assembler actually wrote.  Reading it back is the point:
+          # exit 0 vs exit 2 and the file's own release_ready bit must agree, and
+          # an unread step output cannot catch them drifting apart.
+          ASSEMBLER_RELEASE_READY: ${{ steps.assemble.outputs.release_ready }}
         run: |
           uv run --no-sync python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
           import json
+          import os
           from pathlib import Path
 
           graph = json.loads(
               Path("artifacts/critical-graph/V1_CRITICAL_GRAPH.json").read_text()
           )
           coverage = graph["root_coverage"]
+          reported = os.environ.get("ASSEMBLER_RELEASE_READY")
+          expected = "true" if graph["release_ready"] else "false"
+          if reported != expected:
+              raise SystemExit(
+                  f"assembler exit status reported release_ready={reported!r} but the "
+                  f"assembled graph says {expected!r}"
+              )
           print("## v1 critical graph\n")
           print(f"- `release_ready`: **{graph['release_ready']}**")
           print(f"- localized roots: {graph['localized_roots']} / {graph['source_transition_cells']}")
@@ -132,5 +158,10 @@ jobs:
         with:
           name: v1-critical-graph-${{ github.sha }}
           path: artifacts/critical-graph/**
-          if-no-files-found: error
+          # This step runs even when the assembler crashed before writing
+          # anything.  Erroring on "no files" would then paint a SECOND step red
+          # and bury the actual failure; the missing upload is a symptom, never
+          # the cause.  The assemble step's own `test -s` is what guarantees the
+          # graph exists on a successful run.
+          if-no-files-found: warn
           retention-days: 90

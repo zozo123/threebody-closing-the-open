@@ -893,8 +893,12 @@ def test_assembler_is_the_only_path_to_a_fully_ready_graph(tmp_path) -> None:
         "maximum_periodic_closure": 1e-7,
     }
 
-    # Tampering with a source digest breaks the release, and so does re-sealing
-    # the tampered record: the assembler recomputes the digest from the file.
+    # Rewriting a source digest *without* re-sealing breaks the release at the
+    # self-digest check: the edit changes the certificate's own content, so
+    # verify_certificate() fails on sha256_content and never reaches the source
+    # re-hash.  The re-sealed variant -- where the record is self-consistent and
+    # the file digest itself must be recomputed -- is covered separately by
+    # test_resealed_certificate_over_a_modified_source_still_fails.
     record = json.loads(completeness.read_text())
     for row in record["sources"]:
         if row["role"] == "neck_scan":

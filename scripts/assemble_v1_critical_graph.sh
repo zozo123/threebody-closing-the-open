@@ -71,6 +71,14 @@ if [[ $# -ne 1 ]]; then
 fi
 
 OUTPUT="$1"
+# Resolve <output-path> against the CALLER's cwd, before the cd below.  A
+# relative path used after the cd would silently land in the repo root instead,
+# so running this from a subdirectory would write the graph somewhere the caller
+# never named and pollute the working tree.
+if [[ "$OUTPUT" != /* ]]; then
+  OUTPUT="$PWD/$OUTPUT"
+fi
+
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
@@ -78,7 +86,16 @@ cd "$REPO_ROOT"
 # graph's "evidence" and "source_artifact" fields, so the emitted JSON only
 # reproduces byte-for-byte when these stay repo-relative and the cwd is the repo
 # root.  That is why this script cd's above.
-read -r -a PYTHON_CMD <<<"${PYTHON:-uv run --no-sync python}"
+
+# $PYTHON is one interpreter path, taken whole -- word-splitting it would break
+# any path containing a space (which is exactly how the pytest staleness test
+# invokes this, with sys.executable).  Only the built-in default is a multi-word
+# command, and that one is spelled out here as an array rather than parsed.
+if [[ -n "${PYTHON:-}" ]]; then
+  PYTHON_CMD=("$PYTHON")
+else
+  PYTHON_CMD=(uv run --no-sync python)
+fi
 
 "${PYTHON_CMD[@]}" scripts/assemble_critical_graph.py \
   --output "$OUTPUT" \

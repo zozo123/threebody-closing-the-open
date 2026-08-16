@@ -103,9 +103,12 @@ jobs:
       # m2-min stays at 0.993: the lower edge of the main stable region is the
       # plus-one U->S wall at m2 = 0.9562525 (m1=0.997), 0.9572605 (m1=0.998),
       # 0.9582715 (m1=0.999) -- between 0.0367475 (m1=0.997) and 0.0347285
-      # (m1=0.999) below the window.  Reaching it would add ~375 samples per line
-      # (566 samples = 70.3 min per line, forcing one line per tile and ~25 h of
-      # runner time) and would buy nothing: the merge test needs the *interior*
+      # (m1=0.999) below the window.  At step 1e-4 that is ~367 (m1=0.997) down
+      # to ~347 (m1=0.999) extra samples per line, i.e. 558 down to 538 samples
+      # = 69.3 down to 66.8 min per line at the calibrated 7.45 s/sample.  Two
+      # such lines are 138.6 min, 92% of the 150-minute cap, so it would force
+      # one line per tile: 21 lines x ~67-69 min =~ 23-24 h of runner time --
+      # and would buy nothing: the merge test needs the *interior*
       # unstable gap between the two lobes, which lies entirely inside
       # [0.993, 1.012].  The bottom truncation is now reported explicitly by
       # any_stable_interval_touches_boundary / truncated_at_m2_min.

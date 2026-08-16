@@ -15,15 +15,25 @@ This module makes the certificate verifiable instead of self-sealed:
   source bytes changed, or whose recorded numbers disagree with the artifacts
   is rejected even when it is perfectly self-consistent and re-sealed.
 
+The same argument applies one level down, to the neck raster itself.  Its
+raster-level merge and truncation verdicts are a *self-report*: only
+``scripts/merge_stability_neck_scans.py`` cross-checked them against the per-line
+summaries, and a certificate may name a neck JSON the merger never saw.  So the
+verdicts are recomputed here too, from the raster's own ``line_summaries``, and a
+raster whose header contradicts its own lines is refused.
+
 Nothing here loosens a numerical gate: the shooting-residual gate stays at
 1e-7 and the neck raster still has to resolve at least one full grid step.
 """
 from __future__ import annotations
 
 import hashlib
+import importlib
+import importlib.util
 import json
 import string
 from pathlib import Path
+from types import ModuleType
 from typing import Any
 
 
@@ -36,6 +46,61 @@ REQUIRED_SOURCE_ROLES = ("active_learning", "neck_scan")
 SHOOTING_RESIDUAL_GATE = 1e-7
 MINIMUM_AL_ATTEMPTS = 12
 GAP_SLACK = 1e-12
+
+#: Raster-level verdict flags that ``scripts/neck_topology.aggregate_line_verdicts``
+#: derives from the per-line summaries.  A raster is only usable if every one of
+#: them agrees with what the raster's own ``line_summaries`` actually say.
+DERIVED_NECK_VERDICT_KEYS = (
+    "any_vertical_merge",
+    "any_boundary_truncated_merge_test",
+    "any_line_without_stable_sample",
+    "any_stable_interval_touches_boundary",
+    "all_lines_separated",
+    "merge_verdict_counts",
+    "boundary_truncated_lines",
+)
+
+#: The subset a raster must actually *declare*.  A pre-truncation-analysis
+#: raster (stability-neck-scan/2) carries no truncation verdicts, and it is
+#: refused on that ground alone rather than being silently re-scored: it was
+#: produced by a detector that could not tell a merge from a window truncation,
+#: so nothing else it reports about the neck can be trusted either.
+REQUIRED_DECLARED_NECK_VERDICT_KEYS = (
+    "any_vertical_merge",
+    "any_boundary_truncated_merge_test",
+    "any_line_without_stable_sample",
+    "all_lines_separated",
+)
+
+_NECK_TOPOLOGY_SOURCE = Path(__file__).resolve().parents[2] / "scripts" / "neck_topology.py"
+_neck_topology_cache: ModuleType | None = None
+
+
+def neck_topology_module() -> ModuleType:
+    """Load the single source of truth for neck-raster topology verdicts.
+
+    ``scripts/neck_topology.py`` is deliberately stdlib-only and lives outside
+    the installed package, because the CI merge step runs it on a bare
+    ``setup-python`` interpreter with no project install.  The verifier must use
+    that exact module -- not a second copy -- or the freezer, the merger and the
+    certificate verifier could drift apart, which is the whole failure mode this
+    contract exists to prevent.  A checkout is preferred; a plain import is the
+    fallback for callers that already put ``scripts/`` on ``sys.path``.
+    """
+    global _neck_topology_cache
+    if _neck_topology_cache is not None:
+        return _neck_topology_cache
+    if _NECK_TOPOLOGY_SOURCE.is_file():
+        spec = importlib.util.spec_from_file_location(
+            "threebody_atlas._neck_topology", _NECK_TOPOLOGY_SOURCE
+        )
+        if spec is not None and spec.loader is not None:
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            _neck_topology_cache = module
+            return module
+    _neck_topology_cache = importlib.import_module("neck_topology")
+    return _neck_topology_cache
 
 
 def content_digest(record: dict[str, Any]) -> str:
@@ -92,6 +157,66 @@ def al_summary(al: dict[str, Any] | None) -> dict[str, Any]:
     }
 
 
+def rederive_neck_verdicts(
+    neck: dict[str, Any] | None,
+) -> tuple[dict[str, Any] | None, list[str]]:
+    """Recompute a raster's verdict flags from that raster's own line summaries.
+
+    ``scripts/merge_stability_neck_scans.py`` cross-checks declared-against-
+    recomputed verdicts at merge time, but a certificate can name any neck JSON,
+    including one that never went through the merger.  Reading the raster-level
+    flags off the file would then make them a self-report: a raster whose
+    ``all_lines_separated: true`` contradicts its own ``line_summaries`` would
+    verify.  Re-deriving them here closes that hole.
+
+    Returns ``(flags, errors)``.  ``flags`` is ``None`` when the raster does not
+    carry enough structure to be re-derived at all, which is itself a refusal --
+    the verdicts are never taken on trust as a fallback.
+    """
+    if not isinstance(neck, dict):
+        return None, ["neck raster is missing"]
+    grid = neck.get("grid")
+    if not isinstance(grid, dict):
+        return None, ["neck raster carries no grid to re-derive its verdicts against"]
+    window = grid.get("m2")
+    step = grid.get("step")
+    if not (isinstance(window, (list, tuple)) and len(window) == 2) or step is None:
+        return None, ["neck raster grid must declare an m2 window and a step"]
+    lines = neck.get("line_summaries")
+    if not isinstance(lines, list) or not lines:
+        return None, ["neck raster carries no line_summaries to re-derive its verdicts from"]
+    try:
+        _annotated, derived = neck_topology_module().summarize(
+            lines,
+            m2_min=float(window[0]),
+            m2_max=float(window[1]),
+            step=float(step),
+        )
+    except Exception as exc:
+        # Fail closed.  Anything that stops the re-derivation -- a missing
+        # topology module, a malformed line summary -- means the verdicts are
+        # unverifiable, and unverifiable is refused, never waved through.
+        return None, [f"neck raster verdicts could not be re-derived: {exc}"]
+
+    errors: list[str] = []
+    for key in REQUIRED_DECLARED_NECK_VERDICT_KEYS:
+        if key not in neck:
+            errors.append(f"neck raster does not declare {key}")
+    # Beyond that required core, only a *present* flag can contradict the lines.
+    # An absent one is not a false claim, and it is not a loophole either:
+    # everything downstream uses the recomputed verdicts, so an undeclared flag
+    # is scored purely on what the line summaries actually show.
+    for key in DERIVED_NECK_VERDICT_KEYS:
+        if key not in neck:
+            continue
+        if not _equal(neck[key], derived[key]):
+            errors.append(
+                f"neck raster {key} contradicts its own line_summaries: "
+                f"declared={neck[key]!r} recomputed={derived[key]!r}"
+            )
+    return derived, errors
+
+
 def neck_summary(neck: dict[str, Any] | None) -> dict[str, Any]:
     """Re-derive the stability-neck raster predicate."""
     grid = neck.get("grid", {}) if isinstance(neck, dict) else {}
@@ -112,12 +237,19 @@ def neck_summary(neck: dict[str, Any] | None) -> dict[str, Any]:
     # rather than being scored as either merged or separated, and the flags must
     # be present -- a pre-truncation-analysis raster (schema/2) carries no
     # verdicts and therefore cannot freeze completeness.
-    truncated = neck.get("any_boundary_truncated_merge_test") if isinstance(neck, dict) else None
-    empty_lines = neck.get("any_line_without_stable_sample") if isinstance(neck, dict) else None
-    separated = neck.get("all_lines_separated") if isinstance(neck, dict) else None
+    #
+    # The verdicts below are the *recomputed* ones, never the raster's own
+    # report, and any disagreement between the two is a refusal.
+    derived, verdict_errors = rederive_neck_verdicts(neck)
+    verdicts = derived or {}
+    truncated = verdicts.get("any_boundary_truncated_merge_test")
+    empty_lines = verdicts.get("any_line_without_stable_sample")
+    separated = verdicts.get("all_lines_separated")
     clean = bool(
         done
-        and neck.get("any_vertical_merge") is False
+        and not verdict_errors
+        and derived is not None
+        and verdicts.get("any_vertical_merge") is False
         and truncated is False
         and empty_lines is False
         and separated is True
@@ -130,22 +262,19 @@ def neck_summary(neck: dict[str, Any] | None) -> dict[str, Any]:
         "step": step,
         "samples": grid.get("samples"),
         "minimum_resolved_unstable_gap": gap,
-        "any_vertical_merge": neck.get("any_vertical_merge") if isinstance(neck, dict) else None,
+        "any_vertical_merge": verdicts.get("any_vertical_merge"),
         "any_boundary_truncated_merge_test": truncated,
         "any_line_without_stable_sample": empty_lines,
-        "any_stable_interval_touches_boundary": (
-            neck.get("any_stable_interval_touches_boundary") if isinstance(neck, dict) else None
+        "any_stable_interval_touches_boundary": verdicts.get(
+            "any_stable_interval_touches_boundary"
         ),
         "all_lines_separated": separated,
-        "merge_verdict_counts": (
-            neck.get("merge_verdict_counts") if isinstance(neck, dict) else None
-        ),
-        "boundary_truncated_lines": (
-            neck.get("boundary_truncated_lines") if isinstance(neck, dict) else None
-        ),
+        "merge_verdict_counts": verdicts.get("merge_verdict_counts"),
+        "boundary_truncated_lines": verdicts.get("boundary_truncated_lines"),
         "max_shooting_residual": neck.get("max_shooting_residual") if isinstance(neck, dict) else None,
         "completed": neck.get("completed") if isinstance(neck, dict) else None,
         "done": done,
+        "verdict_errors": verdict_errors,
         "clean": clean,
     }
 
@@ -354,6 +483,9 @@ def verify_certificate(
         errors.append("re-derived AL pocket screen does not support a completeness claim")
     if not neck_stats["clean"]:
         errors.append("re-derived neck raster does not support a completeness claim")
+    # A raster whose own verdict flags disagree with its own line summaries is
+    # not merely unclean, it is self-contradictory; say so explicitly.
+    errors.extend(neck_stats["verdict_errors"])
 
     recorded_al = record.get("active_learning")
     if not isinstance(recorded_al, dict):
