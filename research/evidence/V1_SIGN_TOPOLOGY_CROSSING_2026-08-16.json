@@ -1,0 +1,1218 @@
+{
+  "schema": "atlas.v1.sign-topology-audit/1",
+  "created_at": "2026-08-16T13:40:24.370204+00:00",
+  "code_revision": null,
+  "run_id": null,
+  "python": "3.13.11",
+  "arithmetic": "float64 screening (scipy DOP853 + variational Newton)",
+  "inputs": {
+    "graph": "research/evidence/V1_CRITICAL_GRAPH.json",
+    "graph_schema": "atlas.v1.critical-graph/3",
+    "graph_release_ready": false,
+    "roots": "research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json",
+    "roots_schema": "atlas.v1.hybrid-critical-root-network/2"
+  },
+  "method": {
+    "state": "S = (sgn G_plus, sgn G_minus, sgn discriminant, n_unstable)",
+    "G_plus": "beta - 6*alpha + 20 = P(+2)",
+    "G_minus": "beta - 2*alpha + 4 = P(-2)",
+    "discriminant": "(alpha-4)^2 - 4*(beta - 4*alpha + 8)",
+    "mechanism_component": {
+      "plus_one": "G_plus",
+      "minus_one": "G_minus",
+      "trace_collision": "discriminant"
+    },
+    "checks": [
+      "missing_critical_curve: a sign flip between consecutive probes on a scan line with no committed edge of the matching mechanism between them",
+      "forbidden_component_flip: crossing one committed edge flips a component that mechanism may not flip",
+      "no_flip_across_edge: a committed edge across which its own component does not change sign",
+      "face_state_mismatch: two probes joined by an axis-aligned path that meets no committed edge, yet with different S",
+      "forbidden_component_flip_on_path: same, for paths meeting exactly one edge"
+    ]
+  },
+  "parameters": {
+    "scan_lines": [
+      0.925,
+      0.9295,
+      0.9305
+    ],
+    "standoff": 0.003,
+    "max_gap": 0.006,
+    "probed_m2_range": [
+      0.865,
+      0.895
+    ],
+    "declared_m2_range": [
+      0.7,
+      1.2
+    ],
+    "sign_threshold": 0.001,
+    "min_clearance": 0.002,
+    "max_closure": 1e-07,
+    "refine_steps": 6,
+    "probe_cpu_budget_seconds": 45.0
+  },
+  "committed_edges": [
+    {
+      "edge_id": "minus_one_u_to_s_0",
+      "mechanism": "minus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        0.93,
+        1.049
+      ],
+      "vertices": 120,
+      "degenerate": false
+    },
+    {
+      "edge_id": "minus_one_u_to_s_1",
+      "mechanism": "minus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        0.996,
+        0.996
+      ],
+      "vertices": 1,
+      "degenerate": true
+    },
+    {
+      "edge_id": "minus_one_s_to_u_0",
+      "mechanism": "minus_one",
+      "orientation": "S->U",
+      "m1_range": [
+        0.996,
+        1.042
+      ],
+      "vertices": 47,
+      "degenerate": false
+    },
+    {
+      "edge_id": "plus_one_u_to_s_0",
+      "mechanism": "plus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        0.8,
+        0.929
+      ],
+      "vertices": 130,
+      "degenerate": false
+    },
+    {
+      "edge_id": "plus_one_u_to_s_1",
+      "mechanism": "plus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        0.997,
+        1.042
+      ],
+      "vertices": 46,
+      "degenerate": false
+    },
+    {
+      "edge_id": "plus_one_u_to_s_2",
+      "mechanism": "plus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        1.05,
+        1.071
+      ],
+      "vertices": 22,
+      "degenerate": false
+    },
+    {
+      "edge_id": "trace_collision_s_to_u_0",
+      "mechanism": "trace_collision",
+      "orientation": "S->U",
+      "m1_range": [
+        0.8,
+        1.053
+      ],
+      "vertices": 254,
+      "degenerate": false
+    }
+  ],
+  "non_graph_edges": [],
+  "probe_summary": {
+    "planned": 17,
+    "evaluated": 17,
+    "converged": 17,
+    "failed": 0,
+    "undecidable_state": 0,
+    "cpu_seconds": 119.6
+  },
+  "violation_counts": {
+    "missing_critical_curve": 4,
+    "forbidden_component_flip": 1,
+    "face_state_mismatch": 15
+  },
+  "violations": [
+    {
+      "kind": "missing_critical_curve",
+      "component": "G_minus",
+      "mechanism": "minus_one",
+      "m1": 0.925,
+      "m2_bracket": [
+        0.8700725863022172,
+        0.8751451726044343
+      ],
+      "value_bracket": [
+        -0.17882957073174666,
+        0.047530399387601285
+      ],
+      "n_unstable": [
+        2,
+        1
+      ],
+      "committed_edges_in_bracket": [],
+      "detail": "sgn G_minus flips between m2=0.870073 and m2=0.875145 at m1=0.925000, but the committed graph has no minus_one edge there"
+    },
+    {
+      "kind": "missing_critical_curve",
+      "component": "G_plus",
+      "mechanism": "plus_one",
+      "m1": 0.9295,
+      "m2_bracket": [
+        0.882992807961914,
+        0.8889904106158855
+      ],
+      "value_bracket": [
+        -0.44381003337474567,
+        0.5299725144142826
+      ],
+      "n_unstable": [
+        2,
+        0
+      ],
+      "committed_edges_in_bracket": [],
+      "detail": "sgn G_plus flips between m2=0.882993 and m2=0.888990 at m1=0.929500, but the committed graph has no plus_one edge there"
+    },
+    {
+      "kind": "missing_critical_curve",
+      "component": "G_minus",
+      "mechanism": "minus_one",
+      "m1": 0.9295,
+      "m2_bracket": [
+        0.882992807961914,
+        0.8889904106158855
+      ],
+      "value_bracket": [
+        -0.1326205983693587,
+        0.12574866525181472
+      ],
+      "n_unstable": [
+        2,
+        0
+      ],
+      "committed_edges_in_bracket": [],
+      "detail": "sgn G_minus flips between m2=0.882993 and m2=0.888990 at m1=0.929500, but the committed graph has no minus_one edge there"
+    },
+    {
+      "kind": "missing_critical_curve",
+      "component": "G_plus",
+      "mechanism": "plus_one",
+      "m1": 0.9305,
+      "m2_bracket": [
+        0.885557898854272,
+        0.8915578988542721
+      ],
+      "value_bracket": [
+        -0.2157032744092291,
+        0.7468138928047736
+      ],
+      "n_unstable": [
+        2,
+        0
+      ],
+      "committed_edges_in_bracket": [
+        "minus_one_u_to_s_0"
+      ],
+      "detail": "sgn G_plus flips between m2=0.885558 and m2=0.891558 at m1=0.930500, but the committed graph has no plus_one edge there"
+    },
+    {
+      "kind": "forbidden_component_flip",
+      "component": "G_plus",
+      "edge_id": "minus_one_u_to_s_0",
+      "edge_mechanism": "minus_one",
+      "m1": 0.9305,
+      "m2_bracket": [
+        0.885557898854272,
+        0.8915578988542721
+      ],
+      "value_bracket": [
+        -0.2157032744092291,
+        0.7468138928047736
+      ],
+      "detail": "crossing minus_one_u_to_s_0 (minus_one) flips G_plus, which that mechanism may not flip"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus",
+        "G_minus"
+      ],
+      "from": [
+        0.925,
+        0.8700725863022172
+      ],
+      "to": [
+        0.9295,
+        0.8889904106158855
+      ],
+      "state_from": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "state_to": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "path_clearance": 0.01014517260443426,
+      "detail": "L-path (0.9250,0.8701) -> (0.9295,0.8701) -> (0.9295,0.8890) meets no committed edge yet S changes (-1, -1, 1, 2) -> (1, 1, 1, 0)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus",
+        "G_minus"
+      ],
+      "from": [
+        0.925,
+        0.8700725863022172
+      ],
+      "to": [
+        0.9295,
+        0.8949880132698568
+      ],
+      "state_from": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "state_to": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "path_clearance": 0.01014517260443426,
+      "detail": "L-path (0.9250,0.8701) -> (0.9295,0.8701) -> (0.9295,0.8950) meets no committed edge yet S changes (-1, -1, 1, 2) -> (1, 1, 1, 0)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_minus"
+      ],
+      "from": [
+        0.925,
+        0.8751451726044343
+      ],
+      "to": [
+        0.9295,
+        0.8709976026539713
+      ],
+      "state_from": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "state_to": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "path_clearance": 0.005072586302217186,
+      "detail": "L-path (0.9250,0.8751) -> (0.9295,0.8751) -> (0.9295,0.8710) meets no committed edge yet S changes (-1, 1, 1, 1) -> (-1, -1, 1, 2)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_minus"
+      ],
+      "from": [
+        0.925,
+        0.8751451726044343
+      ],
+      "to": [
+        0.9295,
+        0.8769952053079427
+      ],
+      "state_from": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "state_to": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "path_clearance": 0.005072586302217186,
+      "detail": "L-path (0.9250,0.8751) -> (0.9295,0.8751) -> (0.9295,0.8770) meets no committed edge yet S changes (-1, 1, 1, 1) -> (-1, -1, 1, 2)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_minus"
+      ],
+      "from": [
+        0.925,
+        0.8751451726044343
+      ],
+      "to": [
+        0.9295,
+        0.882992807961914
+      ],
+      "state_from": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "state_to": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "path_clearance": 0.005072586302217186,
+      "detail": "L-path (0.9250,0.8751) -> (0.9295,0.8751) -> (0.9295,0.8830) meets no committed edge yet S changes (-1, 1, 1, 1) -> (-1, -1, 1, 2)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus"
+      ],
+      "from": [
+        0.925,
+        0.8751451726044343
+      ],
+      "to": [
+        0.9295,
+        0.8889904106158855
+      ],
+      "state_from": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "state_to": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "path_clearance": 0.005072586302217186,
+      "detail": "L-path (0.9250,0.8751) -> (0.9295,0.8751) -> (0.9295,0.8890) meets no committed edge yet S changes (-1, 1, 1, 1) -> (1, 1, 1, 0)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus"
+      ],
+      "from": [
+        0.925,
+        0.8751451726044343
+      ],
+      "to": [
+        0.9295,
+        0.8949880132698568
+      ],
+      "state_from": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "state_to": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "path_clearance": 0.005072586302217186,
+      "detail": "L-path (0.9250,0.8751) -> (0.9295,0.8751) -> (0.9295,0.8950) meets no committed edge yet S changes (-1, 1, 1, 1) -> (1, 1, 1, 0)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_minus"
+      ],
+      "from": [
+        0.925,
+        0.8772177589066514
+      ],
+      "to": [
+        0.9295,
+        0.8709976026539713
+      ],
+      "state_from": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "state_to": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "path_clearance": 0.0030000000000000027,
+      "detail": "L-path (0.9250,0.8772) -> (0.9295,0.8772) -> (0.9295,0.8710) meets no committed edge yet S changes (-1, 1, 1, 1) -> (-1, -1, 1, 2)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_minus"
+      ],
+      "from": [
+        0.925,
+        0.8772177589066514
+      ],
+      "to": [
+        0.9295,
+        0.8769952053079427
+      ],
+      "state_from": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "state_to": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "path_clearance": 0.0030000000000000027,
+      "detail": "L-path (0.9250,0.8772) -> (0.9295,0.8772) -> (0.9295,0.8770) meets no committed edge yet S changes (-1, 1, 1, 1) -> (-1, -1, 1, 2)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_minus"
+      ],
+      "from": [
+        0.925,
+        0.8772177589066514
+      ],
+      "to": [
+        0.9295,
+        0.882992807961914
+      ],
+      "state_from": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "state_to": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "path_clearance": 0.0030000000000000027,
+      "detail": "L-path (0.9250,0.8772) -> (0.9295,0.8772) -> (0.9295,0.8830) meets no committed edge yet S changes (-1, 1, 1, 1) -> (-1, -1, 1, 2)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus"
+      ],
+      "from": [
+        0.925,
+        0.8772177589066514
+      ],
+      "to": [
+        0.9295,
+        0.8889904106158855
+      ],
+      "state_from": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "state_to": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "path_clearance": 0.0030000000000000027,
+      "detail": "L-path (0.9250,0.8772) -> (0.9295,0.8772) -> (0.9295,0.8890) meets no committed edge yet S changes (-1, 1, 1, 1) -> (1, 1, 1, 0)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus"
+      ],
+      "from": [
+        0.925,
+        0.8772177589066514
+      ],
+      "to": [
+        0.9295,
+        0.8949880132698568
+      ],
+      "state_from": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "state_to": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "path_clearance": 0.0030000000000000027,
+      "detail": "L-path (0.9250,0.8772) -> (0.9295,0.8772) -> (0.9295,0.8950) meets no committed edge yet S changes (-1, 1, 1, 1) -> (1, 1, 1, 0)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus",
+        "G_minus"
+      ],
+      "from": [
+        0.925,
+        0.891101515453061
+      ],
+      "to": [
+        0.9295,
+        0.8709976026539713
+      ],
+      "state_from": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "state_to": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "path_clearance": 0.006021607464867351,
+      "detail": "L-path (0.9250,0.8911) -> (0.9295,0.8911) -> (0.9295,0.8710) meets no committed edge yet S changes (1, 1, 1, 0) -> (-1, -1, 1, 2)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus",
+        "G_minus"
+      ],
+      "from": [
+        0.925,
+        0.891101515453061
+      ],
+      "to": [
+        0.9295,
+        0.8769952053079427
+      ],
+      "state_from": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "state_to": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "path_clearance": 0.006021607464867351,
+      "detail": "L-path (0.9250,0.8911) -> (0.9295,0.8911) -> (0.9295,0.8770) meets no committed edge yet S changes (1, 1, 1, 0) -> (-1, -1, 1, 2)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus",
+        "G_minus"
+      ],
+      "from": [
+        0.925,
+        0.891101515453061
+      ],
+      "to": [
+        0.9295,
+        0.882992807961914
+      ],
+      "state_from": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "state_to": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "path_clearance": 0.006021607464867351,
+      "detail": "L-path (0.9250,0.8911) -> (0.9295,0.8911) -> (0.9295,0.8830) meets no committed edge yet S changes (1, 1, 1, 0) -> (-1, -1, 1, 2)"
+    }
+  ],
+  "missing_curve_refinements": [
+    {
+      "m1": 0.925,
+      "component": "G_minus",
+      "event_mode": "minus_one",
+      "bracket": [
+        0.8740355443508243,
+        0.8741148035117965
+      ],
+      "width": 7.925916097217822e-05,
+      "endpoint_values": [
+        -0.0011342461213548205,
+        0.0023571692641688458
+      ],
+      "endpoint_n_unstable": [
+        2,
+        1
+      ],
+      "status": "refined",
+      "arithmetic": "float64 screening",
+      "certification": {
+        "status": "passed",
+        "localizer": "threebody_atlas.critical_manifold.localize_critical_point",
+        "event_mode": "minus_one",
+        "masses": [
+          0.925,
+          0.8740612936729903,
+          1.0
+        ],
+        "event_value": 3.6919534096568896e-10,
+        "closure": 3.378354155293751e-10,
+        "period": 6.602203866558044,
+        "x1": -0.2502088497019657,
+        "v1": 1.6360279983752843,
+        "v2": 0.4300206698638851,
+        "gates": {
+          "maximum_absolute_event": 2e-08,
+          "maximum_periodic_closure": 1e-07
+        },
+        "nearest_committed_root": {
+          "cell_id": 244,
+          "masses": [
+            0.922,
+            0.8764753813210207
+          ],
+          "event_mode": "plus_one",
+          "distance": 0.00385069073964302,
+          "same_m1_slice_distance_m2": null
+        }
+      }
+    },
+    {
+      "m1": 0.9295,
+      "component": "G_plus",
+      "event_mode": "plus_one",
+      "bracket": [
+        0.8856167591230265,
+        0.8857104716644948
+      ],
+      "width": 9.371254146828267e-05,
+      "endpoint_values": [
+        -0.01000559820310798,
+        0.005271741088613169
+      ],
+      "endpoint_n_unstable": [
+        2,
+        1
+      ],
+      "status": "refined",
+      "arithmetic": "float64 screening",
+      "certification": {
+        "status": "passed",
+        "localizer": "threebody_atlas.critical_manifold.localize_critical_point",
+        "event_mode": "plus_one",
+        "masses": [
+          0.9295,
+          0.885678087825198,
+          1.0
+        ],
+        "event_value": 1.3517276187258176e-08,
+        "closure": 3.7297073275968923e-10,
+        "period": 6.666145184525687,
+        "x1": -0.25873718774906745,
+        "v1": 1.5978033308222828,
+        "v2": 0.43100165334988816,
+        "gates": {
+          "maximum_absolute_event": 2e-08,
+          "maximum_periodic_closure": 1e-07
+        },
+        "nearest_committed_root": {
+          "cell_id": 258,
+          "masses": [
+            0.929,
+            0.8850799079881937
+          ],
+          "event_mode": "plus_one",
+          "distance": 0.0007796275504357237,
+          "same_m1_slice_distance_m2": 0.0005981798370042757
+        }
+      }
+    },
+    {
+      "m1": 0.9295,
+      "component": "G_minus",
+      "event_mode": "minus_one",
+      "bracket": [
+        0.8859916092888998,
+        0.886085321830368
+      ],
+      "width": 9.371254146828267e-05,
+      "endpoint_values": [
+        -0.0018130753588625481,
+        0.002221324779335454
+      ],
+      "endpoint_n_unstable": [
+        1,
+        0
+      ],
+      "status": "refined",
+      "arithmetic": "float64 screening",
+      "certification": {
+        "status": "passed",
+        "localizer": "threebody_atlas.critical_manifold.localize_critical_point",
+        "event_mode": "minus_one",
+        "masses": [
+          0.9295,
+          0.8860337144332926,
+          1.0
+        ],
+        "event_value": -8.007461360648449e-11,
+        "closure": 3.954446059883689e-10,
+        "period": 6.667007144293603,
+        "x1": -0.25889598862572166,
+        "v1": 1.59716927263683,
+        "v2": 0.43092492460987286,
+        "gates": {
+          "maximum_absolute_event": 2e-08,
+          "maximum_periodic_closure": 1e-07
+        },
+        "nearest_committed_root": {
+          "cell_id": 258,
+          "masses": [
+            0.929,
+            0.8850799079881937
+          ],
+          "event_mode": "plus_one",
+          "distance": 0.0010769153795503865,
+          "same_m1_slice_distance_m2": 0.0009538064450989037
+        }
+      }
+    },
+    {
+      "m1": 0.9305,
+      "component": "G_plus",
+      "event_mode": "plus_one",
+      "bracket": [
+        0.8867766488542721,
+        0.8868703988542721
+      ],
+      "width": 9.375000000000355e-05,
+      "endpoint_values": [
+        -0.015022232675931946,
+        0.00030653852390472025
+      ],
+      "endpoint_n_unstable": [
+        2,
+        1
+      ],
+      "status": "refined",
+      "arithmetic": "float64 screening",
+      "certification": {
+        "status": "passed",
+        "localizer": "threebody_atlas.critical_manifold.localize_critical_point",
+        "event_mode": "plus_one",
+        "masses": [
+          0.9305,
+          0.886868495932042,
+          1.0
+        ],
+        "event_value": -1.1567955482405523e-09,
+        "closure": 2.863493119765657e-10,
+        "period": 6.677001449163817,
+        "x1": -0.26002539637356187,
+        "v1": 1.5919691325777796,
+        "v2": 0.4315068262625102,
+        "gates": {
+          "maximum_absolute_event": 2e-08,
+          "maximum_periodic_closure": 1e-07
+        },
+        "nearest_committed_root": {
+          "cell_id": 260,
+          "masses": [
+            0.93,
+            0.8873042213883066
+          ],
+          "event_mode": "minus_one",
+          "distance": 0.000663216912658989,
+          "same_m1_slice_distance_m2": 0.0004357254562645796
+        }
+      }
+    }
+  ],
+  "probes": [
+    {
+      "m1": 0.925,
+      "m2": 0.8700725863022172,
+      "ok": true,
+      "note": "",
+      "alpha": 4.383401620442032,
+      "beta": 4.5879736701523175,
+      "G_plus": -1.712436052499875,
+      "G_minus": -0.17882957073174666,
+      "discriminant": 19.92952804902082,
+      "n_unstable": 2,
+      "closure": 3.7735699595101894e-10,
+      "seconds": 6.991,
+      "chart": [
+        -0.2484032798345891,
+        1.6437119106457958,
+        0.430859707278109,
+        6.592315242715651
+      ]
+    },
+    {
+      "m1": 0.925,
+      "m2": 0.8751451726044343,
+      "ok": true,
+      "note": "",
+      "alpha": 4.220595650351937,
+      "beta": 4.488721700091475,
+      "G_plus": -0.8348522020201479,
+      "G_minus": 0.047530399387601285,
+      "discriminant": 17.623306046219287,
+      "n_unstable": 1,
+      "closure": 4.5227764097441695e-10,
+      "seconds": 7.035,
+      "chart": [
+        -0.25069616092574876,
+        1.6339711067533116,
+        0.4297922429398972,
+        6.604873808161604
+      ]
+    },
+    {
+      "m1": 0.925,
+      "m2": 0.8772177589066514,
+      "ok": true,
+      "note": "",
+      "alpha": 4.156445290727712,
+      "beta": 4.450099887306212,
+      "G_plus": -0.4885718570600588,
+      "G_minus": 0.1372093058507886,
+      "discriminant": 16.72720023140942,
+      "n_unstable": 1,
+      "closure": 3.5720529078275027e-10,
+      "seconds": 6.768,
+      "chart": [
+        -0.2516238404642987,
+        1.6300752679053612,
+        0.4293548985106523,
+        6.609957489503606
+      ]
+    },
+    {
+      "m1": 0.925,
+      "m2": 0.8832177589066514,
+      "ok": true,
+      "note": "",
+      "alpha": 3.9787171673370567,
+      "beta": 4.345847033164334,
+      "G_plus": 0.47354402914199056,
+      "G_minus": 0.388412698490221,
+      "discriminant": 14.276539503701729,
+      "n_unstable": 0,
+      "closure": 3.108512089465679e-10,
+      "seconds": 10.441,
+      "chart": [
+        -0.2542768388557102,
+        1.6190763112772206,
+        0.42808438864469456,
+        6.624500066641612
+      ]
+    },
+    {
+      "m1": 0.925,
+      "m2": 0.8856596371798562,
+      "ok": true,
+      "note": "",
+      "alpha": 3.9098592122676856,
+      "beta": 4.307044801293787,
+      "G_plus": 0.8478895276876734,
+      "G_minus": 0.48732637675841595,
+      "discriminant": 13.337693552720827,
+      "n_unstable": 0,
+      "closure": 3.8060622702235793e-10,
+      "seconds": 6.411,
+      "chart": [
+        -0.2553418108347079,
+        1.6147200892559446,
+        0.42756524426427495,
+        6.630337763901779
+      ]
+    },
+    {
+      "m1": 0.925,
+      "m2": 0.891101515453061,
+      "ok": true,
+      "note": "",
+      "alpha": 3.7638300586369584,
+      "beta": 4.229205588369798,
+      "G_plus": 1.646225236548048,
+      "G_minus": 0.7015454710958808,
+      "discriminant": 11.360234825915567,
+      "n_unstable": 0,
+      "closure": 2.9663777897197203e-10,
+      "seconds": 7.631,
+      "chart": [
+        -0.25768209017711097,
+        1.6052651946430407,
+        0.42640344358987997,
+        6.643160404033987
+      ]
+    },
+    {
+      "m1": 0.9295,
+      "m2": 0.8709976026539713,
+      "ok": true,
+      "note": "",
+      "alpha": 4.4720449134450195,
+      "beta": 4.251704716108048,
+      "G_plus": -2.5805647645620695,
+      "G_minus": -0.6923851107819914,
+      "discriminant": 22.768726150997438,
+      "n_unstable": 2,
+      "closure": 3.110936386366212e-10,
+      "seconds": 6.931,
+      "chart": [
+        -0.2520258983456671,
+        1.6252660448192755,
+        0.43415222575491297,
+        6.629796227812524
+      ]
+    },
+    {
+      "m1": 0.9295,
+      "m2": 0.8769952053079427,
+      "ok": true,
+      "note": "",
+      "alpha": 4.268986642270235,
+      "beta": 4.133191055185337,
+      "G_plus": -1.4807287984360755,
+      "G_minus": -0.4047822293551331,
+      "discriminant": 19.84337586930223,
+      "n_unstable": 2,
+      "closure": 2.794879474431591e-10,
+      "seconds": 6.765,
+      "chart": [
+        -0.2548025235162767,
+        1.6137453274108944,
+        0.43286859335452516,
+        6.644811699737999
+      ]
+    },
+    {
+      "m1": 0.9295,
+      "m2": 0.882992807961914,
+      "ok": true,
+      "note": "",
+      "alpha": 4.077797358751347,
+      "beta": 4.022974119133336,
+      "G_plus": -0.44381003337474567,
+      "G_minus": -0.1326205983693587,
+      "discriminant": 17.158913692516897,
+      "n_unstable": 2,
+      "closure": 2.9715461129148967e-10,
+      "seconds": 6.223,
+      "chart": [
+        -0.25753192646387923,
+        1.6026392527076259,
+        0.4315802993694543,
+        6.6596050346394575
+      ]
+    },
+    {
+      "m1": 0.9295,
+      "m2": 0.8889904106158855,
+      "ok": true,
+      "note": "",
+      "alpha": 3.8989440377093834,
+      "beta": 3.9236367406705814,
+      "G_plus": 0.5299725144142826,
+      "G_minus": 0.12574866525181472,
+      "discriminant": 14.698769948182292,
+      "n_unstable": 0,
+      "closure": 2.613698239472636e-10,
+      "seconds": 7.991,
+      "chart": [
+        -0.2602086085470757,
+        1.5919558650175565,
+        0.43028607337680413,
+        6.674133566530963
+      ]
+    },
+    {
+      "m1": 0.9295,
+      "m2": 0.8949880132698568,
+      "ok": true,
+      "note": "",
+      "alpha": 3.7328307609257334,
+      "beta": 3.8375950771013727,
+      "G_plus": 1.4406105115469714,
+      "G_minus": 0.3719335552499059,
+      "discriminant": 12.446291268713766,
+      "n_unstable": 0,
+      "closure": 3.5367466391408456e-10,
+      "seconds": 7.679,
+      "chart": [
+        -0.2628271864486475,
+        1.581702055917736,
+        0.4289845781158345,
+        6.688352893987138
+      ]
+    },
+    {
+      "m1": 0.9305,
+      "m2": 0.870889474713568,
+      "ok": true,
+      "note": "",
+      "alpha": 4.50454639593282,
+      "beta": 4.189725311577179,
+      "G_plus": -2.837553064019744,
+      "G_minus": -0.8193674802884612,
+      "discriminant": 23.568408154265207,
+      "n_unstable": 2,
+      "closure": 2.5214065167759587e-10,
+      "seconds": 6.722,
+      "chart": [
+        -0.2526873408252386,
+        1.62181802427091,
+        0.43494869846013123,
+        6.63735558641526
+      ]
+    },
+    {
+      "m1": 0.9305,
+      "m2": 0.8767789494271361,
+      "ok": true,
+      "note": "",
+      "alpha": 4.301943968752935,
+      "beta": 4.07254415046623,
+      "G_plus": -1.7391196620513796,
+      "G_minus": -0.5313437870396402,
+      "discriminant": 20.632097058448316,
+      "n_unstable": 2,
+      "closure": 2.7899742003720607e-10,
+      "seconds": 6.741,
+      "chart": [
+        -0.2554319098782286,
+        1.6104722591599194,
+        0.433683863077613,
+        6.652153447161067
+      ]
+    },
+    {
+      "m1": 0.9305,
+      "m2": 0.882668424140704,
+      "ok": true,
+      "note": "",
+      "alpha": 4.110799254074557,
+      "beta": 3.962770105181198,
+      "G_plus": -0.7020254192661426,
+      "G_minus": -0.2588284029679162,
+      "discriminant": 17.933984119171598,
+      "n_unstable": 2,
+      "closure": 2.9655740153568687e-10,
+      "seconds": 5.9,
+      "chart": [
+        -0.258131101316532,
+        1.599526466485441,
+        0.43241493665510844,
+        6.666744617962729
+      ]
+    },
+    {
+      "m1": 0.9305,
+      "m2": 0.885557898854272,
+      "ok": true,
+      "note": "",
+      "alpha": 4.0213467865226935,
+      "beta": 3.9123774447269337,
+      "G_plus": -0.2157032744092291,
+      "G_minus": -0.1303161283184533,
+      "discriminant": 16.692494490750207,
+      "n_unstable": 2,
+      "closure": 3.0371060119777496e-10,
+      "seconds": 5.891,
+      "chart": [
+        -0.2594371760499313,
+        1.5943049216148593,
+        0.43179051291517856,
+        6.673815332953043
+      ]
+    },
+    {
+      "m1": 0.9305,
+      "m2": 0.8915578988542721,
+      "ok": true,
+      "note": "",
+      "alpha": 3.8449537855922014,
+      "beta": 3.816536606357981,
+      "G_plus": 0.7468138928047736,
+      "G_minus": 0.12662903517357815,
+      "discriminant": 14.277153472645484,
+      "n_unstable": 0,
+      "closure": 3.362379437959127e-10,
+      "seconds": 7.642,
+      "chart": [
+        -0.26210765257705243,
+        1.583779371888838,
+        0.4304891442881512,
+        6.688285521809053
+      ]
+    },
+    {
+      "m1": 0.9305,
+      "m2": 0.894183652065833,
+      "ok": true,
+      "note": "",
+      "alpha": 3.771810746109441,
+      "beta": 3.7788135062291905,
+      "G_plus": 1.1479490295725476,
+      "G_minus": 0.23519201401030898,
+      "discriminant": 13.285788248425424,
+      "n_unstable": 0,
+      "closure": 3.0718935017166557e-10,
+      "seconds": 5.852,
+      "chart": [
+        -0.26325757667971467,
+        1.5793090357751283,
+        0.4299173343225608,
+        6.694518744757037
+      ]
+    }
+  ],
+  "scope": "This audit falsifies completeness where it fires; it cannot certify completeness where it does not.  A critical curve that both begins and ends between two adjacent scan lines, or that never separates two probes, is not sampled."
+}

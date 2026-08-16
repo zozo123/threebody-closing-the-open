@@ -1,0 +1,2210 @@
+{
+  "schema": "atlas.v1.sign-topology-audit/1",
+  "created_at": "2026-08-16T13:29:43.753709+00:00",
+  "code_revision": null,
+  "run_id": null,
+  "python": "3.13.11",
+  "arithmetic": "float64 screening (scipy DOP853 + variational Newton)",
+  "inputs": {
+    "graph": "research/evidence/V1_CRITICAL_GRAPH.json",
+    "graph_schema": "atlas.v1.critical-graph/3",
+    "graph_release_ready": false,
+    "roots": "research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json",
+    "roots_schema": "atlas.v1.hybrid-critical-root-network/2"
+  },
+  "method": {
+    "state": "S = (sgn G_plus, sgn G_minus, sgn discriminant, n_unstable)",
+    "G_plus": "beta - 6*alpha + 20 = P(+2)",
+    "G_minus": "beta - 2*alpha + 4 = P(-2)",
+    "discriminant": "(alpha-4)^2 - 4*(beta - 4*alpha + 8)",
+    "mechanism_component": {
+      "plus_one": "G_plus",
+      "minus_one": "G_minus",
+      "trace_collision": "discriminant"
+    },
+    "checks": [
+      "missing_critical_curve: a sign flip between consecutive probes on a scan line with no committed edge of the matching mechanism between them",
+      "forbidden_component_flip: crossing one committed edge flips a component that mechanism may not flip",
+      "no_flip_across_edge: a committed edge across which its own component does not change sign",
+      "face_state_mismatch: two probes joined by an axis-aligned path that meets no committed edge, yet with different S",
+      "forbidden_component_flip_on_path: same, for paths meeting exactly one edge"
+    ]
+  },
+  "parameters": {
+    "scan_lines": [
+      0.9,
+      0.92,
+      0.94,
+      0.97,
+      1.0,
+      1.04,
+      1.08
+    ],
+    "standoff": 0.004,
+    "max_gap": 0.08,
+    "probed_m2_range": [
+      0.86,
+      1.2
+    ],
+    "declared_m2_range": [
+      0.7,
+      1.2
+    ],
+    "sign_threshold": 0.001,
+    "min_clearance": 0.002,
+    "max_closure": 1e-07,
+    "refine_steps": 5,
+    "probe_cpu_budget_seconds": 45.0
+  },
+  "committed_edges": [
+    {
+      "edge_id": "minus_one_u_to_s_0",
+      "mechanism": "minus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        0.93,
+        1.049
+      ],
+      "vertices": 120,
+      "degenerate": false
+    },
+    {
+      "edge_id": "minus_one_u_to_s_1",
+      "mechanism": "minus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        0.996,
+        0.996
+      ],
+      "vertices": 1,
+      "degenerate": true
+    },
+    {
+      "edge_id": "minus_one_s_to_u_0",
+      "mechanism": "minus_one",
+      "orientation": "S->U",
+      "m1_range": [
+        0.996,
+        1.042
+      ],
+      "vertices": 47,
+      "degenerate": false
+    },
+    {
+      "edge_id": "plus_one_u_to_s_0",
+      "mechanism": "plus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        0.8,
+        0.929
+      ],
+      "vertices": 130,
+      "degenerate": false
+    },
+    {
+      "edge_id": "plus_one_u_to_s_1",
+      "mechanism": "plus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        0.997,
+        1.042
+      ],
+      "vertices": 46,
+      "degenerate": false
+    },
+    {
+      "edge_id": "plus_one_u_to_s_2",
+      "mechanism": "plus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        1.05,
+        1.071
+      ],
+      "vertices": 22,
+      "degenerate": false
+    },
+    {
+      "edge_id": "trace_collision_s_to_u_0",
+      "mechanism": "trace_collision",
+      "orientation": "S->U",
+      "m1_range": [
+        0.8,
+        1.053
+      ],
+      "vertices": 254,
+      "degenerate": false
+    }
+  ],
+  "non_graph_edges": [],
+  "probe_summary": {
+    "planned": 61,
+    "evaluated": 61,
+    "converged": 60,
+    "failed": 1,
+    "undecidable_state": 0,
+    "cpu_seconds": 732.5
+  },
+  "violation_counts": {
+    "missing_critical_curve": 3,
+    "face_state_mismatch": 22
+  },
+  "violations": [
+    {
+      "kind": "missing_critical_curve",
+      "component": "G_plus",
+      "mechanism": "plus_one",
+      "m1": 0.94,
+      "m2_bracket": [
+        0.8852839810881132,
+        0.9065679621762265
+      ],
+      "value_bracket": [
+        -2.2451580651767102,
+        1.388084064102138
+      ],
+      "n_unstable": [
+        2,
+        1
+      ],
+      "committed_edges_in_bracket": [],
+      "detail": "sgn G_plus flips between m2=0.885284 and m2=0.906568 at m1=0.940000, but the committed graph has no plus_one edge there"
+    },
+    {
+      "kind": "missing_critical_curve",
+      "component": "G_plus",
+      "mechanism": "plus_one",
+      "m1": 0.97,
+      "m2_bracket": [
+        0.9118206749364417,
+        0.9596413498728833
+      ],
+      "value_bracket": [
+        -3.211585992332168,
+        3.932685241476257
+      ],
+      "n_unstable": [
+        2,
+        1
+      ],
+      "committed_edges_in_bracket": [],
+      "detail": "sgn G_plus flips between m2=0.911821 and m2=0.959641 at m1=0.970000, but the committed graph has no plus_one edge there"
+    },
+    {
+      "kind": "missing_critical_curve",
+      "component": "G_minus",
+      "mechanism": "minus_one",
+      "m1": 1.0,
+      "m2_bracket": [
+        0.9096430261218427,
+        0.9552860522436853
+      ],
+      "value_bracket": [
+        -1.0244458192815724,
+        0.1820548725926363
+      ],
+      "n_unstable": [
+        2,
+        1
+      ],
+      "committed_edges_in_bracket": [],
+      "detail": "sgn G_minus flips between m2=0.909643 and m2=0.955286 at m1=1.000000, but the committed graph has no minus_one edge there"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_minus"
+      ],
+      "from": [
+        0.92,
+        0.8669654525105589
+      ],
+      "to": [
+        0.94,
+        0.8852839810881132
+      ],
+      "state_from": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "state_to": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "path_clearance": 0.006965452510558912,
+      "detail": "L-path (0.9200,0.8670) -> (0.9400,0.8670) -> (0.9400,0.8853) meets no committed edge yet S changes (-1, 1, 1, 1) -> (-1, -1, 1, 2)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus",
+        "G_minus"
+      ],
+      "from": [
+        0.92,
+        0.8669654525105589
+      ],
+      "to": [
+        0.94,
+        0.9065679621762265
+      ],
+      "state_from": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "state_to": [
+        1,
+        -1,
+        1,
+        1
+      ],
+      "path_clearance": 0.0040000000000000036,
+      "detail": "L-path (0.9200,0.8670) -> (0.9400,0.8670) -> (0.9400,0.9066) meets no committed edge yet S changes (-1, 1, 1, 1) -> (1, -1, 1, 1)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_minus"
+      ],
+      "from": [
+        0.92,
+        0.8699309050211178
+      ],
+      "to": [
+        0.94,
+        0.8852839810881132
+      ],
+      "state_from": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "state_to": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "path_clearance": 0.0040000000000000036,
+      "detail": "L-path (0.9200,0.8699) -> (0.9400,0.8699) -> (0.9400,0.8853) meets no committed edge yet S changes (-1, 1, 1, 1) -> (-1, -1, 1, 2)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus",
+        "G_minus"
+      ],
+      "from": [
+        0.92,
+        0.8699309050211178
+      ],
+      "to": [
+        0.94,
+        0.9065679621762265
+      ],
+      "state_from": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "state_to": [
+        1,
+        -1,
+        1,
+        1
+      ],
+      "path_clearance": 0.0040000000000000036,
+      "detail": "L-path (0.9200,0.8699) -> (0.9400,0.8699) -> (0.9400,0.9066) meets no committed edge yet S changes (-1, 1, 1, 1) -> (1, -1, 1, 1)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus"
+      ],
+      "from": [
+        0.94,
+        0.8852839810881132
+      ],
+      "to": [
+        0.97,
+        0.9596413498728833
+      ],
+      "state_from": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "state_to": [
+        1,
+        -1,
+        1,
+        1
+      ],
+      "path_clearance": 0.0040000000000000036,
+      "detail": "L-path (0.9400,0.8853) -> (0.9700,0.8853) -> (0.9700,0.9596) meets no committed edge yet S changes (-1, -1, 1, 2) -> (1, -1, 1, 1)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus"
+      ],
+      "from": [
+        0.94,
+        0.9065679621762265
+      ],
+      "to": [
+        0.97,
+        0.9118206749364417
+      ],
+      "state_from": [
+        1,
+        -1,
+        1,
+        1
+      ],
+      "state_to": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "path_clearance": 0.0040000000000000036,
+      "detail": "L-path (0.9400,0.9066) -> (0.9700,0.9066) -> (0.9700,0.9118) meets no committed edge yet S changes (1, -1, 1, 1) -> (-1, -1, 1, 2)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_minus"
+      ],
+      "from": [
+        0.97,
+        0.9118206749364417
+      ],
+      "to": [
+        1.0,
+        0.9552860522436853
+      ],
+      "state_from": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "state_to": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "path_clearance": 0.0040000000000000036,
+      "detail": "L-path (0.9700,0.9118) -> (1.0000,0.9118) -> (1.0000,0.9553) meets no committed edge yet S changes (-1, -1, 1, 2) -> (-1, 1, 1, 1)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_minus"
+      ],
+      "from": [
+        1.0,
+        0.9096430261218427
+      ],
+      "to": [
+        1.04,
+        0.9136760814838537
+      ],
+      "state_from": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "state_to": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "path_clearance": 0.04964302612184268,
+      "detail": "L-path (1.0000,0.9096) -> (1.0400,0.9096) -> (1.0400,0.9137) meets no committed edge yet S changes (-1, -1, 1, 2) -> (-1, 1, 1, 1)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_minus"
+      ],
+      "from": [
+        1.0,
+        0.9096430261218427
+      ],
+      "to": [
+        1.04,
+        0.9673521629677073
+      ],
+      "state_from": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "state_to": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "path_clearance": 0.04964302612184268,
+      "detail": "L-path (1.0000,0.9096) -> (1.0400,0.9096) -> (1.0400,0.9674) meets no committed edge yet S changes (-1, -1, 1, 2) -> (-1, 1, 1, 1)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_minus"
+      ],
+      "from": [
+        1.0,
+        0.9096430261218427
+      ],
+      "to": [
+        1.04,
+        1.017028244451561
+      ],
+      "state_from": [
+        -1,
+        -1,
+        1,
+        2
+      ],
+      "state_to": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "path_clearance": 0.0040000000000000036,
+      "detail": "L-path (1.0000,0.9096) -> (1.0400,0.9096) -> (1.0400,1.0170) meets no committed edge yet S changes (-1, -1, 1, 2) -> (-1, 1, 1, 1)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus"
+      ],
+      "from": [
+        1.04,
+        1.039625445139478
+      ],
+      "to": [
+        1.08,
+        0.9279999999999999
+      ],
+      "state_from": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "state_to": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "path_clearance": 0.0036434660361723825,
+      "detail": "L-path (1.0400,1.0396) -> (1.0800,1.0396) -> (1.0800,0.9280) meets no committed edge yet S changes (1, 1, 1, 0) -> (-1, 1, 1, 1)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus"
+      ],
+      "from": [
+        1.04,
+        1.039625445139478
+      ],
+      "to": [
+        1.08,
+        0.996
+      ],
+      "state_from": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "state_to": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "path_clearance": 0.0036434660361723825,
+      "detail": "L-path (1.0400,1.0396) -> (1.0800,1.0396) -> (1.0800,0.9960) meets no committed edge yet S changes (1, 1, 1, 0) -> (-1, 1, 1, 1)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus"
+      ],
+      "from": [
+        1.04,
+        1.039625445139478
+      ],
+      "to": [
+        1.08,
+        1.064
+      ],
+      "state_from": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "state_to": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "path_clearance": 0.0036434660361723825,
+      "detail": "L-path (1.0400,1.0396) -> (1.0800,1.0396) -> (1.0800,1.0640) meets no committed edge yet S changes (1, 1, 1, 0) -> (-1, 1, 1, 1)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus",
+        "G_minus"
+      ],
+      "from": [
+        1.04,
+        1.047625445139478
+      ],
+      "to": [
+        1.08,
+        0.9279999999999999
+      ],
+      "state_from": [
+        1,
+        -1,
+        1,
+        1
+      ],
+      "state_to": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "path_clearance": 0.0021840053097688106,
+      "detail": "L-path (1.0400,1.0476) -> (1.0800,1.0476) -> (1.0800,0.9280) meets no committed edge yet S changes (1, -1, 1, 1) -> (-1, 1, 1, 1)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus",
+        "G_minus"
+      ],
+      "from": [
+        1.04,
+        1.047625445139478
+      ],
+      "to": [
+        1.08,
+        0.996
+      ],
+      "state_from": [
+        1,
+        -1,
+        1,
+        1
+      ],
+      "state_to": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "path_clearance": 0.0021840053097688106,
+      "detail": "L-path (1.0400,1.0476) -> (1.0800,1.0476) -> (1.0800,0.9960) meets no committed edge yet S changes (1, -1, 1, 1) -> (-1, 1, 1, 1)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus",
+        "G_minus"
+      ],
+      "from": [
+        1.04,
+        1.047625445139478
+      ],
+      "to": [
+        1.08,
+        1.064
+      ],
+      "state_from": [
+        1,
+        -1,
+        1,
+        1
+      ],
+      "state_to": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "path_clearance": 0.0021840053097688106,
+      "detail": "L-path (1.0400,1.0476) -> (1.0800,1.0476) -> (1.0800,1.0640) meets no committed edge yet S changes (1, -1, 1, 1) -> (-1, 1, 1, 1)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus",
+        "G_minus"
+      ],
+      "from": [
+        1.04,
+        1.078127658716333
+      ],
+      "to": [
+        1.08,
+        0.9279999999999999
+      ],
+      "state_from": [
+        1,
+        -1,
+        1,
+        1
+      ],
+      "state_to": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "path_clearance": 0.03268621888662393,
+      "detail": "L-path (1.0400,1.0781) -> (1.0800,1.0781) -> (1.0800,0.9280) meets no committed edge yet S changes (1, -1, 1, 1) -> (-1, 1, 1, 1)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus",
+        "G_minus"
+      ],
+      "from": [
+        1.04,
+        1.078127658716333
+      ],
+      "to": [
+        1.08,
+        0.996
+      ],
+      "state_from": [
+        1,
+        -1,
+        1,
+        1
+      ],
+      "state_to": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "path_clearance": 0.03268621888662393,
+      "detail": "L-path (1.0400,1.0781) -> (1.0800,1.0781) -> (1.0800,0.9960) meets no committed edge yet S changes (1, -1, 1, 1) -> (-1, 1, 1, 1)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus",
+        "G_minus"
+      ],
+      "from": [
+        1.04,
+        1.078127658716333
+      ],
+      "to": [
+        1.08,
+        1.064
+      ],
+      "state_from": [
+        1,
+        -1,
+        1,
+        1
+      ],
+      "state_to": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "path_clearance": 0.03268621888662393,
+      "detail": "L-path (1.0400,1.0781) -> (1.0800,1.0781) -> (1.0800,1.0640) meets no committed edge yet S changes (1, -1, 1, 1) -> (-1, 1, 1, 1)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus",
+        "G_minus"
+      ],
+      "from": [
+        1.04,
+        1.1086298722931882
+      ],
+      "to": [
+        1.08,
+        0.9279999999999999
+      ],
+      "state_from": [
+        1,
+        -1,
+        1,
+        1
+      ],
+      "state_to": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "path_clearance": 0.0040000000000000036,
+      "detail": "L-path (1.0400,1.1086) -> (1.0800,1.1086) -> (1.0800,0.9280) meets no committed edge yet S changes (1, -1, 1, 1) -> (-1, 1, 1, 1)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus",
+        "G_minus"
+      ],
+      "from": [
+        1.04,
+        1.1086298722931882
+      ],
+      "to": [
+        1.08,
+        0.996
+      ],
+      "state_from": [
+        1,
+        -1,
+        1,
+        1
+      ],
+      "state_to": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "path_clearance": 0.0040000000000000036,
+      "detail": "L-path (1.0400,1.1086) -> (1.0800,1.1086) -> (1.0800,0.9960) meets no committed edge yet S changes (1, -1, 1, 1) -> (-1, 1, 1, 1)"
+    },
+    {
+      "kind": "face_state_mismatch",
+      "components": [
+        "G_plus",
+        "G_minus"
+      ],
+      "from": [
+        1.04,
+        1.1086298722931882
+      ],
+      "to": [
+        1.08,
+        1.064
+      ],
+      "state_from": [
+        1,
+        -1,
+        1,
+        1
+      ],
+      "state_to": [
+        -1,
+        1,
+        1,
+        1
+      ],
+      "path_clearance": 0.0040000000000000036,
+      "detail": "L-path (1.0400,1.1086) -> (1.0800,1.1086) -> (1.0800,1.0640) meets no committed edge yet S changes (1, -1, 1, 1) -> (-1, 1, 1, 1)"
+    }
+  ],
+  "missing_curve_refinements": [
+    {
+      "m1": 0.94,
+      "component": "G_plus",
+      "event_mode": "plus_one",
+      "bracket": [
+        0.8972562204501771,
+        0.8979213448591805
+      ],
+      "width": 0.0006651244090034591,
+      "endpoint_values": [
+        -0.09328286494512383,
+        0.0180794060870042
+      ],
+      "endpoint_n_unstable": [
+        2,
+        1
+      ],
+      "status": "refined",
+      "arithmetic": "float64 screening",
+      "certification": {
+        "status": "passed",
+        "localizer": "threebody_atlas.critical_manifold.localize_critical_point",
+        "event_mode": "plus_one",
+        "masses": [
+          0.94,
+          0.8978130033684775,
+          1.0
+        ],
+        "event_value": 5.7209561532545194e-09,
+        "closure": 2.1392448732860335e-10,
+        "period": 6.780226480569396,
+        "x1": -0.2723475187558657,
+        "v1": 1.5382615094043148,
+        "v2": 0.43627323172255383,
+        "gates": {
+          "maximum_absolute_event": 2e-08,
+          "maximum_periodic_closure": 1e-07
+        },
+        "nearest_committed_root": {
+          "cell_id": 270,
+          "masses": [
+            0.935,
+            0.8994175674808005
+          ],
+          "event_mode": "minus_one",
+          "distance": 0.005251154729252784,
+          "same_m1_slice_distance_m2": null
+        }
+      }
+    },
+    {
+      "m1": 0.97,
+      "component": "G_plus",
+      "event_mode": "plus_one",
+      "bracket": [
+        0.9282590319458435,
+        0.9297534280376073
+      ],
+      "width": 0.0014943960917638277,
+      "endpoint_values": [
+        -0.1845405551062136,
+        0.059422994310651234
+      ],
+      "endpoint_n_unstable": [
+        2,
+        1
+      ],
+      "status": "refined",
+      "arithmetic": "float64 screening",
+      "certification": {
+        "status": "passed",
+        "localizer": "threebody_atlas.critical_manifold.localize_critical_point",
+        "event_mode": "plus_one",
+        "masses": [
+          0.97,
+          0.9293865510484488,
+          1.0
+        ],
+        "event_value": 1.920664516319448e-09,
+        "closure": 2.3923723960853885e-10,
+        "period": 7.112436317210831,
+        "x1": -0.31278594600106885,
+        "v1": 1.385118740920169,
+        "v2": 0.45085720056652595,
+        "gates": {
+          "maximum_absolute_event": 2e-08,
+          "maximum_periodic_closure": 1e-07
+        },
+        "nearest_committed_root": {
+          "cell_id": 308,
+          "masses": [
+            0.954,
+            0.9377760076061459
+          ],
+          "event_mode": "minus_one",
+          "distance": 0.018066072659365866,
+          "same_m1_slice_distance_m2": null
+        }
+      }
+    },
+    {
+      "m1": 1.0,
+      "component": "G_minus",
+      "event_mode": "minus_one",
+      "bracket": [
+        0.9367435728816866,
+        0.9381699174479943
+      ],
+      "width": 0.0014263445663076357,
+      "endpoint_values": [
+        -0.027092146145941243,
+        0.000607053883657116
+      ],
+      "endpoint_n_unstable": [
+        2,
+        1
+      ],
+      "status": "refined",
+      "arithmetic": "float64 screening",
+      "certification": {
+        "status": "passed",
+        "localizer": "threebody_atlas.critical_manifold.localize_critical_point",
+        "event_mode": "minus_one",
+        "masses": [
+          1.0,
+          0.9381374464130331,
+          1.0
+        ],
+        "event_value": -6.96726232263245e-10,
+        "closure": 2.4281973004197505e-10,
+        "period": 7.407741686726333,
+        "x1": -0.34605601551747023,
+        "v1": 1.275585139078245,
+        "v2": 0.46986425423867295,
+        "gates": {
+          "maximum_absolute_event": 2e-08,
+          "maximum_periodic_closure": 1e-07
+        },
+        "nearest_committed_root": {
+          "cell_id": 396,
+          "masses": [
+            0.997,
+            0.9562525449533762
+          ],
+          "event_mode": "plus_one",
+          "distance": 0.01836182984144937,
+          "same_m1_slice_distance_m2": null
+        }
+      }
+    }
+  ],
+  "probes": [
+    {
+      "m1": 0.9,
+      "m2": 0.8657462006400285,
+      "ok": true,
+      "note": "",
+      "alpha": 4.094406781261666,
+      "beta": 7.109597315214,
+      "G_plus": 2.5431566276440023,
+      "G_minus": 2.9207837526906673,
+      "discriminant": 5.081031879678849,
+      "n_unstable": 0,
+      "closure": 4.4118375846622203e-10,
+      "seconds": 22.572,
+      "chart": [
+        -0.2290823390558807,
+        1.7498383253181609,
+        0.4120726858329586,
+        6.388934456268217
+      ]
+    },
+    {
+      "m1": 0.9,
+      "m2": 0.8818145064699464,
+      "ok": true,
+      "note": "",
+      "alpha": 3.7754349588001204,
+      "beta": 6.886253290268737,
+      "G_plus": 4.233643537468016,
+      "G_minus": 3.3353833726684963,
+      "discriminant": 0.9123756374560815,
+      "n_unstable": 0,
+      "closure": 3.772276904814445e-10,
+      "seconds": 11.845,
+      "chart": [
+        -0.23528146761656246,
+        1.720521430807044,
+        0.40897990691568104,
+        6.425388129124208
+      ]
+    },
+    {
+      "m1": 0.9,
+      "m2": 0.8898145064699464,
+      "ok": true,
+      "note": "",
+      "alpha": 3.6458400635549486,
+      "beta": 6.831580578441247,
+      "G_plus": 4.956540197111558,
+      "G_minus": 3.5399004513313495,
+      "discriminant": -0.8674520363030461,
+      "n_unstable": 2,
+      "closure": 3.6059410368307757e-10,
+      "seconds": 14.253,
+      "chart": [
+        -0.2382423010633975,
+        1.7070122000942878,
+        0.4074006889436935,
+        6.442513160212629
+      ]
+    },
+    {
+      "m1": 0.9,
+      "m2": 0.9643608798524598,
+      "ok": true,
+      "note": "",
+      "alpha": 3.417669398471987,
+      "beta": 8.6180186740965,
+      "G_plus": 8.112002283264577,
+      "G_minus": 5.7826798771525265,
+      "discriminant": -11.450255391358233,
+      "n_unstable": 2,
+      "closure": 2.758587582536979e-10,
+      "seconds": 53.197,
+      "chart": [
+        -0.26002282449555764,
+        1.6177372152622003,
+        0.39116215195983034,
+        6.556207565818204
+      ]
+    },
+    {
+      "m1": 0.9,
+      "m2": 1.0429072532349732,
+      "ok": true,
+      "note": "",
+      "alpha": 4.57337377684258,
+      "beta": 14.453930767517281,
+      "G_plus": 7.013688106461803,
+      "G_minus": 9.307183213832122,
+      "discriminant": -16.312985152617127,
+      "n_unstable": 2,
+      "closure": 2.661361374861475e-10,
+      "seconds": 10.874,
+      "chart": [
+        -0.26768974594181305,
+        1.595350722854967,
+        0.37048280391620564,
+        6.549944183435163
+      ]
+    },
+    {
+      "m1": 0.9,
+      "m2": 1.1214536266174866,
+      "ok": true,
+      "note": "",
+      "alpha": 5.926562832705059,
+      "beta": 20.722510373343304,
+      "G_plus": 5.163133377112949,
+      "G_minus": 12.869384707933186,
+      "discriminant": -16.353391821731726,
+      "n_unstable": 2,
+      "closure": 3.0137299298289926e-10,
+      "seconds": 16.543,
+      "chart": [
+        -0.257607399165323,
+        1.6435604800234123,
+        0.34702151392447445,
+        6.394295525798681
+      ]
+    },
+    {
+      "m1": 0.92,
+      "m2": 0.8669654525105589,
+      "ok": true,
+      "note": "",
+      "alpha": 4.364259224450882,
+      "beta": 5.05434470682906,
+      "G_plus": -1.1312106398762332,
+      "G_minus": 0.3258262579272948,
+      "discriminant": 17.743453546495438,
+      "n_unstable": 1,
+      "closure": 3.6311457491764245e-10,
+      "seconds": 6.836,
+      "chart": [
+        -0.24348712487677057,
+        1.668594105725831,
+        0.42760758041536945,
+        6.545734922616157
+      ]
+    },
+    {
+      "m1": 0.92,
+      "m2": 0.8699309050211178,
+      "ok": true,
+      "note": "",
+      "alpha": 4.272514051733627,
+      "beta": 4.994700412908873,
+      "G_plus": -0.6403838974928924,
+      "G_minus": 0.4496723094416186,
+      "discriminant": 16.455687084494823,
+      "n_unstable": 1,
+      "closure": 4.1514220808421713e-10,
+      "seconds": 10.942,
+      "chart": [
+        -0.24480123964207848,
+        1.662814000355809,
+        0.426997151030998,
+        6.553042739148805
+      ]
+    },
+    {
+      "m1": 0.92,
+      "m2": 0.8779309050211178,
+      "ok": true,
+      "note": "",
+      "alpha": 4.038593936414879,
+      "beta": 4.846894883687359,
+      "G_plus": 0.6153312651980869,
+      "G_minus": 0.7697070108576014,
+      "discriminant": 13.23141293981662,
+      "n_unstable": 0,
+      "closure": 3.202649355017359e-10,
+      "seconds": 14.398,
+      "chart": [
+        -0.24829493738992994,
+        1.6477122109341067,
+        0.4253414866663818,
+        6.57245628092049
+      ]
+    },
+    {
+      "m1": 0.92,
+      "m2": 0.89961181226561,
+      "ok": true,
+      "note": "",
+      "alpha": 3.511631018414515,
+      "beta": 4.580600463549794,
+      "G_plus": 3.5108143530627025,
+      "G_minus": 1.5573384267207633,
+      "discriminant": 6.102198702607908,
+      "n_unstable": 0,
+      "closure": 3.219706405314167e-10,
+      "seconds": 11.833,
+      "chart": [
+        -0.25730417972996666,
+        1.61051392339259,
+        0.420774222675542,
+        6.62228627254223
+      ]
+    },
+    {
+      "m1": 0.92,
+      "m2": 0.9212927195101023,
+      "ok": true,
+      "note": "",
+      "alpha": 3.1526689275017667,
+      "beta": 4.585114555899164,
+      "G_plus": 5.669100990888563,
+      "G_minus": 2.2797767008956304,
+      "discriminant": 0.8202145628526184,
+      "n_unstable": 0,
+      "closure": 3.697546799190267e-10,
+      "seconds": 7.489,
+      "chart": [
+        -0.2654651115808648,
+        1.578963462510123,
+        0.41605006363460567,
+        6.666608627011784
+      ]
+    },
+    {
+      "m1": 0.92,
+      "m2": 0.9292927195101023,
+      "ok": true,
+      "note": "",
+      "alpha": 3.0641442098774356,
+      "beta": 4.670658162899202,
+      "G_plus": 6.2857929036345865,
+      "G_minus": 2.542369743144331,
+      "discriminant": -0.7804992336519091,
+      "n_unstable": 2,
+      "closure": 2.3899085693762034e-10,
+      "seconds": 8.418,
+      "chart": [
+        -0.26822134950516363,
+        1.5687756718300458,
+        0.41425704400348057,
+        6.681199922556936
+      ]
+    },
+    {
+      "m1": 0.92,
+      "m2": 0.9939695396325767,
+      "ok": true,
+      "note": "",
+      "alpha": 3.1591113305942358,
+      "beta": 7.288350664082536,
+      "G_plus": 8.333682680517121,
+      "G_minus": 4.970128002894064,
+      "discriminant": -9.900527612487375,
+      "n_unstable": 2,
+      "closure": 2.8606834362830386e-10,
+      "seconds": 24.558,
+      "chart": [
+        -0.2843470277112667,
+        1.514962428041706,
+        0.3984915363535572,
+        6.752551019874299
+      ]
+    },
+    {
+      "m1": 0.92,
+      "m2": 1.062646359755051,
+      "ok": true,
+      "note": "",
+      "alpha": 4.282095375698899,
+      "beta": 13.056098947772805,
+      "G_plus": 7.363526693579411,
+      "G_minus": 8.491908196375007,
+      "discriminant": -15.631291978918137,
+      "n_unstable": 2,
+      "closure": 2.3168442851538914e-10,
+      "seconds": 17.134,
+      "chart": [
+        -0.28774794547099314,
+        1.5106238358879371,
+        0.37906701109938423,
+        6.716831921937698
+      ]
+    },
+    {
+      "m1": 0.92,
+      "m2": 1.1313231798775256,
+      "ok": true,
+      "note": "",
+      "alpha": 5.520602751469832,
+      "beta": 19.020731955383862,
+      "G_plus": 5.8971154465648645,
+      "G_minus": 11.979526452444198,
+      "discriminant": -17.441051070240505,
+      "n_unstable": 2,
+      "closure": 3.470572295184092e-10,
+      "seconds": 10.782,
+      "chart": [
+        -0.27672916172629425,
+        1.5569821304161477,
+        0.3578911665362034,
+        6.5621683356476765
+      ]
+    },
+    {
+      "m1": 0.94,
+      "m2": 0.8852839810881132,
+      "ok": true,
+      "note": "",
+      "alpha": 4.277002339429206,
+      "beta": 3.4168559713985243,
+      "G_plus": -2.2451580651767102,
+      "G_minus": -1.1371487074598878,
+      "discriminant": 22.841343841322452,
+      "n_unstable": 2,
+      "closure": 2.0573483432690326e-10,
+      "seconds": 11.651,
+      "chart": [
+        -0.2664882162757991,
+        1.5602171185542608,
+        0.43906952838217966,
+        6.7490391139442405
+      ]
+    },
+    {
+      "m1": 0.94,
+      "m2": 0.9065679621762265,
+      "ok": true,
+      "note": "",
+      "alpha": 3.6123026392174196,
+      "beta": 3.0618998994066526,
+      "G_plus": 1.388084064102138,
+      "G_minus": -0.1627053790281865,
+      "discriminant": 13.699551873409881,
+      "n_unstable": 1,
+      "closure": 3.5124740278408e-10,
+      "seconds": 6.56,
+      "chart": [
+        -0.2762687713800255,
+        1.5240688720674052,
+        0.43430346323190405,
+        6.801183978217452
+      ]
+    },
+    {
+      "m1": 0.94,
+      "m2": 0.9145679621762265,
+      "ok": true,
+      "note": "",
+      "alpha": 3.4072803940147076,
+      "beta": 2.9721308736782204,
+      "G_plus": 2.5284485095899747,
+      "G_minus": 0.15757008564880515,
+      "discriminant": 10.979279340841805,
+      "n_unstable": 0,
+      "closure": 2.9099130326491356e-10,
+      "seconds": 7.516,
+      "chart": [
+        -0.2797108120471895,
+        1.511940116337262,
+        0.4324870510194737,
+        6.81957077164908
+      ]
+    },
+    {
+      "m1": 0.94,
+      "m2": 0.9364842131467294,
+      "ok": true,
+      "note": "",
+      "alpha": 2.976588732044111,
+      "beta": 2.9076502811531553,
+      "G_plus": 5.048117888888488,
+      "G_minus": 0.954472817064933,
+      "discriminant": 5.042189211472234,
+      "n_unstable": 0,
+      "closure": 3.2839848889944154e-10,
+      "seconds": 9.113,
+      "chart": [
+        -0.28835482750185765,
+        1.482857187091849,
+        0.42739948644097686,
+        6.865197297264884
+      ]
+    },
+    {
+      "m1": 0.94,
+      "m2": 0.9584004641172322,
+      "ok": true,
+      "note": "",
+      "alpha": 2.7397200180477155,
+      "beta": 3.185639493907759,
+      "G_plus": 6.747319385621468,
+      "G_minus": 1.7061994578123278,
+      "discriminant": 0.6812679460420612,
+      "n_unstable": 0,
+      "closure": 2.3319377898424313e-10,
+      "seconds": 5.817,
+      "chart": [
+        -0.2956911390921229,
+        1.4598167212344664,
+        0.42209762321515365,
+        6.902076723001335
+      ]
+    },
+    {
+      "m1": 0.94,
+      "m2": 0.9664004641172322,
+      "ok": true,
+      "note": "",
+      "alpha": 2.700463295407495,
+      "beta": 3.387729751520135,
+      "G_plus": 7.184949979075165,
+      "G_minus": 1.9868031607051448,
+      "discriminant": -0.6547106329774737,
+      "n_unstable": 2,
+      "closure": 2.541266651094301e-10,
+      "seconds": 6.094,
+      "chart": [
+        -0.2980120625789784,
+        1.4528854888222085,
+        0.42009896802952723,
+        6.912972653881263
+      ]
+    },
+    {
+      "m1": 0.94,
+      "m2": 1.041600309411488,
+      "ok": true,
+      "note": "",
+      "alpha": 3.3207511874264943,
+      "beta": 8.01386480732441,
+      "G_plus": 8.089357682765446,
+      "G_minus": 5.372362432471421,
+      "discriminant": -10.462061281091213,
+      "n_unstable": 2,
+      "closure": 2.7311495180987503e-10,
+      "seconds": 8.604,
+      "chart": [
+        -0.30961255058714526,
+        1.4240510751831776,
+        0.39945700603123496,
+        6.935515725654269
+      ]
+    },
+    {
+      "m1": 0.94,
+      "m2": 1.120800154705744,
+      "ok": true,
+      "note": "",
+      "alpha": 4.793927581920466,
+      "beta": 15.60234579475021,
+      "G_plus": 6.838780303227416,
+      "G_minus": 10.014490630909279,
+      "discriminant": -17.076220862939312,
+      "n_unstable": 2,
+      "closure": 2.861557838262788e-10,
+      "seconds": 12.714,
+      "chart": [
+        -0.3015911030985153,
+        1.458201326919567,
+        0.3748058151018041,
+        6.794405408186261
+      ]
+    },
+    {
+      "m1": 0.97,
+      "m2": 0.9118206749364417,
+      "ok": true,
+      "note": "",
+      "alpha": 4.378782733699964,
+      "beta": 3.0611104098676156,
+      "G_plus": -3.211585992332168,
+      "G_minus": -1.6964550575323125,
+      "discriminant": 25.959558459078178,
+      "n_unstable": 2,
+      "closure": 2.0433461786960772e-10,
+      "seconds": 20.212,
+      "chart": [
+        -0.3040119757824306,
+        1.4113526122245799,
+        0.4551175991984156,
+        7.066515702322432
+      ]
+    },
+    {
+      "m1": 0.97,
+      "m2": 0.9596413498728833,
+      "ok": true,
+      "note": "",
+      "alpha": 2.992710158911804,
+      "beta": 1.8889461949470814,
+      "G_plus": 3.932685241476257,
+      "G_minus": -0.09647412287652646,
+      "discriminant": 9.34221058676002,
+      "n_unstable": 1,
+      "closure": 2.2962123972464036e-10,
+      "seconds": 6.093,
+      "chart": [
+        -0.325625349005926,
+        1.3496915633217572,
+        0.4432883630044431,
+        7.179113667639507
+      ]
+    },
+    {
+      "m1": 0.97,
+      "m2": 0.9676413498728833,
+      "ok": true,
+      "note": "",
+      "alpha": 2.8560870693044236,
+      "beta": 1.8072947761848495,
+      "G_plus": 4.67077236035831,
+      "G_minus": 0.09512063757600231,
+      "discriminant": 7.776750797143926,
+      "n_unstable": 0,
+      "closure": 1.803184093598288e-10,
+      "seconds": 6.563,
+      "chart": [
+        -0.3284831175589563,
+        1.3423349223024745,
+        0.4412150819866914,
+        7.19332143943438
+      ]
+    },
+    {
+      "m1": 0.97,
+      "m2": 0.9935526352099446,
+      "ok": true,
+      "note": "",
+      "alpha": 2.5999778132384086,
+      "beta": 1.9394179542500134,
+      "G_plus": 6.339551074819562,
+      "G_minus": 0.7394623277731962,
+      "discriminant": 3.802035318239194,
+      "n_unstable": 0,
+      "closure": 2.0611234949824855e-10,
+      "seconds": 6.647,
+      "chart": [
+        -0.336086099169581,
+        1.3239805678553924,
+        0.434247201399811,
+        7.227615559269648
+      ]
+    },
+    {
+      "m1": 0.97,
+      "m2": 1.019463920547006,
+      "ok": true,
+      "note": "",
+      "alpha": 2.6082952082585753,
+      "beta": 2.7913156746036334,
+      "G_plus": 7.141544425052182,
+      "G_minus": 1.5747252580864828,
+      "discriminant": 0.5043028610787137,
+      "n_unstable": 0,
+      "closure": 1.4076539966276664e-10,
+      "seconds": 5.815,
+      "chart": [
+        -0.3410998785327263,
+        1.3134891812030272,
+        0.4268688036789317,
+        7.242377257621323
+      ]
+    },
+    {
+      "m1": 0.97,
+      "m2": 1.027463920547006,
+      "ok": true,
+      "note": "",
+      "alpha": 2.6572726258279435,
+      "beta": 3.206815451906741,
+      "G_plus": 7.26317969693908,
+      "G_minus": 1.892270200250854,
+      "discriminant": -0.507982993028882,
+      "n_unstable": 2,
+      "closure": 2.3701571677540185e-10,
+      "seconds": 6.03,
+      "chart": [
+        -0.34212248567777515,
+        1.3117395050061267,
+        0.42450814808187876,
+        7.242802753665954
+      ]
+    },
+    {
+      "m1": 0.97,
+      "m2": 1.0823092803646706,
+      "ok": true,
+      "note": "",
+      "alpha": 3.390073084965148,
+      "beta": 7.640446743197954,
+      "G_plus": 7.300008233407068,
+      "G_minus": 4.860300573267658,
+      "discriminant": -7.948606771665516,
+      "n_unstable": 2,
+      "closure": 1.8681324455908084e-10,
+      "seconds": 7.852,
+      "chart": [
+        -0.34263403902438616,
+        1.317118821151129,
+        0.40741380775323444,
+        7.193181654928449
+      ]
+    },
+    {
+      "m1": 0.97,
+      "m2": 1.1411546401823354,
+      "ok": true,
+      "note": "",
+      "alpha": 4.449087642915492,
+      "beta": 13.676213061591492,
+      "G_plus": 6.98168720409854,
+      "G_minus": 8.778037775760508,
+      "discriminant": -15.317770248698702,
+      "n_unstable": 2,
+      "closure": 3.398225314932349e-10,
+      "seconds": 12.965,
+      "chart": [
+        -0.3314738671301286,
+        1.3538857516024678,
+        0.3880514567738382,
+        7.045893441069236
+      ]
+    },
+    {
+      "m1": 1.0,
+      "m2": 0.9096430261218427,
+      "ok": true,
+      "note": "",
+      "alpha": 6.144495194735991,
+      "beta": 7.2645445701904094,
+      "G_plus": -9.602426598225534,
+      "G_minus": -1.0244458192815724,
+      "discriminant": 41.85260447525997,
+      "n_unstable": 2,
+      "closure": 1.9671636530288336e-10,
+      "seconds": 12.071,
+      "chart": [
+        -0.32875724157872777,
+        1.3207518867016421,
+        0.4771418237172348,
+        7.318932598084878
+      ]
+    },
+    {
+      "m1": 1.0,
+      "m2": 0.9552860522436853,
+      "ok": true,
+      "note": "",
+      "alpha": 4.179644188188835,
+      "beta": 4.541343248970306,
+      "G_plus": -0.5365218801627023,
+      "G_minus": 0.1820548725926363,
+      "discriminant": 16.741206049490156,
+      "n_unstable": 1,
+      "closure": 1.8801629616581636e-10,
+      "seconds": 6.611,
+      "chart": [
+        -0.3549748415153106,
+        1.254259999475427,
+        0.465415519709097,
+        7.454900646119112
+      ]
+    },
+    {
+      "m1": 1.0,
+      "m2": 0.9632860522436854,
+      "ok": true,
+      "note": "",
+      "alpha": 3.9223747289897544,
+      "beta": 4.035169147679474,
+      "G_plus": 0.5009207737409511,
+      "G_minus": 0.19041968969996503,
+      "discriminant": 14.62334475581759,
+      "n_unstable": 0,
+      "closure": 1.716744343327414e-10,
+      "seconds": 6.858,
+      "chart": [
+        -0.3586992930416252,
+        1.2457783454688807,
+        0.46329800838755864,
+        7.474482371222548
+      ]
+    },
+    {
+      "m1": 1.0,
+      "m2": 0.9810154282432,
+      "ok": true,
+      "note": "",
+      "alpha": 3.446381587958241,
+      "beta": 3.005336344101069,
+      "G_plus": 2.3270468163516256,
+      "G_minus": 0.1125731681845874,
+      "discriminant": 11.427253377079216,
+      "n_unstable": 0,
+      "closure": 1.9567815996030188e-10,
+      "seconds": 6.291,
+      "chart": [
+        -0.36591156521960166,
+        1.2301601077575988,
+        0.45848126549763046,
+        7.511347895888172
+      ]
+    },
+    {
+      "m1": 1.0,
+      "m2": 0.9987448042427147,
+      "ok": true,
+      "note": "",
+      "alpha": 3.103838464984672,
+      "beta": 2.2202662691263337,
+      "G_plus": 3.597235479218302,
+      "G_minus": 0.012589339156989343,
+      "discriminant": 9.583455860090448,
+      "n_unstable": 0,
+      "closure": 1.1005473558500887e-10,
+      "seconds": 5.733,
+      "chart": [
+        -0.3716575914310226,
+        1.2186696769060894,
+        0.45347055596768077,
+        7.538213742299425
+      ]
+    },
+    {
+      "m1": 1.0,
+      "m2": 1.0067448042427147,
+      "ok": true,
+      "note": "",
+      "alpha": 2.993435568988068,
+      "beta": 1.9807115121335777,
+      "G_plus": 4.020098098205171,
+      "G_minus": -0.006159625842558469,
+      "discriminant": 8.985295009053154,
+      "n_unstable": 1,
+      "closure": 1.2740532765295536e-10,
+      "seconds": 5.988,
+      "chart": [
+        -0.3737694352025118,
+        1.2147491208951993,
+        0.45114238182199284,
+        7.546848138823296
+      ]
+    },
+    {
+      "m1": 1.0,
+      "m2": 1.0090914674546532,
+      "ok": true,
+      "note": "",
+      "alpha": 2.966211719562979,
+      "beta": 1.926100371372912,
+      "G_plus": 4.128830053995038,
+      "G_minus": -0.006323067753045919,
+      "discriminant": 8.823704236284945,
+      "n_unstable": 1,
+      "closure": 1.797747078990074e-10,
+      "seconds": 8.085,
+      "chart": [
+        -0.37433258573576483,
+        1.213741633612516,
+        0.4504514648046581,
+        7.548959695812049
+      ]
+    },
+    {
+      "m1": 1.0,
+      "m2": 1.0170914674546532,
+      "ok": true,
+      "note": "",
+      "alpha": 2.89070616213326,
+      "beta": 1.7968888991070582,
+      "G_plus": 4.452651926307498,
+      "G_minus": 0.015476574840538326,
+      "discriminant": 8.294275816433048,
+      "n_unstable": 0,
+      "closure": 1.5402995224213573e-10,
+      "seconds": 8.122,
+      "chart": [
+        -0.37606191148932533,
+        1.2107788510796624,
+        0.44806901918198966,
+        7.554710289690027
+      ]
+    },
+    {
+      "m1": 1.0,
+      "m2": 1.0535133982312694,
+      "ok": true,
+      "note": "",
+      "alpha": 2.856866120464933,
+      "beta": 2.4037904594651254,
+      "G_plus": 5.262593736675527,
+      "G_minus": 0.6900582185352597,
+      "discriminant": 5.401451156119314,
+      "n_unstable": 0,
+      "closure": 2.7298551788412416e-10,
+      "seconds": 10.701,
+      "chart": [
+        -0.38031367833939167,
+        1.2058804509407732,
+        0.43672158052070714,
+        7.552551640867621
+      ]
+    },
+    {
+      "m1": 1.0,
+      "m2": 1.0899353290078855,
+      "ok": true,
+      "note": "",
+      "alpha": 3.207589226241502,
+      "beta": 4.828820678897719,
+      "G_plus": 5.583285321448708,
+      "G_minus": 2.413642226414715,
+      "discriminant": 0.6340597386416982,
+      "n_unstable": 0,
+      "closure": 2.263669428471615e-10,
+      "seconds": 19.908,
+      "chart": [
+        -0.3789809618015314,
+        1.2136167529535624,
+        0.42469228723315927,
+        7.505543868307094
+      ]
+    },
+    {
+      "m1": 1.0,
+      "m2": 1.0979353290078855,
+      "ok": true,
+      "note": "",
+      "alpha": 3.31652637933529,
+      "beta": 5.545594732260699,
+      "G_plus": 5.64643645624896,
+      "G_minus": 2.912541973590119,
+      "discriminant": -0.6508206695336277,
+      "n_unstable": 2,
+      "closure": 2.1066281486554614e-10,
+      "seconds": 10.025,
+      "chart": [
+        -0.37799250661791517,
+        1.2168608877342408,
+        0.42198439119558745,
+        7.489606362427999
+      ]
+    },
+    {
+      "m1": 1.0,
+      "m2": 1.1469676645039426,
+      "ok": true,
+      "note": "",
+      "alpha": 4.075089801848606,
+      "beta": 10.612768414791235,
+      "G_plus": 6.162229603699595,
+      "G_minus": 6.462588811094022,
+      "discriminant": -9.243998351245576,
+      "n_unstable": 2,
+      "closure": 5.028901564003152e-10,
+      "seconds": 18.642,
+      "chart": [
+        -0.3669621056937057,
+        1.2480873124061238,
+        0.40518642866396565,
+        7.352810146535521
+      ]
+    },
+    {
+      "m1": 1.04,
+      "m2": 0.9136760814838537,
+      "ok": true,
+      "note": "",
+      "alpha": 9.036598883357998,
+      "beta": 20.16334036848307,
+      "G_plus": -14.056252931664922,
+      "G_minus": 6.090142601767074,
+      "discriminant": 57.29954897163872,
+      "n_unstable": 1,
+      "closure": 1.39109421039266e-10,
+      "seconds": 9.737,
+      "chart": [
+        -0.36698356360985224,
+        1.2025020000551303,
+        0.5038919891570462,
+        7.688873157162759
+      ]
+    },
+    {
+      "m1": 1.04,
+      "m2": 0.9673521629677073,
+      "ok": true,
+      "note": "",
+      "alpha": 6.173480014562943,
+      "beta": 13.865713797010663,
+      "G_plus": -3.1751662903669953,
+      "G_minus": 5.5187537678847765,
+      "discriminant": 16.036840418668973,
+      "n_unstable": 1,
+      "closure": 2.0185906152738232e-10,
+      "seconds": 8.937,
+      "chart": [
+        -0.40714332571127254,
+        1.1181938553535886,
+        0.4893181953785585,
+        7.894876778017638
+      ]
+    },
+    {
+      "m1": 1.04,
+      "m2": 1.017028244451561,
+      "ok": true,
+      "note": "",
+      "alpha": 4.459648593890137,
+      "beta": 6.664257532444624,
+      "G_plus": -0.09363403089619737,
+      "G_minus": 1.7449603446643502,
+      "discriminant": 12.908624202328875,
+      "n_unstable": 1,
+      "closure": 1.6156268638413032e-10,
+      "seconds": 6.064,
+      "chart": [
+        -0.42832667289405185,
+        1.0833269224330835,
+        0.47472096941600705,
+        8.004607905770532
+      ]
+    },
+    {
+      "m1": 1.04,
+      "m2": 1.025028244451561,
+      "ok": true,
+      "note": "",
+      "alpha": 4.266883677839863,
+      "beta": 5.681257812431914,
+      "G_plus": 0.07995574539273775,
+      "G_minus": 1.1474904567521875,
+      "discriminant": 13.61633449320749,
+      "n_unstable": 0,
+      "closure": 1.1331406342671696e-10,
+      "seconds": 5.602,
+      "chart": [
+        -0.43027081888835833,
+        1.0808385524526496,
+        0.4721946605682667,
+        8.012020153735632
+      ]
+    },
+    {
+      "m1": 1.04,
+      "m2": 1.0323268447955196,
+      "ok": true,
+      "note": "",
+      "alpha": 4.113719833297835,
+      "beta": 4.878543947142456,
+      "G_plus": 0.1962249473554465,
+      "G_minus": 0.6511042805467859,
+      "discriminant": 14.318273744680823,
+      "n_unstable": 0,
+      "closure": 9.631233599693467e-11,
+      "seconds": 6.362,
+      "chart": [
+        -0.431717360057259,
+        1.0792058640763837,
+        0.4698491147755514,
+        8.01629005070682
+      ]
+    },
+    {
+      "m1": 1.04,
+      "m2": 1.039625445139478,
+      "ok": true,
+      "note": "",
+      "alpha": 3.982494931096932,
+      "beta": 4.177536467931417,
+      "G_plus": 0.2825668813498261,
+      "G_minus": 0.21254660573755313,
+      "discriminant": 15.010079453262541,
+      "n_unstable": 0,
+      "closure": 1.3260021781064008e-10,
+      "seconds": 6.987,
+      "chart": [
+        -0.43286244507810984,
+        1.0781480560719217,
+        0.4674664843266659,
+        8.018220778780591
+      ]
+    },
+    {
+      "m1": 1.04,
+      "m2": 1.047625445139478,
+      "ok": true,
+      "note": "",
+      "alpha": 3.863765904790688,
+      "beta": 3.5362326060402225,
+      "G_plus": 0.35363717729609334,
+      "G_minus": -0.1912992035411536,
+      "discriminant": 15.693883781187619,
+      "n_unstable": 1,
+      "closure": 1.6732874947034343e-10,
+      "seconds": 9.934,
+      "chart": [
+        -0.43378335953380276,
+        1.0776143188084388,
+        0.46481463129089656,
+        8.017705376075337
+      ]
+    },
+    {
+      "m1": 1.04,
+      "m2": 1.078127658716333,
+      "ok": true,
+      "note": "",
+      "alpha": 3.6369794638647983,
+      "beta": 2.3967457654778572,
+      "G_plus": 0.5748689822890647,
+      "G_minus": -0.8772131622517394,
+      "discriminant": 16.73647226958124,
+      "n_unstable": 1,
+      "closure": 1.4356998918750175e-10,
+      "seconds": 19.337,
+      "chart": [
+        -0.4343080635583067,
+        1.0810271698064566,
+        0.45437000333297783,
+        7.991783349887593
+      ]
+    },
+    {
+      "m1": 1.04,
+      "m2": 1.1086298722931882,
+      "ok": true,
+      "note": "",
+      "alpha": 3.6998012269487535,
+      "beta": 3.2170401264986435,
+      "G_plus": 1.0182327648061218,
+      "G_minus": -0.18256232739886347,
+      "discriminant": 14.418778428526956,
+      "n_unstable": 1,
+      "closure": 1.5052636959012806e-10,
+      "seconds": 15.461,
+      "chart": [
+        -0.43056878972702434,
+        1.0920862181880084,
+        0.44353686333288606,
+        7.931357714797941
+      ]
+    },
+    {
+      "m1": 1.04,
+      "m2": 1.1166298722931882,
+      "ok": true,
+      "note": "",
+      "alpha": 3.750043471119956,
+      "beta": 3.7011715832464054,
+      "G_plus": 1.2009107565266675,
+      "G_minus": 0.20108464100649304,
+      "discriminant": 13.258487471263434,
+      "n_unstable": 0,
+      "closure": 1.5694844896417012e-10,
+      "seconds": 11.684,
+      "chart": [
+        -0.4289510293224496,
+        1.0961350388268039,
+        0.4406564272964265,
+        7.910396270561507
+      ]
+    },
+    {
+      "m1": 1.04,
+      "m2": 1.1443440693792326,
+      "ok": true,
+      "note": "",
+      "alpha": 3.9888766479471496,
+      "beta": 5.996617373729836,
+      "G_plus": 2.0633574860469395,
+      "G_minus": 2.018864077835537,
+      "discriminant": 7.8356806011959375,
+      "n_unstable": 0,
+      "closure": 3.3536404950052484e-10,
+      "seconds": 15.252,
+      "chart": [
+        -0.4214864725353633,
+        1.1136199958110193,
+        0.43063732303945884,
+        7.823220667252543
+      ]
+    },
+    {
+      "m1": 1.04,
+      "m2": 1.172058266465277,
+      "ok": true,
+      "note": "",
+      "alpha": 4.276087267168435,
+      "beta": 8.866279652537752,
+      "G_plus": 3.20975604952714,
+      "G_minus": 4.314105118200882,
+      "discriminant": 1.0285018436364914,
+      "n_unstable": 0,
+      "closure": 3.6397030178235784e-10,
+      "seconds": 13.629,
+      "chart": [
+        -0.41138494270850934,
+        1.136268170088469,
+        0.42069772813083345,
+        7.716202273491322
+      ]
+    },
+    {
+      "m1": 1.04,
+      "m2": 1.180058266465277,
+      "ok": true,
+      "note": "",
+      "alpha": 4.36085550562432,
+      "beta": 9.733227301141355,
+      "G_plus": 3.568094267395434,
+      "G_minus": 5.011516289892715,
+      "discriminant": -1.0290044186369136,
+      "n_unstable": 2,
+      "closure": 2.74605629009688e-10,
+      "seconds": 8.532,
+      "chart": [
+        -0.4080208855455484,
+        1.1437457815992556,
+        0.4178729174488833,
+        7.6821205939158475
+      ]
+    },
+    {
+      "m1": 1.04,
+      "m2": 1.1880291332326385,
+      "ok": true,
+      "note": "",
+      "alpha": 4.444805055574138,
+      "beta": 10.595092780320009,
+      "G_plus": 3.9262624468751817,
+      "G_minus": 5.705482669171733,
+      "discriminant": -3.0656386946295178,
+      "n_unstable": 2,
+      "closure": 4.3801985112566575e-10,
+      "seconds": 8.215,
+      "chart": [
+        -0.4044807472225665,
+        1.1516145187928297,
+        0.41508854418969904,
+        7.646890290096866
+      ]
+    },
+    {
+      "m1": 1.08,
+      "m2": 0.9279999999999999,
+      "ok": true,
+      "note": "",
+      "alpha": 11.54158759482456,
+      "beta": 38.94302060499789,
+      "G_plus": -10.306504963949457,
+      "G_minus": 19.859845415348772,
+      "discriminant": 53.76886254761306,
+      "n_unstable": 1,
+      "closure": 1.6710646567452818e-10,
+      "seconds": 14.14,
+      "chart": [
+        -0.4176526820303622,
+        1.0771499822594524,
+        0.5264863875847795,
+        8.127376883159947
+      ]
+    },
+    {
+      "m1": 1.08,
+      "m2": 0.996,
+      "ok": true,
+      "note": "",
+      "alpha": 7.879818314270096,
+      "beta": 24.972855403038036,
+      "G_plus": -2.3060544825825424,
+      "G_minus": 13.213218774497843,
+      "discriminant": 9.23866156791505,
+      "n_unstable": 1,
+      "closure": 1.4569849469346066e-10,
+      "seconds": 15.747,
+      "chart": [
+        -0.4797662398246492,
+        0.9749434412652087,
+        0.5072106438630702,
+        8.456296908245372
+      ]
+    },
+    {
+      "m1": 1.08,
+      "m2": 1.064,
+      "ok": true,
+      "note": "",
+      "alpha": 5.666307691418256,
+      "beta": 8.97128750146288,
+      "G_plus": -5.026558647046656,
+      "G_minus": 1.6386721186263689,
+      "discriminant": 25.552354379320207,
+      "n_unstable": 1,
+      "closure": 1.3747874766016678e-10,
+      "seconds": 26.973,
+      "chart": [
+        -0.49708835913508814,
+        0.9593221265771138,
+        0.48439249386048716,
+        8.527137815777575
+      ]
+    },
+    {
+      "m1": 1.08,
+      "m2": 1.132,
+      "ok": false,
+      "note": "closure 4.424e-01 > 1e-07",
+      "alpha": NaN,
+      "beta": NaN,
+      "G_plus": null,
+      "G_minus": null,
+      "discriminant": null,
+      "n_unstable": null,
+      "closure": 0.4424483454996666,
+      "seconds": 28.988,
+      "chart": null
+    }
+  ],
+  "scope": "This audit falsifies completeness where it fires; it cannot certify completeness where it does not.  A critical curve that both begins and ends between two adjacent scan lines, or that never separates two probes, is not sampled."
+}
