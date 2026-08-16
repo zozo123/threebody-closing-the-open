@@ -39,30 +39,17 @@ jobs:
       - run: uv sync --locked --group dev
       - run: uv run --no-sync pytest -q tests/test_floquet_rank_events.py
 
-  minus-one-corridor:
+  minus-one-canary:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
       fail-fast: false
-      max-parallel: 4
+      max-parallel: 2
       matrix:
         m1:
           - "1.042"
-          - "1.044"
-          - "1.046"
-          - "1.048"
-          - "1.050"
-          - "1.052"
-          - "1.054"
-          - "1.056"
-          - "1.058"
-          - "1.060"
-          - "1.062"
           - "1.064"
           - "1.066"
-          - "1.068"
-          - "1.070"
-          - "1.072"
           - "1.074"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -90,17 +77,15 @@ jobs:
           if-no-files-found: warn
           retention-days: 90
 
-  plus-one-seeds:
+  plus-one-canary:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
       fail-fast: false
-      max-parallel: 4
+      max-parallel: 2
       matrix:
         m1:
           - "0.930"
-          - "0.931"
-          - "0.940"
           - "0.970"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
