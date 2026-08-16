@@ -30,6 +30,7 @@ from scipy.integrate import solve_ivp
 from scipy.optimize import least_squares
 
 from .boundary import BoundarySample, evaluate, stability_score
+from .conditioning import SolveConditioning, scalar_condition_report
 from .liao_family import FamilyPoint, correct_family_point, state_from_chart
 from .reduced import (
     ReducedFloquetResult,
@@ -72,6 +73,11 @@ class LocalizedCriticalPoint:
     event_mode: EventMode
     event_value: float
     source_width: float
+    #: Conditioning of the one-dimensional event solve in m2.  ``event_value``
+    #: is a backward error; ``conditioning.displacement_bound`` converts it into
+    #: the m2 uncertainty it actually buys.  ``None`` when not requested, since
+    #: measuring d(event)/d(m2) costs two extra corrected Floquet evaluations.
+    conditioning: SolveConditioning | None = None
 
     @property
     def vector(self) -> Array:
@@ -145,6 +151,58 @@ def _interpolate_guess(a: FamilyPoint, b: FamilyPoint, m2: float) -> tuple[float
     return tuple(float(x) for x in p)
 
 
+def event_slope_in_m2(
+    sample: BoundarySample,
+    mode: EventMode,
+    *,
+    max_closure: float = 1e-7,
+    step: float = 1e-7,
+    precise: bool = True,
+) -> float | None:
+    """Central-difference d(event)/d(m2) at a corrected sample.
+
+    Each evaluation re-corrects the periodic orbit at the shifted mass, so this
+    is the derivative along the family, not a partial derivative at frozen
+    chart coordinates.  Costs two corrected Floquet evaluations.
+    """
+    ev = _precise_evaluate if precise else evaluate
+    m1, m2, m3 = (float(x) for x in sample.point.masses)
+    guess = (sample.point.x1, sample.point.v1, sample.point.v2, sample.point.period)
+    values: list[float] = []
+    for shifted in (m2 + step, m2 - step):
+        point = correct_family_point((m1, shifted, m3), guess, max_nfev=60)
+        if not point.success or point.residual_norm > max_closure:
+            return None
+        values.append(event_value(ev(point).floquet, mode))
+    return (values[0] - values[1]) / (2.0 * step)
+
+
+def attach_event_conditioning(
+    localized: LocalizedCriticalPoint,
+    *,
+    max_closure: float = 1e-7,
+    step: float = 1e-7,
+    precise: bool = True,
+) -> LocalizedCriticalPoint:
+    """Return ``localized`` with its 1-D event-solve conditioning filled in."""
+    slope = event_slope_in_m2(
+        localized.sample,
+        localized.event_mode,
+        max_closure=max_closure,
+        step=step,
+        precise=precise,
+    )
+    if slope is None:
+        return localized
+    return LocalizedCriticalPoint(
+        localized.sample,
+        localized.event_mode,
+        localized.event_value,
+        localized.source_width,
+        scalar_condition_report(slope, localized.event_value),
+    )
+
+
 def localize_critical_point(
     stable: FamilyPoint,
     unstable: FamilyPoint,
@@ -154,8 +212,38 @@ def localize_critical_point(
     event_tolerance: float = 2e-8,
     max_iterations: int = 40,
     max_closure: float = 1e-7,
+    conditioning: bool = False,
 ) -> LocalizedCriticalPoint:
-    """Project an S/U mass-slice bracket onto one smooth Floquet event."""
+    """Project an S/U mass-slice bracket onto one smooth Floquet event.
+
+    With ``conditioning=True`` the returned point also carries the conditioning
+    of its own solve, so the event residual is never reported alone.
+    """
+    localized = _localize_critical_point(
+        stable,
+        unstable,
+        event_mode=event_mode,
+        m2_tolerance=m2_tolerance,
+        event_tolerance=event_tolerance,
+        max_iterations=max_iterations,
+        max_closure=max_closure,
+    )
+    if not conditioning:
+        return localized
+    return attach_event_conditioning(localized, max_closure=max_closure)
+
+
+def _localize_critical_point(
+    stable: FamilyPoint,
+    unstable: FamilyPoint,
+    *,
+    event_mode: EventMode | None = None,
+    m2_tolerance: float = 2e-9,
+    event_tolerance: float = 2e-8,
+    max_iterations: int = 40,
+    max_closure: float = 1e-7,
+) -> LocalizedCriticalPoint:
+    """Illinois/Newton localization proper.  See ``localize_critical_point``."""
     a = evaluate(stable)
     b = evaluate(unstable)
     mode = event_mode or infer_event_mode(a, b)

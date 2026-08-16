@@ -21,6 +21,7 @@ import numpy as np
 from scipy.optimize import least_squares
 
 from .boundary import BoundarySample, stability_score
+from .conditioning import SolveConditioning, condition_report
 from .critical_geometry import continuation_scales, critical_tangent
 from .critical_manifold import (
     AugmentedCriticalPoint,
@@ -40,6 +41,15 @@ class HybridJacobianDiagnostics:
     null_residual: float
     spectral_gap: float
     singular_values: tuple[float, ...]
+    #: Conditioning of the unscaled critical residual Jacobian
+    #: d[closure, event]/d(x1,v1,v2,T,m1,m2) at the accepted point.  This is the
+    #: geometry of the critical curve itself.
+    predictor_conditioning: SolveConditioning | None = None
+    #: Conditioning of the scaled augmented corrector Jacobian (closure, event,
+    #: arclength) the least-squares solve actually saw, paired with its residual.
+    #: ``displacement_bound`` is the backward-error displacement in the scaled
+    #: continuation variables.
+    corrector_conditioning: SolveConditioning | None = None
 
 
 def _derivative_blocks(y: Array, mode: str, m3: float) -> tuple[Array, Array]:
@@ -185,6 +195,11 @@ def advance_hybrid_critical(
         null_residual=float(tangent_info.null_residual),
         spectral_gap=float(tangent_info.spectral_gap),
         singular_values=tuple(float(x) for x in tangent_info.singular_values),
+        predictor_conditioning=condition_report(
+            critical_jac0,
+            np.concatenate((closure, [critical])),
+        ),
+        corrector_conditioning=condition_report(getattr(fit, "jac", None), fit.fun),
     )
     return accepted, diagnostics
 

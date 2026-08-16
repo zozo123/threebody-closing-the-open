@@ -20,9 +20,15 @@ from typing import Any
 
 try:  # pragma: no cover - exercised implicitly by both install layouts
     from threebody_atlas.completeness import verification_report
+    from threebody_atlas.conditioning import summarize_conditioning
 except ModuleNotFoundError:  # running from a source checkout without an install
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
     from threebody_atlas.completeness import verification_report
+    from threebody_atlas.conditioning import summarize_conditioning
+
+# The frozen event gate, mirrored here for reporting only.  It is never used to
+# relax any acceptance decision and may only ever be made stricter.
+EVENT_GATE = 2e-8
 
 
 REQUIRED_HEADLINE_IDS = (
@@ -296,6 +302,56 @@ def load_classification(
         screening_passed=bool(payload.get("passed")),
         edge_endpoint_bindings=payload.get("edge_endpoint_bindings") or [],
     )
+
+
+def root_residual_margin(roots: list[dict[str, Any]]) -> dict[str, Any]:
+    """How much of the frozen 2e-8 event budget the census actually consumes.
+
+    ``max |event| <= 2e-8`` is not a finding on its own.  A reader needs to know
+    whether the worst cell sits at 1% or at 99% of the gate, how many cells are
+    in the top decade, and -- when the producing run recorded it -- the
+    conditioning that turns those residuals into m2 uncertainties.  Reporting
+    only; this function never gates anything.
+    """
+    events = sorted(abs(float(root.get("event") or 0.0)) for root in roots)
+    if not events:
+        return {"localized_roots": 0}
+
+    def quantile(q: float) -> float:
+        pos = q * (len(events) - 1)
+        lo = int(math.floor(pos))
+        hi = min(lo + 1, len(events) - 1)
+        return events[lo] * (1.0 - (pos - lo)) + events[hi] * (pos - lo)
+
+    return {
+        "localized_roots": len(events),
+        "event_gate": EVENT_GATE,
+        "max_abs_event": events[-1],
+        "gate_occupancy_max": events[-1] / EVENT_GATE,
+        "headroom_fraction": 1.0 - events[-1] / EVENT_GATE,
+        "median_abs_event": quantile(0.5),
+        "p90_abs_event": quantile(0.90),
+        "p99_abs_event": quantile(0.99),
+        "roots_above_1e_8": sum(1 for value in events if value > 1e-8),
+        "roots_above_half_gate": sum(1 for value in events if value > 0.5 * EVENT_GATE),
+        "roots_above_95_percent_of_gate": sum(
+            1 for value in events if value > 0.95 * EVENT_GATE
+        ),
+        "closure_conditioning": summarize_conditioning(
+            [root.get("closure_conditioning") for root in roots]
+        ),
+        "event_conditioning": summarize_conditioning(
+            [root.get("event_conditioning") for root in roots]
+        ),
+        "max_reported_m2_uncertainty": max(
+            (
+                float(root["m2_uncertainty"])
+                for root in roots
+                if root.get("m2_uncertainty") is not None
+            ),
+            default=None,
+        ),
+    }
 
 
 def polyline_edges(
@@ -1059,6 +1115,7 @@ def main() -> None:
             for row in germs
         ],
         "root_coverage": coverage,
+        "root_residual_margin": root_residual_margin(roots),
         "incidence": incidence_summary(edges, nodes),
         "unexplained_nodes": unexplained,
         "missing_required_nodes": missing_required,

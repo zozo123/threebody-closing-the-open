@@ -15,6 +15,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+from threebody_atlas.conditioning import summarize_conditioning
 
 EVENT_GATE = 2e-8
 CLOSURE_GATE = 1e-7
@@ -108,6 +109,11 @@ def from_julia(
             "dps": (provenance or {}).get("dps") or row.get("dps"),
         },
     }
+    # Conditioning travels with the residual it explains.  A BigFloat event of
+    # 1e-30 is meaningless without sigma_min of the solve that produced it.
+    for key in ("closure_conditioning", "event_conditioning", "m2_uncertainty"):
+        if row.get(key) is not None:
+            out[key] = row[key]
     if screening:
         out["orientation"] = screening.get("orientation")
         out["published_labels"] = screening.get("published_labels")
@@ -233,6 +239,18 @@ def main() -> None:
         "julia_ok": julia_passed,
         "julia_event_mode_reclassifications": sorted(reclassified),
         "frozen_gates": {"event": EVENT_GATE, "closure": CLOSURE_GATE},
+        "gate_occupancy_max_event": (
+            max((abs(as_float(root["event"])) for root in roots), default=0.0) / EVENT_GATE
+        ),
+        "roots_above_half_event_gate": sum(
+            1 for root in roots if abs(as_float(root["event"])) > 0.5 * EVENT_GATE
+        ),
+        "closure_conditioning_summary": summarize_conditioning(
+            [root.get("closure_conditioning") for root in roots]
+        ),
+        "event_conditioning_summary": summarize_conditioning(
+            [root.get("event_conditioning") for root in roots]
+        ),
         "roots": roots,
     }
     if payload["max_abs_event"] > EVENT_GATE:

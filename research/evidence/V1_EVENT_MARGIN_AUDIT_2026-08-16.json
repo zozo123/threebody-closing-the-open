@@ -1,0 +1,1925 @@
+{
+  "schema": "atlas.v1.event-margin-audit/1",
+  "claim_status": "read-only audit of the frozen hybrid critical-root census; no gate is modified, no release flag is set, no root is re-localized",
+  "source_roots_artifact": "research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json",
+  "source_roots_schema": "atlas.v1.hybrid-critical-root-network/2",
+  "frozen_gates": {
+    "event": 2e-08,
+    "closure": 1e-07
+  },
+  "localized_roots": 620,
+  "event_distribution": {
+    "count": 620,
+    "min": 6.975204314895058e-13,
+    "median": 3.28579821634308e-09,
+    "p75": 1.055881634903777e-08,
+    "p90": 1.578564702287011e-08,
+    "p99": 1.904002139951899e-08,
+    "max": 1.989798081858396e-08,
+    "mean": 5.863308218015866e-09,
+    "above_1e_9": 421,
+    "above_1e_8": 165,
+    "above_1p5e_8": 74,
+    "above_1p9e_8": 7,
+    "gate_occupancy_max": 0.994899040929198,
+    "gate_occupancy_p90": 0.7892823511435055
+  },
+  "closure_distribution": {
+    "count": 620,
+    "min": 6.592276292012329e-24,
+    "median": 1.8456727109278958e-10,
+    "p75": 3.0373627866628474e-10,
+    "p90": 6.080193847805174e-10,
+    "p99": 1.0756421238650183e-09,
+    "max": 1.3449954408014987e-09,
+    "mean": 2.3439527476607516e-10,
+    "above_1e_9": 9,
+    "above_1e_8": 0,
+    "above_1p5e_8": 0,
+    "above_1p9e_8": 0,
+    "gate_occupancy_max": 0.06724977204007493,
+    "gate_occupancy_p90": 0.030400969239025872
+  },
+  "event_distribution_by_estimator": {
+    "float64": {
+      "count": 462,
+      "min": 1.4388490399142029e-11,
+      "median": 5.755383072902909e-09,
+      "p75": 1.2161968973578574e-08,
+      "p90": 1.673930969392501e-08,
+      "p99": 1.9227388200482305e-08,
+      "max": 1.989798081858396e-08,
+      "mean": 7.324876794880623e-09,
+      "above_1e_9": 374,
+      "above_1e_8": 158,
+      "above_1p5e_8": 71,
+      "above_1p9e_8": 7,
+      "gate_occupancy_max": 0.994899040929198,
+      "gate_occupancy_p90": 0.8369654846962504
+    },
+    "julia_bigfloat": {
+      "count": 158,
+      "min": 6.975204314895058e-13,
+      "median": 1.774530484483208e-10,
+      "p75": 1.5537666895327437e-09,
+      "p90": 4.51003380062722e-09,
+      "p99": 1.60707767324588e-08,
+      "max": 1.664498464137331e-08,
+      "mean": 1.589607695791072e-09,
+      "above_1e_9": 47,
+      "above_1e_8": 7,
+      "above_1p5e_8": 3,
+      "above_1p9e_8": 0,
+      "gate_occupancy_max": 0.8322492320686655,
+      "gate_occupancy_p90": 0.225501690031361
+    }
+  },
+  "event_distribution_by_mode": {
+    "minus_one": {
+      "count": 168,
+      "min": 1.4388490399142029e-11,
+      "median": 1.1775922459378307e-09,
+      "p75": 4.762577443528926e-09,
+      "p90": 1.1635676022692115e-08,
+      "p99": 1.815584184328145e-08,
+      "max": 1.8446943528260817e-08,
+      "mean": 3.7782424094119045e-09,
+      "above_1e_9": 93,
+      "above_1e_8": 24,
+      "above_1p5e_8": 10,
+      "above_1p9e_8": 0,
+      "gate_occupancy_max": 0.9223471764130409,
+      "gate_occupancy_p90": 0.5817838011346057
+    },
+    "plus_one": {
+      "count": 198,
+      "min": 1.0523509253774694e-12,
+      "median": 4.941634657029681e-09,
+      "p75": 1.1146243039661385e-08,
+      "p90": 1.5541112929895467e-08,
+      "p99": 1.8988151637699957e-08,
+      "max": 1.949616645902097e-08,
+      "mean": 6.5411128289499285e-09,
+      "above_1e_9": 152,
+      "above_1e_8": 58,
+      "above_1p5e_8": 23,
+      "above_1p9e_8": 2,
+      "gate_occupancy_max": 0.9748083229510485,
+      "gate_occupancy_p90": 0.7770556464947733
+    },
+    "trace_collision": {
+      "count": 254,
+      "min": 6.975204314895058e-13,
+      "median": 4.596344523548817e-09,
+      "p75": 1.2604454049935931e-08,
+      "p90": 1.6727132723382e-08,
+      "p99": 1.9813851421940364e-08,
+      "max": 1.989798081858396e-08,
+      "mean": 6.714039489199022e-09,
+      "above_1e_9": 176,
+      "above_1e_8": 83,
+      "above_1p5e_8": 41,
+      "above_1p9e_8": 5,
+      "gate_occupancy_max": 0.994899040929198,
+      "gate_occupancy_p90": 0.8363566361690999
+    }
+  },
+  "event_distribution_by_orientation": {
+    "S->U": {
+      "count": 301,
+      "min": 6.975204314895058e-13,
+      "median": 3.288804006906787e-09,
+      "p75": 1.1555739920510177e-08,
+      "p90": 1.6383151280052743e-08,
+      "p99": 1.9812525731133235e-08,
+      "max": 1.989798081858396e-08,
+      "mean": 6.172529349509495e-09,
+      "above_1e_9": 195,
+      "above_1e_8": 91,
+      "above_1p5e_8": 43,
+      "above_1p9e_8": 5,
+      "gate_occupancy_max": 0.994899040929198,
+      "gate_occupancy_p90": 0.8191575640026372
+    },
+    "U->S": {
+      "count": 319,
+      "min": 1.0523509253774694e-12,
+      "median": 3.282792425779373e-09,
+      "p75": 9.320670457668712e-09,
+      "p90": 1.4678367676879131e-08,
+      "p99": 1.843940779622244e-08,
+      "max": 1.949616645902097e-08,
+      "mean": 5.571535300838493e-09,
+      "above_1e_9": 226,
+      "above_1e_8": 74,
+      "above_1p5e_8": 31,
+      "above_1p9e_8": 2,
+      "gate_occupancy_max": 0.9748083229510485,
+      "gate_occupancy_p90": 0.7339183838439566
+    }
+  },
+  "clustering": {
+    "top_n": 25,
+    "worst_cell_ids": [
+      347,
+      299,
+      471,
+      387,
+      222,
+      221,
+      158,
+      112,
+      395,
+      582,
+      439,
+      36,
+      230,
+      591,
+      291,
+      522,
+      96,
+      588,
+      423,
+      79,
+      606,
+      575,
+      578,
+      618,
+      285
+    ],
+    "event_mode_share_all": {
+      "trace_collision": 0.4096774193548387,
+      "plus_one": 0.3193548387096774,
+      "minus_one": 0.2709677419354839
+    },
+    "event_mode_share_worst": {
+      "trace_collision": 0.52,
+      "plus_one": 0.32,
+      "minus_one": 0.16
+    },
+    "event_mode_enrichment": {
+      "trace_collision": 1.2692913385826772,
+      "plus_one": 1.002020202020202,
+      "minus_one": 0.5904761904761904
+    },
+    "orientation_share_all": {
+      "U->S": 0.5145161290322581,
+      "S->U": 0.4854838709677419
+    },
+    "orientation_share_worst": {
+      "S->U": 0.52,
+      "U->S": 0.48
+    },
+    "orientation_enrichment": {
+      "S->U": 1.0710963455149503,
+      "U->S": 0.9329153605015673
+    },
+    "m1_band_share_worst": {
+      "1.04-1.06": 0.24,
+      "0.94-0.96": 0.12,
+      "1.00-1.02": 0.12,
+      "0.90-0.92": 0.12,
+      "0.98-1.00": 0.08,
+      "0.84-0.86": 0.08,
+      "0.96-0.98": 0.04,
+      "0.86-0.88": 0.04,
+      "0.80-0.82": 0.04,
+      "1.02-1.04": 0.04,
+      "0.82-0.84": 0.04,
+      "1.06-1.08": 0.04
+    },
+    "m1_band_enrichment": {
+      "1.04-1.06": 3.7199999999999998,
+      "0.94-0.96": 1.9578947368421054,
+      "1.00-1.02": 0.9299999999999999,
+      "0.90-0.92": 1.8599999999999999,
+      "0.98-1.00": 1.0333333333333332,
+      "0.84-0.86": 1.24,
+      "0.96-0.98": 0.62,
+      "0.86-0.88": 0.62,
+      "0.80-0.82": 0.62,
+      "1.02-1.04": 0.31,
+      "0.82-0.84": 0.62,
+      "1.06-1.08": 2.0666666666666664
+    },
+    "distinct_m1_bands_in_worst": 12,
+    "spearman_event_vs_m1": 0.12227049335426814,
+    "median_organizer_distance_all": 0.048639543933854876,
+    "median_organizer_distance_worst": 0.054119813965937985
+  },
+  "worst_cells": [
+    {
+      "cell_id": 347,
+      "abs_event": 1.989798081858396e-08,
+      "gate_occupancy": 0.994899040929198,
+      "event_mode": "trace_collision",
+      "orientation": "S->U",
+      "estimator": "float64",
+      "m1": 0.973,
+      "m2": 1.0303543486924789,
+      "closure": 1.5337548507792883e-10,
+      "nearest_organizer": {
+        "id": "secondary_right_death",
+        "distance": 0.07136058674728488
+      }
+    },
+    {
+      "cell_id": 299,
+      "abs_event": 1.9875196599627998e-08,
+      "gate_occupancy": 0.9937598299813999,
+      "event_mode": "trace_collision",
+      "orientation": "S->U",
+      "estimator": "float64",
+      "m1": 0.949,
+      "m2": 0.9794631839767352,
+      "closure": 2.5354139808320106e-10,
+      "nearest_organizer": {
+        "id": "mixed_secondary_left",
+        "distance": 0.0532110304461196
+      }
+    },
+    {
+      "cell_id": 471,
+      "abs_event": 1.981534634987181e-08,
+      "gate_occupancy": 0.9907673174935905,
+      "event_mode": "trace_collision",
+      "orientation": "S->U",
+      "estimator": "float64",
+      "m1": 1.015,
+      "m2": 1.12677951910514,
+      "closure": 3.2742808399858307e-10,
+      "nearest_organizer": {
+        "id": "mixed_principal_right",
+        "distance": 0.03465822673314654
+      }
+    },
+    {
+      "cell_id": 387,
+      "abs_event": 1.9812525731133235e-08,
+      "gate_occupancy": 0.9906262865566617,
+      "event_mode": "trace_collision",
+      "orientation": "S->U",
+      "estimator": "float64",
+      "m1": 0.993,
+      "m2": 1.0777432936629707,
+      "closure": 2.546474842494984e-10,
+      "nearest_organizer": {
+        "id": "secondary_right_death",
+        "distance": 0.058905637256200176
+      }
+    },
+    {
+      "cell_id": 222,
+      "abs_event": 1.949616645902097e-08,
+      "gate_occupancy": 0.9748083229510485,
+      "event_mode": "plus_one",
+      "orientation": "U->S",
+      "estimator": "float64",
+      "m1": 0.911,
+      "m2": 0.8619182662280981,
+      "closure": 3.9890493821290066e-10,
+      "nearest_organizer": {
+        "id": "mixed_principal_left",
+        "distance": 0.029706666553075745
+      }
+    },
+    {
+      "cell_id": 221,
+      "abs_event": 1.9055546363055953e-08,
+      "gate_occupancy": 0.9527773181527976,
+      "event_mode": "trace_collision",
+      "orientation": "S->U",
+      "estimator": "float64",
+      "m1": 0.91,
+      "m2": 0.906099375490768,
+      "closure": 3.7740344507476343e-10,
+      "nearest_organizer": {
+        "id": "mixed_principal_left",
+        "distance": 0.028284274674209867
+      }
+    },
+    {
+      "cell_id": 158,
+      "abs_event": 1.905265634150055e-08,
+      "gate_occupancy": 0.9526328170750276,
+      "event_mode": "plus_one",
+      "orientation": "U->S",
+      "estimator": "float64",
+      "m1": 0.879,
+      "m2": 0.8074315228116983,
+      "closure": 7.108154439646698e-10,
+      "nearest_organizer": {
+        "id": "mixed_principal_left",
+        "distance": 0.09272449109912033
+      }
+    },
+    {
+      "cell_id": 112,
+      "abs_event": 1.8986156646860763e-08,
+      "gate_occupancy": 0.9493078323430382,
+      "event_mode": "plus_one",
+      "orientation": "U->S",
+      "estimator": "float64",
+      "m1": 0.856,
+      "m2": 0.7552548452849487,
+      "closure": 7.556139725238815e-10,
+      "nearest_organizer": {
+        "id": "mixed_principal_left",
+        "distance": 0.14930844650493594
+      }
+    },
+    {
+      "cell_id": 395,
+      "abs_event": 1.8485002306611875e-08,
+      "gate_occupancy": 0.9242501153305938,
+      "event_mode": "trace_collision",
+      "orientation": "S->U",
+      "estimator": "float64",
+      "m1": 0.996,
+      "m2": 1.084742036300313,
+      "closure": 1.9254870480700162e-10,
+      "nearest_organizer": {
+        "id": "secondary_right_death",
+        "distance": 0.06061672388961377
+      }
+    },
+    {
+      "cell_id": 582,
+      "abs_event": 1.8446943528260817e-08,
+      "gate_occupancy": 0.9223471764130409,
+      "event_mode": "minus_one",
+      "orientation": "U->S",
+      "estimator": "float64",
+      "m1": 1.044,
+      "m2": 1.1198098226853619,
+      "closure": 1.555979867419154e-10,
+      "nearest_organizer": {
+        "id": "mixed_principal_right",
+        "distance": 0.01114760696270589
+      }
+    },
+    {
+      "cell_id": 439,
+      "abs_event": 1.844109343007716e-08,
+      "gate_occupancy": 0.922054671503858,
+      "event_mode": "trace_collision",
+      "orientation": "S->U",
+      "estimator": "float64",
+      "m1": 1.007,
+      "m2": 1.1095927365443536,
+      "closure": 1.4105766046887414e-10,
+      "nearest_organizer": {
+        "id": "mixed_principal_right",
+        "distance": 0.046969247385917415
+      }
+    },
+    {
+      "cell_id": 36,
+      "abs_event": 1.8405078350269832e-08,
+      "gate_occupancy": 0.9202539175134916,
+      "event_mode": "plus_one",
+      "orientation": "U->S",
+      "estimator": "float64",
+      "m1": 0.818,
+      "m2": 0.7434741911283114,
+      "closure": 6.584330629627274e-10,
+      "nearest_organizer": {
+        "id": "mixed_principal_left",
+        "distance": 0.18029857054096815
+      }
+    },
+    {
+      "cell_id": 230,
+      "abs_event": 1.83985982005197e-08,
+      "gate_occupancy": 0.919929910025985,
+      "event_mode": "plus_one",
+      "orientation": "U->S",
+      "estimator": "float64",
+      "m1": 0.915,
+      "m2": 0.867378614310378,
+      "closure": 4.1030003927746765e-10,
+      "nearest_organizer": {
+        "id": "mixed_principal_left",
+        "distance": 0.022941605758874245
+      }
+    },
+    {
+      "cell_id": 591,
+      "abs_event": 1.8313205146780476e-08,
+      "gate_occupancy": 0.9156602573390238,
+      "event_mode": "trace_collision",
+      "orientation": "S->U",
+      "estimator": "float64",
+      "m1": 1.048,
+      "m2": 1.1906703343432794,
+      "closure": 4.288432177245321e-10,
+      "nearest_organizer": {
+        "id": "mixed_principal_right",
+        "distance": 0.06121423468995641
+      }
+    },
+    {
+      "cell_id": 291,
+      "abs_event": 1.8268892842954187e-08,
+      "gate_occupancy": 0.9134446421477094,
+      "event_mode": "trace_collision",
+      "orientation": "S->U",
+      "estimator": "float64",
+      "m1": 0.945,
+      "m2": 0.9717993405683284,
+      "closure": 1.947154157625117e-10,
+      "nearest_organizer": {
+        "id": "mixed_secondary_left",
+        "distance": 0.054119813965937985
+      }
+    },
+    {
+      "cell_id": 522,
+      "abs_event": 1.821380735123057e-08,
+      "gate_occupancy": 0.9106903675615285,
+      "event_mode": "minus_one",
+      "orientation": "U->S",
+      "estimator": "float64",
+      "m1": 1.028,
+      "m2": 1.0896419506504806,
+      "closure": 1.0473039606260008e-10,
+      "nearest_organizer": {
+        "id": "mixed_principal_right",
+        "distance": 0.045291014474388096
+      }
+    },
+    {
+      "cell_id": 96,
+      "abs_event": 1.8169256321698413e-08,
+      "gate_occupancy": 0.9084628160849206,
+      "event_mode": "plus_one",
+      "orientation": "U->S",
+      "estimator": "float64",
+      "m1": 0.848,
+      "m2": 0.7429769060895873,
+      "closure": 1.2261704975010235e-09,
+      "nearest_organizer": {
+        "id": "mixed_principal_left",
+        "distance": 0.1639347190565591
+      }
+    },
+    {
+      "cell_id": 588,
+      "abs_event": 1.812729166772442e-08,
+      "gate_occupancy": 0.9063645833862211,
+      "event_mode": "minus_one",
+      "orientation": "U->S",
+      "estimator": "float64",
+      "m1": 1.047,
+      "m2": 1.1250717424617485,
+      "closure": 1.5504884509586273e-10,
+      "nearest_organizer": {
+        "id": "mixed_principal_right",
+        "distance": 0.005090633494782406
+      }
+    },
+    {
+      "cell_id": 423,
+      "abs_event": 1.8121293188233523e-08,
+      "gate_occupancy": 0.9060646594116761,
+      "event_mode": "trace_collision",
+      "orientation": "S->U",
+      "estimator": "float64",
+      "m1": 1.003,
+      "m2": 1.1007153191320334,
+      "closure": 1.9919583882760693e-10,
+      "nearest_organizer": {
+        "id": "mixed_principal_right",
+        "distance": 0.05472079011235978
+      }
+    },
+    {
+      "cell_id": 79,
+      "abs_event": 1.810253236200765e-08,
+      "gate_occupancy": 0.9051266181003825,
+      "event_mode": "trace_collision",
+      "orientation": "S->U",
+      "estimator": "float64",
+      "m1": 0.839,
+      "m2": 0.7462770189231767,
+      "closure": 1.0348716943946491e-09,
+      "nearest_organizer": {
+        "id": "mixed_principal_left",
+        "distance": 0.16579802504814672
+      }
+    },
+    {
+      "cell_id": 606,
+      "abs_event": 1.8049181704782313e-08,
+      "gate_occupancy": 0.9024590852391157,
+      "event_mode": "plus_one",
+      "orientation": "U->S",
+      "estimator": "float64",
+      "m1": 1.058,
+      "m2": 1.163751255855221,
+      "closure": 3.8474235404204374e-10,
+      "nearest_organizer": {
+        "id": "mixed_principal_right",
+        "distance": 0.03530092107377186
+      }
+    },
+    {
+      "cell_id": 575,
+      "abs_event": 1.794346067562902e-08,
+      "gate_occupancy": 0.897173033781451,
+      "event_mode": "trace_collision",
+      "orientation": "S->U",
+      "estimator": "float64",
+      "m1": 1.041,
+      "m2": 1.1779106906831927,
+      "closure": 4.320004965160352e-10,
+      "nearest_organizer": {
+        "id": "mixed_principal_right",
+        "distance": 0.04918429556927315
+      }
+    },
+    {
+      "cell_id": 578,
+      "abs_event": 1.7915094296938605e-08,
+      "gate_occupancy": 0.8957547148469303,
+      "event_mode": "minus_one",
+      "orientation": "U->S",
+      "estimator": "float64",
+      "m1": 1.042,
+      "m2": 1.1162447295305744,
+      "closure": 2.1807966353801334e-10,
+      "nearest_organizer": {
+        "id": "mixed_principal_right",
+        "distance": 0.015235223927769907
+      }
+    },
+    {
+      "cell_id": 618,
+      "abs_event": 1.7747552760738472e-08,
+      "gate_occupancy": 0.8873776380369236,
+      "event_mode": "plus_one",
+      "orientation": "U->S",
+      "estimator": "float64",
+      "m1": 1.07,
+      "m2": 1.1975104193263917,
+      "closure": 3.887823324220353e-10,
+      "nearest_organizer": {
+        "id": "mixed_principal_right",
+        "distance": 0.07104069684300264
+      }
+    },
+    {
+      "cell_id": 285,
+      "abs_event": 1.7735560353671076e-08,
+      "gate_occupancy": 0.8867780176835538,
+      "event_mode": "trace_collision",
+      "orientation": "S->U",
+      "estimator": "float64",
+      "m1": 0.942,
+      "m2": 0.9661407107520292,
+      "closure": 2.2798362133799992e-10,
+      "nearest_organizer": {
+        "id": "mixed_secondary_left",
+        "distance": 0.055695578072711464
+      }
+    }
+  ],
+  "reevaluation": {
+    "note": "Same recorded state, same locked numpy/scipy, event functional recomputed across the integrator tolerance ladder.  The spread is the evaluation uncertainty of the published residual.",
+    "reevaluation_platform": {
+      "system": "Darwin",
+      "machine": "arm64",
+      "python": "3.13.11",
+      "numpy": "2.5.2",
+      "scipy": "1.18.0"
+    },
+    "cross_platform_note": "The recorded float64 residual and 'reevaluated_at_accepting_tolerance' are the same deterministic computation (compute_reduced_floquet at rtol=5e-13, atol=5e-15) on the same recorded state.  Re-running this script twice on one machine reproduces every digit.  Any nonzero cross_platform_discrepancy is therefore a difference between the CPU that produced the frozen artifact and the CPU running this audit, amplified by the ~8-digit cancellation inside the event functionals.",
+    "comparable_float64_probes": 22,
+    "median_cross_platform_discrepancy": 2.781344332625224e-08,
+    "max_cross_platform_discrepancy": 4.1369935743773567e-07,
+    "float64_probes_exceeding_gate_on_reevaluation": [
+      471,
+      221,
+      158,
+      112,
+      582,
+      36,
+      152,
+      136,
+      443,
+      176
+    ],
+    "probed_worst_cells": [
+      347,
+      299,
+      471,
+      387,
+      222,
+      221,
+      158,
+      112,
+      395,
+      582,
+      439,
+      36
+    ],
+    "probed_control_cells": [
+      230,
+      152,
+      136,
+      443,
+      281,
+      176,
+      589,
+      408,
+      478,
+      296,
+      417,
+      49
+    ],
+    "median_tight_ladder_spread": 1.4832016148602634e-07,
+    "max_tight_ladder_spread": 1.0684056803711428e-06,
+    "cells_whose_reevaluation_exceeds_gate": [
+      471,
+      221,
+      158,
+      112,
+      582,
+      36,
+      152,
+      136,
+      443,
+      176,
+      589,
+      49
+    ],
+    "cells_exceeding_gate_at_some_tight_tolerance": [
+      347,
+      299,
+      471,
+      387,
+      222,
+      221,
+      158,
+      112,
+      395,
+      582,
+      439,
+      36,
+      230,
+      152,
+      136,
+      443,
+      281,
+      176,
+      589,
+      49
+    ],
+    "evaluation_uncertainty_over_gate": 7.416008074301317,
+    "probes": [
+      {
+        "cell_id": 347,
+        "event_mode": "trace_collision",
+        "recorded_event": 1.989798081858396e-08,
+        "recorded_abs_event": 1.989798081858396e-08,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 1.5254441931844553e-08,
+        "cross_platform_discrepancy_over_gate": 0.7627220965922277,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          2.7829596891404407e-06,
+          4.643538886739407e-09,
+          -1.9277352159008387e-08,
+          -4.489541916008477e-08
+        ],
+        "tight_ladder_spread": 4.953895804682418e-08,
+        "full_ladder_spread": 2.8278551083005254e-06,
+        "reevaluated_at_accepting_tolerance": 4.643538886739407e-09,
+        "reevaluation_exceeds_gate": false,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": -125.92548031431505,
+        "m2_uncertainty_from_tight_spread": 3.9339900013224446e-10,
+        "alpha": 2.6638140763574834,
+        "beta": 3.10160450990415,
+        "largest_cancelling_term": 1.7853928225404054,
+        "cancellation_factor": 384489689.02553326,
+        "alpha_spread_over_tight_ladder": 3.60860674675223e-09,
+        "beta_spread_over_tight_ladder": 6.347184999810906e-10,
+        "monodromy_invariant_relative_spread": 1.3546766565955917e-09,
+        "seconds": 13.916748046875
+      },
+      {
+        "cell_id": 299,
+        "event_mode": "trace_collision",
+        "recorded_event": 1.9875196599627998e-08,
+        "recorded_abs_event": 1.9875196599627998e-08,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 2.781344332625224e-08,
+        "cross_platform_discrepancy_over_gate": 1.390672166312612,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          3.4328664280103283e-06,
+          -7.938246726624243e-09,
+          -3.682936355886568e-08,
+          -8.490758962587108e-08
+        ],
+        "tight_ladder_spread": 7.696934289924684e-08,
+        "full_ladder_spread": 3.5177740176361993e-06,
+        "reevaluated_at_accepting_tolerance": -7.938246726624243e-09,
+        "reevaluation_exceeds_gate": false,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": -150.76955300119545,
+        "m2_uncertainty_from_tight_spread": 5.105098567124926e-10,
+        "alpha": 2.620146271745002,
+        "beta": 2.956584166809375,
+        "largest_cancelling_term": 1.9039963193174643,
+        "cancellation_factor": 239850987.8675871,
+        "alpha_spread_over_tight_ladder": 6.049898360060979e-09,
+        "beta_spread_over_tight_ladder": 1.0268204064800557e-09,
+        "monodromy_invariant_relative_spread": 2.3089926029327295e-09,
+        "seconds": 14.422306060791016
+      },
+      {
+        "cell_id": 471,
+        "event_mode": "trace_collision",
+        "recorded_event": -1.981534634987181e-08,
+        "recorded_abs_event": 1.981534634987181e-08,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 6.893220058645788e-08,
+        "cross_platform_discrepancy_over_gate": 3.446610029322894,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          5.393596705483006e-06,
+          -8.874754693632969e-08,
+          1.0499259101015568e-07,
+          1.0078482659547916e-08
+        ],
+        "tight_ladder_spread": 1.9374013794648537e-07,
+        "full_ladder_spread": 5.4823442524193355e-06,
+        "reevaluated_at_accepting_tolerance": -8.874754693632969e-08,
+        "reevaluation_exceeds_gate": true,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": -196.2612631324634,
+        "m2_uncertainty_from_tight_spread": 9.87154239477831e-10,
+        "alpha": 3.680258947464408,
+        "beta": 6.746594397213661,
+        "largest_cancelling_term": 0.10223442942411509,
+        "cancellation_factor": 1151969.0735504082,
+        "alpha_spread_over_tight_ladder": 1.2163805518383697e-08,
+        "beta_spread_over_tight_ladder": 1.2903418777909792e-08,
+        "monodromy_invariant_relative_spread": 3.305149363678392e-09,
+        "seconds": 14.504272937774658
+      },
+      {
+        "cell_id": 387,
+        "event_mode": "trace_collision",
+        "recorded_event": -1.9812525731133235e-08,
+        "recorded_abs_event": 1.9812525731133235e-08,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 1.5409281961531462e-08,
+        "cross_platform_discrepancy_over_gate": 0.7704640980765731,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          5.1065257442584056e-06,
+          -4.403243769601772e-09,
+          -1.555583306611652e-07,
+          -1.4884715449081654e-07
+        ],
+        "tight_ladder_spread": 1.5115508689156343e-07,
+        "full_ladder_spread": 5.262084074919571e-06,
+        "reevaluated_at_accepting_tolerance": -4.403243769601772e-09,
+        "reevaluation_exceeds_gate": false,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": -146.90976414988288,
+        "m2_uncertainty_from_tight_spread": 1.0288974852437264e-09,
+        "alpha": 3.071744925822777,
+        "beta": 4.502394075075859,
+        "largest_cancelling_term": 0.8616574871390057,
+        "cancellation_factor": 195686982.64846092,
+        "alpha_spread_over_tight_ladder": 1.0675704764651073e-08,
+        "beta_spread_over_tight_ladder": 4.5101948842329875e-09,
+        "monodromy_invariant_relative_spread": 3.4754528850703806e-09,
+        "seconds": 14.069000959396362
+      },
+      {
+        "cell_id": 222,
+        "event_mode": "plus_one",
+        "recorded_event": 1.949616645902097e-08,
+        "recorded_abs_event": 1.949616645902097e-08,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 9.921048871319726e-09,
+        "cross_platform_discrepancy_over_gate": 0.4960524435659863,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          -6.032065744676629e-06,
+          9.575117587701243e-09,
+          1.2012782590886673e-07,
+          1.5611883696919904e-07
+        ],
+        "tight_ladder_spread": 1.465437193814978e-07,
+        "full_ladder_spread": 6.188184581645828e-06,
+        "reevaluated_at_accepting_tolerance": 9.575117587701243e-09,
+        "reevaluation_exceeds_gate": false,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": 149.5628079695166,
+        "m2_uncertainty_from_tight_spread": 9.798139080898098e-10,
+        "alpha": 4.333138110712589,
+        "beta": 5.998828673850653,
+        "largest_cancelling_term": 25.998828673850653,
+        "cancellation_factor": 2715249022.8678594,
+        "alpha_spread_over_tight_ladder": 3.8192469631326276e-08,
+        "beta_spread_over_tight_ladder": 8.26111001828167e-08,
+        "monodromy_invariant_relative_spread": 1.3771205125914783e-08,
+        "seconds": 14.241801023483276
+      },
+      {
+        "cell_id": 221,
+        "event_mode": "trace_collision",
+        "recorded_event": -1.9055546363055953e-08,
+        "recorded_abs_event": 1.9055546363055953e-08,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 1.1016712875289159e-08,
+        "cross_platform_discrepancy_over_gate": 0.5508356437644579,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          6.9173593704729974e-06,
+          -3.007225923834511e-08,
+          -1.801688628289e-07,
+          -1.733008285209614e-07
+        ],
+        "tight_ladder_spread": 1.5009660359055488e-07,
+        "full_ladder_spread": 7.097528233301897e-06,
+        "reevaluated_at_accepting_tolerance": -3.007225923834511e-08,
+        "reevaluation_exceeds_gate": true,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": -212.4123021121638,
+        "m2_uncertainty_from_tight_spread": 7.066285808215418e-10,
+        "alpha": 3.381335292173186,
+        "beta": 5.621027681388418,
+        "largest_cancelling_term": 0.3827460507826963,
+        "cancellation_factor": 12727545.601052053,
+        "alpha_spread_over_tight_ladder": 1.431473828361618e-08,
+        "beta_spread_over_tight_ladder": 1.627402212989182e-08,
+        "monodromy_invariant_relative_spread": 4.233457213412305e-09,
+        "seconds": 15.785423040390015
+      },
+      {
+        "cell_id": 158,
+        "event_mode": "plus_one",
+        "recorded_event": -1.905265634150055e-08,
+        "recorded_abs_event": 1.905265634150055e-08,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 6.670115482165784e-08,
+        "cross_platform_discrepancy_over_gate": 3.335057741082892,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          -1.3477855247856496e-05,
+          4.7648498480157286e-08,
+          3.958692502692429e-07,
+          3.7861219936985435e-07
+        ],
+        "tight_ladder_spread": 3.482207517890856e-07,
+        "full_ladder_spread": 1.3873724498125739e-05,
+        "reevaluated_at_accepting_tolerance": 4.7648498480157286e-08,
+        "reevaluation_exceeds_gate": true,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": 111.34545426116915,
+        "m2_uncertainty_from_tight_spread": 3.127390822550399e-09,
+        "alpha": 5.195847519821909,
+        "beta": 11.175085166579953,
+        "largest_cancelling_term": 31.175085166579954,
+        "cancellation_factor": 654272142.0605203,
+        "alpha_spread_over_tight_ladder": 1.0548076723182476e-07,
+        "beta_spread_over_tight_ladder": 3.019209025012515e-07,
+        "monodromy_invariant_relative_spread": 2.7017324521532215e-08,
+        "seconds": 16.580127954483032
+      },
+      {
+        "cell_id": 112,
+        "event_mode": "plus_one",
+        "recorded_event": -1.8986156646860763e-08,
+        "recorded_abs_event": 1.8986156646860763e-08,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 4.1369935743773567e-07,
+        "cross_platform_discrepancy_over_gate": 20.684967871886784,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          -3.267935991146942e-05,
+          3.947132007908749e-07,
+          4.203140093750335e-07,
+          9.422770688161108e-07
+        ],
+        "tight_ladder_spread": 5.475638680252359e-07,
+        "full_ladder_spread": 3.362163698028553e-05,
+        "reevaluated_at_accepting_tolerance": 3.947132007908749e-07,
+        "reevaluation_exceeds_gate": true,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": 98.745480237028,
+        "m2_uncertainty_from_tight_spread": 5.5452043649073075e-09,
+        "alpha": 5.864407720826293,
+        "beta": 15.186446719670958,
+        "largest_cancelling_term": 35.186446719670954,
+        "cancellation_factor": 89144337.32940508,
+        "alpha_spread_over_tight_ladder": 1.8550806402117814e-07,
+        "beta_spread_over_tight_ladder": 5.654845161018329e-07,
+        "monodromy_invariant_relative_spread": 3.723613077767313e-08,
+        "seconds": 17.93148398399353
+      },
+      {
+        "cell_id": 395,
+        "event_mode": "trace_collision",
+        "recorded_event": 1.8485002306611875e-08,
+        "recorded_abs_event": 1.8485002306611875e-08,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 2.832856227374947e-08,
+        "cross_platform_discrepancy_over_gate": 1.4164281136874735,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          3.877448595090982e-06,
+          -9.843559967137594e-09,
+          -7.89724186045504e-09,
+          -1.3088357708745946e-07
+        ],
+        "tight_ladder_spread": 1.2298633522700442e-07,
+        "full_ladder_spread": 4.0083321721784415e-06,
+        "reevaluated_at_accepting_tolerance": -9.843559967137594e-09,
+        "reevaluation_exceeds_gate": false,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": -153.07658710828065,
+        "m2_uncertainty_from_tight_spread": 8.03430083922687e-10,
+        "alpha": 3.1514784210089926,
+        "beta": 4.785910904000208,
+        "largest_cancelling_term": 0.7199888798569525,
+        "cancellation_factor": 73143139.50040555,
+        "alpha_spread_over_tight_ladder": 8.652867311553791e-09,
+        "beta_spread_over_tight_ladder": 6.93074397872806e-09,
+        "monodromy_invariant_relative_spread": 2.745653358712654e-09,
+        "seconds": 15.959490060806274
+      },
+      {
+        "cell_id": 582,
+        "event_mode": "minus_one",
+        "recorded_event": -1.8446943528260817e-08,
+        "recorded_abs_event": 1.8446943528260817e-08,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 1.0927806215477176e-08,
+        "cross_platform_discrepancy_over_gate": 0.5463903107738588,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          -3.219252020514318e-07,
+          -2.9374749743737993e-08,
+          -9.664408828768956e-09,
+          -1.4953227989167317e-08
+        ],
+        "tight_ladder_spread": 1.9710340914969038e-08,
+        "full_ladder_spread": 3.1226079322266287e-07,
+        "reevaluated_at_accepting_tolerance": -2.9374749743737993e-08,
+        "reevaluation_exceeds_gate": true,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": 51.887486613999556,
+        "m2_uncertainty_from_tight_spread": 3.798669429027821e-10,
+        "alpha": 3.838724795818826,
+        "beta": 3.677449562262902,
+        "largest_cancelling_term": 7.677449591637652,
+        "cancellation_factor": 261362212.73763546,
+        "alpha_spread_over_tight_ladder": 1.6489973830857707e-08,
+        "beta_spread_over_tight_ladder": 1.7707905364261478e-08,
+        "monodromy_invariant_relative_spread": 4.815268044999371e-09,
+        "seconds": 14.661919116973877
+      },
+      {
+        "cell_id": 439,
+        "event_mode": "trace_collision",
+        "recorded_event": -1.844109343007716e-08,
+        "recorded_abs_event": 1.844109343007716e-08,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 2.821468092495394e-08,
+        "cross_platform_discrepancy_over_gate": 1.410734046247697,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          4.1828015341360825e-06,
+          9.773587494876779e-09,
+          4.445168083622164e-08,
+          -9.185207405781881e-08
+        ],
+        "tight_ladder_spread": 1.3630375489404045e-07,
+        "full_ladder_spread": 4.274653608193901e-06,
+        "reevaluated_at_accepting_tolerance": 9.773587494876779e-09,
+        "reevaluation_exceeds_gate": false,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": -177.43986829743542,
+        "m2_uncertainty_from_tight_spread": 7.681687109097707e-10,
+        "alpha": 3.457089458722005,
+        "beta": 5.902045796402315,
+        "largest_cancelling_term": 0.29475185583076535,
+        "cancellation_factor": 30158000.425664727,
+        "alpha_spread_over_tight_ladder": 8.847954369173294e-09,
+        "beta_spread_over_tight_ladder": 1.6934676771995782e-08,
+        "monodromy_invariant_relative_spread": 2.8692892864908948e-09,
+        "seconds": 14.782461881637573
+      },
+      {
+        "cell_id": 36,
+        "event_mode": "plus_one",
+        "recorded_event": -1.8405078350269832e-08,
+        "recorded_abs_event": 1.8405078350269832e-08,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 1.5228630800834253e-07,
+        "cross_platform_discrepancy_over_gate": 7.6143154004171265,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          -2.7793115595642348e-05,
+          -1.7069138635861236e-07,
+          8.972766281090117e-07,
+          8.977142940125304e-07
+        ],
+        "tight_ladder_spread": 1.0684056803711428e-06,
+        "full_ladder_spread": 2.869082988965488e-05,
+        "reevaluated_at_accepting_tolerance": -1.7069138635861236e-07,
+        "reevaluation_exceeds_gate": true,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": 247.54908940494147,
+        "m2_uncertainty_from_tight_spread": 4.315934600847761e-09,
+        "alpha": 5.64330355238328,
+        "beta": 13.859821143608292,
+        "largest_cancelling_term": 33.85982131429968,
+        "cancellation_factor": 198368658.4111645,
+        "alpha_spread_over_tight_ladder": 2.2468467086866895e-07,
+        "beta_spread_over_tight_ladder": 2.797023466172277e-07,
+        "monodromy_invariant_relative_spread": 3.981438687163658e-08,
+        "seconds": 18.58043074607849
+      },
+      {
+        "cell_id": 230,
+        "event_mode": "plus_one",
+        "recorded_event": 1.83985982005197e-08,
+        "recorded_abs_event": 1.83985982005197e-08,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 1.3447998270521566e-08,
+        "cross_platform_discrepancy_over_gate": 0.6723999135260783,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          -6.079658923852094e-06,
+          4.950599929998134e-09,
+          1.231215165375943e-07,
+          1.2712849439822094e-07
+        ],
+        "tight_ladder_spread": 1.221778944682228e-07,
+        "full_ladder_spread": 6.206787418250315e-06,
+        "reevaluated_at_accepting_tolerance": 4.950599929998134e-09,
+        "reevaluation_exceeds_gate": false,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": 152.79062797191045,
+        "m2_uncertainty_from_tight_spread": 7.99642596473158e-10,
+        "alpha": 4.24942838131633,
+        "beta": 5.496570292848579,
+        "largest_cancelling_term": 25.49657029284858,
+        "cancellation_factor": 5150198087.781694,
+        "alpha_spread_over_tight_ladder": 3.158478456555258e-08,
+        "beta_spread_over_tight_ladder": 6.733081292509269e-08,
+        "monodromy_invariant_relative_spread": 1.2249604633037217e-08,
+        "seconds": 14.911718845367432
+      },
+      {
+        "cell_id": 152,
+        "event_mode": "plus_one",
+        "recorded_event": 1.5774254791267595e-08,
+        "recorded_abs_event": 1.5774254791267595e-08,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 6.587251633050073e-08,
+        "cross_platform_discrepancy_over_gate": 3.2936258165250365,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          -2.000484968789351e-05,
+          8.164677112176832e-08,
+          3.1939366351707577e-07,
+          3.844500753302782e-07
+        ],
+        "tight_ladder_spread": 3.0280330420850987e-07,
+        "full_ladder_spread": 2.038929976322379e-05,
+        "reevaluated_at_accepting_tolerance": 8.164677112176832e-08,
+        "reevaluation_exceeds_gate": true,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": 106.21399711752133,
+        "m2_uncertainty_from_tight_spread": 2.8508794737615487e-09,
+        "alpha": 5.291548482097341,
+        "beta": 11.74929097423082,
+        "largest_cancelling_term": 31.74929097423082,
+        "cancellation_factor": 388861562.28860295,
+        "alpha_spread_over_tight_ladder": 1.0013787044016453e-07,
+        "beta_spread_over_tight_ladder": 2.9802391843247733e-07,
+        "monodromy_invariant_relative_spread": 2.5365268345649068e-08,
+        "seconds": 20.38746213912964
+      },
+      {
+        "cell_id": 136,
+        "event_mode": "plus_one",
+        "recorded_event": 1.2703083029919071e-08,
+        "recorded_abs_event": 1.2703083029919071e-08,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 3.783227562337288e-07,
+        "cross_platform_discrepancy_over_gate": 18.91613781168644,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          -3.0389121306484412e-05,
+          -3.656196732038097e-07,
+          4.356296798846415e-07,
+          3.8302107441268163e-07
+        ],
+        "tight_ladder_spread": 8.012493530884512e-07,
+        "full_ladder_spread": 3.0824750986369054e-05,
+        "reevaluated_at_accepting_tolerance": -3.656196732038097e-07,
+        "reevaluation_exceeds_gate": true,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": 99.69669932274883,
+        "m2_uncertainty_from_tight_spread": 8.036869410235549e-09,
+        "alpha": 5.548326976764406,
+        "beta": 13.289961494966757,
+        "largest_cancelling_term": 33.28996186058643,
+        "cancellation_factor": 91050794.85706283,
+        "alpha_spread_over_tight_ladder": 2.099442237835092e-07,
+        "beta_spread_over_tight_ladder": 4.820463708199441e-07,
+        "monodromy_invariant_relative_spread": 3.7839194528859845e-08,
+        "seconds": 17.518717050552368
+      },
+      {
+        "cell_id": 443,
+        "event_mode": "trace_collision",
+        "recorded_event": -9.881451157323085e-09,
+        "recorded_abs_event": 9.881451157323085e-09,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 1.3673766191546477e-07,
+        "cross_platform_discrepancy_over_gate": 6.8368830957732385,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          4.312421749919082e-06,
+          1.2685621075814169e-07,
+          -6.1128211381600295e-09,
+          -9.877570217309284e-08
+        ],
+        "tight_ladder_spread": 2.2563191293123452e-07,
+        "full_ladder_spread": 4.411197452092175e-06,
+        "reevaluated_at_accepting_tolerance": 1.2685621075814169e-07,
+        "reevaluation_exceeds_gate": true,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": -177.73499325884902,
+        "m2_uncertainty_from_tight_spread": 1.2694850282106776e-09,
+        "alpha": 3.485187191020575,
+        "beta": 6.007006789440569,
+        "largest_cancelling_term": 0.26503222828928574,
+        "cancellation_factor": 2089233.3667019599,
+        "alpha_spread_over_tight_ladder": 1.4460801445181914e-08,
+        "beta_spread_over_tight_ladder": 2.7313520334359964e-09,
+        "monodromy_invariant_relative_spread": 4.149218005402839e-09,
+        "seconds": 14.590198040008545
+      },
+      {
+        "cell_id": 281,
+        "event_mode": "trace_collision",
+        "recorded_event": -7.639626264932531e-09,
+        "recorded_abs_event": 7.639626264932531e-09,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 2.3270837035127556e-08,
+        "cross_platform_discrepancy_over_gate": 1.1635418517563778,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          4.276152519189225e-06,
+          1.5631210770195025e-08,
+          -6.338847957643168e-08,
+          -8.190084477277537e-08
+        ],
+        "tight_ladder_spread": 9.75320555429704e-08,
+        "full_ladder_spread": 4.358053363962e-06,
+        "reevaluated_at_accepting_tolerance": 1.5631210770195025e-08,
+        "reevaluation_exceeds_gate": false,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": -166.90286540832489,
+        "m2_uncertainty_from_tight_spread": 5.843641767584994e-10,
+        "alpha": 2.7170181448977986,
+        "beta": 3.2795831858137627,
+        "largest_cancelling_term": 1.6460424405214862,
+        "cancellation_factor": 105304858.63961957,
+        "alpha_spread_over_tight_ladder": 7.942137170147134e-09,
+        "beta_spread_over_tight_ladder": 2.2907253871551347e-09,
+        "monodromy_invariant_relative_spread": 2.923107887616216e-09,
+        "seconds": 14.073210000991821
+      },
+      {
+        "cell_id": 176,
+        "event_mode": "plus_one",
+        "recorded_event": -4.825395194529847e-09,
+        "recorded_abs_event": 4.825395194529847e-09,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 4.29665121259859e-08,
+        "cross_platform_discrepancy_over_gate": 2.148325606299295,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          -9.025574762233646e-06,
+          3.8141116931456054e-08,
+          1.5428253519189639e-07,
+          2.5962007299540346e-07
+        ],
+        "tight_ladder_spread": 2.214789560639474e-07,
+        "full_ladder_spread": 9.28519483522905e-06,
+        "reevaluated_at_accepting_tolerance": 3.8141116931456054e-08,
+        "reevaluation_exceeds_gate": true,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": 123.03696937721043,
+        "m2_uncertainty_from_tight_spread": 1.8001008736238503e-09,
+        "alpha": 4.921034051687807,
+        "beta": 9.526204348267957,
+        "largest_cancelling_term": 29.526204348267957,
+        "cancellation_factor": 774130563.646836,
+        "alpha_spread_over_tight_ladder": 6.661745821645582e-08,
+        "beta_spread_over_tight_ladder": 1.7822579145843065e-07,
+        "monodromy_invariant_relative_spread": 1.8709003601296404e-08,
+        "seconds": 16.666976928710938
+      },
+      {
+        "cell_id": 589,
+        "event_mode": "trace_collision",
+        "recorded_event": -3.009871300399034e-09,
+        "recorded_abs_event": 3.009871300399034e-09,
+        "estimator": "julia_bigfloat",
+        "same_computation_as_recorded": false,
+        "cross_platform_discrepancy": null,
+        "cross_platform_discrepancy_over_gate": null,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          1.1013308770208008e-05,
+          2.5022571217836465e-07,
+          -1.7176306107979933e-07,
+          6.135967342557613e-08
+        ],
+        "tight_ladder_spread": 4.21988773258164e-07,
+        "full_ladder_spread": 1.1185071831287807e-05,
+        "reevaluated_at_accepting_tolerance": 2.5022571217836465e-07,
+        "reevaluation_exceeds_gate": true,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": -274.74542934613487,
+        "m2_uncertainty_from_tight_spread": 1.535926454763789e-09,
+        "alpha": 4.476347076956053,
+        "beta": 9.962114879698927,
+        "largest_cancelling_term": 0.2269065377245756,
+        "cancellation_factor": 906807.4409668709,
+        "alpha_spread_over_tight_ladder": 1.4216200661110179e-08,
+        "beta_spread_over_tight_ladder": 4.524646790571296e-08,
+        "monodromy_invariant_relative_spread": 4.541853657792831e-09,
+        "seconds": 16.242269039154053
+      },
+      {
+        "cell_id": 408,
+        "event_mode": "plus_one",
+        "recorded_event": -1.895095635973121e-09,
+        "recorded_abs_event": 1.895095635973121e-09,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 1.5548806686638272e-10,
+        "cross_platform_discrepancy_over_gate": 0.007774403343319136,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          -7.897841882709145e-07,
+          -1.739607569106738e-09,
+          1.5561241184514074e-08,
+          1.282774775290818e-08
+        ],
+        "tight_ladder_spread": 1.7300848753620812e-08,
+        "full_ladder_spread": 8.053454294554285e-07,
+        "reevaluated_at_accepting_tolerance": -1.739607569106738e-09,
+        "reevaluation_exceeds_gate": false,
+        "any_tight_tolerance_exceeds_gate": false,
+        "d_event_d_m2": 129.5863516581619,
+        "m2_uncertainty_from_tight_spread": 1.3350826327188393e-10,
+        "alpha": 4.047758786769731,
+        "beta": 4.286552718878781,
+        "largest_cancelling_term": 24.28655272061839,
+        "cancellation_factor": 13960937599.903156,
+        "alpha_spread_over_tight_ladder": 5.381421530614716e-09,
+        "beta_spread_over_tight_ladder": 1.4987685759138003e-08,
+        "monodromy_invariant_relative_spread": 3.496442652654061e-09,
+        "seconds": 13.147081136703491
+      },
+      {
+        "cell_id": 478,
+        "event_mode": "minus_one",
+        "recorded_event": 1.0261405058997752e-09,
+        "recorded_abs_event": 1.0261405058997752e-09,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 2.2257440335238243e-10,
+        "cross_platform_discrepancy_over_gate": 0.011128720167619122,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          -3.265394754592421e-07,
+          1.2487149092521577e-09,
+          7.757693154530898e-09,
+          1.2273584815147842e-08
+        ],
+        "tight_ladder_spread": 1.1024869905895684e-08,
+        "full_ladder_spread": 3.3881306027438995e-07,
+        "reevaluated_at_accepting_tolerance": 1.2487149092521577e-09,
+        "reevaluation_exceeds_gate": false,
+        "any_tight_tolerance_exceeds_gate": false,
+        "d_event_d_m2": 23.465829972479924,
+        "m2_uncertainty_from_tight_spread": 4.698265485953554e-10,
+        "alpha": 3.1105699800226803,
+        "beta": 2.2211399612940754,
+        "largest_cancelling_term": 6.221139961294075,
+        "cancellation_factor": 4982033861.531974,
+        "alpha_spread_over_tight_ladder": 7.86855069989656e-09,
+        "beta_spread_over_tight_ladder": 4.712231493897434e-09,
+        "monodromy_invariant_relative_spread": 2.5296169995954202e-09,
+        "seconds": 14.158846139907837
+      },
+      {
+        "cell_id": 296,
+        "event_mode": "minus_one",
+        "recorded_event": 5.365503596976851e-10,
+        "recorded_abs_event": 5.365503596976851e-10,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 3.1378011300375874e-11,
+        "cross_platform_discrepancy_over_gate": 0.0015689005650187937,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          -2.9682989044488295e-07,
+          5.051723483973092e-10,
+          6.0728688744404735e-09,
+          6.563847687601765e-09
+        ],
+        "tight_ladder_spread": 6.058675339204456e-09,
+        "full_ladder_spread": 3.033937381324847e-07,
+        "reevaluated_at_accepting_tolerance": 5.051723483973092e-10,
+        "reevaluation_exceeds_gate": false,
+        "any_tight_tolerance_exceeds_gate": false,
+        "d_event_d_m2": 36.816323107924376,
+        "m2_uncertainty_from_tight_spread": 1.6456492196257321e-10,
+        "alpha": 3.2549708036613056,
+        "beta": 2.5099416078277836,
+        "largest_cancelling_term": 6.509941607827784,
+        "cancellation_factor": 12886575499.393387,
+        "alpha_spread_over_tight_ladder": 8.524617900462772e-09,
+        "beta_spread_over_tight_ladder": 1.148153927488238e-08,
+        "monodromy_invariant_relative_spread": 4.5744248547754145e-09,
+        "seconds": 13.949253797531128
+      },
+      {
+        "cell_id": 417,
+        "event_mode": "minus_one",
+        "recorded_event": 2.0263968281142297e-10,
+        "recorded_abs_event": 2.0263968281142297e-10,
+        "estimator": "float64",
+        "same_computation_as_recorded": true,
+        "cross_platform_discrepancy": 8.451284116972602e-11,
+        "cross_platform_discrepancy_over_gate": 0.004225642058486301,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          -1.0610913392383736e-07,
+          1.1812684164169696e-10,
+          3.3305305180419964e-09,
+          3.3467308924173267e-09
+        ],
+        "tight_ladder_spread": 3.2286040507756297e-09,
+        "full_ladder_spread": 1.0945586481625469e-07,
+        "reevaluated_at_accepting_tolerance": 1.1812684164169696e-10,
+        "reevaluation_exceeds_gate": false,
+        "any_tight_tolerance_exceeds_gate": false,
+        "d_event_d_m2": -4.465195981850911,
+        "m2_uncertainty_from_tight_spread": 7.230598755124092e-10,
+        "alpha": 3.071736800712616,
+        "beta": 2.1434736015433584,
+        "largest_cancelling_term": 6.143473601543358,
+        "cancellation_factor": 52007431301.4969,
+        "alpha_spread_over_tight_ladder": 5.244318757036126e-09,
+        "beta_spread_over_tight_ladder": 7.276233837671953e-09,
+        "monodromy_invariant_relative_spread": 3.3945992301621393e-09,
+        "seconds": 13.579805135726929
+      },
+      {
+        "cell_id": 49,
+        "event_mode": "trace_collision",
+        "recorded_event": -2.054257968450714e-11,
+        "recorded_abs_event": 2.054257968450714e-11,
+        "estimator": "julia_bigfloat",
+        "same_computation_as_recorded": false,
+        "cross_platform_discrepancy": null,
+        "cross_platform_discrepancy_over_gate": null,
+        "tolerance_ladder": [
+          [
+            2e-11,
+            2e-13
+          ],
+          [
+            5e-13,
+            5e-15
+          ],
+          [
+            1e-13,
+            1e-15
+          ],
+          [
+            5e-14,
+            5e-16
+          ]
+        ],
+        "event_at_tolerance": [
+          0.00011517244886505296,
+          1.274826619823699e-06,
+          7.954344725114026e-07,
+          1.577659729079528e-06
+        ],
+        "tight_ladder_spread": 7.822252565681254e-07,
+        "full_ladder_spread": 0.00011437701439254155,
+        "reevaluated_at_accepting_tolerance": 1.274826619823699e-06,
+        "reevaluation_exceeds_gate": true,
+        "any_tight_tolerance_exceeds_gate": true,
+        "d_event_d_m2": -661.3255228105076,
+        "m2_uncertainty_from_tight_spread": 1.182814256500818e-09,
+        "alpha": 5.653749630482672,
+        "beta": 15.298720163304425,
+        "largest_cancelling_term": 2.7348878403215733,
+        "cancellation_factor": 2145301.7985298987,
+        "alpha_spread_over_tight_ladder": 8.013977037535369e-08,
+        "beta_spread_over_tight_ladder": 3.315773948742162e-07,
+        "monodromy_invariant_relative_spread": 2.1673538134878705e-08,
+        "seconds": 20.288127899169922
+      }
+    ]
+  },
+  "tenfold_reduction_estimate": {
+    "target_max_abs_event": 2e-09,
+    "float64_route": {
+      "verdict": "impossible",
+      "reason": "The float64 evaluation uncertainty of the event functional at the recorded states already exceeds the 2e-9 target by orders of magnitude, so no integrator tolerance reaches it.  Tightening rtol does not help: the ladder shows the value moving, not converging.",
+      "median_float64_evaluation_uncertainty": 1.465437193814978e-07,
+      "ratio_to_target": 73.2718596907489,
+      "median_cancellation_factor": 261362212.73763546,
+      "max_cancellation_factor": 52007431301.4969,
+      "median_monodromy_invariant_relative_spread": 4.233457213412305e-09
+    },
+    "bigfloat_route": {
+      "verdict": "sufficient_but_expensive",
+      "reason": "At dps=40 the BigFloat lane already reaches 7e-13 on its best cells, so 2e-9 is not a precision problem for it.  Its recorded 1e-8 roots are gate-limited: its localizer terminates on the first iterate under 2e-8.  Reaching 2e-9 needs the same lane run over all 620 cells with the stopping tolerance set to 2e-9, which is roughly one extra secant iteration per cell on top of full coverage.",
+      "required_dps": 40,
+      "recorded_bigfloat_cells_sampled": 204,
+      "mean_recorded_bigfloat_iterations": 5.446078431372549,
+      "max_recorded_bigfloat_iterations": 9,
+      "corrections_per_cell_assumed": 8.446078431372548,
+      "estimated_minutes_per_cell": 23.22671568627451,
+      "cells_not_yet_bigfloat": 462,
+      "estimated_serial_cpu_hours": 178.84571078431372,
+      "estimated_wall_hours_at_62_way_parallelism": 2.8846082384566727,
+      "cost_model_source": "CI run 31932398513 job bigfloat-fold: one dps=60 corrected_at ~5.5 min (four ~82 s correction iterations); dps=40 assumed at half that cost"
+    },
+    "cheapest_honest_alternative": "Do not chase the residual.  Report d(event)/d(m2) with every root and state the m2 uncertainty (1e-10 to 8e-9 as measured), which is already five to seven orders inside the 1e-3 published cells.  That is a claim the float64 lane can actually support."
+  }
+}

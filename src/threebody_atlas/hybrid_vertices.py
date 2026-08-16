@@ -29,6 +29,7 @@ from typing import Literal
 import numpy as np
 from scipy.optimize import least_squares
 
+from .conditioning import SolveConditioning, condition_report
 from .critical_manifold import _flow_for_vector, event_value
 from .jax_diffrax import (
     adaptive_closure_and_jacobian,
@@ -66,6 +67,10 @@ class DirectVertexResult:
     cost: float
     optimizer_success: bool
     optimizer_message: str
+    #: Conditioning of the scaled augmented mixed-vertex Jacobian at the
+    #: solution.  A mixed vertex is where two events coincide, so this is the
+    #: number that says how degenerate the solve there actually was.
+    conditioning: SolveConditioning | None = None
 
     @property
     def vector(self) -> Array:
@@ -227,4 +232,5 @@ def solve_direct_vertex(
         cost=float(fit.cost),
         optimizer_success=bool(fit.success),
         optimizer_message=str(fit.message),
+        conditioning=condition_report(getattr(fit, "jac", None), fit.fun),
     )

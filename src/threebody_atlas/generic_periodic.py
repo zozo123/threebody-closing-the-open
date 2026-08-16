@@ -32,6 +32,7 @@ import numpy as np
 from scipy.integrate import solve_ivp
 from scipy.optimize import least_squares
 
+from .conditioning import SolveConditioning, condition_report
 from .reduced import reduced_rhs
 
 Array = np.ndarray
@@ -48,6 +49,10 @@ class GenericPeriodicPoint:
     nfev: int
     optimality: float
     success: bool
+    #: Conditioning of the augmented residual Jacobian at the corrected orbit.
+    #: This corrector supplies no analytic Jacobian, so the report is built from
+    #: the optimizer's finite-difference Jacobian and inherits its accuracy.
+    conditioning: SolveConditioning | None = None
 
     @property
     def vector(self) -> Array:
@@ -188,4 +193,5 @@ def correct_generic_periodic(
         nfev=int(fit.nfev),
         optimality=float(fit.optimality),
         success=accepted,
+        conditioning=condition_report(getattr(fit, "jac", None), residual),
     )

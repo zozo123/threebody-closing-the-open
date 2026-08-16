@@ -40,6 +40,72 @@ function parse_published_cells(path::String)
     rows
 end
 
+# --- conditioning metadata --------------------------------------------------
+#
+# A BigFloat closure of 1e-25 says nothing on its own: what it buys depends on
+# sigma_min of the shooting Jacobian at that point. These helpers surface
+# sigma_min, sigma_max, kappa_2 and the backward-error displacement bound
+# ||J^+|| ||F|| for every localized cell. They are metadata only; the 2e-8 event
+# and 1e-7 closure gates are untouched.
+#
+# Julia's LinearAlgebra has no BigFloat SVD and this project deliberately pins a
+# minimal dependency set, so singular values come from a self-contained cyclic
+# Jacobi eigensolve of the (small, symmetric) Gram matrix J'J at full BigFloat
+# precision.
+
+function symmetric_eigenvalues_jacobi(Ain::Matrix{BigFloat}; sweeps::Int=80)
+    A = copy(Ain)
+    n = size(A, 1)
+    n == size(A, 2) || error("Jacobi eigensolve needs a square matrix")
+    tolerance = eps(BigFloat) * n
+    for _ in 1:sweeps
+        off = zero(BigFloat)
+        for p in 1:(n - 1), q in (p + 1):n
+            off += A[p, q]^2
+        end
+        off <= tolerance^2 && break
+        for p in 1:(n - 1), q in (p + 1):n
+            A[p, q] == 0 && continue
+            theta = (A[q, q] - A[p, p]) / (2 * A[p, q])
+            t = theta == 0 ? one(BigFloat) : sign(theta) / (abs(theta) + sqrt(theta^2 + 1))
+            c = 1 / sqrt(t^2 + 1)
+            s = t * c
+            for k in 1:n
+                akp, akq = A[k, p], A[k, q]
+                A[k, p] = c * akp - s * akq
+                A[k, q] = s * akp + c * akq
+            end
+            for k in 1:n
+                apk, aqk = A[p, k], A[q, k]
+                A[p, k] = c * apk - s * aqk
+                A[q, k] = s * apk + c * aqk
+            end
+        end
+    end
+    sort(BigFloat[A[i, i] for i in 1:n], rev=true)
+end
+
+# Squaring to J'J costs half the available digits in sigma_min. At dps>=40 that
+# still leaves ~20 correct digits, which is far more than the reported
+# conditioning needs; do not reuse this helper at float64 precision.
+function bigfloat_singular_values(J::Matrix{BigFloat})
+    lambdas = symmetric_eigenvalues_jacobi(Matrix{BigFloat}(transpose(J) * J))
+    BigFloat[sqrt(max(zero(BigFloat), l)) for l in lambdas]
+end
+
+function shooting_conditioning(s)
+    C = chart_tangent(s.masses)
+    J = zeros(BigFloat, 8, 4)
+    J[:, 1:3] .= (s.M - Matrix{BigFloat}(I, 8, 8)) * C
+    ffinal, _ = reduced_rhs_jacobian(s.sol.u[end][1:8], s.masses)
+    J[:, 4] .= ffinal
+    sv = bigfloat_singular_values(J)
+    smax, smin = sv[1], sv[end]
+    kappa = smin > 0 ? smax / smin : BigFloat(Inf)
+    displacement = smin > 0 ? s.closure / smin : BigFloat(Inf)
+    (sigma_max=smax, sigma_min=smin, kappa_2=kappa, displacement_bound=displacement, singular_values=sv)
+end
+
 function infer_mode(left, right)
     modes = String[]
     for mode in CRITICAL_EVENT_MODES
@@ -98,6 +164,12 @@ function localize_cell(row; tol::BigFloat, target::BigFloat, event_tol::BigFloat
         end
     end
     passed = abs(best_v) <= event_tol && best.closure <= target
+    # Free conditioning of the 1-D event solve: the secant slope across the final
+    # bracket is d(event)/d(m2). It is what converts the accepted event residual
+    # into an m2 uncertainty, and it costs no extra BigFloat integration.
+    final_span = right.masses[2] - left.masses[2]
+    event_slope = final_span == 0 ? BigFloat(0) : (vhi - vlo) / final_span
+    m2_uncertainty = event_slope == 0 ? BigFloat(Inf) : abs(best_v) / abs(event_slope)
     return (
         cell_id=row.cell_id,
         mode=mode,
@@ -107,11 +179,17 @@ function localize_cell(row; tol::BigFloat, target::BigFloat, event_tol::BigFloat
         iterations=iterations,
         m2=best.masses[2],
         sample=best,
+        conditioning=shooting_conditioning(best),
+        event_slope=event_slope,
+        final_bracket_width=final_span,
+        m2_uncertainty=m2_uncertainty,
     )
 end
 
 function cell_json(result)
     s = result.sample
+    c = result.conditioning
+    sv = join(["\"$(x)\"" for x in c.singular_values], ",")
     "{" *
     "\"cell_id\":$(result.cell_id)," *
     "\"event_mode\":\"$(result.mode)\"," *
@@ -121,7 +199,27 @@ function cell_json(result)
     "\"refinement_iterations\":$(result.iterations)," *
     "\"m1\":\"$(s.masses[1])\",\"m2\":\"$(result.m2)\",\"m3\":\"$(s.masses[3])\"," *
     "\"x1\":\"$(s.p[1])\",\"v1\":\"$(s.p[2])\",\"v2\":\"$(s.p[3])\",\"period\":\"$(s.p[4])\"," *
-    "\"alpha\":\"$(s.alpha)\",\"beta\":\"$(s.beta)\",\"discriminant\":\"$(s.disc)\"" *
+    "\"alpha\":\"$(s.alpha)\",\"beta\":\"$(s.beta)\",\"discriminant\":\"$(s.disc)\"," *
+    # Conditioning travels with the residuals it explains. Without sigma_min a
+    # BigFloat closure norm has no forward-error meaning at all.
+    "\"closure_conditioning\":{" *
+      "\"rows\":8,\"cols\":4," *
+      "\"sigma_max\":\"$(c.sigma_max)\"," *
+      "\"sigma_min\":\"$(c.sigma_min)\"," *
+      "\"kappa_2\":\"$(c.kappa_2)\"," *
+      "\"residual_norm\":\"$(result.closure)\"," *
+      "\"displacement_bound\":\"$(c.displacement_bound)\"," *
+      "\"singular_values\":[$(sv)]}," *
+    "\"event_conditioning\":{" *
+      "\"rows\":1,\"cols\":1," *
+      "\"slope_source\":\"secant across final m2 bracket\"," *
+      "\"sigma_max\":\"$(abs(result.event_slope))\"," *
+      "\"sigma_min\":\"$(abs(result.event_slope))\"," *
+      "\"kappa_2\":\"1\"," *
+      "\"residual_norm\":\"$(abs(result.event))\"," *
+      "\"displacement_bound\":\"$(result.m2_uncertainty)\"," *
+      "\"final_bracket_width\":\"$(result.final_bracket_width)\"}," *
+    "\"m2_uncertainty\":\"$(result.m2_uncertainty)\"" *
     "}"
 end
 
