@@ -376,7 +376,13 @@ def test_merge_refuses_shards_that_probed_a_different_raster():
 # --------------------------------------------------------------------------
 # curve components: the scientific object is a curve, not a per-line point
 # --------------------------------------------------------------------------
-def _root(m1: float, m2: float, mechanism: str = "plus_one", blind: bool = True, matched: bool = False):
+def _root(
+    m1: float,
+    m2: float,
+    mechanism: str = "plus_one",
+    blind: bool = True,
+    matched: bool = False,
+):
     return {
         "mechanism": mechanism,
         "status": "passed",
@@ -424,6 +430,43 @@ def test_only_gate_passing_roots_become_curve_points():
     missed["status"] = "missed_frozen_gates"
     components = MERGE.link_components([_root(0.90, 0.860), missed], lines, link_threshold=0.02)
     assert len(components) == 1 and components[0]["points"] == 1
+
+
+# --------------------------------------------------------------------------
+# codimension-two proximity
+# --------------------------------------------------------------------------
+def test_two_mechanisms_meeting_on_one_line_are_flagged_as_an_organizer_candidate():
+    roots = [_root(0.930, 0.8854, "plus_one"), _root(0.930, 0.8856, "minus_one")]
+    crossings = MERGE.mechanism_crossings(roots, threshold=2e-3)
+    assert len(crossings) == 1
+    assert crossings[0]["mechanisms"] == ["minus_one", "plus_one"]
+    assert crossings[0]["separation_m2"] < 2e-3
+
+
+def test_two_roots_of_the_same_mechanism_are_not_an_organizer():
+    roots = [_root(0.930, 0.8854, "plus_one"), _root(0.930, 0.8856, "plus_one")]
+    assert MERGE.mechanism_crossings(roots, threshold=2e-3) == []
+
+
+def test_well_separated_mechanisms_are_not_an_organizer():
+    roots = [_root(0.930, 0.8854, "plus_one"), _root(0.930, 0.9100, "minus_one")]
+    assert MERGE.mechanism_crossings(roots, threshold=2e-3) == []
+
+
+def test_the_organizer_multipliers_are_forced_by_algebra_not_by_measurement():
+    """G_plus = G_minus = 0 forces alpha = beta = 4 and trace roots +-2.
+
+    beta - 6a + 20 = 0 and beta - 2a + 4 = 0 subtract to -4a + 16 = 0, so
+    alpha = 4 and beta = 4.  Then P(t) = t^2 - (alpha-4) t + (beta - 4 alpha + 8)
+    = t^2 - 4, whose roots are +2 and -2: multipliers {+1, +1, -1, -1}.
+    """
+    values = SWEEP.AST.state_from_invariants(4.0, 4.0)
+    assert values["G_plus"] == 0.0
+    assert values["G_minus"] == 0.0
+    assert values["discriminant"] == pytest.approx(16.0)
+    # Both trace roots sit exactly on the |t| = 2 boundary, so the stability
+    # count is undecidable there -- which is the analytic signature of the X.
+    assert SWEEP.AST.unstable_count(4.0, 4.0) is None
 
 
 # --------------------------------------------------------------------------

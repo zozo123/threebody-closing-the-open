@@ -293,6 +293,8 @@ jobs:
           print(f"- curve components: {headline['curve_components']}, of which "
                 f"{headline['curve_components_absent_from_the_committed_graph']} are not in "
                 "the committed graph")
+          print(f"- candidate codimension-two organizers (two mechanisms meeting on one "
+                f"scan line): {headline['candidate_codimension_two_organizers']}")
           print("\n### Re-derivation audit\n")
           audit = document['rederivation_audit']
           print(f"- probes whose stored events contradicted their own (alpha, beta): "

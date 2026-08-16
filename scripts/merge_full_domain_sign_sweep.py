@@ -306,6 +306,63 @@ def link_components(
     return components
 
 
+def mechanism_crossings(
+    localizations: Sequence[dict[str, Any]], *, threshold: float
+) -> list[dict[str, Any]]:
+    """Scan lines where two different mechanisms localize to nearly the same m2.
+
+    Where a plus_one and a minus_one curve meet, P(+2) = P(-2) = 0 together.
+    Subtracting the two gives alpha = 4 and then beta = 4, so a = alpha - 4 = 0
+    and b = beta - 4 alpha + 8 = -4, whence P(t) = t^2 - 4 and the reduced
+    multipliers are exactly {+1, +1, -1, -1}.  That is a codimension-two
+    organizer, and the local structure there is an X rather than an endpoint --
+    which is why an endpoint classifier meeting one has nothing to say.
+
+    This reports *proximity on a probed scan line*, not a localized organizer.
+    Two curves passing within ``threshold`` is a candidate to be continued, not
+    a certified intersection: a real crossing needs a two-parameter solve of
+    G_plus = G_minus = closure = 0, which this sweep does not do.
+    """
+    by_line: dict[float, list[dict[str, Any]]] = defaultdict(list)
+    for item in localizations:
+        if item.get("status") == "passed" and "masses" in item:
+            by_line[float(item["masses"][0])].append(item)
+    out: list[dict[str, Any]] = []
+    for m1 in sorted(by_line):
+        points = by_line[m1]
+        for i, left in enumerate(points):
+            for right in points[i + 1 :]:
+                if left["mechanism"] == right["mechanism"]:
+                    continue
+                separation = abs(float(left["masses"][1]) - float(right["masses"][1]))
+                if separation > threshold:
+                    continue
+                out.append(
+                    {
+                        "m1": m1,
+                        "mechanisms": sorted([str(left["mechanism"]), str(right["mechanism"])]),
+                        "m2": sorted([float(left["masses"][1]), float(right["masses"][1])]),
+                        "separation_m2": separation,
+                        "threshold_m2": threshold,
+                        "both_invisible_to_published_labels": (
+                            left.get("published_cell", {}).get("census_would_bracket") is False
+                            and right.get("published_cell", {}).get("census_would_bracket") is False
+                        ),
+                        "both_absent_from_committed_graph": (
+                            not left.get("committed_edge", {}).get("matched")
+                            and not right.get("committed_edge", {}).get("matched")
+                        ),
+                        "interpretation": (
+                            "candidate codimension-two organizer: where these two curves "
+                            "meet, alpha = beta = 4 and the reduced multipliers are "
+                            "{+1, +1, -1, -1}.  Proximity on one scan line, not a "
+                            "localized intersection."
+                        ),
+                    }
+                )
+    return out
+
+
 def coverage_report(
     probes: Sequence[dict[str, Any]],
     m2_by_m1: dict[float, Sequence[float]],
@@ -376,6 +433,12 @@ def main() -> None:
     parser.add_argument("--sign-floor", type=float, default=1e-4)
     parser.add_argument("--match-tolerance", type=float, default=1.5e-3)
     parser.add_argument("--link-threshold", type=float, default=0.02)
+    parser.add_argument(
+        "--crossing-threshold",
+        type=float,
+        default=2e-3,
+        help="m2 separation below which two mechanisms on one scan line are flagged",
+    )
     args = parser.parse_args()
 
     shards: list[dict[str, Any]] = []
@@ -441,6 +504,7 @@ def main() -> None:
     localized_keys = {SWEEP._bracket_key(item) for item in localizations}
     uncertified = [b for b in vertical if SWEEP._bracket_key(b) not in localized_keys]
     components = link_components(localizations, scan_lines, link_threshold=args.link_threshold)
+    crossings = mechanism_crossings(localizations, threshold=args.crossing_threshold)
 
     passed = [item for item in localizations if item.get("status") == "passed"]
     blind = [item for item in passed if item.get("published_cell", {}).get("census_would_bracket") is False]
@@ -474,6 +538,7 @@ def main() -> None:
         "curve_components_entirely_invisible_to_published_labels": sum(
             1 for c in components if c["invisible_to_published_labels"]
         ),
+        "candidate_codimension_two_organizers": len(crossings),
         "by_mechanism": {
             mechanism: {
                 "roots_passing_gates": sum(1 for item in passed if item.get("mechanism") == mechanism),
@@ -540,6 +605,7 @@ def main() -> None:
             ],
         },
         "curve_components": components,
+        "candidate_codimension_two_organizers": crossings,
         "localizations": localizations,
         "uncertified_vertical_sign_changes": uncertified,
         "vertical_sign_changes": vertical,
