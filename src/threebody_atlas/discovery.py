@@ -28,6 +28,64 @@ class DiscoveryValidationError(ValueError):
     """Raised when a discovery manifest violates the release contract."""
 
 
+class LimitationRenderError(DiscoveryValidationError):
+    """Raised when published prose would drop a caveat the manifest records.
+
+    ``DISCOVERY_SUMMARY.md`` is the ``--notes-file`` of the public GitHub
+    Release, so a renderer that omits a claim's limitations publishes a
+    stronger statement than the manifest authorizes.  Rendering is therefore
+    guarded rather than trusted.
+    """
+
+
+def claim_limitations(claim: dict[str, Any]) -> list[str]:
+    """Return a claim's recorded limitations as non-empty strings."""
+    raw = claim.get("limitations") or []
+    if isinstance(raw, str):
+        raw = [raw]
+    return [str(item).strip() for item in raw if str(item).strip()]
+
+
+def _release_claims(manifest: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        claim
+        for claim in manifest.get("claims", [])
+        if isinstance(claim, dict) and claim.get("status") == "release_claim"
+    ]
+
+
+def assert_limitations_rendered(
+    manifest: dict[str, Any],
+    text: str,
+    *,
+    transform: Any = None,
+    where: str = "rendered output",
+) -> None:
+    """Fail loudly if published prose drops any recorded caveat.
+
+    ``transform`` adapts a manifest string to the target markup (LaTeX
+    escaping, for example) before the containment check.
+    """
+    encode = transform or (lambda value: value)
+    missing: list[str] = []
+    for claim in _release_claims(manifest):
+        limitations = claim_limitations(claim)
+        if not limitations:
+            missing.append(f"release claim {claim.get('id')} carries no limitations to publish")
+            continue
+        for limitation in limitations:
+            if encode(limitation) not in text:
+                missing.append(f"release claim {claim.get('id')} limitation dropped: {limitation}")
+    for limitation in manifest.get("known_limitations") or []:
+        if encode(str(limitation)) not in text:
+            missing.append(f"known limitation dropped: {limitation}")
+    if missing:
+        raise LimitationRenderError(
+            f"{where} would publish claims without their caveats:\n"
+            + "\n".join(f"- {item}" for item in missing)
+        )
+
+
 def sha256_file(path: str | Path) -> str:
     digest = hashlib.sha256()
     with Path(path).open("rb") as handle:
@@ -124,6 +182,10 @@ def validate_manifest(
             release_claims.append(claim)
             if not claim.get("evidence"):
                 errors.append(f"release claim {claim_id} has no evidence")
+            # A published claim without a recorded caveat cannot be rendered
+            # honestly, so the manifest must carry one before the renderer runs.
+            if not claim_limitations(claim):
+                errors.append(f"release claim {claim_id} has no limitations")
         for ref in claim.get("evidence", []):
             if ref not in evidence_ids:
                 errors.append(f"claim {claim_id} references unknown evidence {ref}")
@@ -240,10 +302,20 @@ def validate_manifest(
 
 
 def render_summary(manifest: dict[str, Any]) -> str:
+    """Render the public release notes.
+
+    This text is the ``--notes-file`` of the GitHub Release, so it is the
+    version of the result that the world reads.  Every release claim is
+    published together with its recorded limitations, the manifest-level
+    known limitations, and the novelty status; the guard at the end refuses
+    to return prose that dropped any of them.
+    """
     lines = [
         f"# Discovery release: {manifest['release_id']}",
         "",
         f"**Scientific status:** {manifest['status'].upper()}",
+        "",
+        f"**Scope.** {manifest['problem']['scope']}",
         "",
         "## Open problem",
         "",
@@ -253,6 +325,15 @@ def render_summary(manifest: dict[str, Any]) -> str:
         "",
         manifest["decision"]["summary"],
         "",
+    ]
+    if manifest["decision"].get("if_v1_closes"):
+        lines += [
+            "## What this release would establish, stated so a referee cannot call it overclaiming",
+            "",
+            manifest["decision"]["if_v1_closes"],
+            "",
+        ]
+    lines += [
         "## Closure gates",
         "",
     ]
@@ -260,9 +341,10 @@ def render_summary(manifest: dict[str, Any]) -> str:
         status = gate["status"].upper()
         lines.append(f"- **{gate['id']} {gate['title']} [{status}]** — {gate['criterion']}")
     lines += ["", "## Release claims", ""]
-    claims = [claim for claim in manifest["claims"] if claim["status"] == "release_claim"]
+    claims = _release_claims(manifest)
     if not claims:
         lines.append("No scientific release claim is authorized yet.")
+        lines.append("")
     for claim in claims:
         lines += [
             f"### {claim['id']}",
@@ -271,7 +353,30 @@ def render_summary(manifest: dict[str, Any]) -> str:
             "",
             f"**How:** {claim['method']}",
             "",
+            "**Limitations of this claim:**",
+            "",
         ]
+        lines += [f"- {limitation}" for limitation in claim_limitations(claim)]
+        lines.append("")
+    lines += ["## Known limitations", ""]
+    known = [str(item) for item in manifest.get("known_limitations") or []]
+    if known:
+        lines += [f"- {item}" for item in known]
+    else:
+        lines.append("None recorded.")
+    lines.append("")
+    novelty = manifest.get("novelty") or {}
+    lines += [
+        "## Novelty status",
+        "",
+        f"- Status: **{str(novelty.get('status', 'unknown')).upper()}**",
+        f"- Last literature search: {novelty.get('last_search_date', 'unrecorded')} "
+        f"(maximum permitted age {novelty.get('max_age_days', 'unspecified')} days)",
+        f"- Audit: `{novelty.get('source', 'unrecorded')}`",
+        "",
+        "A negative literature search records what was not located. It is not a proof of priority.",
+        "",
+    ]
     if manifest.get("blockers"):
         lines += ["## Remaining blockers", ""]
         lines += [f"- {blocker}" for blocker in manifest["blockers"]]
@@ -280,7 +385,9 @@ def render_summary(manifest: dict[str, Any]) -> str:
     for item in manifest["evidence"]:
         where = item.get("path") or f"run {item.get('run_id')} / artifact {item.get('artifact_id')}"
         lines.append(f"- **{item['id']}** ({item['role']}): {item['description']} — `{where}`")
-    return "\n".join(lines) + "\n"
+    text = "\n".join(lines) + "\n"
+    assert_limitations_rendered(manifest, text, where="DISCOVERY_SUMMARY.md release notes")
+    return text
 
 
 def _latex_escape(text: str) -> str:
@@ -297,12 +404,12 @@ def _latex_escape(text: str) -> str:
 
 def render_latex_claims(manifest: dict[str, Any]) -> str:
     """Render only release-authorized claims for direct manuscript inclusion."""
-    claims = [claim for claim in manifest.get("claims", []) if claim.get("status") == "release_claim"]
+    claims = _release_claims(manifest)
     lines = ["% Generated from release_claim records in research/DISCOVERY_RELEASE.json.", r"\sloppy"]
     if not claims:
         lines.append(r"No scientific release claim is authorized.")
     for claim in claims:
-        limitations = " ".join(str(item) for item in claim.get("limitations", []))
+        limitations = claim_limitations(claim)
         lines.extend(
             [
                 rf"\paragraph{{{_latex_escape(str(claim['id']).replace('-', ' ').title())}.}}",
@@ -310,14 +417,20 @@ def render_latex_claims(manifest: dict[str, Any]) -> str:
                 "",
                 rf"\emph{{Method.}} {_latex_escape(str(claim['method']))}",
                 "",
-                *(
-                    [rf"\emph{{Limitations.}} {_latex_escape(limitations)}", ""]
-                    if limitations
-                    else []
-                ),
+                rf"\emph{{Limitations.}} {_latex_escape(' '.join(limitations))}",
+                "",
             ]
         )
-    return "\n".join(lines) + "\n"
+    known = [str(item) for item in manifest.get("known_limitations") or []]
+    if known:
+        lines += [r"\paragraph{Known limitations of this release.}", r"\begin{itemize}"]
+        lines += [rf"\item {_latex_escape(item)}" for item in known]
+        lines.append(r"\end{itemize}")
+    text = "\n".join(lines) + "\n"
+    assert_limitations_rendered(
+        manifest, text, transform=_latex_escape, where="paper/generated/discoveries.tex"
+    )
+    return text
 
 
 def render_latex_status(manifest: dict[str, Any]) -> str:
@@ -329,6 +442,13 @@ def render_latex_status(manifest: dict[str, Any]) -> str:
         "% Generated from research/DISCOVERY_RELEASE.json.",
         r"\subsection*{Machine-readable discovery status}",
         rf"Scientific status: \textbf{{{status}}}. {summary}",
+    ]
+    if manifest["decision"].get("if_v1_closes"):
+        lines += [
+            r"\paragraph{What this release would establish.}",
+            esc(str(manifest["decision"]["if_v1_closes"])),
+        ]
+    lines += [
         r"\paragraph{Gates.}",
         r"\begin{itemize}",
     ]
@@ -339,19 +459,40 @@ def render_latex_status(manifest: dict[str, Any]) -> str:
         )
     lines.append(r"\end{itemize}")
     lines += [r"\paragraph{Authorized release claims.}", r"\begin{itemize}"]
-    claims = [c for c in manifest.get("claims", []) if c.get("status") == "release_claim"]
+    claims = _release_claims(manifest)
     if not claims:
         lines.append(r"\item No scientific release claim is authorized.")
     for claim in claims:
         cid = esc(claim["id"])
-        lines.append(rf"\item \textbf{{{cid}}}. {esc(claim['statement'])}")
+        limitations = esc(" ".join(claim_limitations(claim)))
+        lines.append(
+            rf"\item \textbf{{{cid}}}. {esc(claim['statement'])} "
+            rf"\emph{{Limitations.}} {limitations}"
+        )
     lines.append(r"\end{itemize}")
+    known = [str(item) for item in manifest.get("known_limitations") or []]
+    if known:
+        lines += [r"\paragraph{Known limitations.}", r"\begin{itemize}"]
+        lines += [rf"\item {esc(item)}" for item in known]
+        lines.append(r"\end{itemize}")
+    novelty = manifest.get("novelty") or {}
+    lines += [
+        r"\paragraph{Novelty status.}",
+        rf"{esc(str(novelty.get('status', 'unknown')).upper())}; last literature search "
+        rf"{esc(str(novelty.get('last_search_date', 'unrecorded')))}, maximum permitted age "
+        rf"{esc(str(novelty.get('max_age_days', 'unspecified')))} days. "
+        r"A negative literature search is not a proof of priority.",
+    ]
     if manifest.get("blockers"):
         lines += [r"\paragraph{Remaining blockers.}", r"\begin{itemize}"]
         for blocker in manifest["blockers"]:
             lines.append(rf"\item {esc(blocker)}")
         lines.append(r"\end{itemize}")
-    return "\n".join(lines) + "\n"
+    text = "\n".join(lines) + "\n"
+    assert_limitations_rendered(
+        manifest, text, transform=esc, where="paper/generated/discovery-release.tex"
+    )
+    return text
 
 
 def build_dossier(
