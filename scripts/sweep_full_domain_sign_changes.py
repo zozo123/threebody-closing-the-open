@@ -67,11 +67,13 @@ probe records rather than trusting the per-shard findings.
 
 CHECKPOINTS
 -----------
-A partial artifact is rewritten atomically every ``--checkpoint-every`` probes,
-at the end of every scan line, and after every certification, so a wall-clock
-kill costs a handful of probes rather than a run.  ``--resume`` reloads it and
-skips both completed scan lines and, within an unfinished line, the individual
-lattice points already probed.
+Work is done one scan line at a time -- probe the line, enumerate its sign
+changes, localize them, move on -- so a run killed part way through has finished
+science on every completed line rather than a lattice with nothing localized on
+it.  A partial artifact is rewritten atomically every ``--checkpoint-every``
+probes, at the end of every line, and after every localization.  ``--resume``
+reloads it and skips both completed lines and, within an unfinished line, the
+individual lattice points already probed.
 """
 from __future__ import annotations
 
@@ -760,7 +762,13 @@ def main() -> None:
             wall_seconds=time.time() - started_wall,
         )
 
-    # ---------------- phase A: probe the lattice -------------------------
+    # One scan line at a time: probe it, enumerate its sign changes, localize
+    # them, then move on.  Probing the whole window first and certifying at the
+    # end would be marginally cheaper in seeds, but it means a run killed at 80%
+    # yields a lattice with no localized roots on it -- which is not a partial
+    # result, it is no result.  Three long runs in this repository have already
+    # been lost to a wall-clock kill, so every completed line ships finished
+    # science.
     for m1, m2s in lattice.points:
         if m1 in done_lines:
             continue
@@ -796,20 +804,13 @@ def main() -> None:
         done_lines.add(m1)
         write_atomic(checkpoint, payload("probing"))
 
-    # ---------------- phase B: enumerate brackets (pure) ------------------
-    brackets = _all_vertical(probes, sign_floor=args.sign_floor)
-    print(
-        f"\nlattice complete: {len(probes)} probes, {len(brackets)} vertical sign changes",
-        flush=True,
-    )
-
-    # ---------------- phase C: certify each bracket ----------------------
-    if not args.no_certify:
-        by_key = {(p["m1"], p["m2"]): p for p in probes}
-        labelled = {
-            m1: [(m2, grid[m1][m2].published_stability) for m2 in m2_by_m1[m1]]
-            for m1 in {b["m1"] for b in brackets}
-        }
+        line_probes = [p for p in probes if p["m1"] == m1]
+        brackets = sign_changes_on_line(line_probes, sign_floor=args.sign_floor)
+        print(f"  {len(brackets)} sign changes on m1={m1:.4f}", flush=True)
+        if args.no_certify:
+            continue
+        by_key = {p["m2"]: p for p in line_probes}
+        labelled = [(m2, grid[m1][m2].published_stability) for m2 in m2_by_m1[m1]]
         for bracket in brackets:
             key = _bracket_key(bracket)
             if key in done_brackets:
@@ -817,12 +818,12 @@ def main() -> None:
             if args.max_certifications and len(localizations) >= args.max_certifications:
                 print("certification budget exhausted; remaining brackets left uncertified", flush=True)
                 break
-            lo = by_key[(bracket["m1"], bracket["m2_bracket"][0])]
-            hi = by_key[(bracket["m1"], bracket["m2_bracket"][1])]
+            lo = by_key[bracket["m2_bracket"][0]]
+            hi = by_key[bracket["m2_bracket"][1]]
             result = certify_bracket(bracket, lo, hi, certify_budget=args.certify_budget)
             if "masses" in result:
                 m2_star = result["masses"][1]
-                result["published_cell"] = published_cell_verdict(labelled[bracket["m1"]], m2_star)
+                result["published_cell"] = published_cell_verdict(labelled, m2_star)
                 result["committed_edge"] = committed_edge_match(
                     edges,
                     bracket["mechanism"],
@@ -861,7 +862,7 @@ def main() -> None:
             {
                 "output": str(args.output),
                 "probe_summary": final["probe_summary"],
-                "vertical_sign_changes": len(brackets),
+                "vertical_sign_changes": len(final["vertical_sign_changes"]),
                 "horizontal_sign_changes": len(final["horizontal_sign_changes"]),
                 "localizations": len(localizations),
                 "passed_frozen_gates": len(passed),
