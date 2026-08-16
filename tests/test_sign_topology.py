@@ -20,6 +20,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 REAL_GRAPH = ROOT / "research/evidence/V1_CRITICAL_GRAPH.json"
 REAL_ROOTS = ROOT / "research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json"
+SHIPPED_AUDIT = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json"
 
 
 def _module():
@@ -335,6 +336,39 @@ def test_committed_edges_are_graphs_over_m1():
         xs = [v[0] for v in edge.vertices]
         assert xs == sorted(xs)
         assert len(set(xs)) == len(xs)
+
+
+@pytest.mark.skipif(not SHIPPED_AUDIT.exists(), reason="audit artifact not present")
+def test_shipped_audit_finding_cannot_silently_disappear():
+    """Lock in the falsification the shipped run produced.
+
+    The audit found critical curves the graph does not contain.  If a later
+    change makes that finding vanish, it must vanish because someone
+    regenerated the artifact and looked at it, not because a checker quietly
+    stopped firing.
+    """
+    audit = json.loads(SHIPPED_AUDIT.read_text())
+    assert audit["schema"] == AST.SCHEMA
+    assert audit["violation_counts"].get("missing_critical_curve", 0) > 0
+    missing = [v for v in audit["violations"] if v["kind"] == "missing_critical_curve"]
+    assert all(v["component"] in AST.COMPONENTS for v in missing)
+    assert all(v["committed_edges_in_bracket"] == [] for v in missing)
+
+
+@pytest.mark.skipif(not SHIPPED_AUDIT.exists(), reason="audit artifact not present")
+def test_shipped_audit_used_the_frozen_gates():
+    """No finding here may rest on a relaxed tolerance."""
+    audit = json.loads(SHIPPED_AUDIT.read_text())
+    assert audit["parameters"]["max_closure"] == 1e-7
+    for refinement in audit.get("missing_curve_refinements", []):
+        certification = refinement.get("certification")
+        if not certification or "gates" not in certification:
+            continue
+        assert certification["gates"]["maximum_absolute_event"] == 2e-8
+        assert certification["gates"]["maximum_periodic_closure"] == 1e-7
+        if certification["status"] == "passed":
+            assert abs(certification["event_value"]) <= 2e-8
+            assert certification["closure"] <= 1e-7
 
 
 @pytest.mark.skipif(not REAL_GRAPH.exists(), reason="committed graph not present")

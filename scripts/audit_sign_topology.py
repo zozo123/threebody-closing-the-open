@@ -46,9 +46,13 @@ WHAT THIS IS NOT
 Screening arithmetic.  Probes use the float64 shooting corrector, whose event
 noise is order 1e-5; probes are therefore held off the committed curves by a
 standoff and a component is only assigned a sign when its magnitude exceeds
-``--sign-threshold``.  Any bracket reported here is a screening-level bracket,
-not a root at the frozen 2e-8 event gate.  This script never writes
-``release_ready`` and never touches the critical graph.
+``--sign-threshold``.  A bracket found this way is a screening bracket, not yet
+a root -- which is why every reported missing curve is then handed to
+``critical_manifold.localize_critical_point``, the same localizer that produced
+the 620 committed roots, at the unchanged gates ``|event| <= 2e-8`` and
+``closure <= 1e-7``.  A certification that misses those gates is reported as a
+miss; no tolerance is ever widened to make a finding land.  This script never
+writes ``release_ready`` and never touches the critical graph.
 """
 from __future__ import annotations
 
