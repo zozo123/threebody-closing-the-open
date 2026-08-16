@@ -6,6 +6,7 @@ on:
       - agent/continuous-event-witnesses
     paths:
       - "scripts/resolve_sampled_sweep_endpoints.py"
+      - "scripts/bridge_minus_component1_to_isolated.py"
       - ".github/workflows/resolve-sampled-endpoints.yml"
   workflow_dispatch:
 
@@ -34,28 +35,62 @@ jobs:
         run: |
           sed -i '/    _flow_for_vector,/d' scripts/trace_label_invisible_continuous.py
           sed -i 's/from threebody_atlas.boundary import BoundarySample, stability_score/from threebody_atlas.boundary import BoundarySample/' scripts/trace_label_invisible_continuous.py
-      - name: Compile endpoint resolver
+      - name: Compile continuation experiments
         run: |
           uv run --no-sync python -m py_compile \
             scripts/trace_label_invisible_continuous.py \
-            scripts/resolve_sampled_sweep_endpoints.py
-      - name: Continue beyond finite sweep endpoints
+            scripts/resolve_sampled_sweep_endpoints.py \
+            scripts/bridge_minus_component1_to_isolated.py
+      - name: Bridge component 1 through isolated component 5
+        id: bridge
+        continue-on-error: true
         run: |
           mkdir -p artifacts/endpoint-resolution
-          set +e
+          uv run --no-sync python scripts/bridge_minus_component1_to_isolated.py \
+            research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json \
+            artifacts/endpoint-resolution/component1-to-component5.json \
+            --mass-step 0.0025 --max-steps 40
+      - name: Continue beyond both finite sweep endpoints
+        id: endpoints
+        continue-on-error: true
+        run: |
           uv run --no-sync python scripts/resolve_sampled_sweep_endpoints.py \
             research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json \
             research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json \
             artifacts/endpoint-resolution/minus-endpoints.json \
             --mass-step 0.0025 --max-steps 100
-          status=$?
-          set -e
-          echo "resolver_exit=$status" >> "$GITHUB_STEP_SUMMARY"
-          exit "$status"
+      - name: Summarize scientific outcomes
+        if: always()
+        run: |
+          echo "component1_bridge_outcome=${{ steps.bridge.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "endpoint_resolver_outcome=${{ steps.endpoints.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+          for path in (
+              Path("artifacts/endpoint-resolution/component1-to-component5.json"),
+              Path("artifacts/endpoint-resolution/minus-endpoints.json"),
+          ):
+              print("\n###", path.name)
+              if not path.exists():
+                  print("no artifact")
+                  continue
+              payload = json.loads(path.read_text())
+              print("claim_status:", payload.get("claim_status"))
+              if "continuous_bridge_passed" in payload:
+                  print("continuous_bridge_passed:", payload["continuous_bridge_passed"])
+              if "all_sampled_endpoints_resolved" in payload:
+                  print("all_sampled_endpoints_resolved:", payload["all_sampled_endpoints_resolved"])
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: sampled-endpoint-resolution-${{ github.sha }}
-          path: artifacts/endpoint-resolution/minus-endpoints.json
+          path: artifacts/endpoint-resolution/*.json
           if-no-files-found: warn
           retention-days: 90
+      - name: Enforce both scientific checks
+        if: always()
+        run: |
+          test "${{ steps.bridge.outcome }}" = "success"
+          test "${{ steps.endpoints.outcome }}" = "success"
