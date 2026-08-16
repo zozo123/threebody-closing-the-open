@@ -1,0 +1,42 @@
+{
+  "SYNTHETIC_FIXTURE_NOT_EVIDENCE": true,
+  "claim_status": "SYNTHETIC TEST FIXTURE - stands in for artifacts/secondary-minus-fold-bigfloat.json",
+  "implementation": "SYNTHETIC-FIXTURE-NOT-A-SOLVER",
+  "passed": true,
+  "masses": [0.9, 1.0, 1.0],
+  "closure_norm": 1e-40,
+  "minus_one_event": 1e-40,
+  "stationarity_stencil_audit": [
+    {"dps": 8, "dGdm2": 1e-07, "dGdm1": 2.0},
+    {"dps": 12, "dGdm2": 1e-08, "dGdm1": 2.0},
+    {"dps": 18, "dGdm2": 1e-09, "dGdm1": 2.0},
+    {"dps": 28, "dGdm2": 1e-10, "dGdm1": 2.0}
+  ],
+  "branch_curvature_audit": {
+    "relative_curvature_disagreement": 0.01,
+    "branches": [
+      {
+        "cell_id": 392,
+        "orientation": "U->S",
+        "masses": [0.91, 1.0, 1.0],
+        "source_m2_bracket": [0.99, 1.01],
+        "closure_norm": 1e-40,
+        "minus_one_event": 1e-40,
+        "dm1_from_fold": 0.01,
+        "dm2_from_fold": 0.005,
+        "secant_m1_curvature": 0.5
+      },
+      {
+        "cell_id": 393,
+        "orientation": "S->U",
+        "masses": [0.91, 1.0, 1.0],
+        "source_m2_bracket": [0.99, 1.01],
+        "closure_norm": 1e-40,
+        "minus_one_event": 1e-40,
+        "dm1_from_fold": 0.01,
+        "dm2_from_fold": -0.005,
+        "secant_m1_curvature": 0.5
+      }
+    ]
+  }
+}

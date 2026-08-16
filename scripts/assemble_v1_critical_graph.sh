@@ -95,6 +95,13 @@
 #                source it names, re-hash it to the recorded sha256, and
 #                re-derive the AL and neck predicates itself.  Sealing alone
 #                proves nothing.
+#
+# LEFT_BIRTH and COMPLETENESS may be overridden by environment variable.  That
+# exists so scripts/close_v1_gates.py can point this pinned invocation at the
+# classification and certificate it has just produced from live CI artifacts,
+# without keeping a second copy of the evidence list that could drift from this
+# one.  Defaults are the committed release configuration; overriding either does
+# NOT relax anything, because every gate still runs inside the assembler.
 set -euo pipefail
 
 if [[ $# -ne 1 ]]; then
@@ -115,13 +122,13 @@ read -r -a PYTHON_CMD <<<"${PYTHON:-uv run --no-sync python}"
 "${PYTHON_CMD[@]}" scripts/assemble_critical_graph.py \
   --output "$OUTPUT" \
   --roots research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json \
-  --left-birth research/evidence/V1_LEFT_BIRTH_CLASS_2026-08-16.json \
+  --left-birth "${LEFT_BIRTH:-research/evidence/V1_LEFT_BIRTH_CLASS_2026-08-16.json}" \
   --right-death research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json \
   --daughter research/evidence/V1_DAUGHTER_CLASS_2026-08-16.json \
   --germs research/evidence/V1_MIXED_GERMS_PRINCIPAL_LEFT_2026-08-16.json \
   --germs research/evidence/V1_MIXED_GERMS_SECONDARY_LEFT_2026-08-16.json \
   --germs research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json \
   --germs research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json \
-  --completeness research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json \
+  --completeness "${COMPLETENESS:-research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json}" \
   --sign-topology research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json \
   --sign-topology research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json

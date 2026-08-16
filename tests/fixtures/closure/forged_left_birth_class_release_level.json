@@ -1,0 +1,33 @@
+{
+  "SYNTHETIC_FIXTURE_NOT_EVIDENCE": true,
+  "claim_status": "SYNTHETIC FORGERY - hand-written, and it claims a release-set evidence_level",
+  "why_this_fixture_exists": "forged_left_birth_class.json only fails the assembler because it left evidence_level at 'screening'. A forger has no reason to be that careless. This fixture is the same forgery with the one field corrected, and the assembler DOES accept it: at that layer the artifact is only bytes. The defence is in scripts/close_v1_gates.py, which knows where a classification came from.",
+  "id": "secondary_left_birth",
+  "kind": "endpoint",
+  "class": "projection_fold",
+  "passed": true,
+  "status": "independently_reproduced",
+  "evidence_level": "independently_reproduced",
+  "requires_independent_verification": false,
+  "estimator": "HAND-WRITTEN-CLAIM",
+  "note": "Nobody verified this. No fold was ever traced; no BigFloat run exists.",
+  "masses": [
+    0.9,
+    1.0,
+    1.0
+  ],
+  "edge_endpoint_bindings": [
+    {
+      "cell_id": 392,
+      "side": "start",
+      "mechanism": "minus_one",
+      "orientation": "U->S"
+    },
+    {
+      "cell_id": 393,
+      "side": "start",
+      "mechanism": "minus_one",
+      "orientation": "S->U"
+    }
+  ]
+}

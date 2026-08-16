@@ -1,0 +1,31 @@
+{
+  "SYNTHETIC_FIXTURE_NOT_EVIDENCE": true,
+  "claim_status": "SYNTHETIC FORGERY - a hand-written classification asserting passed=true",
+  "id": "secondary_left_birth",
+  "kind": "endpoint",
+  "class": "projection_fold",
+  "passed": true,
+  "status": "independently_reproduced",
+  "evidence_level": "screening",
+  "estimator": "HAND-WRITTEN-CLAIM",
+  "note": "Nobody verified this. It asserts passed=true and hopes the assembler believes it.",
+  "masses": [
+    0.9,
+    1.0,
+    1.0
+  ],
+  "edge_endpoint_bindings": [
+    {
+      "cell_id": 392,
+      "side": "start",
+      "mechanism": "minus_one",
+      "orientation": "U->S"
+    },
+    {
+      "cell_id": 393,
+      "side": "start",
+      "mechanism": "minus_one",
+      "orientation": "S->U"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "SYNTHETIC_FIXTURE_NOT_EVIDENCE": true,
+  "claim_status": "SYNTHETIC TEST FIXTURE - stands in for the float64/JAX secondary-left fold geometry screen",
+  "event_mode": "minus_one",
+  "passed": true,
+  "generic_m1_fold_screen": true,
+  "opposite_branch_reconnection_screen": true,
+  "trace_error": null,
+  "localized_seeds": [
+    {"cell_id": 392, "masses": [0.9, 1.0, 1.0], "orientation": "U->S"},
+    {"cell_id": 393, "masses": [0.9, 1.0, 1.0], "orientation": "S->U"}
+  ],
+  "edge_endpoint_bindings": [
+    {"cell_id": 392, "side": "start", "mechanism": "minus_one", "orientation": "U->S"},
+    {"cell_id": 393, "side": "start", "mechanism": "minus_one", "orientation": "S->U"}
+  ]
+}
