@@ -519,6 +519,88 @@ def load_baseline(path: Path) -> tuple[dict[float, dict[float, Any]], dict[str, 
 
 
 # --------------------------------------------------------------------------
+# the shard artifact
+# --------------------------------------------------------------------------
+def shard_document(
+    phase: str,
+    *,
+    probes: Sequence[dict[str, Any]],
+    localizations: Sequence[dict[str, Any]],
+    planned_scan_lines: Sequence[float],
+    completed_scan_lines: Iterable[float],
+    sign_floor: float,
+    metadata: dict[str, Any],
+    wall_seconds: float,
+) -> dict[str, Any]:
+    """Assemble the shard artifact.
+
+    Built as a function rather than inline so the artifact's *shape* is
+    testable.  During development this document carried its brackets, its
+    localizations and a probe summary but not the probe records themselves: it
+    read correctly to a human and merged to an empty census, because the merge
+    step re-derives from the records and there were none.  Everything except
+    ``probes`` here is a conclusion; ``probes`` is the evidence.
+    """
+    converged = [p for p in probes if p.get("ok")]
+    return {
+        "schema": SHARD_SCHEMA,
+        "phase": phase,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "code_revision": os.getenv("GITHUB_SHA"),
+        "run_id": os.getenv("GITHUB_RUN_ID"),
+        "python": platform.python_version(),
+        "arithmetic": "float64 screening (scipy DOP853 + variational Newton)",
+        "shard": metadata["shard"],
+        "inputs": metadata["inputs"],
+        "method": {
+            "detection": (
+                "sign change of G_plus / G_minus / discriminant between consecutive "
+                "lattice points; the lattice is chosen from the published raster "
+                "geometry only, never from the published S/U labels and never from "
+                "the committed critical graph"
+            ),
+            "G_plus": "beta - 6*alpha + 20 = P(+2)",
+            "G_minus": "beta - 2*alpha + 4 = P(-2)",
+            "discriminant": "(alpha-4)^2 - 4*(beta - 4*alpha + 8)",
+            "certification": "threebody_atlas.critical_manifold.localize_critical_point",
+            "census_blindness_test": (
+                "census_would_bracket is true iff the two adjacent published raster "
+                "rows straddling the localized m2 carry different S/U labels, which "
+                "is exactly when extract_mass_slice_brackets.transition_brackets "
+                "would have emitted a cell there"
+            ),
+        },
+        "gates": {
+            "maximum_absolute_event": MAX_EVENT,
+            "maximum_periodic_closure": MAX_CLOSURE,
+            "note": "frozen; a localization that misses a gate is recorded as a miss",
+        },
+        "cost_projection": metadata.get("cost_projection"),
+        "planned_scan_lines": list(planned_scan_lines),
+        "completed_scan_lines": sorted(completed_scan_lines),
+        "probe_summary": {
+            "planned": metadata.get("probes_planned"),
+            "evaluated": len(probes),
+            "converged": len(converged),
+            "failed": len(probes) - len(converged),
+            "undecidable_n_unstable": sum(1 for p in converged if p.get("n_unstable") is None),
+            "cpu_seconds": round(sum(p.get("seconds", 0.0) for p in probes), 1),
+        },
+        "vertical_sign_changes": _all_vertical(probes, sign_floor=sign_floor),
+        "horizontal_sign_changes": horizontal_sign_changes(probes, sign_floor=sign_floor),
+        "localizations": list(localizations),
+        "probes": list(probes),
+        "wall_seconds": round(wall_seconds, 1),
+        "scope": (
+            "A vertical scan line detects only an odd number of zeros inside one "
+            "lattice cell; a pair of curves crossing the same cell cancels.  A curve "
+            "that both begins and ends between two scan lines is not sampled.  This "
+            "artifact records the lattice so those blind spots are computable."
+        ),
+    }
+
+
+# --------------------------------------------------------------------------
 # checkpointing
 # --------------------------------------------------------------------------
 def write_atomic(path: Path, payload: dict[str, Any]) -> None:
@@ -617,83 +699,45 @@ def main() -> None:
 
     started_wall = time.time()
 
+    metadata = {
+        "shard": {
+            "label": args.shard_label,
+            "m1_range": [m1_lo, m1_hi],
+            "m2_range": [m2_lo, m2_hi],
+            "m1_stride": args.m1_stride,
+            "m2_stride": args.m2_stride,
+            "sign_floor": args.sign_floor,
+            "match_tolerance_m2": args.match_tolerance,
+            "probe_cpu_budget_seconds": args.probe_budget,
+            "certify_cpu_budget_seconds": args.certify_budget,
+            "certified": not args.no_certify,
+            "max_certifications": args.max_certifications,
+            "checkpoint_every_probes": args.checkpoint_every,
+        },
+        "inputs": {
+            "baseline": str(args.baseline),
+            "baseline_digests": digests,
+            "graph": args.graph,
+            "graph_schema": graph.get("schema"),
+            "graph_release_ready": graph.get("release_ready"),
+            "roots": args.roots,
+            "roots_schema": roots_doc.get("schema"),
+        },
+        "cost_projection": projection,
+        "probes_planned": lattice.probe_count,
+    }
+
     def payload(phase: str) -> dict[str, Any]:
-        converged = [p for p in probes if p.get("ok")]
-        return {
-            "schema": SHARD_SCHEMA,
-            "phase": phase,
-            "created_at": datetime.now(timezone.utc).isoformat(),
-            "code_revision": os.getenv("GITHUB_SHA"),
-            "run_id": os.getenv("GITHUB_RUN_ID"),
-            "python": platform.python_version(),
-            "arithmetic": "float64 screening (scipy DOP853 + variational Newton)",
-            "shard": {
-                "label": args.shard_label,
-                "m1_range": [m1_lo, m1_hi],
-                "m2_range": [m2_lo, m2_hi],
-                "m1_stride": args.m1_stride,
-                "m2_stride": args.m2_stride,
-                "sign_floor": args.sign_floor,
-                "match_tolerance_m2": args.match_tolerance,
-                "probe_cpu_budget_seconds": args.probe_budget,
-                "certify_cpu_budget_seconds": args.certify_budget,
-                "certified": not args.no_certify,
-                "max_certifications": args.max_certifications,
-            },
-            "inputs": {
-                "baseline": str(args.baseline),
-                "baseline_digests": digests,
-                "graph": args.graph,
-                "graph_schema": graph.get("schema"),
-                "graph_release_ready": graph.get("release_ready"),
-                "roots": args.roots,
-                "roots_schema": roots_doc.get("schema"),
-            },
-            "method": {
-                "detection": (
-                    "sign change of G_plus / G_minus / discriminant between consecutive "
-                    "lattice points; the lattice is chosen from the published raster "
-                    "geometry only, never from the published S/U labels and never from "
-                    "the committed critical graph"
-                ),
-                "G_plus": "beta - 6*alpha + 20 = P(+2)",
-                "G_minus": "beta - 2*alpha + 4 = P(-2)",
-                "discriminant": "(alpha-4)^2 - 4*(beta - 4*alpha + 8)",
-                "certification": "threebody_atlas.critical_manifold.localize_critical_point",
-                "census_blindness_test": (
-                    "census_would_bracket is true iff the two adjacent published raster "
-                    "rows straddling the localized m2 carry different S/U labels, which "
-                    "is exactly when extract_mass_slice_brackets.transition_brackets "
-                    "would have emitted a cell there"
-                ),
-            },
-            "gates": {
-                "maximum_absolute_event": MAX_EVENT,
-                "maximum_periodic_closure": MAX_CLOSURE,
-                "note": "frozen; a localization that misses a gate is recorded as a miss",
-            },
-            "cost_projection": projection,
-            "planned_scan_lines": list(lattice.scan_lines),
-            "completed_scan_lines": sorted(done_lines),
-            "probe_summary": {
-                "planned": lattice.probe_count,
-                "evaluated": len(probes),
-                "converged": len(converged),
-                "failed": len(probes) - len(converged),
-                "undecidable_n_unstable": sum(1 for p in converged if p.get("n_unstable") is None),
-                "cpu_seconds": round(sum(p.get("seconds", 0.0) for p in probes), 1),
-            },
-            "vertical_sign_changes": _all_vertical(probes, sign_floor=args.sign_floor),
-            "horizontal_sign_changes": horizontal_sign_changes(probes, sign_floor=args.sign_floor),
-            "localizations": localizations,
-            "wall_seconds": round(time.time() - started_wall, 1),
-            "scope": (
-                "A vertical scan line detects only an odd number of zeros inside one "
-                "lattice cell; a pair of curves crossing the same cell cancels.  A curve "
-                "that both begins and ends between two scan lines is not sampled.  This "
-                "artifact records the lattice so those blind spots are computable."
-            ),
-        }
+        return shard_document(
+            phase,
+            probes=probes,
+            localizations=localizations,
+            planned_scan_lines=lattice.scan_lines,
+            completed_scan_lines=done_lines,
+            sign_floor=args.sign_floor,
+            metadata=metadata,
+            wall_seconds=time.time() - started_wall,
+        )
 
     # ---------------- phase A: probe the lattice -------------------------
     for m1, m2s in lattice.points:

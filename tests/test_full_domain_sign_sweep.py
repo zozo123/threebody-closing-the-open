@@ -258,6 +258,63 @@ def test_committed_edge_match_is_mechanism_aware():
 
 
 # --------------------------------------------------------------------------
+# the shard must carry the evidence, not only the conclusions
+# --------------------------------------------------------------------------
+def _document(probes, localizations=()):
+    return SWEEP.shard_document(
+        "complete",
+        probes=probes,
+        localizations=localizations,
+        planned_scan_lines=sorted({p["m1"] for p in probes}),
+        completed_scan_lines=sorted({p["m1"] for p in probes}),
+        sign_floor=1e-4,
+        metadata={
+            "shard": {"label": "t"},
+            "inputs": {"baseline_digests": {"sha256": "deadbeef"}},
+            "cost_projection": {},
+            "probes_planned": len(probes),
+        },
+        wall_seconds=1.0,
+    )
+
+
+def test_the_shard_artifact_carries_the_probe_records_it_concluded_from():
+    """A shard is only mergeable if it ships the evidence, not just the verdict."""
+    probes = _line_with_one_plus_one_flip()
+    document = _document(probes)
+    assert [p["m2"] for p in document["probes"]] == [p["m2"] for p in probes]
+    assert all("alpha" in p and "beta" in p and "chart" in p for p in document["probes"])
+    # Round-tripping through JSON must not lose the evidence either.
+    reloaded = json.loads(json.dumps(document))
+    merged, _duplicates = MERGE.merge_probes([reloaded])
+    assert len(merged) == len(probes)
+
+
+def test_a_shard_missing_its_probe_records_merges_to_nothing():
+    """The failure this test exists for actually happened during development.
+
+    An early shard artifact carried its brackets, its localizations and its
+    probe *summary* but not the probe records themselves.  Every field a human
+    reads looked right; the merger, which re-derives from the records, silently
+    produced an empty census.  A pipeline whose whole value is re-derivation
+    fails closed only if the raw evidence is present, so its absence must be a
+    loud, tested condition rather than a quiet zero.
+    """
+    probes = _line_with_one_plus_one_flip()
+    complete = shard("complete", probes)
+    gutted = shard("gutted", probes)
+    gutted["probes"] = []
+
+    merged, _duplicates = MERGE.merge_probes([complete])
+    assert len(merged) == len(probes)
+    assert SWEEP._all_vertical(merged, sign_floor=1e-4)
+
+    starved, _duplicates = MERGE.merge_probes([gutted])
+    assert starved == []
+    assert SWEEP._all_vertical(starved, sign_floor=1e-4) == []
+
+
+# --------------------------------------------------------------------------
 # the merger cannot be lied to
 # --------------------------------------------------------------------------
 def _line_with_one_plus_one_flip():
