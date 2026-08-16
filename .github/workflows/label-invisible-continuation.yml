@@ -28,10 +28,10 @@ env:
 
 jobs:
   continuous-reconciliation:
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-latest
     timeout-minutes: 240
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
       - name: Install uv
@@ -42,17 +42,14 @@ jobs:
       - run: uv python install 3.13
       - name: Sync locked accelerated environment
         run: uv sync --locked --extra accelerated --group dev
-      - name: Remove stale private import from experimental tracer
-        run: |
-          sed -i '/    _flow_for_vector,/d' scripts/trace_label_invisible_continuous.py
-          sed -i 's/from threebody_atlas.boundary import BoundarySample, stability_score/from threebody_atlas.boundary import BoundarySample/' scripts/trace_label_invisible_continuous.py
       - name: Compile campaign and verify derivative primitives
         run: |
           uv run --no-sync python -m py_compile scripts/trace_label_invisible_continuous.py
           uv run --no-sync pytest -q \
             tests/test_mass_sensitivity.py \
             tests/test_jax_diffrax.py \
-            tests/test_critical_geometry.py
+            tests/test_critical_geometry.py \
+            tests/test_floquet_rank_events.py
       - name: Trace four physical branches
         env:
           MASS_STEP: ${{ inputs.mass_step || '0.0035' }}
@@ -80,7 +77,7 @@ jobs:
           PY
           fi
           exit "$status"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: label-invisible-continuation-${{ github.sha }}
