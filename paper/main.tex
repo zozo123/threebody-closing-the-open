@@ -15,6 +15,14 @@ in the Li--Li--Liao unequal-mass catalog\\
 % sentence to its weakest branch, so a manuscript built with no evidence channel
 % attached asserts strictly less, never more.  scripts/check_manuscript_claims.py
 % additionally fails CI when the file is missing or does not match the generator.
+% The block between the two markers below is the ONLY place in any hand-written
+% source that may define a macro in the generated \atlas... namespace, and it may
+% use \newcommand only: \newcommand cannot silently override the definition that
+% claim-macros.tex already supplied, whereas \renewcommand or \def could, which
+% is how a preamble line could otherwise print the solved branch while the
+% assembler bit is false.  scripts/check_manuscript_claims.py enforces both the
+% location and the operator, and requires the branches below to be the weakest.
+% ATLAS-FALLBACK-BEGIN
 \IfFileExists{generated/claim-macros.tex}
   {\input{generated/claim-macros.tex}}
   {%
@@ -30,6 +38,7 @@ in the Li--Li--Liao unequal-mass catalog\\
       build, so this document certifies no completeness of any kind.}%
     \makeatletter\newcommand{\atlasifclaim}[3]{#3}\makeatother
   }
+% ATLAS-FALLBACK-END
 
 \begin{document}
 \maketitle

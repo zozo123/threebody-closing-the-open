@@ -169,19 +169,37 @@ runs **before** regeneration, on the tree as committed:
 1. **Generated channel integrity.** Every file in `paper/generated/` must byte-match
    what `scripts/build_discovery_release.py` emits, and nothing else may live there.
    Hand-written prose belongs in `paper/handwritten/`.
-2. **Hand-written prose lock.** Each hand-written manuscript sentence is hashed into
-   `paper/CLAIM_LOCK.json` with the evidence fingerprint it was reviewed under. New
-   or altered prose fails until re-frozen, and re-freezing is refused outright when
-   the evidence has weakened since the last review.
-3. **Claim-vocabulary screen.** Solvedness/completeness vocabulary in hand-written
-   prose *and* in `release_claim` statements is rejected unless the evidence state
-   actually supports it. Negation and scoping analysis keeps honest disclaimers legal.
+2. **Hand-written source lock.** Each hand-written manuscript sentence — preamble
+   included, and **both branches of every generator-controlled conditional** — is
+   hashed into `paper/CLAIM_LOCK.json` with the evidence fingerprint it was reviewed
+   under, and the reviewed text is stored verbatim so a re-freeze shows the prose it
+   blesses. Preamble control lines are locked literally, because sentence hashing
+   cannot tell `[2]{#1}` from `[2]{#2}`. New or altered prose fails until re-frozen;
+   re-freezing is refused when the evidence has weakened, refused inside CI, and
+   refused without an explicit `--review-new-prose` acknowledgement.
+3. **Claim-vocabulary screen.** Solvedness/completeness vocabulary is rejected unless
+   the evidence state actually supports it. It scans hand-written prose *and* every
+   manifest string the renderers typeset — `decision.summary`, each gate's title and
+   criterion, each release claim's statement, method and limitations, and each
+   blocker — and that field list is *discovered* from the renderers by canary
+   substitution rather than hand-maintained, so a newly rendered field cannot escape
+   the screen. Negation and scoping analysis keeps honest disclaimers legal, which
+   also means a gate criterion has to read as a requirement (`must …`) rather than as
+   an achievement.
+4. **Generated-namespace integrity.** Hand-written sources may define an `\atlas…`
+   macro only inside the delimited fallback block in the `main.tex` preamble, only
+   with `\newcommand`, and that block must collapse every conditional to its weakest
+   branch. Otherwise one preamble `\renewcommand{\atlasifsolved}[2]{#1}` would print
+   the solved branch while the assembler bit is false.
 
 Closure-dependent sentences are not hardcoded at all. They branch on
 `\atlasifsolved`, `\atlasifgraphready` and `\atlasifclaim`, defined in the generated
 `paper/generated/claim-macros.tex` from the manifest and from the assembler's
 `release_ready` bit. Withdraw a release claim and the corresponding abstract item and
-`tab:bound` row physically disappear from the PDF.
+`tab:bound` row physically disappear from the PDF. A gated branch is **not** exempt
+from the screen: each branch is screened under the evidence state that would print
+it, so the branch reserved for the closed world is checked against the closed world
+and cannot become true prose the day a bit flips.
 
 When the assembler flips `release_ready`, the deterministic sequence is:
 
@@ -190,10 +208,17 @@ python scripts/build_discovery_release.py --validate-only \
   --emit-paper-status paper/generated/discovery-release.tex \
   --emit-paper-claims paper/generated/discoveries.tex \
   --emit-paper-macros paper/generated/claim-macros.tex
-python scripts/check_manuscript_claims.py --freeze   # prints every new sentence first
+python scripts/check_manuscript_claims.py --freeze    # prints every new sentence, exits 2
+python scripts/check_manuscript_claims.py --freeze --review-new-prose   # after reading them
 python scripts/check_manuscript_claims.py            # must exit 0
 ```
 
-`--freeze` is the deliberate human re-review step; it refuses to run on the way down.
+`--freeze` is the deliberate human re-review step; it refuses to run on the way down,
+refuses to run under CI, and refuses to bless new prose without `--review-new-prose`.
+It is also the one remaining way a *paraphrase the lexicon cannot recognize* can enter
+the manuscript: a human who acknowledges new prose that no pattern matches will freeze
+it. That is the intended residual — the lock exists to force that human act, and the
+blessed text lands in `paper/CLAIM_LOCK.json` verbatim so the review happens in the
+diff. Solvedness and completeness vocabulary is still refused even with the flag.
 
 The intended first paper is narrower and defensible: **reproduce a documented stable subset, independently validate continuation/Floquet machinery, then extend selected unequal-mass branches to resolve previously unmapped stability boundaries and bifurcation structure with released numerical evidence.**

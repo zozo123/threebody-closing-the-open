@@ -11,7 +11,7 @@
     "baseline": "Li, Li & Liao (2021), arXiv:2007.10184 / Science China Physics, Mechanics & Astronomy 64, 219511. The published 135,445-orbit catalog and its 13,315 stable labels are baseline facts, not ATLAS discoveries."
   },
   "decision": {
-    "summary": "OPEN. Gate C passed: one continuation-connected family; the 2023 two-set plot is a folded projection. Gate A passed for the mechanism words the paper is allowed to use: physical +1 crossing, opposite-Krein Hamiltonian-Hopf, and three mixed (4,4) organizers. The 620-cell census is complete and assigned to seven slice-connected mechanism polylines; all twelve mixed germs are frozen. Gate B still requires the corrected left birth, right death, daughter class, and bounded completeness. Gate D remains pending.",
+    "summary": "OPEN. Gate C passed: one continuation-connected family; the 2023 two-set plot is a folded projection. Gate A passed for the mechanism words the paper is allowed to use: physical +1 crossing, opposite-Krein Hamiltonian-Hopf, and three mixed (4,4) organizers. The 620 transition cells of the published grid are localized inside the frozen gates (worst event residual 1.99e-8 against the 2e-8 gate, worst closure 1.34e-9 against the 1e-7 gate) and assigned to seven mechanism polylines with no Newton failure. That is a localized census, not a closed graph: the seven polylines still fall into six disconnected components, eight of their endpoints carry no classification, the secondary-left birth is unexplained, the twelve headline mixed germs are pending regeneration under uniform germ validation and are absent from the committed artifact, and no completeness certificate verifies, so the assembler holds release_ready false. Gate B still requires those items. Gate D remains pending.",
     "solved_at": null
   },
   "gates": [
@@ -32,9 +32,9 @@
     },
     {
       "id": "B",
-      "title": "Complete mechanism-resolved Floquet critical graph on the connected family sheet",
+      "title": "Mechanism-resolved Floquet critical graph must close on the connected family sheet",
       "status": "pending",
-      "criterion": "Every catalog S/U cell belongs to exactly one mechanism-specific polyline; N edges need not equal 620; every endpoint is a domain boundary, mixed organizer, or verified fold; mixed germs come from continuation artifacts; Newton-failed is forbidden; completeness is frozen; V1_CRITICAL_GRAPH.json has release_ready true.",
+      "criterion": "Every catalog S/U cell must belong to exactly one mechanism-specific polyline; N edges need not equal 620; every endpoint must be a domain boundary, mixed organizer, or verified fold; mixed germs must come from continuation artifacts; Newton-failed is forbidden; completeness must be frozen; V1_CRITICAL_GRAPH.json must carry release_ready true.",
       "evidence": [
         "result-ledger",
         "v1-closure",
