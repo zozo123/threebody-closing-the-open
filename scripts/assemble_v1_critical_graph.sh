@@ -52,12 +52,29 @@
 #                retained secondary_right_death organizer owes; it is a retained
 #                mixed node and may not borrow the headline twelve)
 #
-#   --al-screen  V1_AL_POCKET_SCREEN_2026-08-15.json
-#                There is no completeness certificate on disk yet, so the AL pocket
-#                screen is the only completeness input available.  It deliberately
-#                yields completeness_passed=false: an AL pocket screen is not a
-#                sealed atlas.v1.completeness-certificate/2.  When a real
-#                certificate exists, replace --al-screen with --completeness.
+#   --completeness V1_COMPLETENESS_CERTIFICATE_2026-08-16.json
+#                A sealed atlas.v1.completeness-certificate/2, frozen 2026-08-16
+#                from the AL pocket screen plus the WIDENED neck raster
+#                (V1_NECK_RASTER_2026-08-16.json).  This replaces the earlier
+#                --al-screen input, which deliberately yielded
+#                completeness_passed=false because an AL pocket screen is not a
+#                sealed certificate.
+#
+#                The raster is the widened m2 in [0.993, 1.012] scan.  The previous
+#                [0.993, 1.006] window reported any_vertical_merge=true, which was a
+#                SCAN-WINDOW TRUNCATION ARTIFACT and not a physical lobe merge: the
+#                upper stable lobe's lower edge climbs off the top of the old window
+#                at m1 >= 0.9987, and a vanished lobe reads as a merge.  Widening
+#                past the minus-one U->S wall (m2 = 1.0080934 at m1 = 0.999) recovers
+#                it at 1.0065 .. 1.0081.  All 21 lines are now `separated`, with
+#                interior_merge = 0 and truncation_undecidable = 0, while the true
+#                minimum neck gap is UNCHANGED at 3.0e-4 = 3 grid steps.  Widening
+#                the window changed the artifact, not the physics; no gate moved.
+#
+#                Note the certificate is verified, not merely sealed: the assembler
+#                re-reads each declared source and recomputes its sha256, so editing
+#                a source after sealing -- or re-sealing over an edited source --
+#                fails.  A self-sealed record with no real sources also fails.
 #                Note the schema is /2 as of the tamper-evidence work: a /2
 #                record is only accepted if the assembler can re-read every
 #                source it names, re-hash it to the recorded sha256, and
@@ -88,4 +105,4 @@ read -r -a PYTHON_CMD <<<"${PYTHON:-uv run --no-sync python}"
   --daughter research/evidence/V1_DAUGHTER_CLASS_2026-08-16.json \
   --germs research/evidence/V1_MIXED_GERMS_2026-08-15.json \
   --germs research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json \
-  --al-screen research/evidence/V1_AL_POCKET_SCREEN_2026-08-15.json
+  --completeness research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json

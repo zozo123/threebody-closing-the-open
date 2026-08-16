@@ -1595,13 +1595,9 @@
       "mixed_secondary_left:minus_one:-"
     ],
     "newton_failed": 0,
-    "completeness_passed": false,
-    "completeness_verification_errors": [
-      "certificate schema must be 'atlas.v1.completeness-certificate/2', got None",
-      "certificate does not claim passed=true",
-      "certificate sha256_content must be a 64-character hex digest"
-    ],
-    "completeness_sources_in_repository": null,
+    "completeness_passed": true,
+    "completeness_verification_errors": [],
+    "completeness_sources_in_repository": true,
     "unclassified_edge_endpoints": [
       {
         "edge": "minus_one_u_to_s_0",
@@ -1731,21 +1727,69 @@
     "class": "distinct_branch"
   },
   "completeness": {
-    "passed": false,
-    "note": "AL pocket screen only; neck raster and vertex harvest still required",
-    "attempted": 12,
-    "accepted": 12,
-    "screening_stable": 0
+    "schema": "atlas.v1.completeness-certificate/2",
+    "passed": true,
+    "domain": {
+      "catalog": "Li-Li-Liao unequal-mass non-hierarchical published grid",
+      "neck": {
+        "m1": [
+          0.997,
+          0.999
+        ],
+        "m2": [
+          0.993,
+          1.012
+        ],
+        "step": 0.0001,
+        "samples": 4011
+      }
+    },
+    "resolution": 0.0001,
+    "active_learning": {
+      "attempted": 12,
+      "accepted": 12,
+      "screening_stable_hidden_pockets": 0,
+      "interpretation": "off-grid proposals corrected onto the known sheet; no hidden stable pocket in this sample"
+    },
+    "neck": {
+      "samples": 4011,
+      "minimum_resolved_unstable_gap": 0.00029999999999995596,
+      "any_vertical_merge": false,
+      "any_boundary_truncated_merge_test": false,
+      "any_line_without_stable_sample": false,
+      "any_stable_interval_touches_boundary": true,
+      "all_lines_separated": true,
+      "merge_verdict_counts": {
+        "separated": 21,
+        "interior_merge": 0,
+        "truncation_undecidable": 0,
+        "no_stable_sample": 0
+      },
+      "boundary_truncated_lines": [],
+      "max_shooting_residual": 4.78073348207724e-10,
+      "completed": true,
+      "topology_clean": true
+    },
+    "note": "Bounded completeness: no additional stability pocket found in the AL sample and the neck raster completed at the declared local resolution.",
+    "sources": [
+      {
+        "role": "active_learning",
+        "path": "research/evidence/V1_AL_POCKET_SCREEN_2026-08-15.json",
+        "sha256": "87a2ae43ac899220f86dea835696101158509b93e675bac2c03842599a247be6"
+      },
+      {
+        "role": "neck_scan",
+        "path": "research/evidence/V1_NECK_RASTER_2026-08-16.json",
+        "sha256": "616f5fdfc97c1b6fc1bd10391eb8f941efc610b38ffa41c51369191c065fff19"
+      }
+    ],
+    "sha256_content": "03f7c8208f9524ab85f00bc0390b11a088c5202bac16439d3d17605eec57a703"
   },
   "completeness_verification": {
     "schema": "atlas.v1.completeness-certificate/2",
-    "passed": false,
-    "errors": [
-      "certificate schema must be 'atlas.v1.completeness-certificate/2', got None",
-      "certificate does not claim passed=true",
-      "certificate sha256_content must be a 64-character hex digest"
-    ],
-    "sources_in_repository": null,
-    "certificate_path": null
+    "passed": true,
+    "errors": [],
+    "sources_in_repository": true,
+    "certificate_path": "research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json"
   }
 }
