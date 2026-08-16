@@ -1,0 +1,402 @@
+{
+  "baseline_payload_set_sha256": "2537450ddb08f3bdb498930e6aa00986c589fc42b4cc8cee0efaaad79db4db18",
+  "baseline_release_eligible": true,
+  "campaign_id": "cf14b152e3864b376adcb24327bf13f2f6d94d2025d5874b7ea474c48fe604ee",
+  "case_count": 15,
+  "cases": [
+    {
+      "name": "delayed-out-of-order-completion",
+      "passed": true,
+      "release_eligible": true
+    },
+    {
+      "completed": [
+        "shard:000",
+        "shard:001"
+      ],
+      "duplicates": [],
+      "expected_incident": "missing_task",
+      "failed": [],
+      "incident_kinds": [
+        "missing_task"
+      ],
+      "incidents": [
+        {
+          "affected_claims": [
+            "critical-graph",
+            "root-coverage"
+          ],
+          "campaign_id": "cf14b152e3864b376adcb24327bf13f2f6d94d2025d5874b7ea474c48fe604ee",
+          "detail": "expected logical task produced no result",
+          "incident_id": "f2631e2e5ad98dbb3a90495386dfa9a12da346d4da092560cd877ae199abcaa7",
+          "kind": "missing_task",
+          "rerun_required": true,
+          "schema_version": "atlas.workflow-incident.v1",
+          "task_ids": [
+            "shard:002"
+          ]
+        }
+      ],
+      "missing": [
+        "shard:002"
+      ],
+      "name": "missing-shard",
+      "passed": true,
+      "release_eligible": false,
+      "unexpected": []
+    },
+    {
+      "completed": [
+        "shard:000",
+        "shard:002"
+      ],
+      "duplicates": [],
+      "expected_incident": "failed_task",
+      "failed": [
+        "shard:001"
+      ],
+      "incident_kinds": [
+        "failed_task"
+      ],
+      "incidents": [
+        {
+          "affected_claims": [
+            "critical-graph",
+            "root-coverage"
+          ],
+          "campaign_id": "cf14b152e3864b376adcb24327bf13f2f6d94d2025d5874b7ea474c48fe604ee",
+          "detail": "task ended with worker_terminated: injected worker_terminated",
+          "incident_id": "4d988ccb1c7d524374ddf47994a504879edbca87b899964d75e106dfc1c82cd5",
+          "kind": "failed_task",
+          "rerun_required": true,
+          "schema_version": "atlas.workflow-incident.v1",
+          "task_ids": [
+            "shard:001"
+          ]
+        }
+      ],
+      "missing": [],
+      "name": "worker_terminated",
+      "passed": true,
+      "release_eligible": false,
+      "unexpected": []
+    },
+    {
+      "completed": [
+        "shard:000",
+        "shard:002"
+      ],
+      "duplicates": [],
+      "expected_incident": "failed_task",
+      "failed": [
+        "shard:001"
+      ],
+      "incident_kinds": [
+        "failed_task"
+      ],
+      "incidents": [
+        {
+          "affected_claims": [
+            "critical-graph",
+            "root-coverage"
+          ],
+          "campaign_id": "cf14b152e3864b376adcb24327bf13f2f6d94d2025d5874b7ea474c48fe604ee",
+          "detail": "task ended with upload_failed: injected upload_failed",
+          "incident_id": "9f2a5b9d72b23c169746b00d9c03749188ad39a5b214a44eb9a21ce36b39b3b0",
+          "kind": "failed_task",
+          "rerun_required": true,
+          "schema_version": "atlas.workflow-incident.v1",
+          "task_ids": [
+            "shard:001"
+          ]
+        }
+      ],
+      "missing": [],
+      "name": "upload_failed",
+      "passed": true,
+      "release_eligible": false,
+      "unexpected": []
+    },
+    {
+      "completed": [
+        "shard:000",
+        "shard:002"
+      ],
+      "duplicates": [],
+      "expected_incident": "failed_task",
+      "failed": [
+        "shard:001"
+      ],
+      "incident_kinds": [
+        "failed_task"
+      ],
+      "incidents": [
+        {
+          "affected_claims": [
+            "critical-graph",
+            "root-coverage"
+          ],
+          "campaign_id": "cf14b152e3864b376adcb24327bf13f2f6d94d2025d5874b7ea474c48fe604ee",
+          "detail": "task ended with timeout: injected timeout",
+          "incident_id": "cbc1db924cead9d498362eda22b4133d87ab67598a90c8cf2221265f483d028b",
+          "kind": "failed_task",
+          "rerun_required": true,
+          "schema_version": "atlas.workflow-incident.v1",
+          "task_ids": [
+            "shard:001"
+          ]
+        }
+      ],
+      "missing": [],
+      "name": "timeout",
+      "passed": true,
+      "release_eligible": false,
+      "unexpected": []
+    },
+    {
+      "completed": [
+        "shard:000",
+        "shard:002"
+      ],
+      "duplicates": [],
+      "expected_incident": "failed_task",
+      "failed": [
+        "shard:001"
+      ],
+      "incident_kinds": [
+        "failed_task"
+      ],
+      "incidents": [
+        {
+          "affected_claims": [
+            "critical-graph",
+            "root-coverage"
+          ],
+          "campaign_id": "cf14b152e3864b376adcb24327bf13f2f6d94d2025d5874b7ea474c48fe604ee",
+          "detail": "task ended with oom: injected oom",
+          "incident_id": "bbe8c09a88d4011b7136b6595ae5024bd8cdfbb5f4d8cd16cf5a657a7568c19d",
+          "kind": "failed_task",
+          "rerun_required": true,
+          "schema_version": "atlas.workflow-incident.v1",
+          "task_ids": [
+            "shard:001"
+          ]
+        }
+      ],
+      "missing": [],
+      "name": "oom",
+      "passed": true,
+      "release_eligible": false,
+      "unexpected": []
+    },
+    {
+      "completed": [
+        "shard:000",
+        "shard:002"
+      ],
+      "duplicates": [],
+      "expected_incident": "failed_task",
+      "failed": [
+        "shard:001"
+      ],
+      "incident_kinds": [
+        "failed_task"
+      ],
+      "incidents": [
+        {
+          "affected_claims": [
+            "critical-graph",
+            "root-coverage"
+          ],
+          "campaign_id": "cf14b152e3864b376adcb24327bf13f2f6d94d2025d5874b7ea474c48fe604ee",
+          "detail": "task ended with cancelled: injected cancelled",
+          "incident_id": "e26bd3318bfdeb97d3c5a571f51829ec311c67def15aafab0c364632069ab523",
+          "kind": "failed_task",
+          "rerun_required": true,
+          "schema_version": "atlas.workflow-incident.v1",
+          "task_ids": [
+            "shard:001"
+          ]
+        }
+      ],
+      "missing": [],
+      "name": "cancelled",
+      "passed": true,
+      "release_eligible": false,
+      "unexpected": []
+    },
+    {
+      "completed": [
+        "shard:000",
+        "shard:002"
+      ],
+      "duplicates": [
+        "shard:001"
+      ],
+      "expected_incident": "duplicate_result",
+      "failed": [
+        "shard:001"
+      ],
+      "incident_kinds": [
+        "duplicate_result"
+      ],
+      "incidents": [
+        {
+          "affected_claims": [
+            "critical-graph",
+            "root-coverage"
+          ],
+          "campaign_id": "cf14b152e3864b376adcb24327bf13f2f6d94d2025d5874b7ea474c48fe604ee",
+          "detail": "logical task has 2 attempts in reducer input",
+          "incident_id": "33c278bb792c85af78dec2d6008388529da36e8c1f2be1f0b439537bdcd9e73e",
+          "kind": "duplicate_result",
+          "rerun_required": true,
+          "schema_version": "atlas.workflow-incident.v1",
+          "task_ids": [
+            "shard:001"
+          ]
+        }
+      ],
+      "missing": [],
+      "name": "duplicate-result",
+      "passed": true,
+      "release_eligible": false,
+      "unexpected": []
+    },
+    {
+      "completed": [
+        "shard:000",
+        "shard:002"
+      ],
+      "duplicates": [
+        "shard:001"
+      ],
+      "expected_incident": "conflicting_duplicate",
+      "failed": [
+        "shard:001"
+      ],
+      "incident_kinds": [
+        "conflicting_duplicate"
+      ],
+      "incidents": [
+        {
+          "affected_claims": [
+            "critical-graph",
+            "root-coverage"
+          ],
+          "campaign_id": "cf14b152e3864b376adcb24327bf13f2f6d94d2025d5874b7ea474c48fe604ee",
+          "detail": "logical task has 2 attempts in reducer input",
+          "incident_id": "ef40b7bae968520fb0229b014f02ce3ace9cf5a37fa35e67ee742827296fd780",
+          "kind": "conflicting_duplicate",
+          "rerun_required": true,
+          "schema_version": "atlas.workflow-incident.v1",
+          "task_ids": [
+            "shard:001"
+          ]
+        }
+      ],
+      "missing": [],
+      "name": "conflicting-retry-after-partial",
+      "passed": true,
+      "release_eligible": false,
+      "unexpected": []
+    },
+    {
+      "completed": [
+        "shard:000",
+        "shard:001",
+        "shard:002"
+      ],
+      "duplicates": [],
+      "expected_incident": "unexpected_task",
+      "failed": [],
+      "incident_kinds": [
+        "unexpected_task"
+      ],
+      "incidents": [
+        {
+          "affected_claims": [
+            "critical-graph",
+            "root-coverage"
+          ],
+          "campaign_id": "cf14b152e3864b376adcb24327bf13f2f6d94d2025d5874b7ea474c48fe604ee",
+          "detail": "attempt attempt:1 is not in the frozen task plan",
+          "incident_id": "cb10e4cef63d72a7471364ea3dc0ceec81357eacb255d3ab5e55a136d9079b44",
+          "kind": "unexpected_task",
+          "rerun_required": true,
+          "schema_version": "atlas.workflow-incident.v1",
+          "task_ids": [
+            "shard:999"
+          ]
+        }
+      ],
+      "missing": [],
+      "name": "unexpected-task",
+      "passed": true,
+      "release_eligible": false,
+      "unexpected": [
+        "shard:999"
+      ]
+    },
+    {
+      "completed": [
+        "shard:000",
+        "shard:001",
+        "shard:002"
+      ],
+      "duplicates": [],
+      "expected_incident": "stale_campaign",
+      "failed": [],
+      "incident_kinds": [
+        "stale_campaign"
+      ],
+      "incidents": [
+        {
+          "affected_claims": [
+            "critical-graph",
+            "root-coverage"
+          ],
+          "campaign_id": "cf14b152e3864b376adcb24327bf13f2f6d94d2025d5874b7ea474c48fe604ee",
+          "detail": "attempt stale:1 carries campaign eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "incident_id": "4c52b43cf88807821c7a414a8098cfdc54e02edb16e9d92e5edff19460291061",
+          "kind": "stale_campaign",
+          "rerun_required": true,
+          "schema_version": "atlas.workflow-incident.v1",
+          "task_ids": [
+            "shard:001"
+          ]
+        }
+      ],
+      "missing": [],
+      "name": "stale-campaign-result",
+      "passed": true,
+      "release_eligible": false,
+      "unexpected": [
+        "shard:001"
+      ]
+    },
+    {
+      "diagnostic": "invalid task result: Expecting value: line 1 column 303 (char 302)",
+      "name": "truncated-json",
+      "passed": true
+    },
+    {
+      "diagnostic": "duplicate JSON object key 'campaign_id'",
+      "name": "duplicate-json-key",
+      "passed": true
+    },
+    {
+      "diagnostic": "non-standard JSON constant 'NaN'",
+      "name": "nonstandard-json-constant",
+      "passed": true
+    },
+    {
+      "diagnostic": "1 validation error for TaskResult\n  Value error, payload_sha256 must be 64 lowercase hexadecimal digits [type=value_error, input_value={'campaign_id': 'cf14b152...pt', 'diagnostic': None}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+      "name": "corrupted-payload-digest",
+      "passed": true
+    }
+  ],
+  "generated_on": "2026-08-16",
+  "passed": true,
+  "schema": "atlas.scientific-chaos-matrix.v1"
+}

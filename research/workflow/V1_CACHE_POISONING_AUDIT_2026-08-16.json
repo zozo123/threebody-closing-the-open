@@ -1,0 +1,99 @@
+{
+  "case_count": 10,
+  "cases": [
+    {
+      "accepted": false,
+      "incident_kind": "cache_identity_mismatch",
+      "mismatched_fields": [
+        "source_commit"
+      ],
+      "name": "changed-source_commit",
+      "passed": true
+    },
+    {
+      "accepted": false,
+      "incident_kind": "cache_identity_mismatch",
+      "mismatched_fields": [
+        "spec_sha256"
+      ],
+      "name": "changed-spec_sha256",
+      "passed": true
+    },
+    {
+      "accepted": false,
+      "incident_kind": "cache_identity_mismatch",
+      "mismatched_fields": [
+        "gate_manifest_sha256"
+      ],
+      "name": "changed-gate_manifest_sha256",
+      "passed": true
+    },
+    {
+      "accepted": false,
+      "incident_kind": "cache_identity_mismatch",
+      "mismatched_fields": [
+        "environment_lock_sha256"
+      ],
+      "name": "changed-environment_lock_sha256",
+      "passed": true
+    },
+    {
+      "accepted": false,
+      "incident_kind": "cache_identity_mismatch",
+      "mismatched_fields": [
+        "task_parameters_sha256"
+      ],
+      "name": "changed-task_parameters_sha256",
+      "passed": true
+    },
+    {
+      "accepted": false,
+      "incident_kind": "cache_identity_mismatch",
+      "mismatched_fields": [
+        "arithmetic"
+      ],
+      "name": "changed-arithmetic",
+      "passed": true
+    },
+    {
+      "accepted": false,
+      "incident_kind": "cache_identity_mismatch",
+      "mismatched_fields": [
+        "precision"
+      ],
+      "name": "changed-precision",
+      "passed": true
+    },
+    {
+      "accepted": false,
+      "incident_kind": "cache_identity_mismatch",
+      "mismatched_fields": [
+        "platform"
+      ],
+      "name": "changed-platform",
+      "passed": true
+    },
+    {
+      "accepted": false,
+      "incident_kind": "cache_identity_mismatch",
+      "mismatched_fields": [
+        "implementation"
+      ],
+      "name": "changed-implementation",
+      "passed": true
+    },
+    {
+      "accepted": false,
+      "incident_kind": "cache_identity_mismatch",
+      "mismatched_fields": [
+        "input_artifacts"
+      ],
+      "name": "changed-input_artifacts",
+      "passed": true
+    }
+  ],
+  "expected_cache_key": "cf14b152e3864b376adcb24327bf13f2f6d94d2025d5874b7ea474c48fe604ee",
+  "generated_on": "2026-08-16",
+  "passed": true,
+  "schema": "atlas.cache-poisoning-audit.v1"
+}

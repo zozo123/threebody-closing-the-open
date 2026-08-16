@@ -19,6 +19,9 @@
   invariants, canonical ordering, isomorphism levels, decimal coordinate matching,
   and structured graph-difference classes used to compare independent critical-graph
   reconstructions.
+- `workflow/README.md` defines content-addressed scientific campaign identity,
+  exactly-once task accounting, fail-closed cache reuse, structured incidents, and
+  atomic evidence promotion under injected infrastructure faults.
 
 Gates: A pass, B pass (`release_ready` true on the 13-edge graph), C pass, D pending (human-signed same-day novelty + `--require-solved`).
 The repository must not label the frozen v1 problem `SOLVED` until `--require-solved` passes on a tagged commit.

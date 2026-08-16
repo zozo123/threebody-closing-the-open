@@ -1,0 +1,49 @@
+{
+  "campaign_id": "cf14b152e3864b376adcb24327bf13f2f6d94d2025d5874b7ea474c48fe604ee",
+  "case_count": 8,
+  "cases": [
+    {
+      "name": "incomplete-ledger-cannot-promote",
+      "passed": true
+    },
+    {
+      "name": "promotion-stage-skip-blocked",
+      "passed": true
+    },
+    {
+      "current_stage": "candidate",
+      "expected_stage": "candidate",
+      "name": "atomic-after_artifact",
+      "passed": true
+    },
+    {
+      "current_stage": "candidate",
+      "expected_stage": "candidate",
+      "name": "atomic-after_record",
+      "passed": true
+    },
+    {
+      "current_stage": "candidate",
+      "expected_stage": "candidate",
+      "name": "atomic-before_pointer_replace",
+      "passed": true
+    },
+    {
+      "current_stage": "screening",
+      "expected_stage": "screening",
+      "name": "atomic-after_pointer_replace",
+      "passed": true
+    },
+    {
+      "name": "racing-promoter-cas",
+      "passed": true
+    },
+    {
+      "name": "promoted-artifact-corruption",
+      "passed": true
+    }
+  ],
+  "generated_on": "2026-08-16",
+  "passed": true,
+  "schema": "atlas.fail-closed-release-audit.v1"
+}

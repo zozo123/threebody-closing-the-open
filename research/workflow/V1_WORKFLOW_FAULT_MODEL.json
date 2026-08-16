@@ -1,0 +1,129 @@
+{
+  "claim_status": "generic workflow-integrity core; legacy scientific aggregators require migration",
+  "fault_count": 17,
+  "faults": [
+    {
+      "false_pass_allowed": false,
+      "id": "worker-termination",
+      "injection": "worker_terminated result",
+      "only_allowed_response": "failed task + rerun incident"
+    },
+    {
+      "false_pass_allowed": false,
+      "id": "network-upload-failure",
+      "injection": "upload_failed result",
+      "only_allowed_response": "failed task + rerun incident"
+    },
+    {
+      "false_pass_allowed": false,
+      "id": "truncated-json",
+      "injection": "strict parser truncation",
+      "only_allowed_response": "reject artifact before reduction"
+    },
+    {
+      "false_pass_allowed": false,
+      "id": "stale-cache",
+      "injection": "changed scientific identity",
+      "only_allowed_response": "cache rejection + incident"
+    },
+    {
+      "false_pass_allowed": false,
+      "id": "duplicate-worker-result",
+      "injection": "same logical task twice",
+      "only_allowed_response": "duplicate incident; no double count"
+    },
+    {
+      "false_pass_allowed": false,
+      "id": "missing-shard",
+      "injection": "omit planned logical task",
+      "only_allowed_response": "explicit missing set; release false"
+    },
+    {
+      "false_pass_allowed": false,
+      "id": "out-of-order-completion",
+      "injection": "reverse result order",
+      "only_allowed_response": "identical deterministic ledger"
+    },
+    {
+      "false_pass_allowed": false,
+      "id": "retry-after-partial",
+      "injection": "failed and successful attempts together",
+      "only_allowed_response": "conflicting duplicate incident"
+    },
+    {
+      "false_pass_allowed": false,
+      "id": "corrupted-digest",
+      "injection": "invalid SHA-256 syntax",
+      "only_allowed_response": "schema rejection"
+    },
+    {
+      "false_pass_allowed": false,
+      "id": "wrong-source-sha",
+      "injection": "cache identity source mutation",
+      "only_allowed_response": "cache rejection"
+    },
+    {
+      "false_pass_allowed": false,
+      "id": "wrong-spec-hash",
+      "injection": "cache identity spec mutation",
+      "only_allowed_response": "cache rejection"
+    },
+    {
+      "false_pass_allowed": false,
+      "id": "timeout-oom-cancel",
+      "injection": "terminal task statuses",
+      "only_allowed_response": "failed task + rerun incident"
+    },
+    {
+      "false_pass_allowed": false,
+      "id": "partial-promotion",
+      "injection": "crash before pointer replace",
+      "only_allowed_response": "old pointer remains valid"
+    },
+    {
+      "false_pass_allowed": false,
+      "id": "disk-full-write-failure",
+      "injection": "injected failure before pointer replacement",
+      "only_allowed_response": "old pointer remains valid"
+    },
+    {
+      "false_pass_allowed": false,
+      "id": "post-commit-crash",
+      "injection": "crash after pointer replace",
+      "only_allowed_response": "new pointer is complete and valid"
+    },
+    {
+      "false_pass_allowed": false,
+      "id": "racing-promoter",
+      "injection": "stale compare-and-swap token",
+      "only_allowed_response": "promotion conflict"
+    },
+    {
+      "false_pass_allowed": false,
+      "id": "malicious-schema-valid-cache",
+      "injection": "internally valid stale entry",
+      "only_allowed_response": "expected identity mismatch"
+    }
+  ],
+  "generated_on": "2026-08-16",
+  "identity_dimensions": [
+    "implementation",
+    "source_commit",
+    "spec_sha256",
+    "gate_manifest_sha256",
+    "environment_lock_sha256",
+    "task_parameters_sha256",
+    "arithmetic",
+    "precision",
+    "platform",
+    "input_artifacts"
+  ],
+  "promotion_stages": [
+    "candidate",
+    "screening",
+    "correction",
+    "independent",
+    "validated"
+  ],
+  "schema": "atlas.workflow-fault-model.v1"
+}
