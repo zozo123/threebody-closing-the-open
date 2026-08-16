@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
         with:
           version: "1.11.9"
@@ -72,7 +72,7 @@ jobs:
             artifacts/m1-0.8-boundaries-bigfloat.json \
             "$DPS" "$TOL_EXP" "$CLOSURE_EXP" "$WIDTH_EXP" \
             experiments/m1_0p8_boundary_seeds.tsv
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: bigfloat-boundaries-${{ github.sha }}
           path: artifacts/m1-0.8-boundaries-bigfloat.json

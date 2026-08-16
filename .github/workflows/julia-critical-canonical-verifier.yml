@@ -41,7 +41,7 @@ jobs:
             seed_file: experiments/critical_curve_upper_collision.tsv
             output_file: artifacts/critical-canonical-upper-collision.json
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32
         with:
           version: "1.11.9"
@@ -57,7 +57,7 @@ jobs:
             "${{ matrix.seed_file }}" \
             "${{ matrix.output_file }}" \
             60 28 18 8
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: critical-canonical-${{ matrix.label }}-${{ github.sha }}

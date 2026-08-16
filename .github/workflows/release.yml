@@ -7,13 +7,19 @@ on:
     paths:
       - ".github/workflows/release.yml"
       - "scripts/verify_actions_evidence.py"
+      - "scripts/build_supply_chain_manifest.py"
+      - "src/threebody_atlas/supply_chain.py"
+      - "research/provenance/**"
   pull_request:
     paths:
       - "paper/**"
       - "research/DISCOVERY_RELEASE.json"
       - "scripts/build_discovery_release.py"
+      - "scripts/build_supply_chain_manifest.py"
       - "scripts/verify_actions_evidence.py"
       - "src/threebody_atlas/discovery.py"
+      - "src/threebody_atlas/supply_chain.py"
+      - "research/provenance/**"
       - ".github/workflows/release.yml"
   workflow_dispatch:
     inputs:
@@ -32,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
       - name: Install uv
@@ -42,6 +48,8 @@ jobs:
           enable-cache: true
       - run: uv python install 3.13
       - run: uv sync --locked --group dev
+      - name: Verify immutable supply-chain inputs
+        run: uv run --no-sync python scripts/build_supply_chain_manifest.py --check
       - run: >-
           uv run --no-sync ruff check
           src tests scripts/build_discovery_release.py scripts/verify_actions_evidence.py
@@ -49,6 +57,10 @@ jobs:
       - run: uv run --no-sync pytest
       - name: Build Python distributions
         run: uv build --no-sources
+      - name: Record executing runner, BLAS, and runtime identities
+        run: >-
+          uv run --no-sync python scripts/build_supply_chain_manifest.py --check
+          --runtime-output dist/environment-runtime.json
       - name: Validate discovery contract and inject paper status
         shell: bash
         run: |
@@ -173,7 +185,7 @@ jobs:
           find . -maxdepth 1 -type f ! -name SHA256SUMS -print0 \
             | LC_ALL=C sort -z \
             | xargs -0 sha256sum > SHA256SUMS
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: release-candidate-${{ github.event.pull_request.number || github.ref_name }}-${{ github.sha }}
           path: |

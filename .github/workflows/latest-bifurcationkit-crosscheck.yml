@@ -42,7 +42,7 @@ jobs:
             seed_file: experiments/mixed_vertex_principal_lower_right.tsv
             output_file: artifacts/latest-bk-principal-lower-right.json
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
         with:
           version: "1.12.6"
@@ -69,7 +69,7 @@ jobs:
           cp julia-latest/Project.toml artifacts/latest-bk-Project.toml
           if test -f julia-latest/Manifest.toml; then cp julia-latest/Manifest.toml artifacts/latest-bk-Manifest.toml; fi
           printf '%s\n' "$BIFURCATIONKIT_COMMIT" > artifacts/BIFURCATIONKIT_COMMIT.txt
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: latest-bifurcationkit-${{ matrix.label }}-${{ github.sha }}

@@ -11,6 +11,7 @@
 - `EXECUTION_DAG.md` is the live wave-ordered control graph for remaining closure work.
 - `NOVELTY_AUDIT.md` records the literature/precedence audit.
 - `BRACKET_CRITERION_BLINDNESS.md` explains why the S/U-label bracket criterion that produced the 620-cell census cannot see critical curves interior to the unstable region, and what replaces it. Read it before proposing to refine the raster.
+- `provenance/` contains the deterministic environment lock manifest and scientific SBOM; CI rebuilds them and rejects moving third-party Action refs or dependency drift.
 
 Gates: A pass (mechanism words the paper is allowed to use), B pending (critical graph), C pass (one family), D pending (solved freeze).
 The repository must not label the frozen v1 problem `SOLVED` until `V1_CRITICAL_GRAPH.json` is `release_ready` and `--require-solved` passes.

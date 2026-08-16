@@ -38,7 +38,7 @@ jobs:
           - label: principal-lower-right
             seed_file: experiments/mixed_vertex_principal_lower_right.tsv
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Install CAPD build prerequisites
         run: |
           sudo apt-get update
@@ -74,7 +74,7 @@ jobs:
           mkdir -p artifacts
           printf '%s\n' '731079217a9254ea2948d742df2b170895effe7f' > artifacts/CAPD_COMMIT.txt
           third_party/CAPD/build/bin/capd-config --cflags --libs > artifacts/CAPD_BUILD_FLAGS.txt || true
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: capd-validated-flow-${{ matrix.label }}-${{ github.sha }}

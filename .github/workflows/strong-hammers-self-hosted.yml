@@ -42,7 +42,7 @@ jobs:
             seed_file: experiments/critical_curve_upper_collision.tsv
             output_file: artifacts/selfhosted-critical-upper-trace-collision-bigfloat.json
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
         with:
           version: "1.11.9"
@@ -57,7 +57,7 @@ jobs:
             "${{ matrix.seed_file }}" \
             "${{ matrix.output_file }}" \
             "$DPS" 25 18 8 5 4
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: selfhosted-critical-${{ matrix.label }}-${{ github.sha }}
@@ -83,7 +83,7 @@ jobs:
             seed_file: experiments/mixed_vertex_principal_lower_right.tsv
             output_file: artifacts/selfhosted-mixed-principal-lower-right-bigfloat.json
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
         with:
           version: "1.11.9"
@@ -98,7 +98,7 @@ jobs:
             "${{ matrix.seed_file }}" \
             "${{ matrix.output_file }}" \
             "$DPS" 25 18 12 6 4
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: selfhosted-mixed-${{ matrix.label }}-${{ github.sha }}
@@ -124,7 +124,7 @@ jobs:
             seed_file: experiments/mixed_vertex_principal_lower_right.tsv
             output_file: artifacts/selfhosted-latest-bk-principal-lower-right.json
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
         with:
           version: "1.12.6"
@@ -140,7 +140,7 @@ jobs:
             "${{ matrix.output_file }}"
           cp julia-latest/Project.toml artifacts/selfhosted-latest-bk-Project.toml
           cp julia-latest/Manifest.toml artifacts/selfhosted-latest-bk-Manifest.toml
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: selfhosted-latest-bk-${{ matrix.label }}-${{ github.sha }}
@@ -166,7 +166,7 @@ jobs:
           - label: principal-lower-right
             seed_file: experiments/mixed_vertex_principal_lower_right.tsv
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Require C++ proof toolchain
         run: |
           command -v git
@@ -197,7 +197,7 @@ jobs:
             "artifacts/selfhosted-capd-validated-flow-${{ matrix.label }}.json" \
             "$BOX_RADIUS"
           printf '%s\n' '731079217a9254ea2948d742df2b170895effe7f' > artifacts/CAPD_COMMIT.txt
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: selfhosted-capd-validated-${{ matrix.label }}-${{ github.sha }}

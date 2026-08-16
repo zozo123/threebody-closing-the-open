@@ -9,7 +9,10 @@ on:
       - "research/evidence/V1_CRITICAL_GRAPH.json"
       - "paper/**"
       - "scripts/build_discovery_release.py"
+      - "scripts/build_supply_chain_manifest.py"
       - "scripts/verify_actions_evidence.py"
+      - "src/threebody_atlas/supply_chain.py"
+      - "research/provenance/**"
       - "src/threebody_atlas/discovery.py"
       - ".github/workflows/discovery-release.yml"
   workflow_dispatch:
@@ -40,7 +43,7 @@ jobs:
     env:
       SOLVED_TAG: ${{ startsWith(github.ref, 'refs/tags/solved-v') && github.ref_name || 'solved-v1.0.0' }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
       - name: Install uv
@@ -50,6 +53,8 @@ jobs:
           enable-cache: true
       - run: uv python install 3.13
       - run: uv sync --locked --group dev
+      - name: Verify immutable supply-chain inputs
+        run: uv run --no-sync python scripts/build_supply_chain_manifest.py --check
       - name: Lint
         run: >-
           uv run --no-sync ruff check
@@ -87,6 +92,10 @@ jobs:
           uv run --no-sync python scripts/build_discovery_release.py
           --output-dir dist/discovery
           --require-solved
+      - name: Record executing runner, BLAS, and runtime identities
+        run: >-
+          uv run --no-sync python scripts/build_supply_chain_manifest.py --check
+          --runtime-output dist/discovery/environment-runtime.json
       - name: Package release artifacts
         shell: bash
         run: |
@@ -104,7 +113,8 @@ jobs:
             dist/*.tar.gz
             dist/SHA256SUMS
             dist/discovery/discovery.json
-      - uses: actions/upload-artifact@v4
+            dist/discovery/environment-runtime.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: solved-discovery-${{ env.SOLVED_TAG }}-${{ github.sha }}
           path: |
