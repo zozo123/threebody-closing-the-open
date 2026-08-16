@@ -1,0 +1,55 @@
+name: Continuous event witness
+
+on:
+  push:
+    branches:
+      - agent/continuous-event-witnesses
+    paths:
+      - "scripts/bridge_right_plus_one_wall.py"
+      - ".github/workflows/continuous-event-witness.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON: "3.13"
+  JAX_ENABLE_X64: "1"
+  JAX_COMPILATION_CACHE_DIR: "${{ github.workspace }}/.jax-cache"
+
+jobs:
+  right-plus-one-wall:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - name: Install canonical Python
+        run: uv python install 3.13
+      - name: Sync locked accelerated environment
+        run: uv sync --locked --extra accelerated --group dev
+      - name: Verify derivative geometry prerequisites
+        run: uv run --no-sync pytest -q tests/test_jax_diffrax.py tests/test_critical_geometry.py
+      - name: Trace component 12 backward into isolated component 11
+        run: |
+          mkdir -p artifacts/continuous-event-witness
+          uv run --no-sync python scripts/bridge_right_plus_one_wall.py \
+            research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json \
+            artifacts/continuous-event-witness/right-plus-one-wall.json \
+            --augmented-steps 40 \
+            --augmented-step 0.002 \
+            --nested-steps 80 \
+            --nested-step 0.0005
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: continuous-right-plus-one-wall-${{ github.sha }}
+          path: artifacts/continuous-event-witness/right-plus-one-wall.json
+          if-no-files-found: warn
+          retention-days: 90
