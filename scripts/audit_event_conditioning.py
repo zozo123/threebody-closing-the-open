@@ -44,12 +44,58 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
+from scipy.integrate import solve_ivp  # noqa: E402
+
 from threebody_atlas.critical_manifold import _flow_for_vector, event_value  # noqa: E402
+from threebody_atlas.liao_family import state_from_chart  # noqa: E402
+from threebody_atlas.reduced import (  # noqa: E402
+    full_to_reduced,
+    reduced_jacobian,
+    reduced_rhs,
+    stability_invariants,
+)
 
 EPS = float(np.finfo(float).eps)
 
+#: `first_step` values used by the step-sequence jitter probe.  A converged
+#: quantity cannot depend on these; a round-off-dominated one does.
+JITTER_FIRST_STEPS = (None, 1e-4, 3e-4, 1e-3, 3e-3)
 
-def audit_root(root, *, rtol, atol, coarse_rtol, coarse_atol, with_coarse=True):
+
+def _event_with_first_step(root, first_step, *, rtol, atol) -> float:
+    """Integrate at a FIXED tolerance, varying only the integrator's opening step.
+
+    `first_step` cannot change a quantity that the tolerance has actually
+    resolved -- the adaptive controller converges to its own step sequence
+    either way, and truncation error is bounded by `rtol` regardless.  Any
+    spread it produces is round-off, full stop.  This is the sharpest available
+    evidence because it removes every confound: same machine, same build, same
+    method, same tolerance, same chart.
+    """
+    masses = tuple(float(v) for v in root["masses"])
+    m = np.asarray(masses, dtype=float)
+    period = float(root["period"])
+    z0 = full_to_reduced(
+        state_from_chart(masses, float(root["x1"]), float(root["v1"]), float(root["v2"]))
+    )
+    y0 = np.concatenate((z0, np.eye(8).ravel()))
+
+    def augmented(t, y):
+        return np.concatenate(
+            (reduced_rhs(t, y[:8], m), (reduced_jacobian(y[:8], m) @ y[8:].reshape(8, 8)).ravel())
+        )
+
+    kwargs = {"method": "DOP853", "rtol": rtol, "atol": atol}
+    if first_step is not None:
+        kwargs["first_step"] = first_step
+    sol = solve_ivp(augmented, (0.0, period), y0, **kwargs)
+    if not sol.success:
+        raise RuntimeError(sol.message)
+    mono = sol.y[8:, -1].reshape(8, 8)
+    return float(event_value(stability_invariants(mono), root["event_mode"]))
+
+
+def audit_root(root, *, rtol, atol, coarse_rtol, coarse_atol, with_coarse=True, jitter=False):
     m1, m2, m3 = (float(v) for v in root["masses"])
     y = np.array(
         [
@@ -66,6 +112,12 @@ def audit_root(root, *, rtol, atol, coarse_rtol, coarse_atol, with_coarse=True):
         ev_c = float(event_value(floquet_c, mode))
     else:
         ev_c = float("nan")
+    jitter_spread = float("nan")
+    if jitter:
+        vals = [
+            _event_with_first_step(root, fs, rtol=rtol, atol=atol) for fs in JITTER_FIRST_STEPS
+        ]
+        jitter_spread = float(max(vals) - min(vals))
     floor = EPS * norm_m * norm_m
     if mode == "trace_collision":
         floor *= 4.0  # Delta = (alpha-4)^2 - 4(beta - 4 alpha + 8)
@@ -80,6 +132,7 @@ def audit_root(root, *, rtol, atol, coarse_rtol, coarse_atol, with_coarse=True):
         "recomputed_event_coarse": ev_c,
         "event_discrepancy": abs(ev - float(root["event"])),
         "tolerance_spread": abs(ev - ev_c),
+        "first_step_jitter_spread": jitter_spread,
         "recorded_closure": float(root["closure"]),
         "recomputed_closure": float(np.linalg.norm(closure)),
     }
@@ -94,10 +147,18 @@ def main() -> int:
     ap.add_argument("--coarse-atol", type=float, default=5e-15)
     ap.add_argument("--estimator", default="float64")
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--sample", type=int, default=0,
+                    help="audit a seeded random subset of this size.  Prefer this over --stride: "
+                         "cell ids advance in steps of ~4 per m1 slice, so a small stride aliases "
+                         "onto one track and can miss an entire event mode.")
+    ap.add_argument("--seed", type=int, default=20260816)
     ap.add_argument("--stride", type=int, default=1,
-                    help="audit every k-th root; an unbiased sample when the full run is too slow")
+                    help="audit every k-th root.  Beware aliasing; see --sample.")
     ap.add_argument("--no-coarse", action="store_true",
                     help="skip the second, coarser integration (halves the cost)")
+    ap.add_argument("--jitter", action="store_true",
+                    help="also vary the integrator's first_step at FIXED tolerance; "
+                         "the resulting spread is pure round-off (5x the cost)")
     ap.add_argument("--output", type=Path, default=None)
     args = ap.parse_args()
 
@@ -111,6 +172,10 @@ def main() -> int:
         roots = [r for r in roots if r["estimator"] == args.estimator]
     if args.stride > 1:
         roots = roots[:: args.stride]
+    if args.sample and args.sample < len(roots):
+        rng = np.random.default_rng(args.seed)
+        idx = np.sort(rng.choice(len(roots), size=args.sample, replace=False))
+        roots = [roots[i] for i in idx]
     if args.limit:
         roots = roots[: args.limit]
 
@@ -119,7 +184,7 @@ def main() -> int:
         rec = audit_root(
             r, rtol=args.rtol, atol=args.atol,
             coarse_rtol=args.coarse_rtol, coarse_atol=args.coarse_atol,
-            with_coarse=not args.no_coarse,
+            with_coarse=not args.no_coarse, jitter=args.jitter,
         )
         records.append(rec)
         if i % 25 == 0:
@@ -131,17 +196,29 @@ def main() -> int:
     closure_optimistic = [
         r for r in records if r["recomputed_closure"] > 10.0 * max(r["recorded_closure"], 1e-300)
     ]
+    jitter_over_gate = [
+        r for r in records
+        if r["first_step_jitter_spread"] == r["first_step_jitter_spread"]
+        and r["first_step_jitter_spread"] > gates["event"]
+    ]
 
     summary = {
         "census": args.census.as_posix(),
         "estimator_filter": args.estimator,
         "stride": args.stride,
+        "sample": args.sample,
+        "seed": args.seed,
+        "event_mode_counts": {
+            m: sum(1 for r in roots if r["event_mode"] == m)
+            for m in ("plus_one", "minus_one", "trace_collision")
+        },
         "frozen_gates": gates,
         "roots_audited": len(records),
         "recorded_event_not_reproducible_beyond_gate": len(over_event),
         "roundoff_floor_exceeds_event_gate": len(floor_over_gate),
         "recomputed_closure_exceeds_closure_gate": len(closure_over_gate),
         "recorded_closure_optimistic_by_more_than_10x": len(closure_optimistic),
+        "first_step_jitter_spread_exceeds_event_gate": len(jitter_over_gate),
         "max_event_discrepancy": max((r["event_discrepancy"] for r in records), default=0.0),
         "max_monodromy_norm": max((r["monodromy_norm"] for r in records), default=0.0),
         "max_recomputed_closure": max((r["recomputed_closure"] for r in records), default=0.0),

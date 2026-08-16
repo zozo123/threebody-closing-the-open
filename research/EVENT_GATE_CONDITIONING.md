@@ -96,6 +96,61 @@ Read the columns carefully:
 * **Small `||M||` is fine.**  Cell 392 reproduces to ~2e-9, well inside the gate.
   The problem is confined to the stiff end of the census.
 
+## The decisive test: same everything, only the opening step changes
+
+Tolerance ladders can always be argued about.  This one cannot.  Fix the chart,
+the masses, the method (DOP853), the tolerance (`rtol = 1e-13`), the machine and
+the build, and change **only** `first_step` -- a parameter that cannot affect a
+quantity the tolerance has actually resolved, because the adaptive controller
+settles into its own step sequence within a few steps either way.  Any spread it
+produces is round-off by construction.  Run with `--jitter`:
+
+```
+                                   spread over first_step in {auto,1e-4,3e-4,1e-3,3e-3}
+cell  79  ||M||=1.9e4  trace_collision   1.347e-06     67x the 2e-8 gate
+cell  96  ||M||=1.9e4  plus_one          5.028e-07     25x
+cell  36  ||M||=2.3e4  plus_one          3.128e-07     16x
+cell 392  ||M||=1.5e3  minus_one         2.335e-09     inside the gate
+cell 466  ||M||=1.0e3  minus_one         4.496e-09     inside the gate
+```
+
+Cell 79's event is recorded as `-1.8103e-08`.  Depending on nothing but the
+integrator's opening step, the same code on the same machine at the same
+tolerance returns anywhere from `-7.4e-07` to `-2.1e-06`.
+
+The spread tracks `eps * ||M||^2` (times 4 for `trace_collision`) across an order
+of magnitude in `||M||`, exactly as the cancellation analysis predicts, and it
+disappears below `||M|| ~ 2e3`.  This also disposes of the "your build differs
+from theirs" objection: the same build disagrees with itself by 67x the gate.
+
+## Population statistics
+
+Seeded random sample of the 620 localized roots (`--sample`, seed 20260816),
+one converged integration each at `rtol = 1e-13`.  `RANDOM_SAMPLE_TABLE`
+
+The dose-response against `||M||` is the point.  From a systematic every-4th
+sample of 155 roots (which, see below, is a biased sample but a large one):
+
+| `\|\|M\|\|` | roots | recorded event not reproducible within 2e-8 | median discrepancy |
+| --- | --- | --- | --- |
+| < 2e3 | 77 | 7 (9%) | 9.3e-9 |
+| 2e3 – 5e3 | 28 | 15 (54%) | 7.2e-8 |
+| 5e3 – 1e4 | 14 | 14 (100%) | 1.9e-7 |
+| >= 1e4 | 36 | 34 (94%) | 2.4e-7 |
+
+Monotone in `||M||`, crossing over exactly where `eps * ||M||^2` crosses `2e-8`
+(at `||M|| ~ 9.5e3`, or `~4.7e3` for `trace_collision`).  That is a mechanism
+with a dose-response curve, not a fishing expedition.
+
+**Sampling caveat, stated because it bit this audit.**  Cell ids advance in
+steps of about 4 per `m1` slice, so `--stride 4` aliases onto one track: the
+155-root stride sample above contains 117 `plus_one` and 38 `minus_one` roots and
+**zero** `trace_collision` roots, despite `trace_collision` being 254 of the 620.
+Since `trace_collision` carries the extra factor of 4 in its round-off floor, the
+strided numbers understate the problem.  `--sample` (seeded random) exists
+because of this and should be preferred; `--stride` is kept only for
+reproducing the table above.
+
 ## Consequence for the headline fragility number
 
 The brief records: *"the 620/620 census maximum |event| is 1.9898e-8 against a
