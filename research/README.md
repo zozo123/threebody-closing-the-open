@@ -1,5 +1,8 @@
 # Research protocol and evidence
 
+- `PHYSICS_DOCTRINE.md` is the durable statement of the principles, equations and attack
+  patterns this project reasons from. Read it before adding a mechanism label, a gate, or
+  a verification lane.
 - `OPEN_PROBLEM.md` freezes the v1 scientific question and success/rejection criteria.
 - `PROTOCOL.md` defines the evidence ladder and claim discipline.
 - `SOLVE_LOOP.md` defines the execution/falsification loop.
