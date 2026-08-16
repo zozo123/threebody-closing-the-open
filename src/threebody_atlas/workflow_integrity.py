@@ -76,6 +76,12 @@ def _validate_identifier(value: str, label: str) -> None:
         raise ValueError(f"{label} has invalid syntax: {value!r}")
 
 
+def _payload_set_digest(payloads: dict[str, str]) -> str | None:
+    if not payloads:
+        return None
+    return _sha256({key: payloads[key] for key in sorted(payloads)})
+
+
 class ScientificIdentity(_StrictModel):
     schema_version: Literal[IDENTITY_SCHEMA] = IDENTITY_SCHEMA
     implementation: str
@@ -232,8 +238,12 @@ class CampaignLedger(_StrictModel):
     @model_validator(mode="after")
     def validate_ledger(self) -> CampaignLedger:
         _validate_sha256(self.campaign_id, "ledger campaign_id")
-        if self.payload_set_sha256 is not None:
-            _validate_sha256(self.payload_set_sha256, "payload_set_sha256")
+        for task_id, digest in self.payloads.items():
+            _validate_identifier(task_id, "payload task id")
+            _validate_sha256(digest, f"payload {task_id!r}")
+        computed_payload_set = _payload_set_digest(self.payloads)
+        if self.payload_set_sha256 != computed_payload_set:
+            raise ValueError("payload_set_sha256 does not match the payload map")
         for name in (
             "affected_claims",
             "expected_task_ids",
@@ -259,6 +269,8 @@ class CampaignLedger(_StrictModel):
             )
         ):
             raise ValueError("completed/failed/missing task sets must partition expected tasks")
+        if set(self.payloads) != completed:
+            raise ValueError("payloads must exactly match completed_task_ids")
         should_release = (
             completed == expected
             and not self.failed_task_ids
@@ -271,6 +283,15 @@ class CampaignLedger(_StrictModel):
         if self.release_eligible != should_release:
             raise ValueError("release_eligible disagrees with exact accounting")
         return self
+
+    def allowed_promotion_digests(self) -> frozenset[str]:
+        allowed = set(self.payloads.values())
+        if self.payload_set_sha256 is not None:
+            allowed.add(self.payload_set_sha256)
+        return frozenset(allowed)
+
+    def payload_set_document_bytes(self) -> bytes:
+        return _canonical_bytes({key: self.payloads[key] for key in sorted(self.payloads)})
 
 
 def _incident(
@@ -380,7 +401,7 @@ def reduce_campaign(plan: CampaignPlan, results: list[TaskResult]) -> CampaignLe
         key=lambda item: (item.kind.value, item.task_ids, item.detail, item.incident_id),
     )
     release_eligible = not incidents and completed == expected
-    payload_set_sha256 = _sha256({key: payloads[key] for key in sorted(payloads)}) if payloads else None
+    payload_set_sha256 = _payload_set_digest(payloads)
     return CampaignLedger(
         campaign_id=plan.campaign_id,
         affected_claims=plan.affected_claims,
@@ -708,6 +729,11 @@ class AtomicEvidenceStore:
                 )
 
             artifact_sha = hashlib.sha256(artifact).hexdigest()
+            if artifact_sha not in ledger.allowed_promotion_digests():
+                self._raise_promotion_conflict(
+                    ledger,
+                    "promoted artifact is not a ledger payload or the committed payload-set digest",
+                )
             self._write_immutable(self.artifacts / f"{artifact_sha}.bin", artifact)
             if fault == PromotionFault.AFTER_ARTIFACT:
                 raise InjectedPromotionCrash(fault.value)

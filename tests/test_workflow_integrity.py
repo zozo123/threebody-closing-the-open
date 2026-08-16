@@ -12,6 +12,7 @@ from pydantic import ValidationError
 from threebody_atlas.workflow_integrity import (
     AtomicEvidenceStore,
     CacheEntry,
+    CampaignLedger,
     CampaignPlan,
     IncidentKind,
     InjectedPromotionCrash,
@@ -71,6 +72,10 @@ def plan(**identity_updates) -> CampaignPlan:
     )
 
 
+def task_artifact(task_id: str) -> bytes:
+    return task_id.encode("utf-8")
+
+
 def result(
     campaign: CampaignPlan,
     task_id: str,
@@ -82,7 +87,7 @@ def result(
     campaign_id: str | None = None,
 ) -> TaskResult:
     if payload is None and status == TaskStatus.SUCCESS:
-        payload = hashlib.sha256(task_id.encode("utf-8")).hexdigest()
+        payload = hashlib.sha256(task_artifact(task_id)).hexdigest()
     if diagnostic is None and status != TaskStatus.SUCCESS:
         diagnostic = f"injected {status.value}"
     return TaskResult(
@@ -345,19 +350,66 @@ def test_schema_valid_stale_cache_cannot_impersonate_expected_key():
         )
 
 
+def test_forged_payload_set_sha256_is_rejected():
+    document = complete_ledger().model_dump()
+    document["payload_set_sha256"] = "a" * 64
+    with pytest.raises(ValidationError, match="payload_set_sha256 does not match"):
+        CampaignLedger.model_validate(document)
+
+
+def test_malformed_payload_digest_is_rejected():
+    document = complete_ledger().model_dump()
+    task_id = next(iter(document["payloads"]))
+    document["payloads"][task_id] = "not-a-digest"
+    with pytest.raises(ValidationError, match="payload"):
+        CampaignLedger.model_validate(document)
+
+
+def test_unrelated_artifact_cannot_be_promoted(tmp_path: Path):
+    ledger = complete_ledger()
+    store = AtomicEvidenceStore(tmp_path / "store")
+    with pytest.raises(WorkflowIntegrityError, match="not a ledger payload"):
+        store.promote(
+            ledger=ledger,
+            artifact=b"unrelated scientific object",
+            stage=PromotionStage.CANDIDATE,
+            affected_claims=ledger.affected_claims,
+            expected_current_record_sha256=None,
+        )
+    assert store.current() is None
+    incident_files = list(store.incidents.glob("*.json"))
+    assert len(incident_files) == 1
+    incident = json.loads(incident_files[0].read_text(encoding="utf-8"))
+    assert incident["kind"] == "promotion_conflict"
+    assert incident["rerun_required"] is True
+
+
+def test_payload_set_document_can_be_promoted(tmp_path: Path):
+    ledger = complete_ledger()
+    store = AtomicEvidenceStore(tmp_path / "store")
+    record = store.promote(
+        ledger=ledger,
+        artifact=ledger.payload_set_document_bytes(),
+        stage=PromotionStage.CANDIDATE,
+        affected_claims=ledger.affected_claims,
+        expected_current_record_sha256=None,
+    )
+    assert record.artifact_sha256 == ledger.payload_set_sha256
+
+
 def test_atomic_promotion_advances_one_stage_and_preserves_chain(tmp_path: Path):
     ledger = complete_ledger()
     store = AtomicEvidenceStore(tmp_path / "store")
     candidate = store.promote(
         ledger=ledger,
-        artifact=b"candidate evidence",
+        artifact=task_artifact("shard:000"),
         stage=PromotionStage.CANDIDATE,
         affected_claims=ledger.affected_claims,
         expected_current_record_sha256=None,
     )
     screening = store.promote(
         ledger=ledger,
-        artifact=b"screening evidence",
+        artifact=task_artifact("shard:001"),
         stage=PromotionStage.SCREENING,
         affected_claims=ledger.affected_claims,
         expected_current_record_sha256=candidate.record_sha256,
@@ -388,7 +440,7 @@ def test_promotion_cannot_skip_stages_or_change_claim_scope(tmp_path: Path):
     with pytest.raises(WorkflowIntegrityError, match="invalid promotion transition"):
         store.promote(
             ledger=ledger,
-            artifact=b"independent",
+            artifact=task_artifact("shard:000"),
             stage=PromotionStage.INDEPENDENT,
             affected_claims=ledger.affected_claims,
             expected_current_record_sha256=None,
@@ -396,7 +448,7 @@ def test_promotion_cannot_skip_stages_or_change_claim_scope(tmp_path: Path):
     with pytest.raises(WorkflowIntegrityError, match="claims must exactly match"):
         store.promote(
             ledger=ledger,
-            artifact=b"candidate",
+            artifact=task_artifact("shard:000"),
             stage=PromotionStage.CANDIDATE,
             affected_claims=("other-claim",),
             expected_current_record_sha256=None,
@@ -408,14 +460,14 @@ def test_promotion_compare_and_swap_rejects_racing_writer(tmp_path: Path):
     store = AtomicEvidenceStore(tmp_path / "store")
     candidate = store.promote(
         ledger=ledger,
-        artifact=b"candidate",
+        artifact=task_artifact("shard:000"),
         stage=PromotionStage.CANDIDATE,
         affected_claims=ledger.affected_claims,
         expected_current_record_sha256=None,
     )
     screening = store.promote(
         ledger=ledger,
-        artifact=b"screening-a",
+        artifact=task_artifact("shard:001"),
         stage=PromotionStage.SCREENING,
         affected_claims=ledger.affected_claims,
         expected_current_record_sha256=candidate.record_sha256,
@@ -423,7 +475,7 @@ def test_promotion_compare_and_swap_rejects_racing_writer(tmp_path: Path):
     with pytest.raises(WorkflowIntegrityError, match="compare-and-swap conflict"):
         store.promote(
             ledger=ledger,
-            artifact=b"screening-b",
+            artifact=task_artifact("shard:002"),
             stage=PromotionStage.SCREENING,
             affected_claims=ledger.affected_claims,
             expected_current_record_sha256=candidate.record_sha256,
@@ -453,7 +505,7 @@ def test_crash_before_pointer_replace_leaves_old_state_valid(
     store = AtomicEvidenceStore(tmp_path / fault.value)
     candidate = store.promote(
         ledger=ledger,
-        artifact=b"candidate",
+        artifact=task_artifact("shard:000"),
         stage=PromotionStage.CANDIDATE,
         affected_claims=ledger.affected_claims,
         expected_current_record_sha256=None,
@@ -461,7 +513,7 @@ def test_crash_before_pointer_replace_leaves_old_state_valid(
     with pytest.raises(InjectedPromotionCrash, match=fault.value):
         store.promote(
             ledger=ledger,
-            artifact=b"screening",
+            artifact=task_artifact("shard:001"),
             stage=PromotionStage.SCREENING,
             affected_claims=ledger.affected_claims,
             expected_current_record_sha256=candidate.record_sha256,
@@ -476,7 +528,7 @@ def test_crash_after_pointer_replace_leaves_new_state_valid(tmp_path: Path):
     with pytest.raises(InjectedPromotionCrash, match="after_pointer_replace"):
         store.promote(
             ledger=ledger,
-            artifact=b"candidate",
+            artifact=task_artifact("shard:000"),
             stage=PromotionStage.CANDIDATE,
             affected_claims=ledger.affected_claims,
             expected_current_record_sha256=None,
@@ -492,7 +544,7 @@ def test_promoted_artifact_corruption_is_detected(tmp_path: Path):
     store = AtomicEvidenceStore(tmp_path / "store")
     record = store.promote(
         ledger=ledger,
-        artifact=b"candidate",
+        artifact=task_artifact("shard:000"),
         stage=PromotionStage.CANDIDATE,
         affected_claims=ledger.affected_claims,
         expected_current_record_sha256=None,
@@ -525,14 +577,14 @@ def test_missing_promotion_history_record_is_detected(tmp_path: Path):
     store = AtomicEvidenceStore(tmp_path / "store")
     candidate = store.promote(
         ledger=ledger,
-        artifact=b"candidate",
+        artifact=task_artifact("shard:000"),
         stage=PromotionStage.CANDIDATE,
         affected_claims=ledger.affected_claims,
         expected_current_record_sha256=None,
     )
     store.promote(
         ledger=ledger,
-        artifact=b"screening",
+        artifact=task_artifact("shard:001"),
         stage=PromotionStage.SCREENING,
         affected_claims=ledger.affected_claims,
         expected_current_record_sha256=candidate.record_sha256,

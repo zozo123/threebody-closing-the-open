@@ -60,6 +60,10 @@ def campaign() -> CampaignPlan:
     )
 
 
+def task_artifact(task_id: str) -> bytes:
+    return task_id.encode("utf-8")
+
+
 def result(
     plan: CampaignPlan,
     task_id: str,
@@ -70,7 +74,7 @@ def result(
     campaign_id: str | None = None,
 ) -> TaskResult:
     if payload is None and status == TaskStatus.SUCCESS:
-        payload = hashlib.sha256(task_id.encode("utf-8")).hexdigest()
+        payload = hashlib.sha256(task_artifact(task_id)).hexdigest()
     return TaskResult(
         campaign_id=campaign_id or plan.campaign_id,
         logical_task_id=task_id,
@@ -302,7 +306,7 @@ def release_audit() -> dict[str, Any]:
             store = AtomicEvidenceStore(Path(directory) / "fault")
             candidate = store.promote(
                 ledger=complete,
-                artifact=b"candidate",
+                artifact=task_artifact("shard:000"),
                 stage=PromotionStage.CANDIDATE,
                 affected_claims=complete.affected_claims,
                 expected_current_record_sha256=None,
@@ -310,7 +314,7 @@ def release_audit() -> dict[str, Any]:
             try:
                 store.promote(
                     ledger=complete,
-                    artifact=b"screening",
+                    artifact=task_artifact("shard:001"),
                     stage=PromotionStage.SCREENING,
                     affected_claims=complete.affected_claims,
                     expected_current_record_sha256=candidate.record_sha256,
@@ -338,14 +342,14 @@ def release_audit() -> dict[str, Any]:
         store = AtomicEvidenceStore(Path(directory) / "race")
         candidate = store.promote(
             ledger=complete,
-            artifact=b"candidate",
+            artifact=task_artifact("shard:000"),
             stage=PromotionStage.CANDIDATE,
             affected_claims=complete.affected_claims,
             expected_current_record_sha256=None,
         )
         screening = store.promote(
             ledger=complete,
-            artifact=b"screening-a",
+            artifact=task_artifact("shard:001"),
             stage=PromotionStage.SCREENING,
             affected_claims=complete.affected_claims,
             expected_current_record_sha256=candidate.record_sha256,
@@ -353,7 +357,7 @@ def release_audit() -> dict[str, Any]:
         try:
             store.promote(
                 ledger=complete,
-                artifact=b"screening-b",
+                artifact=task_artifact("shard:002"),
                 stage=PromotionStage.SCREENING,
                 affected_claims=complete.affected_claims,
                 expected_current_record_sha256=candidate.record_sha256,
@@ -367,7 +371,7 @@ def release_audit() -> dict[str, Any]:
         store = AtomicEvidenceStore(Path(directory) / "corruption")
         record = store.promote(
             ledger=complete,
-            artifact=b"candidate",
+            artifact=task_artifact("shard:000"),
             stage=PromotionStage.CANDIDATE,
             affected_claims=complete.affected_claims,
             expected_current_record_sha256=None,
