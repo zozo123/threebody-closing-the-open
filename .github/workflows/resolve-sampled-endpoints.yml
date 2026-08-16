@@ -1,0 +1,57 @@
+name: Resolve sampled sweep endpoints continuously
+
+on:
+  push:
+    branches:
+      - agent/continuous-event-witnesses
+    paths:
+      - "scripts/resolve_sampled_sweep_endpoints.py"
+      - ".github/workflows/resolve-sampled-endpoints.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON: "3.13"
+  JAX_ENABLE_X64: "1"
+
+jobs:
+  resolve-minus-endpoints:
+    runs-on: [self-hosted, Linux, X64]
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked --extra accelerated --group dev
+      - name: Compile endpoint resolver
+        run: |
+          uv run --no-sync python -m py_compile \
+            scripts/trace_label_invisible_continuous.py \
+            scripts/resolve_sampled_sweep_endpoints.py
+      - name: Continue beyond finite sweep endpoints
+        run: |
+          mkdir -p artifacts/endpoint-resolution
+          set +e
+          uv run --no-sync python scripts/resolve_sampled_sweep_endpoints.py \
+            research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json \
+            research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json \
+            artifacts/endpoint-resolution/minus-endpoints.json \
+            --mass-step 0.0025 --max-steps 100
+          status=$?
+          set -e
+          echo "resolver_exit=$status" >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sampled-endpoint-resolution-${{ github.sha }}
+          path: artifacts/endpoint-resolution/minus-endpoints.json
+          if-no-files-found: warn
+          retention-days: 90
