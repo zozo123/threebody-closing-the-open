@@ -40,6 +40,83 @@ Deciding that a gate is satisfied.
   that refuses => stop (exit 2), never fall back to a weaker assembler
   invocation or to a stale committed classification.
 
+WHERE THE TRUST BOUNDARY ACTUALLY IS
+------------------------------------
+An earlier version of this file got the boundary wrong, and a reviewer walked
+straight through the hole.  The mistake is worth recording because the fix only
+makes sense against it.
+
+Every gate in this project is enforced by *code reading bytes*.  Pinning the
+bytes -- which this runner already did, with a sha256 and a CI run id per input
+-- pins only half of that.  The other half is the code, and "the code" is two
+things: the producing scripts, and the interpreter that executes them.  The old
+``python_command()`` took the interpreter from ``$PYTHON`` and then deliberately
+did *not* record it, arguing that an environment detail in the ledger would cost
+byte-reproducibility across machines.  That argument traded auditability for a
+cosmetic property and it was the wrong trade: a ~20-line bash shim on ``$PYTHON``
+that forwarded most invocations to the real interpreter and substituted passing
+output for ``classify_secondary_left_birth.py`` was completely invisible in
+V1_CLOSURE_PROVENANCE.json.  rc=0, release_ready=true, forged fold, and a ledger
+that named only honest sha256s.
+
+So the boundary this runner defends is: **the deciding code is the interpreter
+the operator personally invoked, running the producing scripts exactly as they
+are committed at HEAD.**  Three mechanisms, in decreasing order of strength:
+
+1. ``$PYTHON`` no longer selects anything.  The producing scripts run under
+   ``sys.executable`` -- the interpreter already running this file -- and the
+   runner exports that absolute path to ``assemble_v1_critical_graph.sh`` so the
+   shell cannot fall back to ``uv run`` or to an inherited hostile ``$PYTHON``
+   either.  If ``$PYTHON`` is set to anything that is not this same interpreter,
+   the run is REFUSED (exit 64) rather than silently honoured: an operator who
+   wants a throwaway venv invokes *this script* with that venv's python, which
+   makes the choice an explicit act at the command line instead of an ambient
+   variable a shim can own.  ``PYTHON=<venv>/bin/python close_v1_gates.py`` is
+   not equivalent to ``<venv>/bin/python close_v1_gates.py``, and only the
+   second is accepted.
+2. The producing scripts are digest-verified before they are invoked.  Each of
+   the four (classifier, freezer, assembler shell, assembler) is hashed on disk
+   and compared against the bytes of the same path at ``git HEAD``.  A shim that
+   swaps the *script* instead of the interpreter is caught here.  A dirty
+   working copy of a producing script is a refusal: closing a gate with
+   uncommitted deciding code is not a closure anybody can re-derive.  The same
+   rule covers ``src/threebody_atlas/completeness.py``, which is where the
+   freezer's gates actually live -- ``$PYTHONPATH`` precedes site-packages, so
+   one directory on it would otherwise replace those gates for every subprocess
+   in the chain.
+3. Everything that could not be prevented is recorded, loudly, in the ledger's
+   ``environment`` block: the interpreter's absolute path, its own sha256, its
+   version banner, whether it lives inside the working tree, the raw ``$PYTHON``
+   that was seen and rejected, the git HEAD, and both digests of every producing
+   script.  An auditor reading the ledger can see a substituted interpreter.
+
+What this cannot do, stated plainly rather than papered over: a program cannot
+bootstrap trust in the machinery that runs it (Thompson, *Reflections on
+Trusting Trust*).  If ``sys.executable`` is itself a hostile build, or ``.git``
+has been rewritten, every check above is executed by the attacker.  Mechanism 3
+is the answer to that -- not prevention, but an unavoidable record.  The
+strongest honest claim is: **a substitution that changes the decision cannot
+also stay out of the ledger.**
+
+WHAT THE ASSEMBLER CANNOT DO, AND WHERE THAT DEFENCE MOVED
+----------------------------------------------------------
+``assemble_critical_graph.load_classification`` reads a JSON file and believes
+its ``evidence_level``.  A hand-written classification carrying ``passed: true``,
+an allowed class and ``evidence_level: "independently_reproduced"`` therefore
+produces a *passed* node.  That is not a bug in the assembler and it is not
+fixable there: at that layer the artifact is just bytes, and there is nothing in
+it to distinguish a forgery from a real classification.  ``tests/`` asserts this
+behaviour honestly rather than pretending otherwise.
+
+The defence lives here instead, at the only layer that knows where a
+classification came from.  The runner deletes the output path, invokes the
+digest-verified classifier under the recorded interpreter, and binds what came
+back to its origin in the ledger: which script produced it (both digests), from
+which input artifacts (sha256 + CI run id), under which interpreter.  A planted
+file does not survive the unlink; a forged file the classifier refused to write
+is deleted again; and a classification whose recorded producer does not match
+HEAD is a refusal before any of it runs.
+
 EXIT STATUS
 -----------
   0   release_ready
@@ -48,18 +125,29 @@ EXIT STATUS
       blocker list printed
   3   tooling failure: a producing script crashed, or the three independent
       readings of the decision disagreed
-  64  refused: a required input is missing, unreadable, or outside the repository
+  64  refused: a required input is missing, unreadable, duplicated across roles,
+      or outside the repository; ``$PYTHON`` names an interpreter other than the
+      one running this file; or a producing script does not match HEAD
 
 REPRODUCIBILITY
 ---------------
-Every artifact this script writes is a pure function of the input bytes: no
-timestamps, no hostnames, no absolute paths, no run ordering.  Input paths are
-normalised to repository-relative POSIX strings before they are handed to the
-producing scripts, because those strings are embedded verbatim in the
-certificate's ``sources`` block and in the graph's ``evidence`` fields -- and
-because ``threebody_atlas.completeness.verify_certificate`` can only re-resolve
-and re-hash a source that lives inside the repository.  Running this twice on
-the same inputs yields byte-identical files.
+The ledger is split in two, and the split is the point.
+
+``environment`` is machine-varying by construction: interpreter path,
+interpreter sha256, version banner, git HEAD.  It is *supposed* to differ
+between machines -- that is what makes it evidence.
+
+Everything else -- ``inputs``, ``steps``, ``blockers``, ``graph`` -- stays a
+pure function of the input bytes: no timestamps, no hostnames, no absolute
+paths, no run ordering.  Input paths are normalised to repository-relative
+POSIX strings before they are handed to the producing scripts, because those
+strings are embedded verbatim in the certificate's ``sources`` block and in the
+graph's ``evidence`` fields -- and because
+``threebody_atlas.completeness.verify_certificate`` can only re-resolve and
+re-hash a source that lives inside the repository.  ``evidence_digest`` is a
+sha256 over exactly that byte-stable half, so two machines that agree on the
+science produce the same digest while still each disclosing their own
+environment.  Running this twice on one machine yields byte-identical files.
 """
 from __future__ import annotations
 
@@ -67,6 +155,8 @@ import argparse
 import hashlib
 import json
 import os
+import platform
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -105,6 +195,19 @@ HARVESTED_INPUTS = (
     ),
     ("al_screen", "--al-screen", "active-learning hidden-pocket screen"),
     ("neck_raster", "--neck-raster", "merged stability-neck raster"),
+)
+
+#: The code that actually decides.  These four are hashed on disk and compared
+#: against their bytes at ``git HEAD`` before any of them is invoked, because
+#: swapping a *script* is the same attack as swapping the interpreter and must
+#: fail the same way.  ``scripts/assemble_critical_graph.py`` is in the set even
+#: though this module never spawns it directly: the shell wrapper does, and the
+#: wrapper is only worth pinning if what it runs is pinned too.
+PRODUCING_SCRIPTS = (
+    CLASSIFY_LEFT_BIRTH,
+    FREEZE_COMPLETENESS,
+    ASSEMBLE_GRAPH,
+    "scripts/assemble_critical_graph.py",
 )
 
 REFUSED = 64
@@ -192,30 +295,301 @@ def collect_inputs(args: argparse.Namespace) -> list[dict[str, Any]]:
                 "ci_run_id": str(run_id).strip(),
             }
         )
+    problems.extend(duplicate_input_problems(records))
     if problems:
         raise Refusal("\n".join(f"  - {problem}" for problem in problems))
     return records
 
 
-def python_command() -> list[str]:
-    """The interpreter used for the producing scripts.
+def duplicate_input_problems(records: list[dict[str, Any]]) -> list[str]:
+    """Refuse an input set in which one artifact is doing two jobs.
 
-    Deliberately overridable: local uv is too old to honour the pyproject pin,
-    so a throwaway venv with PYTHONPATH=src has to be usable without editing the
-    pin.  The chosen interpreter is *not* recorded in the ledger -- it is an
-    environment detail, and recording it would make the ledger non-reproducible
-    across machines for identical inputs.
+    The four roles are four *independent* computations.  If two of them resolve
+    to the same file, or to different files with the same bytes, then whatever
+    the chain concludes rests on one measurement wearing two hats -- the fold
+    geometry screen confirming itself as its own independent BigFloat check, or
+    the AL pocket screen standing in for the neck raster.  The chain would run
+    happily and report a coherent-looking result, which is exactly why this has
+    to be a refusal and not a warning.
+
+    The third case is subtler and is the one a forger actually reaches for:
+    identical bytes offered under two different ``ci_run_id`` values.  One
+    artifact cannot have been produced by two runs, so at least one of the run
+    ids is a fiction, and a fictitious run id defeats the only handle an auditor
+    has for going back to CI and re-downloading the artifact to compare.
     """
-    override = os.environ.get("PYTHON")
-    if override:
-        return override.split()
+    problems: list[str] = []
+
+    by_path: dict[str, list[str]] = {}
+    for entry in records:
+        by_path.setdefault(entry["path"], []).append(entry["role"])
+    for path, roles in sorted(by_path.items()):
+        if len(roles) > 1:
+            problems.append(
+                f"roles {', '.join(sorted(roles))} resolve to {path!r}. Each role "
+                "is a separate computation; one file cannot be its own independent "
+                "cross-check."
+            )
+
+    by_digest: dict[str, list[dict[str, Any]]] = {}
+    for entry in records:
+        by_digest.setdefault(entry["sha256"], []).append(entry)
+    for digest, group in sorted(by_digest.items()):
+        if len(group) < 2:
+            continue
+        roles = sorted(entry["role"] for entry in group)
+        run_ids = sorted({entry["ci_run_id"] for entry in group})
+        if len({entry["path"] for entry in group}) > 1:
+            problems.append(
+                f"roles {', '.join(roles)} are different paths with identical bytes "
+                f"(sha256 {digest}). Copying one artifact into two roles does not "
+                "make it two independent results."
+            )
+        if len(run_ids) > 1:
+            problems.append(
+                f"sha256 {digest} is presented under {len(run_ids)} different CI run "
+                f"ids ({', '.join(run_ids)}) for roles {', '.join(roles)}. One "
+                "artifact has one producing run; at least one of these run ids is "
+                "fabricated, and a fabricated run id cannot be checked against CI."
+            )
+
+    return problems
+
+
+def python_command() -> list[str]:
+    """The interpreter used for the producing scripts: this one, always.
+
+    ``$PYTHON`` used to select it.  It no longer selects anything, because an
+    ambient variable naming the interpreter is an ambient variable naming the
+    code that decides -- and a bash shim on that variable forged a pass while
+    leaving the ledger honest-looking.  Choosing a throwaway venv is still
+    supported, and is now an explicit act: invoke *this script* with that venv's
+    python.  :func:`resolve_interpreter` refuses a ``$PYTHON`` that disagrees.
+    """
     return [sys.executable]
+
+
+def resolve_interpreter() -> dict[str, Any]:
+    """Pin the interpreter to ``sys.executable`` and describe it for the ledger.
+
+    Refuses when ``$PYTHON`` names anything else.  The refusal is deliberate
+    rather than a silent override: an operator who set ``$PYTHON`` on purpose
+    believes the producing scripts run under it, and quietly running them under
+    a different interpreter would be its own kind of dishonesty.  The fix is one
+    word of command line, and it moves the choice somewhere a shim cannot own.
+
+    Everything recorded here is machine-varying on purpose; it lands in the
+    ledger's ``environment`` block, which is excluded from ``evidence_digest``.
+    """
+    interpreter = Path(sys.executable).resolve()
+    raw = os.environ.get("PYTHON")
+    if raw and raw.strip():
+        declared = raw.split()
+        program = shutil.which(declared[0]) if declared else None
+        resolved = Path(program).resolve() if program else None
+        if len(declared) != 1 or resolved != interpreter:
+            raise Refusal(
+                f"PYTHON={raw!r} names an interpreter other than the one running "
+                f"this script ({interpreter}). The producing scripts are run under "
+                "sys.executable and nothing else: an environment variable that "
+                "selects the deciding code is a substitution channel, and a shim on "
+                "it once forged release_ready=true invisibly. To use a different "
+                f"interpreter, invoke this script with it directly:\n"
+                f"      {declared[0]} {Path(__file__).name} ...\n"
+                "    and unset PYTHON."
+            )
+
+    inside_tree = interpreter.is_relative_to(REPO_ROOT.resolve()) or Path(
+        sys.executable
+    ).is_relative_to(REPO_ROOT.resolve())
+    return {
+        "path": str(interpreter),
+        # sys.executable is usually a venv symlink into a system framework
+        # build; both ends are recorded because a reviewer recognises one and an
+        # auditor re-hashing the binary needs the other.
+        "sys_executable": sys.executable,
+        "sha256": sha256_file(interpreter) if interpreter.is_file() else None,
+        "version": sys.version.replace("\n", " "),
+        "implementation": platform.python_implementation(),
+        "inside_working_tree": inside_tree,
+        "python_env_var": raw,
+        "note": (
+            "The producing scripts ran under this interpreter. It is recorded "
+            "because a substituted interpreter is otherwise undetectable in the "
+            "artifacts it produces."
+            + (
+                " It lives inside the working tree. That is normal for a venv "
+                "built by 'uv sync --locked', and it is also where a substituted "
+                "interpreter would sit, so an auditor quoting this closure should "
+                "confirm the venv was built from the lockfile rather than shipped "
+                "with the checkout."
+                if inside_tree
+                else ""
+            )
+        ),
+    }
+
+
+def git_show(relative: str) -> bytes | None:
+    """The bytes of ``relative`` as committed at HEAD, or None if unavailable."""
+    result = subprocess.run(  # noqa: S603 - fixed argv
+        ["git", "cat-file", "blob", f"HEAD:{relative}"],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        check=False,
+    )
+    return result.stdout if result.returncode == 0 else None
+
+
+def verify_producing_scripts() -> list[dict[str, Any]]:
+    """Refuse unless every deciding script on disk is its committed self.
+
+    This is the second half of the trust boundary.  Pinning the interpreter
+    stops a shim that swaps the *runner* of the code; this stops a shim that
+    swaps the *code*, which is the same attack one layer down and must fail the
+    same way.  HEAD is the reference rather than a hand-maintained table of
+    digests, because a table in this file is one more thing an attacker can edit
+    in the same commit, and because it would go stale every time a producing
+    script legitimately changes.
+
+    A modified-but-uncommitted producing script is refused too.  A closure run
+    is a claim that a specific revision of specific code reached a specific
+    conclusion; nobody can re-derive that from a working copy.
+    """
+    head = subprocess.run(  # noqa: S603 - fixed argv
+        ["git", "rev-parse", "HEAD"],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if head.returncode != 0:
+        raise Refusal(
+            "the producing scripts cannot be verified against a committed "
+            "revision: this is not a git checkout (git rev-parse HEAD failed: "
+            f"{head.stderr.strip()}). Run the closure from a checkout; the whole "
+            "claim is that a named revision of the deciding code reached this "
+            "conclusion."
+        )
+
+    problems: list[str] = []
+    records: list[dict[str, Any]] = []
+    for relative in PRODUCING_SCRIPTS:
+        path = REPO_ROOT / relative
+        if not path.is_file():
+            problems.append(f"{relative} is missing from the working tree")
+            continue
+        on_disk = sha256_file(path)
+        blob = git_show(relative)
+        committed = hashlib.sha256(blob).hexdigest() if blob is not None else None
+        if committed is None:
+            problems.append(
+                f"{relative} is not tracked at HEAD, so there is nothing to verify "
+                "it against"
+            )
+            continue
+        if on_disk != committed:
+            problems.append(
+                f"{relative} does not match HEAD: on disk {on_disk}, committed "
+                f"{committed}. A producing script is the code that decides a gate; "
+                "if the copy that ran is not the copy under review, the result is "
+                "unreviewable. Commit the change (and get it reviewed) or restore "
+                "the file."
+            )
+        records.append(
+            {
+                "path": relative,
+                "sha256": on_disk,
+                "sha256_at_head": committed,
+                "matches_head": on_disk == committed,
+            }
+        )
+    if problems:
+        raise Refusal("\n".join(f"  - {problem}" for problem in problems))
+    return records
+
+
+#: The freezer does not implement the completeness gates; it imports them.  So
+#: this module is deciding code too, reached through a different substitution
+#: channel: ``$PYTHONPATH``, which takes precedence over everything installed.
+COMPLETENESS_MODULE = "src/threebody_atlas/completeness.py"
+COMPLETENESS_IMPORT = "threebody_atlas/completeness.py"
+
+
+def verify_completeness_module() -> list[dict[str, Any]]:
+    """Refuse a ``threebody_atlas.completeness`` that is not the committed one.
+
+    ``freeze_completeness_certificate.py`` is a thin shell around
+    ``build_record``/``seal``/``verify_certificate``; pinning the freezer while
+    leaving the module it imports unpinned would pin the wrapper and not the
+    gates.  ``$PYTHONPATH`` is the channel that matters -- it precedes
+    site-packages, so one directory on it replaces the completeness predicates
+    for every subprocess in the chain.
+
+    Candidates are found by scanning the search path rather than importing,
+    because importing to find out whether the import is safe runs the code
+    first.  Every reachable copy must hash to the committed bytes; a stale
+    installed copy that disagrees with HEAD is a genuine ambiguity about which
+    gates ran, and a closure cannot rest on an ambiguity.
+    """
+    blob = git_show(COMPLETENESS_MODULE)
+    if blob is None:
+        raise Refusal(
+            f"{COMPLETENESS_MODULE} is not tracked at HEAD, so the completeness "
+            "gates cannot be pinned to a reviewed revision"
+        )
+    committed = hashlib.sha256(blob).hexdigest()
+
+    search: list[str] = []
+    for entry in (os.environ.get("PYTHONPATH") or "").split(os.pathsep):
+        if entry:
+            search.append(entry)
+    search.append(str(REPO_ROOT / "src"))
+    search.extend(path for path in sys.path if path)
+
+    problems: list[str] = []
+    records: list[dict[str, Any]] = []
+    seen: set[Path] = set()
+    for entry in search:
+        candidate = Path(entry) / COMPLETENESS_IMPORT
+        try:
+            resolved = candidate.resolve()
+        except OSError:  # pragma: no cover - unreadable path entry
+            continue
+        if not candidate.is_file() or resolved in seen:
+            continue
+        seen.add(resolved)
+        on_disk = sha256_file(candidate)
+        if on_disk != committed:
+            problems.append(
+                f"{candidate} is importable as threebody_atlas.completeness but "
+                f"does not match {COMPLETENESS_MODULE} at HEAD (on disk {on_disk}, "
+                f"committed {committed}). The completeness gates are decided "
+                "there; an unreviewed copy on the import path decides them "
+                "instead. Remove it from PYTHONPATH, or commit it."
+            )
+        records.append(
+            {
+                "path": str(candidate),
+                "sha256": on_disk,
+                "sha256_at_head": committed,
+                "matches_head": on_disk == committed,
+            }
+        )
+    if problems:
+        raise Refusal("\n".join(f"  - {problem}" for problem in problems))
+    return records
 
 
 def run_step(argv: list[str], *, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
     merged = dict(os.environ)
     if env:
         merged.update(env)
+    # The shell wrapper resolves its own interpreter from $PYTHON, defaulting to
+    # `uv run --no-sync python`.  Overwrite it with the pinned absolute path so
+    # the wrapper cannot inherit a hostile value or silently start a second,
+    # unrecorded interpreter of its own.
+    merged["PYTHON"] = sys.executable
     return subprocess.run(  # noqa: S603 - fixed argv built from repo constants
         argv,
         cwd=REPO_ROOT,
@@ -540,8 +914,32 @@ def render(summary: dict[str, Any]) -> str:
         "v1 closure chain",
         "=" * 72,
         "",
-        "Inputs (sha256 / CI run):",
     ]
+    environment = summary.get("environment") or {}
+    interpreter = environment.get("interpreter") or {}
+    if interpreter:
+        # Printed, not just filed: the reviewer reading a step summary is the
+        # person most likely to notice that this is not the interpreter they
+        # expected, and they will only notice if it is in front of them.
+        lines.append("Deciding code (machine-varying; see ledger.environment):")
+        lines.append(f"  interpreter    {interpreter.get('path')}")
+        lines.append(f"  {'':<14} sha256 {interpreter.get('sha256')}")
+        if interpreter.get("python_env_var"):
+            lines.append(
+                f"  {'':<14} $PYTHON was {interpreter['python_env_var']!r} (accepted: "
+                "it names this same interpreter)"
+            )
+        if interpreter.get("inside_working_tree"):
+            lines.append(
+                f"  {'':<14} inside the working tree (normal for a lockfile-built "
+                "venv; confirm it was built, not shipped)"
+            )
+        for entry in environment.get("producing_scripts") or []:
+            lines.append(
+                f"  {entry['path']:<44} {'matches HEAD' if entry['matches_head'] else 'DIFFERS FROM HEAD'}"
+            )
+        lines.append("")
+    lines.append("Inputs (sha256 / CI run):")
     for entry in summary["inputs"]:
         lines.append(f"  {entry['role']:<14} {entry['path']}")
         lines.append(f"  {'':<14} sha256 {entry['sha256']}  run {entry['ci_run_id']}")
@@ -606,16 +1004,46 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
+def evidence_digest(summary: dict[str, Any]) -> str:
+    """sha256 over the byte-stable half of the ledger.
+
+    ``environment`` is excluded because it is *meant* to differ per machine.
+    Everything else is a pure function of the input bytes, so two honest runs on
+    two machines agree on this digest while each still discloses its own
+    interpreter -- which is the whole point of splitting the ledger instead of
+    dropping the environment to keep a clean hash.
+    """
+    stable = {
+        key: value
+        for key, value in summary.items()
+        if key not in ("environment", "evidence_digest")
+    }
+    payload = json.dumps(stable, indent=2, sort_keys=True).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     try:
+        # Order matters only for the error the operator sees first, and the
+        # interpreter comes first on purpose: if the deciding code is being run
+        # by something unexpected, no amount of correct input matters.
+        interpreter = resolve_interpreter()
+        producing_scripts = verify_producing_scripts()
+        importable_completeness = verify_completeness_module()
         inputs = collect_inputs(args)
     except Refusal as exc:
-        print("REFUSED: the closure chain will not run on an incomplete input set.", file=sys.stderr)
+        print(
+            "REFUSED: the closure chain will not run unless the deciding code and "
+            "the input set are both pinned.",
+            file=sys.stderr,
+        )
         print(str(exc), file=sys.stderr)
         print(
-            "\nNothing was written. Supply every artifact and its CI run id; a "
-            "partial closure is a refusal, not a weaker invocation.",
+            "\nNothing was written. Supply every artifact and its CI run id, run "
+            "the committed producing scripts, and let the interpreter you invoked "
+            "be the one that runs them; a partial or unpinned closure is a "
+            "refusal, not a weaker invocation.",
             file=sys.stderr,
         )
         return REFUSED
@@ -645,7 +1073,7 @@ def main(argv: list[str] | None = None) -> int:
         if refusal is not None:
             halted.append(refusal)
             summary = {
-                "schema": "atlas.v1.closure-provenance/1",
+                "schema": "atlas.v1.closure-provenance/2",
                 "inputs": inputs,
                 "steps": steps,
                 "release_ready": False,
@@ -676,7 +1104,7 @@ def main(argv: list[str] | None = None) -> int:
             steps.append(assemble_step)
             release_ready, blockers = decide(graph, assemble_step["exit_status"])
             summary = {
-                "schema": "atlas.v1.closure-provenance/1",
+                "schema": "atlas.v1.closure-provenance/2",
                 "inputs": inputs,
                 "steps": steps,
                 "release_ready": release_ready,
@@ -692,6 +1120,33 @@ def main(argv: list[str] | None = None) -> int:
             file=sys.stderr,
         )
         return TOOLING_FAILURE
+
+    summary["evidence_digest"] = evidence_digest(summary)
+    # Appended, not interleaved: the machine-varying facts live in exactly one
+    # place so that "which parts of this ledger are supposed to differ between
+    # machines" needs no judgement call from the reader.
+    summary["environment"] = {
+        "note": (
+            "Machine-varying by construction and excluded from evidence_digest. "
+            "It is here because a substituted interpreter or a swapped producing "
+            "script is otherwise invisible in the records this chain produces."
+        ),
+        "interpreter": interpreter,
+        "producing_scripts": producing_scripts,
+        "importable_completeness_module": importable_completeness,
+        "pythonpath": os.environ.get("PYTHONPATH"),
+        "git_head": subprocess.run(  # noqa: S603 - fixed argv
+            ["git", "rev-parse", "HEAD"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        ).stdout.strip(),
+        "runner": {
+            "path": Path(__file__).resolve().relative_to(REPO_ROOT.resolve()).as_posix(),
+            "sha256": sha256_file(Path(__file__).resolve()),
+        },
+    }
 
     ledger = evidence_dir / CLOSURE_LEDGER
     ledger.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")

@@ -13,8 +13,11 @@ name: v1 gate closure
 #     The science is legitimately open.  CI must never pressure anyone to fake
 #     it, so an honest blocker list is a green job with the blockers in the
 #     step summary.
-#   * a required artifact is missing (exit 64)       -> job FAILS.  Do not
-#     re-run with fewer inputs; wait for the run that produces the missing one.
+#   * refused (exit 64)                              -> job FAILS.  Either a
+#     required artifact is missing or two roles were handed the same artifact,
+#     or the deciding code is not pinned: $PYTHON named an interpreter other
+#     than the one running the runner, or a producing script does not match
+#     HEAD.  Do not re-run with fewer inputs or a patched script; fix the cause.
 #   * broken chain / disagreeing decision (exit 3)   -> job FAILS loudly.
 #   * release_ready (exit 0)                         -> job succeeds, and the
 #     bundle is what a human reviews before committing anything.
@@ -118,6 +121,11 @@ jobs:
         id: close
         run: |
           set -uo pipefail
+          # The runner takes its interpreter from sys.executable and refuses a
+          # $PYTHON that disagrees.  Clearing it here is belt and braces: an
+          # inherited value would only produce a refusal, but a refusal whose
+          # cause is an ambient variable nobody set on purpose wastes a run.
+          unset PYTHON
           status=0
           uv run --no-sync python scripts/close_v1_gates.py \
             --fold-geometry artifacts/closure-inputs/fold_geometry.json \
@@ -153,6 +161,16 @@ jobs:
             echo
             echo '```'
             cat artifacts/closure-report.txt || true
+            echo '```'
+            echo
+            # The environment block is what makes a substituted interpreter or a
+            # swapped producing script visible.  It is in the uploaded ledger
+            # either way, but a reviewer reads the step summary.
+            echo "### Deciding code"
+            echo
+            echo '```json'
+            jq '.environment' artifacts/closure-evidence/V1_CLOSURE_PROVENANCE.json \
+              || echo 'no ledger was written'
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 

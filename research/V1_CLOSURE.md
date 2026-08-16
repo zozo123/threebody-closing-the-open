@@ -90,10 +90,77 @@ refusal, not a quieter invocation, and a producing script that refuses stops
 the chain instead of falling back to a stale classification.
 
 Every input is recorded in `V1_CLOSURE_PROVENANCE.json` with its sha256 and the
-CI run id it came from — supplied as an argument, never guessed. The real
+CI run id it came from — supplied as an argument, never guessed. One artifact
+may not do two jobs: two roles resolving to the same path, two roles carrying
+identical bytes, or one sha256 offered under two different CI run ids are all
+refusals, because a closure resting on one measurement wearing two hats is not
+a closure and a fabricated run id cannot be checked against CI. The real
 closure runs in `.github/workflows/v1-gate-closure.yml`, which takes the four
 run ids, fetches the artifacts with `gh run download`, and uploads inputs and
 outputs together so the certificate stays re-verifiable.
+
+##### The deciding code is pinned too
+
+Pinning the input bytes pins only half of what produces a verdict; the other
+half is the code that reads them. A reviewer demonstrated the gap: a ~20-line
+bash shim on `$PYTHON` that forwarded most invocations to the real interpreter
+and substituted passing output for `classify_secondary_left_birth.py` produced
+`rc=0, release_ready=true` from a forged BigFloat fold, and left no trace in
+`V1_CLOSURE_PROVENANCE.json` — the runner resolved its interpreter from the
+environment and deliberately did not record which one it used, on the theory
+that omitting a machine-varying field kept the ledger byte-reproducible. That
+traded auditability for a cosmetic property.
+
+The runner now:
+
+- runs the producing scripts under `sys.executable` — the interpreter the
+  operator invoked — and **refuses (exit 64)** if `$PYTHON` names anything else,
+  including a multi-word wrapper. Choosing a throwaway venv is still supported
+  and is now an explicit act: invoke `close_v1_gates.py` *with* that venv's
+  python. The resolved absolute path is exported to
+  `assemble_v1_critical_graph.sh`, so the shell cannot inherit a hostile
+  `$PYTHON` or start a second unrecorded interpreter of its own;
+- **refuses** unless every deciding script — `classify_secondary_left_birth.py`,
+  `freeze_completeness_certificate.py`, `assemble_v1_critical_graph.sh` and
+  `assemble_critical_graph.py` — hashes identically to its bytes at `git HEAD`.
+  A shim that swaps the script instead of the interpreter fails here, and a
+  closure run from an uncommitted working copy of a producing script is not a
+  closure anybody can re-derive;
+- records what it could not prevent. `V1_CLOSURE_PROVENANCE.json` gained an
+  `environment` block: the interpreter's absolute path and its own sha256, its
+  version banner, whether it sits inside the working tree, the `$PYTHON` that
+  was seen, the git HEAD, and both digests of every producing script. The
+  interpreter path and hash are printed in the report as well, because a ledger
+  nobody opens is not an audit trail.
+
+The ledger is split rather than stripped: `environment` is machine-varying by
+construction and is excluded from `evidence_digest`, a sha256 over the rest.
+Two honest machines still agree on `evidence_digest` while each discloses its
+own environment.
+
+A limit, stated rather than papered over: a program cannot bootstrap trust in
+the machinery that runs it. If `sys.executable` is itself hostile, or `.git` has
+been rewritten, every check above is executed by the attacker. The claim the
+runner can defend is narrower and still worth having — **a substitution that
+changes the decision cannot also stay out of the ledger.**
+
+##### What the assembler cannot detect, and where that defence lives
+
+`assemble_critical_graph.load_classification` opens a JSON file and believes its
+`evidence_level`. A hand-written classification carrying `passed: true`, an
+allowed class and `evidence_level: "independently_reproduced"` therefore yields
+a *passed* node. That is not fixable in the assembler: at that layer the
+artifact is only bytes, and nothing in them separates a forgery from a real
+classification. `tests/test_close_v1_gates.py` asserts that behaviour honestly
+instead of the flattering version — an earlier test appeared to show forgeries
+being rejected, but it only showed one forgery that had left `evidence_level`
+at `screening`.
+
+The defence is in the runner, the only layer that knows where a classification
+came from: it deletes the output path, invokes the digest-verified classifier
+under the recorded interpreter, deletes the path again if the classifier
+refuses, and binds the surviving record in the ledger to the input artifacts
+(sha256 + CI run id), the producing script (both digests) and the interpreter.
 
 ### Gate C -- family/sheet connectivity
 

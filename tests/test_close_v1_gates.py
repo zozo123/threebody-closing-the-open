@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -40,12 +41,16 @@ runner = _runner()
 
 @pytest.fixture(autouse=True)
 def _pin_interpreter(monkeypatch):
-    """Drive every producing script with the interpreter running the tests.
+    """No ``$PYTHON``: the producing scripts run under the test interpreter.
 
-    The pinned assembler shell script defaults to ``uv run --no-sync python``,
-    which is unavailable when the local uv is older than the pyproject pin.
+    This used to set ``PYTHON=sys.executable`` so the assembler shell script
+    would not fall back to ``uv run --no-sync python`` (unavailable when the
+    local uv is older than the pyproject pin).  The runner now exports that
+    absolute path to the shell itself, so the variable is unnecessary here --
+    and leaving it set would hide the fact that the runner no longer takes its
+    interpreter from the environment.
     """
-    monkeypatch.setenv("PYTHON", sys.executable)
+    monkeypatch.delenv("PYTHON", raising=False)
     monkeypatch.setenv("PYTHONPATH", str(ROOT / "src"))
 
 
@@ -60,6 +65,23 @@ def evidence_dir(request):
     shutil.rmtree(path, ignore_errors=True)
     yield path
     shutil.rmtree(path, ignore_errors=True)
+
+
+@pytest.fixture
+def tmp_copy(request):
+    """Copy a fixture to a second in-repo path, so two roles carry equal bytes."""
+    created: list[Path] = []
+
+    def copy(source: str, name: str) -> str:
+        destination = ROOT / "artifacts" / f"pytest-copy-{request.node.name}" / name
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes((FIXTURES / source).read_bytes())
+        created.append(destination.parent)
+        return str(destination.relative_to(ROOT))
+
+    yield copy
+    for path in created:
+        shutil.rmtree(path, ignore_errors=True)
 
 
 def _argv(evidence_dir: Path, **overrides: str) -> list[str]:
@@ -204,11 +226,349 @@ def test_chain_is_idempotent_and_byte_reproducible(evidence_dir):
     }
 
 
-def test_ledger_carries_no_wall_clock_or_machine_state(evidence_dir):
+def test_machine_state_is_confined_to_the_environment_block(evidence_dir):
+    """Machine state is recorded, but only in one clearly separated place.
+
+    The old rule was "no machine state anywhere", which is how the interpreter
+    came to be omitted and how a shim on ``$PYTHON`` stayed invisible.  The rule
+    now is that machine state lives in ``environment`` and nowhere else, so the
+    evidence half of the ledger is still a pure function of the input bytes.
+    """
     runner.main(_argv(evidence_dir))
-    text = (evidence_dir / runner.CLOSURE_LEDGER).read_text()
+    ledger = json.loads((evidence_dir / runner.CLOSURE_LEDGER).read_text())
+    assert ledger["environment"]["interpreter"]["path"]
+
+    stable = {
+        key: value
+        for key, value in ledger.items()
+        if key not in ("environment", "evidence_digest")
+    }
+    text = json.dumps(stable)
     for forbidden in ("timestamp", "generated_at", "hostname", str(ROOT)):
         assert forbidden not in text, forbidden
+    assert ledger["evidence_digest"] == runner.evidence_digest(stable)
+
+
+def test_the_ledger_records_the_interpreter_that_ran_the_producing_scripts(evidence_dir):
+    """The single fact whose absence let a shim forge release_ready=true."""
+    runner.main(_argv(evidence_dir))
+    ledger = json.loads((evidence_dir / runner.CLOSURE_LEDGER).read_text())
+    interpreter = ledger["environment"]["interpreter"]
+
+    resolved = Path(sys.executable).resolve()
+    assert interpreter["path"] == str(resolved)
+    assert Path(interpreter["path"]).is_absolute()
+    assert interpreter["sha256"] == runner.sha256_file(resolved)
+    assert interpreter["sys_executable"] == sys.executable
+    assert interpreter["version"]
+    assert interpreter["inside_working_tree"] in (True, False)
+
+
+def test_the_ledger_records_both_digests_of_every_producing_script(evidence_dir):
+    runner.main(_argv(evidence_dir))
+    ledger = json.loads((evidence_dir / runner.CLOSURE_LEDGER).read_text())
+    recorded = {entry["path"]: entry for entry in ledger["environment"]["producing_scripts"]}
+    assert set(recorded) == set(runner.PRODUCING_SCRIPTS)
+    for path, entry in recorded.items():
+        assert entry["sha256"] == runner.sha256_file(ROOT / path)
+        assert entry["matches_head"] is True
+        assert entry["sha256_at_head"] == entry["sha256"]
+    assert ledger["environment"]["git_head"]
+    # The runner hashes itself too. It cannot verify itself -- nothing can --
+    # but an auditor comparing two ledgers can at least see that the
+    # orchestrator differed.
+    assert ledger["environment"]["runner"]["sha256"] == runner.sha256_file(
+        ROOT / "scripts/close_v1_gates.py"
+    )
+
+
+def test_the_printed_report_shows_the_interpreter(evidence_dir, capsys):
+    """A ledger nobody opens is not an audit trail."""
+    runner.main(_argv(evidence_dir))
+    out = capsys.readouterr().out
+    assert str(Path(sys.executable).resolve()) in out
+    assert runner.sha256_file(Path(sys.executable).resolve()) in out
+
+
+# --------------------------------------------------------------------------
+# The interpreter is not selectable from the environment
+# --------------------------------------------------------------------------
+
+
+SHIM = """#!/usr/bin/env bash
+# Reproduction of the reviewer's shim: forward most invocations to the real
+# interpreter, but substitute a passing classification for the one script whose
+# refusal is the only thing standing between a forged fold and release_ready.
+set -uo pipefail
+for a in "$@"; do
+  case "$a" in
+    */classify_secondary_left_birth.py)
+      out="$3"
+      mkdir -p "$(dirname "$out")"
+      cat > "$out" <<'JSON'
+{"id": "secondary_left_birth", "kind": "endpoint", "class": "projection_fold",
+ "passed": true, "status": "independently_reproduced",
+ "evidence_level": "independently_reproduced",
+ "note": "forged", "edge_endpoint_bindings": []}
+JSON
+      exit 0
+      ;;
+  esac
+done
+exec @REAL@ "$@"
+"""
+
+
+@pytest.fixture
+def shim(request):
+    """A ``$PYTHON`` shim that intercepts the classifier, on disk and executable."""
+    path = ROOT / "artifacts" / f"pytest-shim-{request.node.name}" / "fakepy"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(SHIM.replace("@REAL@", sys.executable), encoding="utf-8")
+    path.chmod(0o755)
+    yield path
+    shutil.rmtree(path.parent, ignore_errors=True)
+
+
+def test_a_python_shim_is_refused_outright(evidence_dir, shim, monkeypatch, capsys):
+    """THE route that forged a pass: PYTHON pointing at an interception shim.
+
+    It is refused before anything runs, not merely recorded afterwards.  An
+    environment variable that chooses which code decides a gate is a
+    substitution channel, and the only safe thing to do with it is to stop.
+    """
+    monkeypatch.setenv("PYTHON", str(shim))
+    assert runner.main(_argv(evidence_dir)) == runner.REFUSED
+    err = capsys.readouterr().err
+    assert "names an interpreter other than the one running this script" in err
+    assert str(shim) in err
+    assert not evidence_dir.exists(), "a refused run must write nothing at all"
+
+
+def test_a_python_shim_cannot_forge_a_pass_with_a_forged_fold(
+    evidence_dir, shim, monkeypatch, capsys
+):
+    """The full attack, end to end: forged BigFloat + shim that hides it."""
+    monkeypatch.setenv("PYTHON", str(shim))
+    argv = _argv(
+        evidence_dir,
+        fold_bigfloat="tests/fixtures/closure/fold_bigfloat_forged.json",
+        neck_raster="tests/fixtures/closure/neck_raster_merged.json",
+    )
+    assert runner.main(argv) != 0
+    assert runner.main(argv) == runner.REFUSED
+    assert not (evidence_dir / runner.CRITICAL_GRAPH).exists()
+
+
+def test_a_multi_word_python_is_refused(evidence_dir, monkeypatch, capsys):
+    """``uv run --no-sync python`` is a wrapper, and a wrapper cannot be hashed."""
+    monkeypatch.setenv("PYTHON", "uv run --no-sync python")
+    assert runner.main(_argv(evidence_dir)) == runner.REFUSED
+    assert "names an interpreter other than" in capsys.readouterr().err
+
+
+def test_a_python_that_agrees_with_sys_executable_is_accepted(
+    evidence_dir, monkeypatch
+):
+    """Refusing is about substitution, not about the variable existing."""
+    monkeypatch.setenv("PYTHON", sys.executable)
+    assert runner.main(_argv(evidence_dir)) == runner.NOT_RELEASE_READY
+    ledger = json.loads((evidence_dir / runner.CLOSURE_LEDGER).read_text())
+    # It is still disclosed: an auditor sees what was set, not just that it was
+    # tolerated.
+    assert ledger["environment"]["interpreter"]["python_env_var"] == sys.executable
+
+
+def test_the_assembler_shell_cannot_inherit_a_hostile_python(shim, monkeypatch):
+    """The wrapper resolves its own interpreter, so the runner overwrites it.
+
+    Otherwise closing the ``$PYTHON`` route in the runner would leave it open
+    one process deeper, where ``assemble_critical_graph.py`` actually runs.
+    """
+    monkeypatch.setenv("PYTHON", str(shim))
+    result = runner.run_step(
+        [
+            sys.executable,
+            "-c",
+            "import os; print(os.environ['PYTHON'])",
+        ]
+    )
+    assert result.stdout.strip() == sys.executable
+
+
+# --------------------------------------------------------------------------
+# Swapping the script is the same attack one layer down
+# --------------------------------------------------------------------------
+
+
+@pytest.fixture
+def swapped_producing_script(request):
+    """Overwrite a producing script, then restore it whatever the test does."""
+    target = ROOT / "scripts/classify_secondary_left_birth.py"
+    original = target.read_bytes()
+
+    def swap(text: str) -> None:
+        target.write_text(text, encoding="utf-8")
+
+    yield swap
+    target.write_bytes(original)
+
+
+def test_a_swapped_producing_script_is_refused(
+    evidence_dir, swapped_producing_script, capsys
+):
+    swapped_producing_script(
+        "import json, sys\n"
+        "from pathlib import Path\n"
+        "Path(sys.argv[2]).parent.mkdir(parents=True, exist_ok=True)\n"
+        "Path(sys.argv[2]).write_text(json.dumps({\n"
+        "    'id': 'secondary_left_birth', 'class': 'projection_fold',\n"
+        "    'passed': True, 'evidence_level': 'independently_reproduced'}))\n"
+    )
+    assert runner.main(_argv(evidence_dir)) == runner.REFUSED
+    err = capsys.readouterr().err
+    assert "does not match HEAD" in err
+    assert "classify_secondary_left_birth.py" in err
+    assert not evidence_dir.exists()
+
+
+def test_every_deciding_script_is_in_the_verified_set():
+    """The set must cover the shell wrapper and what the wrapper runs.
+
+    Pinning ``assemble_v1_critical_graph.sh`` while leaving
+    ``assemble_critical_graph.py`` unpinned would pin the wrapper around the
+    only module allowed to set release_ready.
+    """
+    assert set(runner.PRODUCING_SCRIPTS) == {
+        "scripts/classify_secondary_left_birth.py",
+        "scripts/freeze_completeness_certificate.py",
+        "scripts/assemble_v1_critical_graph.sh",
+        "scripts/assemble_critical_graph.py",
+    }
+    for relative in runner.PRODUCING_SCRIPTS:
+        assert (ROOT / relative).is_file(), relative
+
+
+def test_a_shadowed_completeness_module_is_refused(
+    evidence_dir, request, monkeypatch, capsys
+):
+    """The freezer's gates live in a module, and PYTHONPATH outranks the repo.
+
+    Pinning freeze_completeness_certificate.py while leaving
+    threebody_atlas.completeness replaceable would pin the wrapper and not the
+    gates.
+    """
+    shadow = ROOT / "artifacts" / f"pytest-shadow-{request.node.name}"
+    package = shadow / "threebody_atlas"
+    package.mkdir(parents=True, exist_ok=True)
+    (package / "__init__.py").write_text("", encoding="utf-8")
+    (package / "completeness.py").write_text(
+        "def build_record(*a, **k):\n"
+        "    return {'passed': True, 'note': 'forged'}\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("PYTHONPATH", f"{shadow}{os.pathsep}{ROOT / 'src'}")
+    try:
+        assert runner.main(_argv(evidence_dir)) == runner.REFUSED
+        err = capsys.readouterr().err
+        assert "importable as threebody_atlas.completeness" in err
+        assert not evidence_dir.exists()
+    finally:
+        shutil.rmtree(shadow, ignore_errors=True)
+
+
+def test_the_committed_completeness_module_is_accepted_and_recorded(evidence_dir):
+    runner.main(_argv(evidence_dir))
+    ledger = json.loads((evidence_dir / runner.CLOSURE_LEDGER).read_text())
+    recorded = ledger["environment"]["importable_completeness_module"]
+    assert recorded, "the module that decides the completeness gates must be named"
+    for entry in recorded:
+        assert entry["matches_head"] is True
+    assert ledger["environment"]["pythonpath"] == os.environ.get("PYTHONPATH")
+
+
+# --------------------------------------------------------------------------
+# One artifact may not do two jobs
+# --------------------------------------------------------------------------
+
+
+def test_refuses_the_geometry_bigfloat_pair_resolving_to_one_file(
+    evidence_dir, capsys
+):
+    """The float64 screen may not stand in for its own independent check."""
+    argv = _argv(
+        evidence_dir, fold_bigfloat="tests/fixtures/closure/fold_geometry.json"
+    )
+    assert runner.main(argv) == runner.REFUSED
+    err = capsys.readouterr().err
+    assert "resolve to" in err
+    assert "fold_bigfloat" in err and "fold_geometry" in err
+    assert not evidence_dir.exists()
+
+
+def test_refuses_the_geometry_bigfloat_pair_with_identical_bytes(
+    evidence_dir, tmp_copy, capsys
+):
+    copy = tmp_copy("fold_geometry.json", "geometry_relabelled.json")
+    argv = _argv(evidence_dir, fold_bigfloat=copy)
+    assert runner.main(argv) == runner.REFUSED
+    assert "identical bytes" in capsys.readouterr().err
+
+
+def test_refuses_the_al_screen_neck_raster_pair_resolving_to_one_file(
+    evidence_dir, capsys
+):
+    """The AL pocket screen may not also be the neck raster.
+
+    Both feed the completeness certificate, and the certificate's whole claim
+    is that two independent screens agree.
+    """
+    argv = _argv(
+        evidence_dir, al_screen="tests/fixtures/closure/neck_raster.json"
+    )
+    assert runner.main(argv) == runner.REFUSED
+    err = capsys.readouterr().err
+    assert "al_screen" in err and "neck_raster" in err
+    assert not evidence_dir.exists()
+
+
+def test_refuses_the_al_screen_neck_raster_pair_with_identical_bytes(
+    evidence_dir, tmp_copy, capsys
+):
+    copy = tmp_copy("neck_raster.json", "neck_relabelled.json")
+    argv = _argv(evidence_dir, al_screen=copy)
+    assert runner.main(argv) == runner.REFUSED
+    assert "identical bytes" in capsys.readouterr().err
+
+
+def test_refuses_one_sha256_presented_under_two_ci_run_ids():
+    """A run id is the auditor's handle back to CI; a fake one breaks the chain."""
+    records = [
+        {
+            "role": "fold_geometry",
+            "path": "a.json",
+            "sha256": "d" * 64,
+            "ci_run_id": "111",
+        },
+        {
+            "role": "fold_bigfloat",
+            "path": "b.json",
+            "sha256": "d" * 64,
+            "ci_run_id": "222",
+        },
+    ]
+    problems = runner.duplicate_input_problems(records)
+    assert any("different CI run ids" in problem for problem in problems)
+    assert any("111" in problem and "222" in problem for problem in problems)
+
+
+def test_distinct_artifacts_from_one_ci_run_are_fine():
+    """One workflow run legitimately produces several different artifacts."""
+    records = [
+        {"role": "al_screen", "path": "a.json", "sha256": "a" * 64, "ci_run_id": "7"},
+        {"role": "neck_raster", "path": "b.json", "sha256": "b" * 64, "ci_run_id": "7"},
+    ]
+    assert runner.duplicate_input_problems(records) == []
 
 
 # --------------------------------------------------------------------------
@@ -251,20 +611,27 @@ def test_a_stale_classification_cannot_be_left_in_place(evidence_dir, capsys):
     )
 
 
-def test_a_hand_written_passed_classification_does_not_survive_the_assembler():
-    """`"passed": true` with a screening evidence_level is still unresolved.
-
-    load_classification() requires passed=true AND an allowed class AND an
-    evidence_level in {independently_reproduced, physical, continuation,
-    definition}.  The forgery satisfies the first two and fails the third.
-    """
+def _assembler():
     spec = importlib.util.spec_from_file_location(
         "assemble_critical_graph", ROOT / "scripts/assemble_critical_graph.py"
     )
-    assembler = importlib.util.module_from_spec(spec)
+    module = importlib.util.module_from_spec(spec)
     assert spec.loader is not None
-    spec.loader.exec_module(assembler)
+    spec.loader.exec_module(module)
+    return module
 
+
+def test_a_careless_forgery_does_not_survive_the_assembler():
+    """`"passed": true` with a *screening* evidence_level is still unresolved.
+
+    load_classification() requires passed=true AND an allowed class AND an
+    evidence_level in {independently_reproduced, physical, continuation,
+    definition}.  This forgery satisfies the first two and fails the third.
+
+    Read the next test before concluding anything from this one: the third
+    condition is the forger's own typo, not a defence.
+    """
+    assembler = _assembler()
     forged = FIXTURES / "forged_left_birth_class.json"
     payload = json.loads(forged.read_text())
     assert payload["passed"] is True
@@ -283,6 +650,105 @@ def test_a_hand_written_passed_classification_does_not_survive_the_assembler():
     # The forged claim is recorded, but only as the artifact's own unverified
     # assertion -- never as the node's verdict.
     assert node["screening_passed"] is True
+
+
+def test_the_assembler_cannot_detect_a_competent_forgery():
+    """A forgery that sets evidence_level correctly DOES produce a passed node.
+
+    This is the honest statement of a limit, and it corrects a claim this file
+    used to make.  The previous test was read as "hand-written classifications
+    do not survive the assembler".  They do, as soon as the forger changes one
+    string.  ``load_classification`` opens a JSON file and believes what it
+    says; there is nothing in the bytes that distinguishes this artifact from
+    one the classifier actually produced, so no amount of work inside
+    ``assemble_critical_graph.py`` can tell them apart.
+
+    Asserting the real behaviour here rather than the flattering one is the
+    point: the assembler is not the layer that can defend this, and pretending
+    it is would leave the actual defence untested.  The two tests that follow
+    are the defence, in scripts/close_v1_gates.py, which is the only layer that
+    knows where a classification came from.
+    """
+    assembler = _assembler()
+    forged = FIXTURES / "forged_left_birth_class_release_level.json"
+    payload = json.loads(forged.read_text())
+    assert payload["passed"] is True
+    assert payload["class"] in assembler.LEFT_BIRTH_CLASSES
+    assert payload["evidence_level"] in assembler.RELEASE_EVIDENCE_LEVELS
+
+    node = assembler.load_classification(
+        forged,
+        node_id="secondary_left_birth",
+        default_kind="endpoint",
+        allowed=assembler.LEFT_BIRTH_CLASSES,
+        missing_note="unused",
+    )
+    assert node["passed"] is True
+    assert node["status"] == "independently_reproduced"
+
+
+def test_a_competent_forgery_planted_at_the_output_path_is_destroyed(
+    evidence_dir, capsys
+):
+    """The defence, layer one: the runner owns the output path.
+
+    The forgery from the previous test, planted exactly where the assembler
+    would read it, with a BigFloat artifact the classifier refuses.  The runner
+    deletes the path before invoking the classifier and deletes it again when
+    the classifier refuses, so the assembler never sees the forgery and the
+    chain halts instead of assembling around it.
+    """
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    target = evidence_dir / runner.LEFT_BIRTH_CLASS
+    target.write_bytes(
+        (FIXTURES / "forged_left_birth_class_release_level.json").read_bytes()
+    )
+
+    argv = _argv(
+        evidence_dir, fold_bigfloat="tests/fixtures/closure/fold_bigfloat_forged.json"
+    )
+    assert runner.main(argv) == runner.NOT_RELEASE_READY
+    assert not target.exists(), "the planted forgery survived the classifier's refusal"
+    assert not (evidence_dir / runner.CRITICAL_GRAPH).exists()
+
+    ledger = json.loads((evidence_dir / runner.CLOSURE_LEDGER).read_text())
+    assert ledger["release_ready"] is False
+    assert ledger["halted_because"]
+
+
+def test_a_competent_forgery_planted_before_an_honest_run_is_overwritten(
+    evidence_dir,
+):
+    """The defence, layer two: what the assembler reads is what ran just now.
+
+    Same forgery, but the fold artifacts are the ones the classifier accepts.
+    The classification the graph is built from must be the classifier's output
+    for *these* inputs, byte for byte -- not the planted file, and not a merge
+    of the two.
+    """
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    target = evidence_dir / runner.LEFT_BIRTH_CLASS
+    target.write_bytes(
+        (FIXTURES / "forged_left_birth_class_release_level.json").read_bytes()
+    )
+
+    assert runner.main(_argv(evidence_dir)) == runner.NOT_RELEASE_READY
+    produced = json.loads(target.read_text())
+    assert produced["estimator"] != "HAND-WRITTEN-CLAIM"
+    assert "SYNTHETIC_FIXTURE_NOT_EVIDENCE" not in produced
+    # ...and the ledger ties that classification to the code and the interpreter
+    # that produced it, which is the record an auditor needs to go further.
+    ledger = json.loads((evidence_dir / runner.CLOSURE_LEDGER).read_text())
+    step = next(
+        entry
+        for entry in ledger["steps"]
+        if entry["step"] == "classify_secondary_left_birth"
+    )
+    assert step["produced"]["sha256"] == runner.sha256_file(target)
+    assert ledger["environment"]["interpreter"]["sha256"]
+    assert all(
+        entry["matches_head"] for entry in ledger["environment"]["producing_scripts"]
+    )
 
 
 def test_a_merged_neck_raster_blocks_completeness(evidence_dir):
@@ -432,6 +898,16 @@ def test_closure_workflow_runs_the_runner_and_never_writes_evidence():
     assert "research/evidence" not in scripts
     # A missing artifact must fail the job rather than be retried with less.
     assert "exit 64" in scripts
+
+
+def test_closure_workflow_surfaces_the_deciding_code():
+    """The environment block belongs in front of the reviewer, not just in a zip."""
+    steps = _closure_workflow()["jobs"]["close"]["steps"]
+    scripts = "\n".join(step.get("run") or "" for step in steps)
+    assert ".environment" in scripts
+    # An inherited $PYTHON would only cause a refusal, but a refusal nobody
+    # asked for still burns a run.
+    assert "unset PYTHON" in scripts
 
 
 def test_closure_workflow_uploads_inputs_beside_outputs():
