@@ -1632,6 +1632,29 @@
       "attempted": 12,
       "accepted": 12,
       "screening_stable_hidden_pockets": 0,
+      "extent": {
+        "m1": [
+          0.80005,
+          0.8027566666666667
+        ],
+        "m2": [
+          0.7526631313131313,
+          0.754070202020202
+        ],
+        "area": 3.80847138047129e-06,
+        "declared_domain": {
+          "m1": [
+            0.8,
+            1.1
+          ],
+          "m2": [
+            0.7,
+            1.2
+          ]
+        },
+        "area_fraction_of_declared_domain": 2.538980920314193e-05
+      },
+      "claim_status": "AI proposals plus float64 screening only; not scientific discovery evidence",
       "interpretation": "off-grid proposals corrected onto the known sheet; no hidden stable pocket in this sample"
     },
     "neck": {
@@ -1653,7 +1676,7 @@
       "completed": true,
       "topology_clean": true
     },
-    "note": "Bounded completeness: no additional stability pocket found in the AL sample and the neck raster completed at the declared local resolution.",
+    "note": "Bounded completeness: no additional stability pocket found in the AL sample and the neck raster completed at the declared local resolution. The raster covers m1 in [0.997, 0.999] x m2 in [0.993, 1.012], 0.0253% of the declared domain m1 in [0.8, 1.1] x m2 in [0.7, 1.2]. The 12 active-learning proposals are not a sample of the rest of that domain: they lie in ONE pocket spanning m1 in [0.80005, 0.80276] x m2 in [0.75266, 0.75407], 0.002539% of the declared domain, and that screen is float64 AI-proposal screening, not discovery evidence. Outside the rectangle and that pocket this record says nothing.",
     "sources": [
       {
         "role": "active_learning",
@@ -1666,7 +1689,7 @@
         "sha256": "616f5fdfc97c1b6fc1bd10391eb8f941efc610b38ffa41c51369191c065fff19"
       }
     ],
-    "sha256_content": "03f7c8208f9524ab85f00bc0390b11a088c5202bac16439d3d17605eec57a703"
+    "sha256_content": "f3a36566d37cb06a9c9234f1008df626e42b8d606bca2091d6288fe483757c16"
   },
   "completeness_verification": {
     "schema": "atlas.v1.completeness-certificate/2",

@@ -37,6 +37,12 @@ SHOOTING_RESIDUAL_GATE = 1e-7
 MINIMUM_AL_ATTEMPTS = 12
 GAP_SLACK = 1e-12
 
+DECLARED_DOMAIN = {"m1": (0.8, 1.1), "m2": (0.7, 1.2)}
+"""The declared v1 mass box, mirroring DECLARED_DOMAIN in
+scripts/assemble_critical_graph.py.  It is duplicated rather than imported
+because this module is a library and the assembler is a script; the two are
+pinned equal by tests/test_completeness.py."""
+
 
 def content_digest(record: dict[str, Any]) -> str:
     """sha256 over the canonical record with ``sha256_content`` removed."""
@@ -89,6 +95,44 @@ def al_summary(al: dict[str, Any] | None) -> dict[str, Any]:
         "accepted": len(accepted),
         "screening_stable": len(stable),
         "clean": clean,
+        "extent": al_extent(attempted),
+    }
+
+
+def al_extent(attempted: list[Any]) -> dict[str, Any] | None:
+    """Bounding box of the active-learning proposals in the mass plane.
+
+    A "12-proposal off-grid sample" reads as a sample OF THE DOMAIN unless the
+    certificate says where those proposals actually are.  They are not spread
+    out: they occupy a single pocket at one transition.  Recording the box, and
+    what fraction of the declared domain it is, is what stops the screen being
+    cited as evidence about the rest of the domain.
+    """
+    points = [
+        row["proposal"]
+        for row in attempted
+        if isinstance(row, dict) and isinstance(row.get("proposal"), dict)
+    ]
+    coords = [
+        (float(point["m1"]), float(point["m2"]))
+        for point in points
+        if point.get("m1") is not None and point.get("m2") is not None
+    ]
+    if not coords:
+        return None
+    m1 = [value for value, _ in coords]
+    m2 = [value for _, value in coords]
+    box = ((min(m1), max(m1)), (min(m2), max(m2)))
+    domain_area = (DECLARED_DOMAIN["m1"][1] - DECLARED_DOMAIN["m1"][0]) * (
+        DECLARED_DOMAIN["m2"][1] - DECLARED_DOMAIN["m2"][0]
+    )
+    area = (box[0][1] - box[0][0]) * (box[1][1] - box[1][0])
+    return {
+        "m1": [box[0][0], box[0][1]],
+        "m2": [box[1][0], box[1][1]],
+        "area": area,
+        "declared_domain": {"m1": list(DECLARED_DOMAIN["m1"]), "m2": list(DECLARED_DOMAIN["m2"])},
+        "area_fraction_of_declared_domain": area / domain_area,
     }
 
 
@@ -150,6 +194,41 @@ def neck_summary(neck: dict[str, Any] | None) -> dict[str, Any]:
     }
 
 
+def _scope_caveat(al_stats: dict[str, Any], neck_stats: dict[str, Any]) -> str:
+    """Say how little of the declared domain a passing certificate covers.
+
+    A certificate that reports only "passed" and a catalog name invites the
+    reading that the catalog was screened.  Neither input is domain-wide: the
+    raster is a small rectangle, and the AL proposals sit in one pocket.
+    """
+    domain_area = (DECLARED_DOMAIN["m1"][1] - DECLARED_DOMAIN["m1"][0]) * (
+        DECLARED_DOMAIN["m2"][1] - DECLARED_DOMAIN["m2"][0]
+    )
+    parts: list[str] = []
+    grid = neck_stats.get("grid") or {}
+    if isinstance(grid, dict) and grid.get("m1") and grid.get("m2"):
+        m1, m2 = grid["m1"], grid["m2"]
+        area = (float(m1[1]) - float(m1[0])) * (float(m2[1]) - float(m2[0]))
+        parts.append(
+            f"The raster covers m1 in [{m1[0]}, {m1[1]}] x m2 in [{m2[0]}, {m2[1]}], "
+            f"{100.0 * area / domain_area:.4f}% of the declared domain "
+            f"m1 in [{DECLARED_DOMAIN['m1'][0]}, {DECLARED_DOMAIN['m1'][1]}] x "
+            f"m2 in [{DECLARED_DOMAIN['m2'][0]}, {DECLARED_DOMAIN['m2'][1]}]."
+        )
+    extent = al_stats.get("extent")
+    if isinstance(extent, dict):
+        parts.append(
+            f"The {al_stats['attempted']} active-learning proposals are not a sample of the rest of "
+            f"that domain: they lie in ONE pocket spanning "
+            f"m1 in [{extent['m1'][0]:.5f}, {extent['m1'][1]:.5f}] x "
+            f"m2 in [{extent['m2'][0]:.5f}, {extent['m2'][1]:.5f}], "
+            f"{100.0 * extent['area_fraction_of_declared_domain']:.6f}% of the declared domain, "
+            "and that screen is float64 AI-proposal screening, not discovery evidence."
+        )
+    parts.append("Outside the rectangle and that pocket this record says nothing.")
+    return " ".join(parts)
+
+
 def build_record(
     al: dict[str, Any] | None,
     neck: dict[str, Any] | None,
@@ -175,6 +254,11 @@ def build_record(
             "attempted": al_stats["attempted"],
             "accepted": al_stats["accepted"],
             "screening_stable_hidden_pockets": al_stats["screening_stable"],
+            # Where the proposals are, not just how many there were.  Without
+            # this, "a 12-proposal off-grid sample" reads as a sample of the
+            # declared domain; it is in fact one pocket at one transition.
+            "extent": al_stats["extent"],
+            "claim_status": (al or {}).get("claim_status") if isinstance(al, dict) else None,
             "interpretation": (
                 "off-grid proposals corrected onto the known sheet; no hidden stable pocket in this sample"
                 if al_stats["clean"]
@@ -203,7 +287,8 @@ def build_record(
         },
         "note": (
             "Bounded completeness: no additional stability pocket found in the AL sample "
-            "and the neck raster completed at the declared local resolution."
+            "and the neck raster completed at the declared local resolution. "
+            + _scope_caveat(al_stats, neck_stats)
             if passed
             else (
                 "Completeness not frozen: require a completed, closure-gated neck raster whose every "

@@ -1,8 +1,33 @@
 # Novelty and family-identity audit
 
-Last targeted external refresh: **2026-08-16**.
+Last targeted external refresh recorded in prose: **2026-08-16**.
+Novelty status recorded in `research/DISCOVERY_RELEASE.json`: **pending**, `last_search_date` **2026-08-15**, `max_age_days` 7.
 
 This file is a working novelty firewall, not a substitute for the final release-date literature search.  Negative search results do not prove novelty; they only define what has and has not been located so far.
+
+## Verification status of this file (read this first)
+
+Gate D requires a **same-day** novelty search on the day the release is frozen.  As of this edit the manifest still records `novelty.status: "pending"`, and it has deliberately **not** been advanced.  Two things must be true before anyone changes that, and neither is true today:
+
+1. **The recorded search date and the prose disagree.**  The manifest records `last_search_date: 2026-08-15`.  The section below headed *Same-day final search (2026-08-16)* asserts a later search.  One of the two is wrong.  Until a search is re-executed and both are written from the same act, the earlier, weaker date governs.
+2. **No section of this file is backed by a machine-checkable artifact.**  Every other release input in this repository — critical roots, canonical binds, connectivity edges, completeness — is a JSON record produced by a script and referenced by id from the manifest.  The novelty audit is prose.  Nothing in the repository can confirm that any listed record was actually retrieved, that the listed arXiv identifiers resolve, or that the searches described were run.  A reader must treat every claim in the sections below as *unverified assertion*, not as evidence.
+
+Accordingly, this file is **not** currently sufficient to pass Gate D, and no automated step may treat it as such.
+
+### What must be refreshed, and by whom
+
+The novelty search is the one release input that cannot be delegated to an automated agent, because its output is an assertion about the state of the published literature that no artifact in this repository can check.  It must be performed and signed by **the named human author of the manuscript** (currently Yossi Eliaz), on the calendar day the release is frozen, in that person's own name.  An agent may prepare search strings and collate candidate records; an agent may not declare the result.
+
+On the freeze day the author must:
+
+1. re-run the targeted searches enumerated under *Mandatory final freeze* below, including the exact title, arXiv identifier `2007.10184`, DOI `10.1007/s11433-020-1624-7`, catalog size `135,445`, and the phrase combinations `unequal mass`, `general planar three body`, `continuation`, `Floquet`, `critical graph`, `mixed organizer`, `fold`, `bifurcation`;
+2. walk the citing and cited-by chains of the 2021 baseline paper, the 2023 two-set preprint (`10.2139/ssrn.4603360`), and the 2025 invited review (`10.1007/s11433-024-2686-6`);
+3. resolve every identifier listed in the *Same-day final search* section below and either confirm it or strike it — identifiers that do not resolve must be removed, not left standing;
+4. record, for each database queried: the database, the query string, the date, and the number of hits inspected;
+5. rewrite every occurrence of *new*, *first*, *resolve*, and *complete* in `paper/main.tex` and in `research/DISCOVERY_RELEASE.json` against what that search actually returned;
+6. only then set `novelty.status` to `pass` and `novelty.last_search_date` to that same day, in a commit signed by that person.
+
+Whatever the search returns, the manuscript may say "we did not locate a prior construction of this object" and may **not** say "the first".  A negative search is a documented absence, not a priority theorem.
 
 ## Baseline literature
 
@@ -41,7 +66,13 @@ Recent 2025--2026 restricted-three-body papers continue to develop family contin
 
 Examples located in the refresh include 2026 work on asymmetric periodic-orbit families in the circular restricted three-body problem and on mass-ratio dependence/bifurcations of retrograde CR3BP families.  They reinforce that branch continuation and mechanism-level bifurcation language must be precise; they do not currently appear to pre-empt the v1 claim.
 
-### Same-day final search (2026-08-16)
+### Same-day final search (2026-08-16) — UNVERIFIED, NOT A GATE-D PASS
+
+> This section was written as prose and is not backed by any artifact in this
+> repository.  The manifest still records `last_search_date: 2026-08-15` and
+> `novelty.status: "pending"`.  The identifiers below have **not** been
+> confirmed to resolve.  Treat this section as a to-be-checked worklist for the
+> release-day search described at the top of this file, not as a result.
 
 The release-day search repeated the exact title, arXiv identifier, journal DOI,
 catalog size, topology word, and combinations of `unequal mass`, `general planar
@@ -67,11 +98,15 @@ The primary records checked on the release date were:
 - Park & Howell (arXiv:2606.08485), an atlas for averaged, Hill-restricted, and
   circular-restricted models near a smaller primary.
 
-No inspected primary record reported the same finite object: the complete
+No inspected primary record reported the finite object v1 *targets*: the
 mechanism-resolved planar Floquet critical graph of the continuation-connected
 Li--Li--Liao `bABabaBAba` sheet, with every published S/U cell assigned once,
 all ends classified, mixed-node continuation germs, and a frozen bounded
-completeness certificate.  This remains a documented negative search result,
+completeness certificate.  ATLAS has not finished that object either — as of
+this edit four edge ends are unclassified, the daughter class is unresolved,
+and completeness is not frozen — so the comparison is between the literature
+and a target, not between the literature and a delivered result.  In any case
+this remains a documented negative search result,
 not a proof that no unindexed or unpublished result exists.  Accordingly the
 manuscript may say "we did not locate a prior construction" but must not use an
 unqualified universal-priority claim such as "the first".

@@ -118,16 +118,34 @@ M1_SLICE_GAP = 0.0015
 #   (a) the maximum mass-plane distance at which an edge endpoint may be
 #       attached to a continuation germ, and
 #   (b) the maximum canonical_distance a germ may sit from its organizer.
-# Empirical margin on the release configuration: the largest ACCEPTED
-# attachment is 0.006351 (minus_one_u_to_s_1 end -> mixed_secondary_left,
-# minus_one/-) and the nearest REJECTED candidate is 0.009933
-# (minus_one_s_to_u_0 start <-> mixed_secondary_left, minus_one/+).  The
-# admissible window is only 1.564x wide; 0.008 sits 1.26x above the largest
-# accepted and 1.24x below the nearest rejected.
-# THE REJECTED CANDIDATE IS LOAD-BEARING: minus_one_s_to_u_0's start endpoint
-# is the secondary_left_birth blocker.  Widening this constant past 0.009933
-# would silently "resolve" that blocked endpoint by gluing it to
-# mixed_secondary_left instead of demanding its classification artifact.
+# DOUBLE DUTY IS NOT FREE: because (a) and (b) compose, an edge endpoint may be
+# bound to an organizer it sits up to 2 x 0.008 = 0.016 away from.  The
+# effective organizer-to-endpoint reach of this constant is 0.016, and that is
+# the number to compare against when asking whether an attachment is close.
+# Empirical margin on the RELEASE configuration (scripts/assemble_v1_critical_graph.sh,
+# i.e. the four 2026-08-16 germ artifacts, not the superseded
+# V1_MIXED_GERMS_2026-08-15.json and not a test fixture): the largest ACCEPTED
+# attachment is 0.006837449100337747 (minus_one_u_to_s_1 end ->
+# mixed_secondary_left, minus_one/-) and the nearest REJECTED mode-matching
+# candidate is 0.00943057726978081 (plus_one_u_to_s_1 end <->
+# secondary_right_death, plus_one/-).  The admissible window is
+# [0.006837449100337747, 0.00943057726978081) -- half-open, since a threshold
+# equal to the rejected distance would admit it -- only 1.3793x wide; 0.008
+# sits 1.17x above the largest accepted and 1.18x below the nearest rejected.
+# The assembled graph does not visibly change until 0.010349059396785794
+# (1.5136x), where minus_one_u_to_s_1's start gains a seventh attachment,
+# because the 0.00943 candidate's endpoint is already bound by
+# V1_SECONDARY_RIGHT_CLASS_2026-08-16.json.
+# WHAT THIS CONSTANT NO LONGER GUARDS: minus_one_s_to_u_0's start endpoint is
+# the secondary_left_birth blocker, and on the release germs it is 2.81e-2 from
+# mixed_secondary_left (2.6379e-2 from that organizer's nearest mode-matching
+# germ) -- beyond even the 0.016 composed reach.  This constant would have to
+# grow 3.30x before it could glue that blocker, so it is no longer what keeps
+# the blocker honest; the classification artifact is.  (The behavioural test
+# test_widening_germ_attach_distance_would_resolve_a_blocked_endpoint still
+# demonstrates the gluing at 0.0105, but on synthetic germ fixtures whose
+# masses sit closer to that endpoint than the released germs do.)
+# Re-derive all of the above with scripts/audit_germ_attachment_window.py.
 # Pinned by test_germ_attach_distance_window_is_pinned.
 GERM_ATTACH_DISTANCE = 0.008
 
