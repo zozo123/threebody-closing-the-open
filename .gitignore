@@ -13,3 +13,6 @@ paper/*.fls
 paper/*.log
 paper/*.out
 paper/*.pdf
+
+# Agent worktrees and session scratch (never part of the scientific record)
+.claude/
