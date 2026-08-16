@@ -20,8 +20,10 @@ preimage of a universal Floquet domain rather than as a rectangular S/U mask.
 
 \textbf{Earned results.}
 (i)~The frozen catalog is supported as one continuation-connected component in
-the declared gauge; every adversarially chosen cut that could have separated it
-was crossed bidirectionally.
+the declared gauge; each of the $26$ adversarially chosen links that could have
+separated it was crossed bidirectionally in the Li chart, and one of them --- the
+pathological invariant-near-duplicate bridge --- was crossed again in a generic
+strict-periodic chart.
 (ii)~On the slice $m_1\approx0.80234$ the lower transition is an independently
 reproduced physical $+1$ crossing, bracketed to $m_2$ width
 $1.58\times10^{-9}$.
@@ -36,10 +38,10 @@ ladder, one rung below the two bracketed events.
 \textbf{Not earned.}
 The connected critical graph is unfinished.
 All $620$ published S/U cells are now localized once and assigned to seven
-mechanism polylines, but four edge ends remain unclassified, so the assembled
-edge incidence is still two components rather than one; the secondary-lobe
-birth and death are unclassified; the lower $+1$ daughter is unclassified;
-and completeness is not frozen.
+mechanism polylines, but two edge ends remain unclassified, so the assembled
+edge incidence is still three components rather than one, and the
+secondary-lobe birth remains unexplained.
+Completeness is frozen only in the bounded sense quantified below.
 Scientific status remains OPEN.
 This is not a solution of the general three-body problem, and ``stable'' here
 means planar linear Floquet stability only --- not nonlinear stability, not
@@ -178,43 +180,88 @@ That census is a seed, not the graph.
 Its worst localized residual is $\lvert\text{event}\rvert=1.9898\times10^{-8}$
 against the frozen gate $2\times10^{-8}$, a margin of about $0.5\%$, with $165$
 of the $620$ roots above $10^{-8}$; the gate is cleared, but not comfortably.
+
+\paragraph{The event gate is tight for float64, not for the organizers.}
+Re-evaluating the three canonical $60$-digit organizer charts with this
+repository's float64 stack gives $+1$ events of
+$-1.2794\times10^{-7}$ (principal-left),
+$-1.9582\times10^{-8}$ (secondary-left) and
+$-2.5555\times10^{-8}$ (principal-right), so two of the three canonical
+organizers do not themselves clear the frozen $2\times10^{-8}$ event gate when
+they are merely evaluated in float64.  At $60$ digits the same charts give
+relative $+1$ events of order $10^{-14}$.  This is a statement about the gate
+under float64 evaluation, not about the organizers: a float64 reproduction must
+re-correct, not re-evaluate, and the gate must not be loosened to accommodate
+the difference.
 An off-grid active-learning screen of $12$ proposals all corrected onto the
 known sheet and none were screening-stable: no hidden island in that sample.
 
 \paragraph{How little ``completeness'' covers.}
 The word \emph{complete} is used here only in a bounded sense, and the bound is
-small.  The finest completeness input is the stability-neck raster, frozen over
-$m_1\in[0.997,0.999]$, $m_2\in[0.993,1.006]$ at step $10^{-4}$
-($2751$ samples).  That rectangle is
-$2.6\times10^{-5}$ of the $0.15$ area of the declared domain
-$m_1\in[0.8,1.1]$, $m_2\in[0.7,1.2]$: \textbf{0.0173\%}.
-Everywhere else, ``no hidden stability pocket'' rests on the published $0.001$
-grid and on a $12$-proposal off-grid sample.
-The figure is derived, not asserted: \texttt{scripts/completeness\_scope.py}
-reads the raster extent from the merge job of
-\texttt{.github/workflows/stability-neck-scan.yml} and the declared domain from
-\texttt{scripts/assemble\_critical\_graph.py}, and a test fails if the number
-quoted here drifts from it.
+small.  Completeness has exactly two inputs, and neither is a sample of the
+declared domain
+$m_1\in[0.8,1.1]$, $m_2\in[0.7,1.2]$ (area $0.15$).
+The finer one is the frozen stability-neck raster
+(\texttt{research/evidence/V1\_NECK\_RASTER\_2026-08-16.json}) over
+$m_1\in[0.997,0.999]$, $m_2\in[0.993,1.012]$ at step $10^{-4}$
+($4011$ corrected samples, all $21$ lines \texttt{separated}, zero interior
+merges and zero truncation-undecidable lines, minimum resolved unstable gap
+$3.0\times10^{-4}$, maximum shooting residual $4.7807\times10^{-10}$).
+That rectangle is
+$2.533\times10^{-4}$ of the declared area: \textbf{0.0253\%}.
+The other input is the $12$-proposal active-learning screen, and it is a
+pocket, not a sample: all twelve proposals lie in
+$m_1\in[0.80005,0.80276]$, $m_2\in[0.75266,0.75407]$ at the principal lower
+transition, an area fraction of $2.539\times10^{-5}$
+(\textbf{0.002539\%}), and that artifact declares itself ``AI proposals plus
+float64 screening only; not scientific discovery evidence''.
+Outside the rectangle and that pocket, ``no hidden stability pocket'' rests on
+the published $0.001$ grid alone.
+Both figures are derived, not asserted:
+\texttt{scripts/completeness\_scope.py} reads the raster extent from the
+\emph{merge} job of \texttt{.github/workflows/stability-neck-scan.yml}
+(the tile job carries its own \texttt{--step}, which is not the frozen one),
+cross-checks the rectangle, step and sample count against the committed raster
+artifact, reads the pocket from the screen artifact, and takes the declared
+domain from \texttt{scripts/assemble\_critical\_graph.py}; a test fails if a
+number quoted here drifts from it.
 
 \paragraph{The assembled graph is not yet connected.}
 Continuation-connectedness of the family sheet (Gate~C) and connectedness of
 the critical graph are different statements, and the second does not follow from
 the first.  In the committed
-\texttt{research/evidence/V1\_CRITICAL\_GRAPH.json}, four edge ends are still
-unclassified, so the edge incidence splits into two components ---
-$\{$domain-$m_1$-min, mixed-L, mixed-R, domain-$m_2$-max$\}$ and
-$\{$mixed-S$\}$ --- while five further declared nodes carry no edge at all.
-Attachment of an edge end to an organizer is also threshold-dependent: the
-assembler binds germs within a mass distance
-$\texttt{GERM\_ATTACH\_DISTANCE}=0.008$, and sweeping that constant shows the
-present six-attachment assembly survives only for thresholds in
-$[0.006351,0.009933]$, a window about $1.56\times$ wide.
+\texttt{research/evidence/V1\_CRITICAL\_GRAPH.json}, two edge ends are still
+unclassified, so the edge incidence splits into three components ---
+$\{$domain-$m_1$-min-$m_2$-$0.756$, mixed-L, mixed-R,
+domain-$m_2$-max-$m_1$-$1.071\}$,
+$\{$mixed-S, secondary-right-death$\}$ and
+$\{$domain-$m_1$-min-$m_2$-$0.761$, domain-$m_2$-max-$m_1$-$1.053\}$ ---
+while four further declared nodes carry no edge at all, and
+\texttt{secondary\_left\_birth} is the one unexplained node.
+Attachment of an edge end to an organizer is also threshold-dependent, and the
+threshold does double duty: \texttt{GERM\_ATTACH\_DISTANCE}$=0.008$ caps both
+how far a germ may sit from its organizer and how far an edge end may sit from
+that germ, so the effective organizer-to-endpoint reach is $0.016$.
+Auditing the release configuration shows the present six-attachment assembly
+keeps every attachment it has only on the half-open window
+$[0.006837,0.009431)$, $1.379\times$ wide: the largest accepted attachment is
+$0.006837449$ and the nearest rejected mode-matching candidate is $0.009430577$.
+The assembled graph does not visibly change until $0.010349059$
+($1.514\times$), because that rejected candidate's endpoint is already bound by
+its own classification artifact.
+One germ trace was tuned to reach an endpoint: the secondary-left germs used
+\texttt{--step}~$0.003$ rather than the $7.5\times10^{-4}$ default so the
+$-1$ germ would carry far enough to bring cell $392$'s endpoint
+($8.59\times10^{-3}$ from the organizer) inside the radius.  It did not also
+sweep up the blocked endpoint --- \texttt{minus\_one\_s\_to\_u\_0}'s start is
+$2.81\times10^{-2}$ from the organizer, past even the composed $0.016$ reach ---
+which is what keeps that disclosure honest rather than convenient.
 
 \section{What remains, and why the status is OPEN}
 
 \begin{enumerate}
-\item Classify the four unclassified edge ends so the graph's edge incidence is
-one connected object rather than two components plus five unattached nodes.
+\item Classify the two unclassified edge ends so the graph's edge incidence is
+one connected object rather than three components plus four unattached nodes.
 \item Classify the secondary-left $G_-$ birth (fold candidate near
 $(0.9957,0.9743)$) and the secondary-right death between $m_1=1.042$ and
 $1.043$.

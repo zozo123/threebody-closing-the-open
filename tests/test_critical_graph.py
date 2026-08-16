@@ -1334,19 +1334,35 @@ def test_m1_slice_gap_is_currently_redundant() -> None:
     assert len(module.polyline_edges(roots, jump=0.11, slice_gap=0.07)) == 5
 
 
-def test_germ_attach_distance_window_is_pinned(tmp_path) -> None:
-    """The admissible window for GERM_ATTACH_DISTANCE is only 1.56x wide.
+def test_germ_attach_distance_window_is_pinned() -> None:
+    """The admissible window for GERM_ATTACH_DISTANCE is only 1.379x wide.
 
-    Largest ACCEPTED attachment 0.006351 (minus_one_u_to_s_1 end ->
-    mixed_secondary_left).  Nearest REJECTED candidate 0.009933
-    (minus_one_s_to_u_0 start <-> mixed_secondary_left) -- and that endpoint is
-    the secondary_left_birth blocker.  Widening the constant past 0.009933
-    silently resolves a blocked endpoint by gluing it to an organizer.
+    Measured on the COMMITTED graph, i.e. the release configuration in
+    scripts/assemble_v1_critical_graph.sh -- not on the synthetic germ fixtures
+    this file uses elsewhere.  That distinction is the point: the numbers this
+    test used to pin (0.006351 accepted, 0.009933 rejected, 1.56x) came from
+    _numeric_germ_fixture, so the published caveat quoted a fixture rather than
+    the release.
+
+    Largest ACCEPTED attachment 0.006837449100337747 (minus_one_u_to_s_1 end ->
+    mixed_secondary_left, minus_one/-).  Nearest REJECTED mode-matching
+    candidate 0.00943057726978081 (plus_one_u_to_s_1 end <->
+    secondary_right_death, plus_one/-).  The window is HALF-OPEN: a threshold
+    equal to the rejected distance would admit it.
+
+    The rejected candidate is not the secondary_left_birth blocker.  That
+    blocker, minus_one_s_to_u_0's start, sits 2.6379e-2 from its nearest
+    mode-matching germ -- past even the composed 2 x 0.008 = 0.016 reach that
+    this constant's double duty creates -- so what keeps it unresolved is the
+    missing classification artifact, not this threshold.
     """
     module = _assembler()
     assert module.GERM_ATTACH_DISTANCE == 0.008
+    # Double duty: germ-to-organizer cap AND endpoint-to-germ cap, composed.
+    effective_reach = 2 * module.GERM_ATTACH_DISTANCE
+    assert effective_reach == 0.016
 
-    graph = _release_graph(tmp_path)
+    graph = json.loads((ROOT / "research/evidence/V1_CRITICAL_GRAPH.json").read_text())
     germs = [row for row in graph["mixed_germs"] if row["valid"]]
     assert len(germs) == 16
 
@@ -1371,20 +1387,30 @@ def test_germ_attach_distance_window_is_pinned(tmp_path) -> None:
 
     largest_accepted = accepted[-1]
     nearest_rejected = rejected[0]
-    assert round(largest_accepted[0], 6) == 0.006351
+    assert round(largest_accepted[0], 6) == 0.006837
     # minus_one_u_to_s_1 carries a single cell, so both of its termini sit at
     # this same distance from the mixed_secondary_left germ.
     assert largest_accepted[1] == "minus_one_u_to_s_1"
     assert largest_accepted[3] == "mixed_secondary_left"
-    assert {row[1:] for row in accepted if round(row[0], 6) == 0.006351} == {
+    assert {row[1:] for row in accepted if round(row[0], 6) == 0.006837} == {
         ("minus_one_u_to_s_1", "start", "mixed_secondary_left"),
         ("minus_one_u_to_s_1", "end", "mixed_secondary_left"),
     }
-    assert round(nearest_rejected[0], 6) == 0.009933
-    assert nearest_rejected[1:] == ("minus_one_s_to_u_0", "start", "mixed_secondary_left")
+    assert round(nearest_rejected[0], 6) == 0.009431
+    assert nearest_rejected[1:] == ("plus_one_u_to_s_1", "end", "secondary_right_death")
 
     assert largest_accepted[0] < module.GERM_ATTACH_DISTANCE < nearest_rejected[0]
-    assert round(nearest_rejected[0] / largest_accepted[0], 2) == 1.56
+    assert round(nearest_rejected[0] / largest_accepted[0], 3) == 1.379
+
+    # The secondary_left_birth blocker is far outside even the composed reach,
+    # so this constant is not what leaves it unresolved.
+    blocker = min(
+        row[0]
+        for row in pairs
+        if row[1] == "minus_one_s_to_u_0" and row[2] == "start"
+    )
+    assert round(blocker, 6) == 0.026379
+    assert blocker > effective_reach
 
 
 def test_widening_germ_attach_distance_would_resolve_a_blocked_endpoint(tmp_path) -> None:
@@ -1394,6 +1420,15 @@ def test_widening_germ_attach_distance_would_resolve_a_blocked_endpoint(tmp_path
     minus_one_s_to_u_0's start endpoint must stay unclassified.  At a germ
     attach distance of 0.0105 it is instead glued to mixed_secondary_left,
     which would make the blocker disappear without any new evidence.
+
+    SCOPE: this runs on the SYNTHETIC germ fixtures, whose masses sit closer to
+    that endpoint than the released germs do.  On the committed release germs
+    the same endpoint is 2.6379e-2 from its nearest mode-matching germ, so 0.0105
+    would not bind it there -- see
+    test_germ_attach_distance_window_is_pinned.  What this test shows is that
+    the assembler WILL glue a blocked endpoint once a germ comes into range,
+    which is why the constant may not be widened casually; it is not evidence
+    about how much slack the release configuration currently has.
     """
     module = _assembler()
     germs = module.collect_germs(
@@ -1631,23 +1666,34 @@ def test_published_caveats_match_the_committed_evidence() -> None:
             parent[find(start)] = find(end)
     components = {find(name) for name in incident}
     isolated = [n["id"] for n in graph["nodes"] if n["id"] not in incident]
-    # These two assertions are tripwires, not permanent truths. When the four
+    # These assertions are tripwires, not permanent truths. When the two
     # unclassified edge ends are genuinely closed the graph becomes connected
     # and this test SHOULD fail -- the correct response is to update the
     # known_limitations prose to match the new graph, never to relax the test.
-    assert len(components) > 1, (
-        "the committed graph's edge incidence is now connected; "
+    assert len(components) == 3, (
+        f"the committed graph's edge incidence now has {len(components)} components, not 3; "
         "update the 'assembled graph is not yet one connected object' limitation"
     )
-    assert len(isolated) == 5, (
-        f"{len(isolated)} nodes now carry no edge incidence, not 5; "
+    assert len(isolated) == 4, (
+        f"{len(isolated)} nodes now carry no edge incidence, not 4; "
         "update the known_limitations wording to match"
     )
-    assert "five further declared nodes" in known
+    assert "three components" in known
+    assert "four further declared nodes" in known
+    assert len(graph["root_coverage"]["unclassified_edge_endpoints"]) == 2
+    assert "two edge ends" in known
+    assert graph["unexplained_nodes"] == ["secondary_left_birth"]
 
 
 def test_germ_attach_distance_window_matches_the_published_number() -> None:
-    """0.008 is a modelling choice; the release notes must quote its real slack."""
+    """0.008 is a modelling choice; the release notes must quote its real slack.
+
+    The audit runs the RELEASE configuration (scripts/assemble_v1_critical_graph.sh),
+    and the window it reports is half-open: a threshold equal to the nearest
+    rejected distance would admit that candidate.  The prose must say so, and
+    must also disclose the constant's double duty, which composes into a
+    2 x 0.008 = 0.016 organizer-to-endpoint reach.
+    """
     import runpy
 
     namespace = runpy.run_path(str(ROOT / "scripts/audit_germ_attachment_window.py"))
@@ -1655,11 +1701,16 @@ def test_germ_attach_distance_window_matches_the_published_number() -> None:
     low, high = record["admissible_window"]
     assert record["default_germ_attach_distance"] == 0.008
     assert record["default_inside_window"] is True
+    assert record["effective_organizer_reach"] == 0.016
+    # The audit must be reading the release germs, not the superseded file.
+    assert "research/evidence/V1_MIXED_GERMS_2026-08-15.json" not in record["inputs"]
+    assert record["attachments_at_default"] == 6
     manifest = json.loads((ROOT / "research/DISCOVERY_RELEASE.json").read_text())
     prose = " ".join(manifest["known_limitations"]) + " ".join(
         limitation
         for claim in manifest["claims"]
         for limitation in claim.get("limitations", [])
     )
-    assert f"[{low:.6f}, {high:.6f}]" in prose
-    assert f"{record['window_ratio']:.2f}x" in prose
+    assert f"[{low:.6f}, {high:.6f})" in prose
+    assert f"{record['window_ratio']:.3f}x" in prose
+    assert f"{record['effective_organizer_reach']}" in prose
