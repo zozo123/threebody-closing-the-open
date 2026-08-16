@@ -1,0 +1,172 @@
+{
+  "schema": "atlas.v1.mixed-germs/1",
+  "claim_status": "four canonical-centered float64 pseudo-arclength germs; organizer truth is supplied by the independently reproduced canonical artifact",
+  "passed": true,
+  "mixed_node": "secondary_right_death",
+  "canonical_masses": [
+    1.0426234457894452,
+    1.0460039217640023,
+    1.0
+  ],
+  "float64_center_masses": [
+    1.0426234456824515,
+    1.0460039216728148,
+    1.0
+  ],
+  "center_shift_from_canonical": 1.4058030608434823e-10,
+  "frozen_gates": {
+    "event": 2e-08,
+    "closure": 1e-07
+  },
+  "source_roots_sha256": "7af919e07761307cf58d812700beddcb1bbed1bda60743261e63021ce234fbf9",
+  "screen_sha256": "bfd3ea30397d05d3f39b56f2c72d256d360eb4f0bbc3583b55a3f8df0c265802",
+  "canonical_sha256": "3f5a0ffe7b83f547fbbe4a1a1c08b73e791b1b8d12e2e2c7332108ecdc845f42",
+  "directional_audit": {
+    "plus_one": {
+      "mass_displacement_dot_product": -3.748827684633624e-07,
+      "canonical_distances": [
+        0.0006137445655583631,
+        0.0006108130036968736
+      ],
+      "opposite_mass_directions": true
+    },
+    "minus_one": {
+      "mass_displacement_dot_product": -4.023044305690939e-08,
+      "canonical_distances": [
+        0.00020055695744792632,
+        0.00020059361758757236
+      ],
+      "opposite_mass_directions": true
+    }
+  },
+  "germs": [
+    {
+      "mixed_node": "secondary_right_death",
+      "event_mode": "plus_one",
+      "direction": "+",
+      "status": "traced",
+      "ends_on": "secondary_right_death",
+      "masses": [
+        1.042651372434157,
+        1.046617030544298,
+        1.0
+      ],
+      "x1": -0.4375127563046306,
+      "v1": 1.0695037878622577,
+      "v2": 0.4668611342609574,
+      "period": 8.050212364373781,
+      "closure": 3.818178353343132e-12,
+      "event": -1.3566392453867593e-09,
+      "arclength_residual": -4.878420153080366e-09,
+      "scaled_tangent": [
+        -0.39472623835801685,
+        -0.20724518819435084,
+        -0.4854875386760181,
+        0.07979442367103225,
+        0.04657816744264181,
+        0.7463282138449631
+      ],
+      "signed_arclength_step": 0.00075,
+      "source_cell_id": 576,
+      "canonical_bound": true,
+      "canonical_distance": 0.0006137444695968634,
+      "canonical_bracketed": true
+    },
+    {
+      "mixed_node": "secondary_right_death",
+      "event_mode": "plus_one",
+      "direction": "-",
+      "status": "traced",
+      "ends_on": "secondary_right_death",
+      "masses": [
+        1.0425947686784605,
+        1.0453937822175037,
+        1.0
+      ],
+      "x1": -0.4373032882928869,
+      "v1": 1.0697295887850908,
+      "v2": 0.4672332872183484,
+      "period": 8.049703110202039,
+      "closure": 4.063789303578445e-12,
+      "event": 5.1113104859723535e-09,
+      "arclength_residual": 1.4775853064475114e-09,
+      "scaled_tangent": [
+        -0.39472623835801685,
+        -0.20724518819435084,
+        -0.4854875386760181,
+        0.07979442367103225,
+        0.04657816744264181,
+        0.7463282138449631
+      ],
+      "signed_arclength_step": -0.00075,
+      "source_cell_id": 576,
+      "canonical_bound": true,
+      "canonical_distance": 0.0006108130998070707,
+      "canonical_bracketed": true
+    },
+    {
+      "mixed_node": "secondary_right_death",
+      "event_mode": "minus_one",
+      "direction": "+",
+      "status": "traced",
+      "ends_on": "secondary_right_death",
+      "masses": [
+        1.0427724789708586,
+        1.0461381311066387,
+        1.0
+      ],
+      "x1": -0.43763948815378245,
+      "v1": 1.0691514494077596,
+      "v2": 0.4670992839700187,
+      "period": 8.051771861456666,
+      "closure": 3.894782225757369e-12,
+      "event": 2.9683455693430005e-10,
+      "arclength_residual": -1.5328786338322053e-12,
+      "scaled_tangent": [
+        -0.7007738942068341,
+        -0.5770604773717483,
+        0.14618735498083257,
+        0.2981511572533998,
+        0.19051846706235875,
+        0.17133304711600283
+      ],
+      "signed_arclength_step": 0.00075,
+      "source_cell_id": 577,
+      "canonical_bound": true,
+      "canonical_distance": 0.00020055681692000173,
+      "canonical_bracketed": true
+    },
+    {
+      "mixed_node": "secondary_right_death",
+      "event_mode": "minus_one",
+      "direction": "-",
+      "status": "traced",
+      "ends_on": "secondary_right_death",
+      "masses": [
+        1.0424744331415392,
+        1.045869634435641,
+        1.0
+      ],
+      "x1": -0.437179395721,
+      "v1": 1.070076309278202,
+      "v2": 0.4669968643115366,
+      "period": 8.048169524648893,
+      "closure": 1.6624782970405055e-12,
+      "event": 2.822897471332908e-11,
+      "arclength_residual": 7.355721809849597e-14,
+      "scaled_tangent": [
+        -0.7007738942068341,
+        -0.5770604773717483,
+        0.14618735498083257,
+        0.2981511572533998,
+        0.19051846706235875,
+        0.17133304711600283
+      ],
+      "signed_arclength_step": -0.00075,
+      "source_cell_id": 577,
+      "canonical_bound": true,
+      "canonical_distance": 0.00020059375811411646,
+      "canonical_bracketed": true
+    }
+  ]
+}

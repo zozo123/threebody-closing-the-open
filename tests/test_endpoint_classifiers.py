@@ -5,6 +5,9 @@ import runpy
 import sys
 from pathlib import Path
 
+import numpy as np
+import pytest
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -99,9 +102,36 @@ def test_left_birth_requires_geometry_and_bigfloat_for_pass(tmp_path) -> None:
                 "masses": ["0.9957", "0.9742", "1.0"],
                 "closure_norm": "1e-18",
                 "minus_one_event": "1e-12",
-                "stencil_audit": [
+                "stationarity_stencil_audit": [
                     {"dGdm2": "1e-8", "dGdm1": "2", "d2Gdm22": "20"}
                 ],
+                "branch_curvature_audit": {
+                    "relative_curvature_disagreement": "0.04",
+                    "branches": [
+                        {
+                            "cell_id": 392,
+                            "orientation": "U->S",
+                            "source_m2_bracket": ["0.964", "0.965"],
+                            "masses": ["0.996", "0.9645", "1.0"],
+                            "closure_norm": "1e-18",
+                            "minus_one_event": "1e-12",
+                            "dm1_from_fold": "0.0003",
+                            "dm2_from_fold": "-0.0097",
+                            "secant_m1_curvature": "6.3",
+                        },
+                        {
+                            "cell_id": 393,
+                            "orientation": "S->U",
+                            "source_m2_bracket": ["0.984", "0.985"],
+                            "masses": ["0.996", "0.9841", "1.0"],
+                            "closure_norm": "1e-18",
+                            "minus_one_event": "1e-12",
+                            "dm1_from_fold": "0.0003",
+                            "dm2_from_fold": "0.0098",
+                            "secant_m1_curvature": "6.1",
+                        },
+                    ],
+                },
             }
         )
     )
@@ -280,6 +310,78 @@ def test_germ_builder_maps_frozen_principal_left_junction(tmp_path) -> None:
     keys = {(g["mixed_node"], g["event_mode"], g["direction"]) for g in payload["germs"]}
     assert ("mixed_principal_left", "plus_one", "+") in keys
     assert ("mixed_principal_left", "minus_one", "-") in keys
+
+
+def test_germ_builder_binds_new_mixed_endpoint_on_both_sides(tmp_path) -> None:
+    junction = tmp_path / "junction-secondary-right.json"
+    junction.write_text(
+        json.dumps(
+            {
+                "mixed_node": "secondary_right_death",
+                "traces": [
+                    {
+                        "event_mode": mode,
+                        "localized_seeds": [
+                            {"masses": [1.041, 1.044, 1.0]},
+                            {"masses": [1.042, 1.045, 1.0]},
+                        ],
+                        "points": [
+                            {"masses": [1.0426, 1.0460, 1.0]},
+                            {"masses": [1.043, 1.047, 1.0]},
+                        ],
+                    }
+                    for mode in ("plus_one", "minus_one")
+                ],
+            }
+        )
+    )
+    canonical = tmp_path / "canonical.json"
+    canonical.write_text(
+        json.dumps({"passed": True, "masses": [1.0426, 1.0460, 1.0]})
+    )
+    out = tmp_path / "germs.json"
+    assert _run(
+        "build_mixed_germs_from_junction.py",
+        [
+            str(out),
+            "--junction",
+            str(junction),
+            "--canonical",
+            str(canonical),
+            "--mixed-node",
+            "secondary_right_death",
+        ],
+    ) == 0
+    germs = json.loads(out.read_text())["germs"]
+    keys = {(row["mixed_node"], row["event_mode"], row["direction"]) for row in germs}
+    assert keys == {
+        ("secondary_right_death", mode, direction)
+        for mode in ("plus_one", "minus_one")
+        for direction in ("+", "-")
+    }
+    assert all(row["canonical_bound"] is True for row in germs)
+
+
+def test_canonical_germ_direction_audit_requires_opposite_mass_directions() -> None:
+    namespace = runpy.run_path(
+        str(ROOT / "scripts/trace_canonical_mixed_germs.py")
+    )
+    audit = namespace["directional_audit"]
+    center = np.asarray([1.0, 1.0])
+    germs = [
+        {
+            "event_mode": mode,
+            "direction": direction,
+            "masses": [1.0 + sign * 1e-4, 1.0 + sign * 2e-4, 1.0],
+        }
+        for mode in ("plus_one", "minus_one")
+        for direction, sign in (("+", 1.0), ("-", -1.0))
+    ]
+    result = audit(germs, center)
+    assert result["plus_one"]["opposite_mass_directions"] is True
+    germs[-1]["masses"] = [1.0001, 1.0002, 1.0]
+    with pytest.raises(SystemExit, match="opposite mass directions"):
+        audit(germs, center)
 
 
 def test_completeness_passes_with_neck_and_clean_al(tmp_path) -> None:

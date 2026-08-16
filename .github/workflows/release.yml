@@ -50,6 +50,7 @@ jobs:
           args=(
             --validate-only
             --emit-paper-status paper/generated/discovery-release.tex
+            --emit-paper-claims paper/generated/discoveries.tex
           )
           if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
             args+=(--require-solved)

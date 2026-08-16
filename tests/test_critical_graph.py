@@ -535,6 +535,8 @@ def test_assembler_is_the_only_path_to_a_fully_ready_graph(tmp_path) -> None:
     certificate["sha256_content"] = hashlib.sha256(canonical.encode()).hexdigest()
     completeness.write_text(json.dumps(certificate))
 
+    # A newly retained mixed endpoint needs its own four continuation germs;
+    # the twelve headline germs cannot silently satisfy that contract.
     graph = _run_assembler(
         tmp_path,
         [
@@ -545,12 +547,62 @@ def test_assembler_is_the_only_path_to_a_fully_ready_graph(tmp_path) -> None:
             "--germs", str(germs),
             "--completeness", str(completeness),
         ],
+    )
+    assert graph["release_ready"] is False
+    assert graph["root_coverage"]["missing_mixed_germs"] == [
+        "secondary_right_death:plus_one:+",
+        "secondary_right_death:plus_one:-",
+        "secondary_right_death:minus_one:+",
+        "secondary_right_death:minus_one:-",
+    ]
+
+    right_germs = tmp_path / "right-germs.json"
+    right_germs.write_text(
+        json.dumps(
+            {
+                "schema": "atlas.v1.mixed-germs/1",
+                "germs": [
+                    {
+                        "mixed_node": "secondary_right_death",
+                        "event_mode": mode,
+                        "direction": direction,
+                        "status": "traced",
+                        "masses": [1.0426, 1.0460, 1.0],
+                        "canonical_bound": True,
+                        "canonical_bracketed": True,
+                        "canonical_distance": 0.0,
+                        "closure": 1e-10,
+                        "event": 1e-10,
+                    }
+                    for mode in ("plus_one", "minus_one")
+                    for direction in ("+", "-")
+                ],
+            }
+        )
+    )
+
+    graph = _run_assembler(
+        tmp_path,
+        [
+            "--roots", str(roots),
+            "--left-birth", str(left),
+            "--right-death", str(right),
+            "--daughter", str(daughter),
+            "--germs", str(germs),
+            "--germs", str(right_germs),
+            "--completeness", str(completeness),
+        ],
         expected_ready=True,
     )
     assert graph["release_ready"] is True
     assert graph["root_coverage"]["cells_on_edges"] == 620
     assert graph["root_coverage"]["unclassified_edge_endpoints"] == []
     assert len(graph["edges"]) == 7
+    assert graph["topology"]["free_group_word"] == "bABabaBAba"
+    assert graph["frozen_numerical_gates"] == {
+        "maximum_absolute_event": 2e-8,
+        "maximum_periodic_closure": 1e-7,
+    }
 
     certificate["sources"][0]["sha256"] = "b" * 64
     completeness.write_text(json.dumps(certificate))
@@ -562,6 +614,7 @@ def test_assembler_is_the_only_path_to_a_fully_ready_graph(tmp_path) -> None:
             "--right-death", str(right),
             "--daughter", str(daughter),
             "--germs", str(germs),
+            "--germs", str(right_germs),
             "--completeness", str(completeness),
         ],
     )

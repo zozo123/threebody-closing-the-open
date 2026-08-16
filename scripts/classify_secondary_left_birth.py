@@ -30,7 +30,9 @@ def classify(
             )
         closure = abs(float(bigfloat.get("closure_norm", "inf")))
         event = abs(float(bigfloat.get("minus_one_event", "inf")))
-        audit = bigfloat.get("stencil_audit") or []
+        audit = bigfloat.get("stationarity_stencil_audit") or []
+        branch_audit = bigfloat.get("branch_curvature_audit") or {}
+        branches = branch_audit.get("branches") or []
         if closure > 1e-7 or event > 2e-8 or not audit:
             raise SystemExit(
                 f"independent fold fails frozen gates: closure={closure:.3e} event={event:.3e}"
@@ -38,11 +40,49 @@ def classify(
         finest = audit[-1]
         stationarity = abs(float(finest.get("dGdm2", "inf")))
         transverse = abs(float(finest.get("dGdm1", 0.0)))
-        quadratic = abs(float(finest.get("d2Gdm22", 0.0)))
-        if stationarity > 1e-6 or transverse < 1.0 or quadratic < 10.0:
+        if stationarity > 1e-6 or transverse < 1.0:
             raise SystemExit(
                 "independent fold nondegeneracy gates failed: "
-                f"dGdm2={stationarity:.3e} dGdm1={transverse:.3e} d2Gdm22={quadratic:.3e}"
+                f"dGdm2={stationarity:.3e} dGdm1={transverse:.3e}"
+            )
+        if len(branches) != 2:
+            raise SystemExit("independent fold needs exactly two corrected branch roots")
+        if {int(row.get("cell_id", -1)) for row in branches} != {392, 393}:
+            raise SystemExit("fold branches are not bound to source cells 392 and 393")
+        if {str(row.get("orientation")) for row in branches} != {"U->S", "S->U"}:
+            raise SystemExit("fold branches do not retain the two source orientations")
+        dm2_signs: set[int] = set()
+        for branch in branches:
+            branch_closure = abs(float(branch.get("closure_norm", "inf")))
+            branch_event = abs(float(branch.get("minus_one_event", "inf")))
+            bracket = branch.get("source_m2_bracket") or []
+            masses = branch.get("masses") or []
+            if branch_closure > 1e-7 or branch_event > 2e-8:
+                raise SystemExit(
+                    "independent branch misses frozen gates: "
+                    f"closure={branch_closure:.3e} event={branch_event:.3e}"
+                )
+            if len(bracket) != 2 or len(masses) < 2:
+                raise SystemExit("independent branch lacks its source bracket or masses")
+            m2 = float(masses[1])
+            lo, hi = (float(value) for value in bracket)
+            if not lo - 2e-9 <= m2 <= hi + 2e-9:
+                raise SystemExit("independent branch root left its published source bracket")
+            dm1 = float(branch.get("dm1_from_fold", "-inf"))
+            dm2 = float(branch.get("dm2_from_fold", 0.0))
+            curvature = float(branch.get("secant_m1_curvature", 0.0))
+            if dm1 <= 0.0 or curvature < 0.1 or dm2 == 0.0:
+                raise SystemExit(
+                    "independent branch does not certify a newborn quadratic fold arc"
+                )
+            dm2_signs.add(1 if dm2 > 0.0 else -1)
+        disagreement = float(
+            branch_audit.get("relative_curvature_disagreement", "inf")
+        )
+        if dm2_signs != {-1, 1} or disagreement > 0.15:
+            raise SystemExit(
+                "two independent branches do not straddle one consistent fold: "
+                f"signs={sorted(dm2_signs)} relative_disagreement={disagreement:.3e}"
             )
         return {
             "id": "secondary_left_birth",
@@ -53,11 +93,15 @@ def classify(
             "estimator": bigfloat.get("implementation"),
             "evidence_level": "independently_reproduced",
             "requires_independent_verification": False,
-            "note": "The adjacent secondary G- walls reconnect through a nondegenerate m1-projection fold.",
+            "note": (
+                "The adjacent secondary G- walls reconnect through a nondegenerate "
+                "m1-projection fold, independently anchored to source cells 392/393."
+            ),
             "masses": bigfloat.get("masses"),
             "closure_norm": bigfloat.get("closure_norm"),
             "minus_one_event": bigfloat.get("minus_one_event"),
-            "stencil_audit": audit,
+            "stationarity_stencil_audit": audit,
+            "branch_curvature_audit": branch_audit,
             "edge_endpoint_bindings": payload.get("edge_endpoint_bindings") or [],
         }
 

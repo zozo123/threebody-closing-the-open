@@ -1,0 +1,114 @@
+{
+  "claim_status": "float64 direct mixed candidate only; independent Julia BigFloat/canonical verification required",
+  "coarse_gap_hypothesis": "secondary +1 and -1 walls both disappear between m1=1.042 and 1.043",
+  "closest_approach_mass_gap": 0.009459460726403579,
+  "continuation_error": null,
+  "approach": [
+    {
+      "step": 0,
+      "plus": {
+        "masses": [
+          1.042,
+          1.0359819791033056,
+          1.0
+        ],
+        "x1": -0.4351928794204227,
+        "v1": 1.072459533847581,
+        "v2": 0.4699589811289561,
+        "period": 8.041724201119413,
+        "closure": 1.2471156117787616e-10,
+        "event_mode": "plus_one",
+        "event": -4.034461653645849e-11,
+        "alpha": 4.140758092169272,
+        "beta": 4.844548552975292,
+        "discriminant": 14.89374810331832,
+        "trace_roots": [
+          [
+            2.000000000010453,
+            0.0
+          ],
+          [
+            -1.859241907841181,
+            0.0
+          ]
+        ]
+      },
+      "minus": {
+        "masses": [
+          1.042,
+          1.0454414398297092,
+          1.0
+        ],
+        "x1": -0.4364473501091613,
+        "v1": 1.071550996647012,
+        "v2": 0.46683378185140323,
+        "period": 8.042437487642996,
+        "closure": 1.2693438977064004e-10,
+        "event_mode": "minus_one",
+        "event": -3.2034295216476494e-09,
+        "alpha": 3.980728508049309,
+        "beta": 3.9614570128951883,
+        "discriminant": 15.846199467610194,
+        "trace_roots": [
+          [
+            -2.0000000008047345,
+            0.0
+          ],
+          [
+            1.9807285088540434,
+            0.0
+          ]
+        ]
+      },
+      "mass_gap": 0.009459460726403579
+    }
+  ],
+  "direct_candidate": {
+    "success": true,
+    "masses": [
+      1.0426234129156975,
+      1.046003893297757,
+      1.0
+    ],
+    "x1": -0.43740935512422935,
+    "v1": 1.069613862897391,
+    "v2": 0.4670480619792536,
+    "period": 8.049970037090128,
+    "closure": 2.1864082760712955e-10,
+    "alpha": 3.999999999210332,
+    "beta": 3.999999998341483,
+    "event_values": [
+      3.0794886640705954e-09,
+      -7.918110611626616e-11
+    ],
+    "invariant_error": 1.8369141543358375e-09,
+    "nfev": 125,
+    "optimizer_success": true,
+    "optimizer_message": "`xtol` termination condition is satisfied."
+  },
+  "direct_error": null,
+  "direct_attempt_errors": [],
+  "initial_mixed_seed": [
+    -0.435820114764792,
+    1.0720052652472964,
+    0.4683963814901797,
+    8.042080844381204,
+    1.04306,
+    1.0464
+  ],
+  "completed_wall_continuation": true,
+  "edge_endpoint_bindings": [
+    {
+      "cell_id": 576,
+      "side": "end",
+      "mechanism": "plus_one",
+      "orientation": "U->S"
+    },
+    {
+      "cell_id": 577,
+      "side": "end",
+      "mechanism": "minus_one",
+      "orientation": "S->U"
+    }
+  ]
+}

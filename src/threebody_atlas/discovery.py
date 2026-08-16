@@ -283,17 +283,45 @@ def render_summary(manifest: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
-def render_latex_status(manifest: dict[str, Any]) -> str:
-    def esc(text: str) -> str:
-        return (
-            text.replace("\\", r"\textbackslash{}")
-            .replace("_", r"\_")
-            .replace("&", r"\&")
-            .replace("%", r"\%")
-            .replace("#", r"\#")
-            .replace("^", r"\^{}")
-            .replace("~", r"\textasciitilde{}")
+def _latex_escape(text: str) -> str:
+    return (
+        text.replace("\\", r"\textbackslash{}")
+        .replace("_", r"\_")
+        .replace("&", r"\&")
+        .replace("%", r"\%")
+        .replace("#", r"\#")
+        .replace("^", r"\^{}")
+        .replace("~", r"\textasciitilde{}")
+    )
+
+
+def render_latex_claims(manifest: dict[str, Any]) -> str:
+    """Render only release-authorized claims for direct manuscript inclusion."""
+    claims = [claim for claim in manifest.get("claims", []) if claim.get("status") == "release_claim"]
+    lines = ["% Generated from release_claim records in research/DISCOVERY_RELEASE.json.", r"\sloppy"]
+    if not claims:
+        lines.append(r"No scientific release claim is authorized.")
+    for claim in claims:
+        limitations = " ".join(str(item) for item in claim.get("limitations", []))
+        lines.extend(
+            [
+                rf"\paragraph{{{_latex_escape(str(claim['id']).replace('-', ' ').title())}.}}",
+                _latex_escape(str(claim["statement"])),
+                "",
+                rf"\emph{{Method.}} {_latex_escape(str(claim['method']))}",
+                "",
+                *(
+                    [rf"\emph{{Limitations.}} {_latex_escape(limitations)}", ""]
+                    if limitations
+                    else []
+                ),
+            ]
         )
+    return "\n".join(lines) + "\n"
+
+
+def render_latex_status(manifest: dict[str, Any]) -> str:
+    esc = _latex_escape
 
     status = esc(manifest["status"].upper())
     summary = esc(manifest["decision"]["summary"])

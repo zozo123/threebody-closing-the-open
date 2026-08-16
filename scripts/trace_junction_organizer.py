@@ -157,14 +157,27 @@ def fold_screens(points: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return screens
 
 
-def nearest_cross_mode_edge(records: list[dict[str, Any]], center: np.ndarray, link_threshold: float):
+def nearest_cross_mode_edge(
+    records: list[dict[str, Any]],
+    center: np.ndarray,
+    link_threshold: float,
+    *,
+    allow_opposite_orientations: bool = False,
+):
     candidates = []
     for i, a in enumerate(records):
         if a["mode"] is None:
             continue
         for j in range(i + 1, len(records)):
             b = records[j]
-            if b["mode"] is None or a["orientation"] != b["orientation"] or a["mode"] == b["mode"]:
+            if (
+                b["mode"] is None
+                or (
+                    not allow_opposite_orientations
+                    and a["orientation"] != b["orientation"]
+                )
+                or a["mode"] == b["mode"]
+            ):
                 continue
             if abs(a["m1"] - b["m1"]) > 0.0015:
                 continue
@@ -223,12 +236,26 @@ def closest_mass_gap(a: list[dict[str, Any]], b: list[dict[str, Any]]) -> dict[s
     }
 
 
+def write_json_atomic(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    temporary.replace(path)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("brackets_tsv")
     parser.add_argument("output")
-    parser.add_argument("--center-m1", type=float, required=True)
-    parser.add_argument("--center-m2", type=float, required=True)
+    parser.add_argument("--center-m1", type=float)
+    parser.add_argument("--center-m2", type=float)
+    parser.add_argument(
+        "--center-json",
+        help="passed organizer classification whose masses define the trace center",
+    )
+    parser.add_argument("--mixed-node")
+    parser.add_argument("--allow-opposite-orientations", action="store_true")
+    parser.add_argument("--skip-direct", action="store_true")
     parser.add_argument("--radius-m1", type=float, default=0.006)
     parser.add_argument("--radius-m2", type=float, default=0.035)
     parser.add_argument("--link-threshold", type=float, default=0.02)
@@ -237,14 +264,24 @@ def main() -> None:
     parser.add_argument("--direct-mass-padding", type=float, default=0.012)
     args = parser.parse_args()
 
-    center = np.asarray([args.center_m1, args.center_m2], dtype=float)
+    if args.center_json:
+        center_record = json.loads(Path(args.center_json).read_text(encoding="utf-8"))
+        center_masses = center_record.get("masses") or []
+        if center_record.get("passed") is not True or len(center_masses) < 2:
+            raise SystemExit("--center-json must be a passed organizer record with masses")
+        center_m1, center_m2 = float(center_masses[0]), float(center_masses[1])
+    elif args.center_m1 is not None and args.center_m2 is not None:
+        center_m1, center_m2 = float(args.center_m1), float(args.center_m2)
+    else:
+        raise SystemExit("provide --center-json or both --center-m1 and --center-m2")
+    center = np.asarray([center_m1, center_m2], dtype=float)
     with Path(args.brackets_tsv).open(encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle, delimiter="\t"))
     window_rows = [
         row
         for row in rows
-        if abs(float(row["m1"]) - args.center_m1) <= args.radius_m1
-        and abs(midpoint_m2(row) - args.center_m2) <= args.radius_m2
+        if abs(float(row["m1"]) - center_m1) <= args.radius_m1
+        and abs(midpoint_m2(row) - center_m2) <= args.radius_m2
     ]
     if len(window_rows) < 4:
         raise RuntimeError(f"junction window contains too few transition brackets: {len(window_rows)}")
@@ -265,7 +302,12 @@ def main() -> None:
         )
     records.sort(key=lambda r: (r["m1"], r["m2"]))
 
-    left_index, right_index = nearest_cross_mode_edge(records, center, args.link_threshold)
+    left_index, right_index = nearest_cross_mode_edge(
+        records,
+        center,
+        args.link_threshold,
+        allow_opposite_orientations=args.allow_opposite_orientations,
+    )
     edge_records = [records[left_index], records[right_index]]
     traces = []
     for near_index, other_index in ((left_index, right_index), (right_index, left_index)):
@@ -299,6 +341,16 @@ def main() -> None:
                 "fold_screens": fold_screens(trace_points),
             }
         )
+        write_json_atomic(
+            Path(args.output),
+            {
+                "claim_status": "partial event-specific continuation checkpoint; classification forbidden",
+                "requested_center": [center_m1, center_m2],
+                "mixed_node": args.mixed_node,
+                "traces": traces,
+                "completed": False,
+            },
+        )
 
     combined = []
     for trace in traces:
@@ -308,7 +360,7 @@ def main() -> None:
     mixed_seed_distance = distance_to_mixed(closest_mixed)
     direct_result: dict[str, Any]
     edge_modes = {trace["event_mode"] for trace in traces}
-    if edge_modes == {"plus_one", "minus_one"}:
+    if edge_modes == {"plus_one", "minus_one"} and not args.skip_direct:
         seed = np.asarray(
             [
                 closest_mixed["x1"],
@@ -326,8 +378,8 @@ def main() -> None:
                 "mixed_plus_minus_one",
                 m3=float(closest_mixed["masses"][2]),
                 mass_bounds=(
-                    (args.center_m1 - args.direct_mass_padding, args.center_m1 + args.direct_mass_padding),
-                    (args.center_m2 - args.direct_mass_padding, args.center_m2 + args.direct_mass_padding),
+                    (center_m1 - args.direct_mass_padding, center_m1 + args.direct_mass_padding),
+                    (center_m2 - args.direct_mass_padding, center_m2 + args.direct_mass_padding),
                 ),
                 max_nfev=60,
             )
@@ -347,6 +399,11 @@ def main() -> None:
             }
         except Exception as exc:
             direct_result = {"status": "not_accepted", "error": f"{type(exc).__name__}: {exc}"}
+    elif args.skip_direct:
+        direct_result = {
+            "status": "skipped_by_request",
+            "reason": "canonical organizer was supplied separately; this run certifies local continuation germs",
+        }
     else:
         direct_result = {"status": "not_applicable", "edge_modes": sorted(edge_modes)}
 
@@ -368,7 +425,8 @@ def main() -> None:
 
     payload = {
         "claim_status": "event-specific float64 organizer screen; independent BigFloat/canonical reproduction required",
-        "requested_center": [args.center_m1, args.center_m2],
+        "requested_center": [center_m1, center_m2],
+        "mixed_node": args.mixed_node,
         "window": [args.radius_m1, args.radius_m2],
         "window_transition_count": len(records),
         "coarse_cross_mode_edge": [
@@ -385,9 +443,9 @@ def main() -> None:
             "independent reproduction; a fold screen requires event-curve curvature verification; "
             "an unresolved result must not be converted into an endpoint or nonexistence claim."
         ),
+        "completed": True,
     }
-    Path(args.output).parent.mkdir(parents=True, exist_ok=True)
-    Path(args.output).write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    write_json_atomic(Path(args.output), payload)
     print(
         json.dumps(
             {

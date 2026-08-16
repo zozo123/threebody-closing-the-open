@@ -25,7 +25,7 @@ REQUIRED_HEADLINE_IDS = (
     "headline_lower_plus_one",
     "headline_upper_collision",
 )
-MIXED_NODE_IDS = (
+BASE_MIXED_NODE_IDS = (
     "mixed_principal_left",
     "mixed_secondary_left",
     "mixed_principal_right",
@@ -390,6 +390,7 @@ def attach_edge_endpoints(
     edges: list[dict[str, Any]],
     nodes: list[dict[str, Any]],
     germs: list[dict[str, Any]],
+    mixed_node_ids: frozenset[str],
 ) -> tuple[list[dict[str, Any]], list[str]]:
     binding_errors = apply_classification_bindings(edges, nodes)
     used_domains: set[str] = set()
@@ -413,7 +414,7 @@ def attach_edge_endpoints(
             if endpoint.get("node") or endpoint.get("reserved_for"):
                 continue
             for germ_index, germ in enumerate(germs):
-                if not valid_germ(germ):
+                if not valid_germ(germ, mixed_node_ids):
                     continue
                 node_id = str(germ.get("mixed_node"))
                 if node_id not in passed_nodes or germ.get("event_mode") != edge.get("mechanism"):
@@ -491,11 +492,31 @@ def collect_germs(paths: list[Path]) -> list[dict[str, Any]]:
     return germs
 
 
-def valid_germ(record: dict[str, Any]) -> bool:
+def valid_germ(record: dict[str, Any], mixed_node_ids: frozenset[str]) -> bool:
     masses = record.get("masses")
+    mixed_node = record.get("mixed_node")
+    try:
+        canonical_distance = float(record.get("canonical_distance", float("inf")))
+        closure = abs(float(record.get("closure", float("inf"))))
+        event = abs(float(record.get("event", float("inf"))))
+    except (TypeError, ValueError):
+        canonical_distance = float("inf")
+        closure = float("inf")
+        event = float("inf")
+    dynamic_binding_ok = bool(
+        mixed_node in BASE_MIXED_NODE_IDS
+        or (
+            record.get("canonical_bound") is True
+            and record.get("canonical_bracketed") is True
+            and canonical_distance <= GERM_ATTACH_DISTANCE
+            and closure <= 1e-7
+            and event <= 2e-8
+        )
+    )
     return bool(
         record.get("status") in {"traced", "verified", "passed"}
-        and record.get("mixed_node") in MIXED_NODE_IDS
+        and mixed_node in mixed_node_ids
+        and dynamic_binding_ok
         and record.get("event_mode") in {"plus_one", "minus_one"}
         and record.get("direction") in {"+", "-"}
         and isinstance(masses, list)
@@ -504,10 +525,31 @@ def valid_germ(record: dict[str, Any]) -> bool:
     )
 
 
-def missing_mixed_germs(germs: list[dict[str, Any]]) -> list[str]:
-    have = {germ_key(row) for row in germs if valid_germ(row)}
+def retained_mixed_nodes(nodes: list[dict[str, Any]]) -> frozenset[str]:
+    """Return every passed organizer, including endpoint classifications.
+
+    A newly verified mixed endpoint is a retained mixed node just as much as
+    the three headline organizers are.  It therefore cannot borrow their
+    twelve germs: it must contribute its own G+/G- germs in both directions.
+    """
+    retained = set(BASE_MIXED_NODE_IDS)
+    for item in nodes:
+        if not item.get("passed"):
+            continue
+        if item.get("kind") == "mixed_organizer" or item.get("mechanism") in {
+            "mixed_organizer",
+            "mixed_plus_one_minus_one",
+        }:
+            retained.add(str(item["id"]))
+    return frozenset(retained)
+
+
+def missing_mixed_germs(
+    germs: list[dict[str, Any]], mixed_node_ids: frozenset[str]
+) -> list[str]:
+    have = {germ_key(row) for row in germs if valid_germ(row, mixed_node_ids)}
     missing: list[str] = []
-    for node_id in MIXED_NODE_IDS:
+    for node_id in sorted(mixed_node_ids):
         for mode, direction in REQUIRED_GERM_KEYS:
             key = (node_id, mode, direction)
             if key in have:
@@ -594,7 +636,8 @@ def main() -> None:
         roots = [row for row in payload.get("roots", []) if row.get("status") == "ok" or row.get("passed") is True]
 
     germs = collect_germs([Path(path) for path in args.germs])
-    missing_germs = missing_mixed_germs(germs)
+    mixed_node_ids = retained_mixed_nodes(nodes)
+    missing_germs = missing_mixed_germs(germs, mixed_node_ids)
 
     completeness = None
     if args.completeness:
@@ -618,7 +661,7 @@ def main() -> None:
     ]
     edges = polyline_edges(roots) if roots else []
     unclassified_edge_endpoints, classification_binding_errors = attach_edge_endpoints(
-        edges, nodes, germs
+        edges, nodes, germs, mixed_node_ids
     )
     cell_ids = [int(root["cell_id"]) for root in roots]
     assigned = [cell for edge in edges for cell in edge["cell_ids"]]
@@ -650,7 +693,7 @@ def main() -> None:
     }
     unexplained = sorted(mandatory_unresolved)
     illegal = [item["id"] for item in nodes if item["status"] == "illegal"]
-    organizer_count = sum(1 for item in nodes if item.get("kind") == "mixed_organizer" and item.get("passed"))
+    organizer_count = len(mixed_node_ids)
 
     release_ready = (
         not missing_required
@@ -676,6 +719,20 @@ def main() -> None:
         ),
         "release_ready": release_ready,
         "family_component": "one continuation-connected Li-Li-Liao catalog sheet",
+        "topology": {
+            "free_group_word": "bABabaBAba",
+            "role": "catalog topology metadata; topology is not used as family identity",
+            "source": "research/OPEN_PROBLEM.md",
+        },
+        "declared_mass_domain": {
+            "m1": list(DECLARED_DOMAIN["m1"]),
+            "m2": list(DECLARED_DOMAIN["m2"]),
+            "m3": 1.0,
+        },
+        "frozen_numerical_gates": {
+            "maximum_absolute_event": 2e-8,
+            "maximum_periodic_closure": 1e-7,
+        },
         "source_transition_cells": 620,
         "localized_roots": len(roots),
         "nodes": nodes,
@@ -688,8 +745,13 @@ def main() -> None:
                 "ends_on": row.get("ends_on"),
                 "masses": row.get("masses"),
                 "status": row.get("status"),
+                "canonical_bound": row.get("canonical_bound"),
+                "canonical_bracketed": row.get("canonical_bracketed"),
+                "canonical_distance": row.get("canonical_distance"),
+                "closure": row.get("closure"),
+                "event": row.get("event"),
                 "source_artifact": row.get("source_artifact"),
-                "valid": valid_germ(row),
+                "valid": valid_germ(row, mixed_node_ids),
             }
             for row in germs
         ],

@@ -46,11 +46,13 @@ jobs:
           uv run --no-sync python scripts/build_discovery_release.py
           --output-dir artifacts/discovery-dossier
           --emit-paper-status paper/generated/discovery-release.tex
+          --emit-paper-claims paper/generated/discoveries.tex
       - uses: actions/upload-artifact@v4
         with:
           name: discovery-status-${{ github.sha }}
           path: |
             artifacts/discovery-dossier/**
             paper/generated/discovery-release.tex
+            paper/generated/discoveries.tex
           if-no-files-found: error
           retention-days: 90

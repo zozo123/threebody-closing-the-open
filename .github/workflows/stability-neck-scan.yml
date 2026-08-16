@@ -30,7 +30,10 @@ jobs:
   scan:
     name: m1=${{ matrix.m1_min }}..${{ matrix.m1_max }}
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    # A 7x131 tile takes about 110 minutes on the hosted runner.  The previous
+    # 50-minute cap froze only three of seven lines and was therefore guaranteed
+    # to produce inadmissible partial checkpoints.
+    timeout-minutes: 150
     strategy:
       fail-fast: false
       max-parallel: 3
@@ -70,7 +73,7 @@ jobs:
               raise SystemExit(f'baseline source changed: {got}')
           print('source_git_blob=',got,'sha256=',hashlib.sha256(raw).hexdigest())
           PY
-      - name: Warm-start one resumable ten-times-finer mass tile
+      - name: Warm-start one checkpointed ten-times-finer mass tile
         run: |
           uv run --no-sync python scripts/scan_stability_neck.py \
             data/raw/non-hierarchical-3b-supplementary_data.txt \

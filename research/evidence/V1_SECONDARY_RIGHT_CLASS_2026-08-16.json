@@ -1,0 +1,34 @@
+{
+  "id": "secondary_right_death",
+  "kind": "endpoint",
+  "class": "mixed_organizer",
+  "passed": true,
+  "status": "independently_reproduced",
+  "note": "The two secondary walls end at an independently reproduced physical mixed (+1,-1) organizer.",
+  "estimator": "independent Julia BigFloat root solve + canonical Jacobi Vern9 + physical E^omega/E quotient + GenericSchur",
+  "evidence_level": "physical",
+  "masses": [
+    "1.0426234457894453029006607865151261094124167952193571963283940451010535",
+    "1.0460039217640023612037763287793607507467547209940905010670534829673121",
+    "1.0"
+  ],
+  "mass_shift_from_screen": 4.3485749555080555e-08,
+  "relative_closure_norm": "2.0362146607858469083700465465403412142700310526250625156217636090754906e-23",
+  "relative_event_norm": "7.3678676616956130347994106336375888743382634219290851137104473777320301e-13",
+  "physical_plus_one_event": "-7.330451914915577941459031127003182633958400424607826474526456557845768e-13",
+  "physical_minus_one_event": "-7.4158378233796374727450927255000394311535170551648329171265633614014554e-14",
+  "edge_endpoint_bindings": [
+    {
+      "cell_id": 576,
+      "side": "end",
+      "mechanism": "plus_one",
+      "orientation": "U->S"
+    },
+    {
+      "cell_id": 577,
+      "side": "end",
+      "mechanism": "minus_one",
+      "orientation": "S->U"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Novelty and family-identity audit
 
-Last targeted external refresh: **2026-08-15**.
+Last targeted external refresh: **2026-08-16**.
 
 This file is a working novelty firewall, not a substitute for the final release-date literature search.  Negative search results do not prove novelty; they only define what has and has not been located so far.
 
@@ -41,9 +41,44 @@ Recent 2025--2026 restricted-three-body papers continue to develop family contin
 
 Examples located in the refresh include 2026 work on asymmetric periodic-orbit families in the circular restricted three-body problem and on mass-ratio dependence/bifurcations of retrograde CR3BP families.  They reinforce that branch continuation and mechanism-level bifurcation language must be precise; they do not currently appear to pre-empt the v1 claim.
 
+### Same-day final search (2026-08-16)
+
+The release-day search repeated the exact title, arXiv identifier, journal DOI,
+catalog size, topology word, and combinations of `unequal mass`, `general planar
+three body`, `continuation`, `Floquet`, `critical graph`, `mixed organizer`,
+`fold`, and `bifurcation`.  It also followed the publicly exposed citation and
+reference entry points of the 2021 catalog paper and the 2025 invited review.
+
+The primary records checked on the release date were:
+
+- Li, Li & Liao's catalog paper (arXiv:2007.10184; doi:10.1007/s11433-020-1624-7),
+  which publishes the 135,445 samples and 13,315 stable labels but not the
+  continuation/Floquet graph assembled here;
+- Li & Liao's 2025 invited review (doi:10.1007/s11433-024-2686-6), whose scope
+  includes topology, unequal masses, linear stability, and numerical periodic
+  orbits, but which does not report this catalog's mechanism-resolved graph;
+- Hristov, Hristova & Tanikawa (arXiv:2510.22802), an equal-mass,
+  zero-angular-momentum stability search rather than this unequal-mass sheet;
+- Portegies Zwart, Doelman & Sein (arXiv:2601.09843), which studies formation
+  and survival of selected braids rather than continuation of the Li--Li--Liao
+  sheet;
+- Prieur & Robutel (arXiv:2604.00623), on Marchal's inclined co-orbital family
+  in a planetary/co-orbital regime; and
+- Park & Howell (arXiv:2606.08485), an atlas for averaged, Hill-restricted, and
+  circular-restricted models near a smaller primary.
+
+No inspected primary record reported the same finite object: the complete
+mechanism-resolved planar Floquet critical graph of the continuation-connected
+Li--Li--Liao `bABabaBAba` sheet, with every published S/U cell assigned once,
+all ends classified, mixed-node continuation germs, and a frozen bounded
+completeness certificate.  This remains a documented negative search result,
+not a proof that no unindexed or unpublished result exists.  Accordingly the
+manuscript may say "we did not locate a prior construction" but must not use an
+unqualified universal-priority claim such as "the first".
+
 ## What the targeted 2026 search did **not** locate
 
-As of the 2026-08-15 targeted search, no direct paper was located that simultaneously does all of the following for the Li--Li--Liao 135,445 unequal-mass non-hierarchical catalog:
+As of the 2026-08-16 targeted search, no direct paper was located that simultaneously does all of the following for the Li--Li--Liao 135,445 unequal-mass non-hierarchical catalog:
 
 1. defines family identity by branch-preserving continuation connectivity rather than projected invariants/topology alone;
 2. resolves the one-family versus two-set ambiguity on that basis;

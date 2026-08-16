@@ -1,0 +1,5 @@
+# Frozen cell roots 392/393 orient the two newborn G- branches.  Julia corrects
+# the orbits and solves G-=0 inside the original published m2 brackets.
+name	cell_id	orientation	m1	m2_lo	m2_hi	m2_seed	m3	x1	v1	v2	period
+secondary_minus_lower	392	U->S	0.996	0.964	0.965	0.9645756252404868	1.0	-0.3548988720153132	1.2574612854316434	0.4601909497390701	7.4381234411120865
+secondary_minus_upper	393	S->U	0.996	0.984	0.985	0.9841352872863689	1.0	-0.3624263504926571	1.240999023346825	0.4548704409731832	7.475981586658505

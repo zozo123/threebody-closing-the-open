@@ -34,6 +34,7 @@ jobs:
           python scripts/build_discovery_release.py
           --validate-only
           --emit-paper-status paper/generated/discovery-release.tex
+          --emit-paper-claims paper/generated/discoveries.tex
       - name: Install TeX
         run: |
           sudo apt-get update
