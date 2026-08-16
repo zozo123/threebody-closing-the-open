@@ -275,15 +275,31 @@ def test_float64_evaluation_of_the_canonical_organizers_misses_the_event_gate() 
         _, floquet = _flow_for_vector(vector, m3=masses[2], rtol=5e-13, atol=5e-15)
         events[name] = float(event_value(floquet, "plus_one"))
 
-    assert f"{events['principal_left']:.4e}" == "-1.2794e-07"
-    assert f"{events['secondary_left']:.4e}" == "-1.9582e-08"
-    assert f"{events['principal_right']:.4e}" == "-2.5555e-08"
+    # Pin the SCIENCE, not the bit pattern.  These are float64 evaluations of a
+    # 60-digit chart, so the last couple of significant digits are genuinely
+    # platform-dependent: macOS arm64 gives principal_left = -1.2794e-07 where
+    # ubuntu x86_64 gives -1.2798e-07.  An exact-string assertion pinned that
+    # difference and turned a real scientific statement into a flaky test.  What
+    # the limitation actually claims -- and all it needs to claim -- is the
+    # magnitude and which organizers clear the gate.
+    reference = {
+        "principal_left": -1.28e-07,
+        "secondary_left": -1.958e-08,
+        "principal_right": -2.556e-08,
+    }
+    for name, expected in reference.items():
+        assert events[name] < 0.0, f"{name} plus_one event should be negative"
+        assert events[name] == pytest.approx(expected, rel=1e-3), (
+            f"{name} float64 plus_one event {events[name]:.5e} moved more than "
+            f"0.1% from {expected:.5e}; investigate before re-pinning"
+        )
     over_gate = [name for name, value in events.items() if abs(value) > gate]
     assert sorted(over_gate) == ["principal_left", "principal_right"]
 
     manifest = load_manifest(MANIFEST)
     known = " ".join(manifest["known_limitations"])
-    for value in ("-1.2794e-7", "-1.9582e-8", "-2.5555e-8"):
+    # Quote to three significant figures for the same reason.
+    for value in ("-1.28e-7", "-1.96e-8", "-2.56e-8"):
         assert value in known
     assert "two of the three canonical organizers do not clear the gate" in known
     # The gate itself is untouched.
