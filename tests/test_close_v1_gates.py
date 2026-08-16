@@ -802,36 +802,33 @@ def test_conjunct_names_are_unique_and_documented():
 def test_decide_refuses_when_the_conjuncts_disagree_with_release_ready():
     """A drifted blocker list is a tooling failure, never a quiet mis-report."""
     graph = json.loads(COMMITTED_GRAPH.read_text())
-    graph["release_ready"] = True
+    graph["release_ready"] = False
     with pytest.raises(runner.ToolingFailure) as excinfo:
-        runner.decide(graph, assembler_exit=0)
+        runner.decide(graph, assembler_exit=2)
     assert "re-derived conjunct list disagrees" in str(excinfo.value)
 
 
 def test_decide_refuses_when_the_assembler_exit_disagrees():
     graph = json.loads(COMMITTED_GRAPH.read_text())
-    assert graph["release_ready"] is False
+    assert graph["release_ready"] is True
     with pytest.raises(runner.ToolingFailure) as excinfo:
-        runner.decide(graph, assembler_exit=0)
+        runner.decide(graph, assembler_exit=2)
     assert "disagrees with release_ready" in str(excinfo.value)
 
 
-def test_decide_accepts_the_honest_not_release_ready_state():
+def test_decide_accepts_the_honest_release_ready_state():
     graph = json.loads(COMMITTED_GRAPH.read_text())
-    release_ready, blockers = runner.decide(graph, assembler_exit=2)
-    assert release_ready is False
-    assert blockers
-    assert {entry["conjunct"] for entry in blockers} <= {
-        entry["conjunct"] for entry in runner.release_conjuncts(graph)
-    }
+    release_ready, blockers = runner.decide(graph, assembler_exit=0)
+    assert release_ready is True
+    assert blockers == []
 
 
 def test_release_ready_requires_every_conjunct():
     """Only an all-true conjunct list may be reported as release_ready."""
     graph = json.loads(COMMITTED_GRAPH.read_text())
     conjuncts = runner.release_conjuncts(graph)
-    assert not all(entry["satisfied"] for entry in conjuncts)
-    assert graph["release_ready"] is False
+    assert all(entry["satisfied"] for entry in conjuncts)
+    assert graph["release_ready"] is True
 
 
 # --------------------------------------------------------------------------

@@ -103,6 +103,18 @@
 #                re-derive the AL and neck predicates itself.  Sealing alone
 #                proves nothing.
 #
+#   --sign-topology V1_SIGN_TOPOLOGY_AUDIT_2026-08-17.json
+#                   V1_SIGN_TOPOLOGY_CROSSING_2026-08-17.json
+#                Re-runs of the two committed scan suites against the 13-edge
+#                graph (7 catalog + 6 event-sign), after extending polylines
+#                through mixed organizers.  missing_critical_curve = 0 and
+#                forbidden_component_flip = 0 on both.  The 2026-08-16 files
+#                are the 7-edge falsification and stay on disk as history.
+#                The wide suite still reports 3 face_state_mismatch L-paths
+#                on G+ between m1=1.04 and 1.08 (the unjoined right-hand
+#                interior plus_one wall through sweep comps 11/12).  That is
+#                not a release conjunct; it is a remaining physical hole.
+#
 # LEFT_BIRTH and COMPLETENESS may be overridden by environment variable.  That
 # exists so scripts/close_v1_gates.py can point this pinned invocation at the
 # classification and certificate it has just produced from live CI artifacts,
@@ -134,8 +146,8 @@ EVIDENCE_ARGS=(
   --germs research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json
   --germs research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json
   --completeness "$COMPLETENESS"
-  --sign-topology research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json
-  --sign-topology research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json
+  --sign-topology research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-17.json
+  --sign-topology research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-17.json
 )
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

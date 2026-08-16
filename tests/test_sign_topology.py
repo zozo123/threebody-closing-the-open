@@ -23,6 +23,8 @@ REAL_ROOTS = ROOT / "research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json"
 SUPPLEMENTAL_ROOTS = ROOT / "research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json"
 SHIPPED_AUDIT = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json"
 SHIPPED_CROSSING = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json"
+RERUN_AUDIT = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-17.json"
+RERUN_CROSSING = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-17.json"
 
 
 def _all_roots() -> list[dict]:
@@ -345,6 +347,18 @@ def test_committed_edges_are_graphs_over_m1():
         xs = [v[0] for v in edge.vertices]
         assert xs == sorted(xs)
         assert len(set(xs)) == len(xs)
+
+
+@pytest.mark.skipif(not RERUN_AUDIT.exists() or not RERUN_CROSSING.exists(), reason="13-edge re-audit not present")
+def test_thirteen_edge_reaudit_clears_the_release_conjuncts() -> None:
+    """The 2026-08-17 re-audits are what the assembler now reads."""
+    for path in (RERUN_AUDIT, RERUN_CROSSING):
+        audit = json.loads(path.read_text())
+        assert audit["schema"] == AST.SCHEMA
+        assert audit["parameters"]["max_closure"] == 1e-7
+        counts = audit.get("violation_counts") or {}
+        assert int(counts.get("missing_critical_curve", 0)) == 0
+        assert int(counts.get("forbidden_component_flip", 0)) == 0
 
 
 @pytest.mark.skipif(not SHIPPED_AUDIT.exists(), reason="audit artifact not present")

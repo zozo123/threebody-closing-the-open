@@ -1720,11 +1720,12 @@ def test_published_caveats_match_the_committed_evidence() -> None:
     # verification landed and secondary_left_birth became a projection_fold.
     assert graph["root_coverage"]["unclassified_edge_endpoints"] == []
     assert graph["unexplained_nodes"] == []
-    # What holds release_ready false is no longer a missing classification but a
-    # missing CURVE: the catalogue is not the complete critical set.
-    assert graph["release_ready"] is False
-    assert graph["root_coverage"]["sign_topology_clean"] is False
-    assert "not the complete critical set" in known
+    # The defined sign-topology conjuncts are clean and the assembler has
+    # flipped release_ready.  Three G+ L-path face mismatches remain in the
+    # right-hand corridor; that is a known limitation, not a false conjunct.
+    assert graph["release_ready"] is True
+    assert graph["root_coverage"]["sign_topology_clean"] is True
+    assert "L-path" in known
 
 
 def test_germ_attach_distance_window_matches_the_published_number() -> None:
