@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REAL_GRAPH = ROOT / "research/evidence/V1_CRITICAL_GRAPH.json"
 REAL_ROOTS = ROOT / "research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json"
 SHIPPED_AUDIT = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json"
+SHIPPED_CROSSING = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json"
 
 
 def _module():
@@ -369,6 +370,53 @@ def test_shipped_audit_used_the_frozen_gates():
         if certification["status"] == "passed":
             assert abs(certification["event_value"]) <= 2e-8
             assert certification["closure"] <= 1e-7
+
+
+@pytest.mark.skipif(not SHIPPED_CROSSING.exists(), reason="crossing artifact not present")
+def test_two_uncommitted_curves_cross_where_the_graph_has_a_dangling_endpoint():
+    """The plus_one and minus_one critical curves swap order near m1 = 0.9293.
+
+    At m1 = 0.925 the minus_one zero lies below the plus_one zero; by
+    m1 = 0.9295 the order has reversed.  Two continuous curves that swap order
+    have crossed, and at the crossing P(+2) = P(-2) = 0 simultaneously -- a
+    codimension-two organizer with reduced multipliers {+1, +1, -1, -1}.  The
+    committed graph has no node there; it has plus_one_u_to_s_0's unclassified
+    dangling endpoint instead.
+    """
+    crossing = json.loads(SHIPPED_CROSSING.read_text())
+    certified: dict[tuple[float, str], float] = {}
+    for refinement in crossing["missing_curve_refinements"]:
+        certification = refinement.get("certification", {})
+        if certification.get("status") == "passed":
+            certified[(refinement["m1"], refinement["event_mode"])] = certification["masses"][1]
+
+    # both branches resolved on the same scan line, and very close together
+    plus_at_9295 = certified[(0.9295, "plus_one")]
+    minus_at_9295 = certified[(0.9295, "minus_one")]
+    assert 0.0 < minus_at_9295 - plus_at_9295 < 1e-3
+
+    # on the earlier scan line the order is the other way round
+    minus_at_925 = certified[(0.925, "minus_one")]
+    graph = json.loads(REAL_GRAPH.read_text())
+    roots = json.loads(REAL_ROOTS.read_text())["roots"]
+    edges = AST.edges_from_graph(graph, roots)
+    plus_edge = next(e for e in edges if e.edge_id == "plus_one_u_to_s_0")
+    plus_at_925 = plus_edge.m2_at(0.925)
+    assert plus_at_925 is not None
+    assert minus_at_925 < plus_at_925
+
+    # ... and no committed edge covers the reversal
+    assert plus_edge.m1_max < 0.9295
+    assert all(e.m2_at(0.9295) is None or e.m2_at(0.9295) > 0.9 for e in edges)
+
+
+@pytest.mark.skipif(not SHIPPED_CROSSING.exists(), reason="crossing artifact not present")
+def test_forbidden_component_flip_fired_on_real_data():
+    """The mechanism-permission check is not decorative: it caught something."""
+    crossing = json.loads(SHIPPED_CROSSING.read_text())
+    flips = [v for v in crossing["violations"] if v["kind"] == "forbidden_component_flip"]
+    assert flips
+    assert all(v["component"] != AST.MECHANISM_COMPONENT[v["edge_mechanism"]] for v in flips)
 
 
 @pytest.mark.skipif(not REAL_GRAPH.exists(), reason="committed graph not present")
