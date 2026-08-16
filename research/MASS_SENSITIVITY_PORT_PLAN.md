@@ -269,11 +269,22 @@ enables and it was **not** run here.
 
 ## 8. FALSIFIED: float64 cannot evaluate these events to the frozen 2e-8 gate
 
-See section 9 for the numbers.  Summary: the float64 event floor is set by
-round-off in `tr(M^2)` inside `beta`, i.e. `eps * ||M||^2`, and `||M||` for these
-orbits ranges from ~1e3 to ~2.2e4.  At `||M|| = 2.1e4` the floor is ~1e-7,
-**five times the frozen 2e-8 event gate**, and `trace_collision` amplifies it by
-a further factor of 4 through `disc = (alpha-4)^2 - 4(beta - 4 alpha + 8)`.
+Full write-up: **`research/EVENT_GATE_CONDITIONING.md`**.  Audit script:
+`scripts/audit_event_conditioning.py`.
+
+`beta = (alpha^2 - tr M^2)/2` is a cancellation, so the float64 event floor is
+`eps * ||M||^2` (times 4 for `trace_collision`).  `||M||` across the census runs
+7e2 … 2.4e4, putting that floor at 2e-10 … 5e-7 against a frozen 2e-8 gate.
+Using the census's own `_flow_for_vector` at its own recorded charts, high-`||M||`
+roots recorded at `|event| ~ 1.8e-8` recompute to `1e-7 … 2.5e-6` and do **not**
+converge as the tolerance is tightened.  Separately, the recorded closure norms
+are optimistic by 30-100x because they were measured at `screening_rtol`; one
+sampled root's converged closure, 1.27e-7, is **above** the frozen 1e-7 gate.
+
+This does not challenge the root locations (an event error of 1e-6 displaces a
+root by ~1e-7 in `m2`, against 1e-3 cells).  It challenges the certificates, and
+it means "max |event| = 1.9898e-8 against a 2e-8 gate, a 0.5% margin" is a
+statement about a number whose own uncertainty is 10-100x the gate.
 
 ## 9. Scope discipline
 
