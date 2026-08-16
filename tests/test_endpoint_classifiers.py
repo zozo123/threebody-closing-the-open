@@ -394,12 +394,17 @@ def test_completeness_passes_with_neck_and_clean_al(tmp_path) -> None:
                 "grid": {"m1": [0.997, 0.999], "m2": [0.993, 1.006], "step": 0.0001, "samples": 12},
                 "minimum_resolved_unstable_gap": 0.0002,
                 "any_vertical_merge": False,
+                "any_boundary_truncated_merge_test": False,
+                "any_line_without_stable_sample": False,
+                "any_stable_interval_touches_boundary": False,
+                "all_lines_separated": True,
                 "max_shooting_residual": 1e-9,
                 "line_summaries": [
                     {
                         "m1": 0.997,
                         "stable_intervals": [[0.994, 0.996], [0.998, 1.0]],
                         "interior_unstable_gaps": [0.0019],
+                        "merge_verdict": "separated",
                     }
                 ],
             }

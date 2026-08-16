@@ -101,6 +101,13 @@ def main() -> None:
                 "al_clean": al_stats["clean"],
                 "neck_done": neck_stats["done"],
                 "neck_clean": neck_stats["clean"],
+                "neck_boundary_truncated_merge_test": neck_stats[
+                    "any_boundary_truncated_merge_test"
+                ],
+                "neck_line_without_stable_sample": neck_stats[
+                    "any_line_without_stable_sample"
+                ],
+                "neck_all_lines_separated": neck_stats["all_lines_separated"],
                 "self_verification_errors": verification_errors,
             },
             indent=2,

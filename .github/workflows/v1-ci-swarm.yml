@@ -14,6 +14,7 @@ on:
       - "scripts/trace_secondary_minus_fold_geometry.py"
       - "scripts/trace_junction_organizer.py"
       - "scripts/scan_stability_neck.py"
+      - "scripts/neck_topology.py"
       - "scripts/locate_secondary_right_mixed.py"
       - "scripts/continue_lower_plus_one_daughter.py"
       - "scripts/trace_secondary_critical_loop.py"

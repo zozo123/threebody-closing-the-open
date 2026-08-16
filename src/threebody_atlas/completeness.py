@@ -106,9 +106,21 @@ def neck_summary(neck: dict[str, Any] | None) -> dict[str, Any]:
         and neck.get("line_summaries")
         and float(neck.get("max_shooting_residual", float("inf"))) <= SHOOTING_RESIDUAL_GATE
     )
+    # A raster whose stable lobes run off the edge of the scan window cannot
+    # decide the merge question at all: the wall that opens the second lobe may
+    # simply lie outside the sampled box.  Such a raster is refused explicitly
+    # rather than being scored as either merged or separated, and the flags must
+    # be present -- a pre-truncation-analysis raster (schema/2) carries no
+    # verdicts and therefore cannot freeze completeness.
+    truncated = neck.get("any_boundary_truncated_merge_test") if isinstance(neck, dict) else None
+    empty_lines = neck.get("any_line_without_stable_sample") if isinstance(neck, dict) else None
+    separated = neck.get("all_lines_separated") if isinstance(neck, dict) else None
     clean = bool(
         done
         and neck.get("any_vertical_merge") is False
+        and truncated is False
+        and empty_lines is False
+        and separated is True
         and gap is not None
         and step is not None
         and float(gap) + GAP_SLACK >= float(step)
@@ -119,6 +131,18 @@ def neck_summary(neck: dict[str, Any] | None) -> dict[str, Any]:
         "samples": grid.get("samples"),
         "minimum_resolved_unstable_gap": gap,
         "any_vertical_merge": neck.get("any_vertical_merge") if isinstance(neck, dict) else None,
+        "any_boundary_truncated_merge_test": truncated,
+        "any_line_without_stable_sample": empty_lines,
+        "any_stable_interval_touches_boundary": (
+            neck.get("any_stable_interval_touches_boundary") if isinstance(neck, dict) else None
+        ),
+        "all_lines_separated": separated,
+        "merge_verdict_counts": (
+            neck.get("merge_verdict_counts") if isinstance(neck, dict) else None
+        ),
+        "boundary_truncated_lines": (
+            neck.get("boundary_truncated_lines") if isinstance(neck, dict) else None
+        ),
         "max_shooting_residual": neck.get("max_shooting_residual") if isinstance(neck, dict) else None,
         "completed": neck.get("completed") if isinstance(neck, dict) else None,
         "done": done,
@@ -163,6 +187,16 @@ def build_record(
             "samples": neck_stats["samples"],
             "minimum_resolved_unstable_gap": neck_stats["minimum_resolved_unstable_gap"],
             "any_vertical_merge": neck_stats["any_vertical_merge"],
+            "any_boundary_truncated_merge_test": neck_stats[
+                "any_boundary_truncated_merge_test"
+            ],
+            "any_line_without_stable_sample": neck_stats["any_line_without_stable_sample"],
+            "any_stable_interval_touches_boundary": neck_stats[
+                "any_stable_interval_touches_boundary"
+            ],
+            "all_lines_separated": neck_stats["all_lines_separated"],
+            "merge_verdict_counts": neck_stats["merge_verdict_counts"],
+            "boundary_truncated_lines": neck_stats["boundary_truncated_lines"],
             "max_shooting_residual": neck_stats["max_shooting_residual"],
             "completed": neck_stats["completed"],
             "topology_clean": neck_stats["clean"],
@@ -172,8 +206,10 @@ def build_record(
             "and the neck raster completed at the declared local resolution."
             if passed
             else (
-                "Completeness not frozen: require a completed, closure-gated neck raster with no "
-                "vertical merge and at least one resolved unstable-grid step, plus a clean AL pocket screen."
+                "Completeness not frozen: require a completed, closure-gated neck raster whose every "
+                "line is separated by a resolved interior unstable gap of at least one grid step, with "
+                "no interior vertical merge and no line whose merge verdict is limited by scan-window "
+                "truncation, plus a clean AL pocket screen."
             )
         ),
         "sources": sources,
@@ -349,6 +385,28 @@ def verify_certificate(
                 "minimum_resolved_unstable_gap",
             ),
             ("neck.any_vertical_merge", "any_vertical_merge", "any_vertical_merge"),
+            (
+                "neck.any_boundary_truncated_merge_test",
+                "any_boundary_truncated_merge_test",
+                "any_boundary_truncated_merge_test",
+            ),
+            (
+                "neck.any_line_without_stable_sample",
+                "any_line_without_stable_sample",
+                "any_line_without_stable_sample",
+            ),
+            (
+                "neck.any_stable_interval_touches_boundary",
+                "any_stable_interval_touches_boundary",
+                "any_stable_interval_touches_boundary",
+            ),
+            ("neck.all_lines_separated", "all_lines_separated", "all_lines_separated"),
+            ("neck.merge_verdict_counts", "merge_verdict_counts", "merge_verdict_counts"),
+            (
+                "neck.boundary_truncated_lines",
+                "boundary_truncated_lines",
+                "boundary_truncated_lines",
+            ),
             ("neck.max_shooting_residual", "max_shooting_residual", "max_shooting_residual"),
             ("neck.completed", "completed", "completed"),
             ("neck.topology_clean", "topology_clean", "clean"),
