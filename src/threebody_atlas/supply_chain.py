@@ -74,9 +74,23 @@ def action_inventory(repo_root: Path) -> tuple[list[dict[str, Any]], list[str]]:
             immutable = local
             if docker:
                 immutable = bool(_DOCKER_DIGEST.fullmatch(spec))
+                if immutable:
+                    repository, reference = spec.rsplit("@", 1)
             elif not local:
                 if "@" not in spec:
                     errors.append(f"{relative}:{line_number}: external action has no ref: {spec}")
+                    actions.append(
+                        {
+                            "workflow": relative,
+                            "line": line_number,
+                            "uses": spec,
+                            "repository": None,
+                            "commit": None,
+                            "local": False,
+                            "immutable": False,
+                        }
+                    )
+                    continue
                 else:
                     repository, reference = spec.rsplit("@", 1)
                     immutable = bool(_FULL_SHA.fullmatch(reference))

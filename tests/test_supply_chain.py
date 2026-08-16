@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -23,7 +24,11 @@ def test_every_third_party_action_is_pinned_to_a_commit() -> None:
     external = [item for item in actions if not item["local"]]
     assert external
     assert all(item["immutable"] for item in external)
-    assert all(len(item["commit"]) == 40 for item in external)
+    assert all(
+        len(item["commit"]) == 40
+        or re.fullmatch(r"sha256:[0-9a-f]{64}", item["commit"])
+        for item in external
+    )
 
 
 def test_moving_action_tag_is_rejected(tmp_path: Path) -> None:
@@ -35,6 +40,32 @@ def test_moving_action_tag_is_rejected(tmp_path: Path) -> None:
     assert errors == [
         ".github/workflows/test.yml:2: action ref must be an immutable commit SHA: "
         "actions/checkout@v7"
+    ]
+
+
+def test_immutable_docker_action_records_its_digest(tmp_path: Path) -> None:
+    digest = "sha256:" + "a" * 64
+    workflow = tmp_path / ".github/workflows/test.yml"
+    workflow.parent.mkdir(parents=True)
+    workflow.write_text(
+        f"steps:\n  - uses: docker://ghcr.io/example/action@{digest}\n",
+        encoding="utf-8",
+    )
+    actions, errors = action_inventory(tmp_path)
+    assert errors == []
+    assert actions[0]["repository"] == "docker://ghcr.io/example/action"
+    assert actions[0]["commit"] == digest
+    assert actions[0]["immutable"] is True
+
+
+def test_external_action_without_at_reports_one_error(tmp_path: Path) -> None:
+    workflow = tmp_path / ".github/workflows/test.yml"
+    workflow.parent.mkdir(parents=True)
+    workflow.write_text("steps:\n  - uses: actions/checkout\n", encoding="utf-8")
+    actions, errors = action_inventory(tmp_path)
+    assert actions[0]["immutable"] is False
+    assert errors == [
+        ".github/workflows/test.yml:2: external action has no ref: actions/checkout"
     ]
 
 

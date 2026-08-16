@@ -161,6 +161,7 @@ jobs:
             dist/*.tar.gz
             dist/SHA256SUMS
             dist/discovery/discovery.json
+            dist/discovery/environment-runtime.json
           )
           if gh release view "${SOLVED_TAG}" >/dev/null 2>&1; then
             gh release upload "${SOLVED_TAG}" "${assets[@]}" --clobber
