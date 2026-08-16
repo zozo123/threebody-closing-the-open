@@ -61,6 +61,40 @@ Pass only when:
 - no endpoint is `Newton failed`;
 - `research/evidence/V1_CRITICAL_GRAPH.json` reports `release_ready: true`.
 
+#### Running Gate B: one command
+
+Going from harvested CI artifacts to a Gate-B decision used to be a sequence of
+undocumented manual steps. It is now one command:
+
+```
+scripts/close_v1_gates.py \
+  --fold-geometry <path> --fold-geometry-run-id <run> \
+  --fold-bigfloat <path> --fold-bigfloat-run-id <run> \
+  --al-screen     <path> --al-screen-run-id     <run> \
+  --neck-raster   <path> --neck-raster-run-id   <run>
+```
+
+It classifies the secondary-left birth, freezes the completeness certificate,
+assembles the graph, and prints `release_ready` plus the exact list of false
+conjuncts. Exit 0 means release_ready, 2 means an honest open state with the
+blockers enumerated, 64 means it refused because an input was missing, and 3
+means the chain itself is broken.
+
+The runner orchestrates; it never decides. It writes nothing under
+`research/evidence/` except by invoking `classify_secondary_left_birth.py`,
+`freeze_completeness_certificate.py` and `assemble_v1_critical_graph.sh`, it
+carries no numerical gate of its own, and it takes its answer from the
+assembler's `release_ready` bit cross-checked against the assembler's exit
+status and against a re-derived conjunct list. A partial input set is a
+refusal, not a quieter invocation, and a producing script that refuses stops
+the chain instead of falling back to a stale classification.
+
+Every input is recorded in `V1_CLOSURE_PROVENANCE.json` with its sha256 and the
+CI run id it came from — supplied as an argument, never guessed. The real
+closure runs in `.github/workflows/v1-gate-closure.yml`, which takes the four
+run ids, fetches the artifacts with `gh run download`, and uploads inputs and
+outputs together so the certificate stays re-verifiable.
+
 ### Gate C -- family/sheet connectivity
 
 **Status: PASS in the declared catalog domain.**

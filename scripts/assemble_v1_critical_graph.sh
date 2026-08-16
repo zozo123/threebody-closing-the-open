@@ -27,7 +27,7 @@
 #                V1_FLOAT64_CRITICAL_CENSUS_2026-08-15.json only carries the 462
 #                float64-localized cells, so neither can be the graph's input.
 #
-#   --left-birth V1_LEFT_BIRTH_CLASS_2026-08-15.json
+#   --left-birth V1_LEFT_BIRTH_CLASS_2026-08-15.json   (override: LEFT_BIRTH=...)
 #                DELIBERATELY passed even though it is INVALIDATED
 #                (class=null, passed=false, evidence_level="invalid",
 #                invalidated_reason="wrong_branch_pair").  Passing it cannot make
@@ -37,7 +37,11 @@
 #                the graph records the invalidation artifact and its reason instead
 #                of a generic "no artifact supplied" placeholder.  When the live
 #                BigFloat secondary-minus-fold verification lands, swap this path
-#                for the new classification; do not delete the flag.
+#                for the new classification; do not delete the flag.  That swap
+#                is what LEFT_BIRTH exists for: scripts/close_v1_gates.py sets it
+#                to the classification it just produced from the live BigFloat
+#                fold artifact, so the closure run and this pinned invocation
+#                cannot disagree about the rest of the evidence set.
 #
 #   --right-death V1_SECONDARY_RIGHT_CLASS_2026-08-16.json
 #                Independently reproduced physical mixed (+1,-1) organizer, with
@@ -52,7 +56,7 @@
 #                retained secondary_right_death organizer owes; it is a retained
 #                mixed node and may not borrow the headline twelve)
 #
-#   --al-screen  V1_AL_POCKET_SCREEN_2026-08-15.json
+#   --al-screen  V1_AL_POCKET_SCREEN_2026-08-15.json  (override: COMPLETENESS=...)
 #                There is no completeness certificate on disk yet, so the AL pocket
 #                screen is the only completeness input available.  It deliberately
 #                yields completeness_passed=false: an AL pocket screen is not a
@@ -62,8 +66,51 @@
 #                record is only accepted if the assembler can re-read every
 #                source it names, re-hash it to the recorded sha256, and
 #                re-derive the AL and neck predicates itself.  Sealing alone
-#                proves nothing.
+#                proves nothing.  COMPLETENESS=<path> swaps --al-screen for
+#                --completeness <path>; scripts/close_v1_gates.py sets it to the
+#                certificate it just froze from the live neck raster.
+#
+# Two environment overrides exist, LEFT_BIRTH and COMPLETENESS, and neither can
+# manufacture a pass: the assembler still requires passed=true AND an allowed
+# class AND a release-set evidence_level for a classification, and it still
+# re-reads, re-hashes and re-derives every source a certificate names.  They
+# exist so that the closure runner does not have to fork its own idea of which
+# roots / germs / right-death / daughter artifacts feed the graph.
+#
+# PRINT_INPUTS=1 prints the evidence files this invocation would read, one per
+# line, and exits without assembling.  The closure runner uses it to hash every
+# assembler input for the provenance ledger without duplicating this list.
 set -euo pipefail
+
+LEFT_BIRTH="${LEFT_BIRTH:-research/evidence/V1_LEFT_BIRTH_CLASS_2026-08-15.json}"
+COMPLETENESS="${COMPLETENESS:-}"
+
+EVIDENCE_ARGS=(
+  --roots research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json
+  --left-birth "$LEFT_BIRTH"
+  --right-death research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json
+  --daughter research/evidence/V1_DAUGHTER_CLASS_2026-08-16.json
+  --germs research/evidence/V1_MIXED_GERMS_2026-08-15.json
+  --germs research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json
+)
+if [[ -n "$COMPLETENESS" ]]; then
+  EVIDENCE_ARGS+=(--completeness "$COMPLETENESS")
+else
+  EVIDENCE_ARGS+=(--al-screen research/evidence/V1_AL_POCKET_SCREEN_2026-08-15.json)
+fi
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$REPO_ROOT"
+
+if [[ "${PRINT_INPUTS:-0}" == "1" ]]; then
+  for index in "${!EVIDENCE_ARGS[@]}"; do
+    case "${EVIDENCE_ARGS[$index]}" in
+      --*) continue ;;
+      *) printf '%s\n' "${EVIDENCE_ARGS[$index]}" ;;
+    esac
+  done
+  exit 0
+fi
 
 if [[ $# -ne 1 ]]; then
   echo "usage: $(basename "$0") <output-path>" >&2
@@ -71,8 +118,6 @@ if [[ $# -ne 1 ]]; then
 fi
 
 OUTPUT="$1"
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$REPO_ROOT"
 
 # Relative evidence paths are load-bearing: the assembler stores str(path) in the
 # graph's "evidence" and "source_artifact" fields, so the emitted JSON only
@@ -82,10 +127,4 @@ read -r -a PYTHON_CMD <<<"${PYTHON:-uv run --no-sync python}"
 
 "${PYTHON_CMD[@]}" scripts/assemble_critical_graph.py \
   --output "$OUTPUT" \
-  --roots research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json \
-  --left-birth research/evidence/V1_LEFT_BIRTH_CLASS_2026-08-15.json \
-  --right-death research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json \
-  --daughter research/evidence/V1_DAUGHTER_CLASS_2026-08-16.json \
-  --germs research/evidence/V1_MIXED_GERMS_2026-08-15.json \
-  --germs research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json \
-  --al-screen research/evidence/V1_AL_POCKET_SCREEN_2026-08-15.json
+  "${EVIDENCE_ARGS[@]}"

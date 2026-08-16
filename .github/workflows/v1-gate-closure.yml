@@ -1,0 +1,170 @@
+name: v1 gate closure
+
+# This is how the v1 closure is supposed to happen: from CI artifacts with
+# recorded provenance, not from a laptop.
+#
+# You give it four GitHub Actions run ids.  It downloads the artifact each run
+# produced, hands the four files plus their run ids to scripts/close_v1_gates.py,
+# and uploads the whole bundle -- inputs, produced records, and the provenance
+# ledger that ties each output to the input sha256 and run id it came from.
+#
+# The distinction that matters, same as critical-graph-assembly.yml:
+#   * chain ran, not release_ready (runner exit 2)   -> job SUCCEEDS.
+#     The science is legitimately open.  CI must never pressure anyone to fake
+#     it, so an honest blocker list is a green job with the blockers in the
+#     step summary.
+#   * a required artifact is missing (exit 64)       -> job FAILS.  Do not
+#     re-run with fewer inputs; wait for the run that produces the missing one.
+#   * broken chain / disagreeing decision (exit 3)   -> job FAILS loudly.
+#   * release_ready (exit 0)                         -> job succeeds, and the
+#     bundle is what a human reviews before committing anything.
+#
+# Nothing here writes to the repository.  Promoting the produced records into
+# research/evidence/ is a deliberate human act on a reviewed pull request,
+# which is also when critical-graph-assembly.yml re-derives the graph and
+# refuses a stale one.
+
+on:
+  workflow_dispatch:
+    inputs:
+      fold_geometry_run_id:
+        description: "Run id of the secondary-minus-fold geometry screen (secondary-minus-fold-geometry-*)"
+        required: true
+        type: string
+      fold_bigfloat_run_id:
+        description: "Run id of the Julia BigFloat secondary-minus-one fold verifier (secondary-minus-fold-bigfloat-*)"
+        required: true
+        type: string
+      al_screen_run_id:
+        description: "Run id of the active-learning hidden-pocket screen (active-learning-*)"
+        required: true
+        type: string
+      neck_raster_run_id:
+        description: "Run id of the stability neck scan whose merge job produced stability-neck-scan-*"
+        required: true
+        type: string
+
+concurrency:
+  group: v1-gate-closure-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  UV_PYTHON: "3.13"
+  # gh run download needs a token with actions:read for this repository.
+  GH_TOKEN: ${{ github.token }}
+
+jobs:
+  close:
+    name: Close the v1 gates from four CI runs
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+
+      - run: uv python install 3.13
+      - run: uv sync --locked
+
+      # Downloads land inside the working tree on purpose.  The frozen
+      # completeness certificate records the path of every source it read, and
+      # threebody_atlas.completeness.verify_certificate can only re-resolve and
+      # re-hash a source that lives inside the repository; an out-of-tree
+      # download would produce a certificate guaranteed to be rejected later for
+      # reasons that have nothing to do with the science.
+      - name: Download the four harvested artifacts
+        id: download
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/closure-inputs
+
+          fetch() {
+            role="$1"; run_id="$2"; pattern="$3"
+            echo "::group::${role} <- run ${run_id}"
+            rm -rf "artifacts/closure-download/${role}"
+            mkdir -p "artifacts/closure-download/${role}"
+            gh run download "${run_id}" \
+              --repo "${GITHUB_REPOSITORY}" \
+              --pattern "${pattern}" \
+              --dir "artifacts/closure-download/${role}"
+            found="$(find "artifacts/closure-download/${role}" -name '*.json' ! -name '*.partial' | sort)"
+            count="$(printf '%s\n' "${found}" | grep -c . || true)"
+            if [ "${count}" != "1" ]; then
+              echo "::error::run ${run_id} pattern ${pattern} yielded ${count} json files; expected exactly 1"
+              printf '%s\n' "${found}"
+              exit 1
+            fi
+            cp "${found}" "artifacts/closure-inputs/${role}.json"
+            echo "${role}: $(sha256sum "artifacts/closure-inputs/${role}.json")"
+            echo "::endgroup::"
+          }
+
+          fetch fold_geometry "${{ inputs.fold_geometry_run_id }}" 'secondary-minus-fold-geometry-*'
+          fetch fold_bigfloat "${{ inputs.fold_bigfloat_run_id }}" 'secondary-minus-fold-bigfloat-*'
+          fetch al_screen     "${{ inputs.al_screen_run_id }}"     'active-learning-*'
+          fetch neck_raster   "${{ inputs.neck_raster_run_id }}"   'stability-neck-scan-*'
+
+      # The produced records go to a scratch evidence directory, never straight
+      # into research/evidence/.  Promotion is a reviewed human act.
+      - name: Run the closure chain
+        id: close
+        run: |
+          set -uo pipefail
+          status=0
+          uv run --no-sync python scripts/close_v1_gates.py \
+            --fold-geometry artifacts/closure-inputs/fold_geometry.json \
+            --fold-geometry-run-id "${{ inputs.fold_geometry_run_id }}" \
+            --fold-bigfloat artifacts/closure-inputs/fold_bigfloat.json \
+            --fold-bigfloat-run-id "${{ inputs.fold_bigfloat_run_id }}" \
+            --al-screen artifacts/closure-inputs/al_screen.json \
+            --al-screen-run-id "${{ inputs.al_screen_run_id }}" \
+            --neck-raster artifacts/closure-inputs/neck_raster.json \
+            --neck-raster-run-id "${{ inputs.neck_raster_run_id }}" \
+            --evidence-dir artifacts/closure-evidence \
+            | tee artifacts/closure-report.txt || status=$?
+          echo "closure exit status: ${status}"
+          echo "status=${status}" >> "$GITHUB_OUTPUT"
+          case "${status}" in
+            0) echo "release_ready=true"  >> "$GITHUB_OUTPUT" ;;
+            2) echo "release_ready=false" >> "$GITHUB_OUTPUT" ;;
+            64)
+              echo "::error::A required artifact was missing or unusable. Wait for the run that produces it; do not re-run this workflow with fewer inputs."
+              exit 64
+              ;;
+            *)
+              echo "::error::close_v1_gates.py failed with exit ${status}. That is a broken chain, not an open scientific result: no closure claim may be made from this run."
+              exit "${status}"
+              ;;
+          esac
+
+      - name: Summarise the decision and the blockers
+        if: always() && steps.close.outputs.status != ''
+        run: |
+          {
+            echo "## v1 gate closure"
+            echo
+            echo '```'
+            cat artifacts/closure-report.txt || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          # Inputs and outputs travel together: a certificate is only
+          # re-verifiable next to the artifacts whose sha256 it recorded.
+          name: v1-gate-closure-${{ github.run_id }}
+          path: |
+            artifacts/closure-inputs/**
+            artifacts/closure-evidence/**
+            artifacts/closure-report.txt
+          if-no-files-found: error
+          retention-days: 90
