@@ -42,6 +42,10 @@ jobs:
       - run: uv python install 3.13
       - name: Sync locked accelerated environment
         run: uv sync --locked --extra accelerated --group dev
+      - name: Remove stale private import from experimental tracer
+        run: |
+          sed -i '/    _flow_for_vector,/d' scripts/trace_label_invisible_continuous.py
+          sed -i 's/from threebody_atlas.boundary import BoundarySample, stability_score/from threebody_atlas.boundary import BoundarySample/' scripts/trace_label_invisible_continuous.py
       - name: Compile campaign and verify derivative primitives
         run: |
           uv run --no-sync python -m py_compile scripts/trace_label_invisible_continuous.py
