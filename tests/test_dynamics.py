@@ -1,7 +1,7 @@
 import numpy as np
 
 from threebody_atlas.cli import FIGURE_EIGHT
-from threebody_atlas.dynamics import center_of_mass, integrate_orbit
+from threebody_atlas.dynamics import acceleration, center_of_mass, integrate_orbit
 
 
 def test_figure_eight_closes_in_float64_screening():
@@ -23,3 +23,19 @@ def test_figure_eight_center_of_mass_constraints():
     )
     assert np.linalg.norm(qcm) < 1e-14
     assert np.linalg.norm(vcm) < 1e-14
+
+
+def test_unequal_mass_acceleration_matches_newtonian_pair_sum_and_zero_net_force():
+    positions = np.asarray([[-0.7, 0.2], [0.4, -0.6], [1.1, 0.9]], dtype=float)
+    masses = np.asarray([0.7, 1.1, 1.3], dtype=float)
+    got = acceleration(positions, masses)
+
+    expected_body0 = np.zeros(2)
+    for j in (1, 2):
+        delta = positions[j] - positions[0]
+        expected_body0 += masses[j] * delta / np.linalg.norm(delta) ** 3
+    np.testing.assert_allclose(got[0], expected_body0, rtol=2e-15, atol=2e-15)
+
+    # Internal Newtonian forces cancel pairwise even for unequal masses.
+    net_force = np.sum(masses[:, None] * got, axis=0)
+    np.testing.assert_allclose(net_force, 0.0, rtol=0.0, atol=2e-15)
