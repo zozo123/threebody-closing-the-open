@@ -1,0 +1,41 @@
+name: Label-invisible root BigFloat reproduction
+
+on:
+  push:
+    branches:
+      - agent/continuous-event-witnesses
+    paths:
+      - "experiments/label_invisible_marginal_plus_one.tsv"
+      - ".github/workflows/label-invisible-bigfloat.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce-marginal-plus-one:
+    runs-on: [self-hosted, Linux, X64]
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
+        with:
+          version: "1.11.9"
+      - name: Instantiate exact independent stack
+        run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile(); Pkg.status()'
+      - name: Reproduce m1=0.930 G+ root at 60 digits
+        run: |
+          mkdir -p artifacts/label-invisible-bigfloat
+          julia --project=julia julia/verify_critical_points.jl \
+            experiments/label_invisible_marginal_plus_one.tsv \
+            artifacts/label-invisible-bigfloat/m1-0p930-plus-one.json \
+            60 25 18 10 5 4
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: label-invisible-marginal-plus-one-${{ github.sha }}
+          path: artifacts/label-invisible-bigfloat/m1-0p930-plus-one.json
+          if-no-files-found: warn
+          retention-days: 90
