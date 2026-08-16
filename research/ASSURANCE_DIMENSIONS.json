@@ -122,7 +122,8 @@
       "evaluator": {
         "type": "novelty_state"
       },
-      "missing_status": "scientifically_unresolved"
+      "missing_status": "not_run",
+      "missing_detail": "no immutable novelty-audit evidence is registered"
     },
     {
       "id": "rigorous_certificate",

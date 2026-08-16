@@ -135,7 +135,7 @@ def _evidence_identity(record: dict[str, Any], root: Path) -> dict[str, Any]:
         identity["valid"] = True
         return identity
     if kind == "actions_artifact":
-        digest = str(record.get("sha256") or "")
+        digest = str(record.get("sha256") or "").strip().lower()
         identity["sha256"] = digest
         identity["valid"] = len(digest) == 64 and all(c in "0123456789abcdef" for c in digest)
         if not identity["valid"]:
@@ -149,9 +149,10 @@ def _cell(
     dimension: dict[str, Any],
     claim: dict[str, Any],
     manifest: dict[str, Any],
-    root: Path,
     evidence_records: dict[str, dict[str, Any]],
     evidence_identities: dict[str, dict[str, Any]],
+    manifest_validation_error: str | None,
+    artifact_payloads: dict[str, dict[str, Any] | None],
 ) -> dict[str, Any]:
     evaluator = dimension["evaluator"]
     evaluator_type = evaluator["type"]
@@ -166,11 +167,9 @@ def _cell(
             for evidence_id, record in evidence_records.items()
             if record.get("role") in set(evaluator.get("evidence_roles", []))
         ]
-        try:
-            validate_manifest(manifest, root)
-        except (DiscoveryValidationError, OSError, ValueError) as exc:
+        if manifest_validation_error is not None:
             status = "fail"
-            detail = f"discovery manifest validation failed: {str(exc).splitlines()[0]}"
+            detail = f"discovery manifest validation failed: {manifest_validation_error}"
         else:
             status = "pass"
             detail = "discovery manifest satisfies its executable specification"
@@ -210,9 +209,8 @@ def _cell(
                 if not identity["valid"] or record.get("kind") != "repository_file":
                     blocked.append(evidence_id)
                     continue
-                try:
-                    payload = json.loads((root / str(record["path"])).read_text(encoding="utf-8"))
-                except (OSError, ValueError):
+                payload = artifact_payloads.get(evidence_id)
+                if payload is None:
                     blocked.append(evidence_id)
                     continue
                 if not isinstance(payload.get(field), bool):
@@ -236,7 +234,17 @@ def _cell(
         ]
         novelty = manifest.get("novelty", {})
         state = novelty.get("status")
-        if state == "pass":
+        invalid = [
+            evidence_id for evidence_id in selected if not evidence_identities[evidence_id]["valid"]
+        ]
+        if invalid:
+            status = "infrastructure_blocked"
+            detail = "novelty audit evidence is missing or has a stale identity: " + ", ".join(
+                invalid
+            )
+        elif not selected:
+            pass
+        elif state == "pass":
             status = "pass"
             detail = "novelty freeze is current and passed"
         elif state == "fail":
@@ -302,12 +310,45 @@ def build_matrix(manifest: dict[str, Any], policy: dict[str, Any], root: Path) -
     identities = {
         evidence_id: _evidence_identity(record, root) for evidence_id, record in records.items()
     }
+    try:
+        validate_manifest(manifest, root)
+    except (DiscoveryValidationError, OSError, ValueError) as exc:
+        manifest_validation_error = str(exc).splitlines()[0]
+    else:
+        manifest_validation_error = None
+    verdict_roles = {
+        role
+        for dimension in policy["dimensions"]
+        if dimension["evaluator"]["type"] == "global_artifact_boolean"
+        for role in dimension["evaluator"].get("roles", [])
+    }
+    artifact_payloads: dict[str, dict[str, Any] | None] = {}
+    for evidence_id, record in records.items():
+        if (
+            record.get("kind") != "repository_file"
+            or record.get("role") not in verdict_roles
+            or not identities[evidence_id]["valid"]
+        ):
+            continue
+        try:
+            payload = json.loads((root / str(record["path"])).read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            payload = None
+        artifact_payloads[evidence_id] = payload if isinstance(payload, dict) else None
     rows: list[dict[str, Any]] = []
     for claim in manifest.get("claims", []):
         if not isinstance(claim, dict) or not claim.get("id"):
             continue
         cells = [
-            _cell(dimension, claim, manifest, root, records, identities)
+            _cell(
+                dimension,
+                claim,
+                manifest,
+                records,
+                identities,
+                manifest_validation_error,
+                artifact_payloads,
+            )
             for dimension in policy["dimensions"]
         ]
         rows.append(

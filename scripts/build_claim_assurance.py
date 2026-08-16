@@ -41,18 +41,19 @@ def main() -> None:
 
     manifest = _load(MANIFEST)
     policy = _load(POLICY)
-    matrix = build_matrix(manifest, policy, ROOT)
-    report = build_weakest_link_report(matrix)
     if args.check:
+        matrix = _load(MATRIX)
         verify_committed_artifacts(
             ROOT,
             manifest,
             policy,
-            _load(MATRIX),
+            matrix,
             _load(REPORT),
         )
         verb = "verified"
     else:
+        matrix = build_matrix(manifest, policy, ROOT)
+        report = build_weakest_link_report(matrix)
         MATRIX.write_text(_render(matrix), encoding="utf-8")
         REPORT.write_text(_render(report), encoding="utf-8")
         verb = "wrote"

@@ -13,6 +13,7 @@ from threebody_atlas.assurance import (
     AssuranceError,
     build_matrix,
     build_weakest_link_report,
+    validate_policy,
     validate_release_assurance,
     verify_committed_artifacts,
 )
@@ -81,6 +82,12 @@ def test_no_scalar_confidence_or_score_is_emitted() -> None:
     forbidden = {"score", "confidence", "probability", "aggregate_confidence"}
     assert forbidden.isdisjoint(keys(matrix))
     assert forbidden.isdisjoint(keys(report))
+    assert isinstance(matrix["release_policy"]["numerical_paper_ready"], bool)
+    assert isinstance(matrix["release_policy"]["theorem_grade_ready"], bool)
+
+
+def test_current_open_campaign_is_explicitly_not_ready() -> None:
+    matrix = _load(MATRIX_PATH)
     assert matrix["release_policy"]["numerical_paper_ready"] is False
     assert matrix["release_policy"]["theorem_grade_ready"] is False
 
@@ -97,6 +104,142 @@ def test_independence_dimensions_use_distinct_evidence_selectors() -> None:
     blind_sources = set(evaluators["blind_n_version"]["roles"])
     blind_sources.update(evaluators["blind_n_version"].get("ids", []))
     assert physical_sources.isdisjoint(blind_sources)
+
+
+def test_malformed_assurance_policies_fail_closed() -> None:
+    policy = _load(POLICY_PATH)
+    mutations = []
+
+    wrong_schema = copy.deepcopy(policy)
+    wrong_schema["schema"] = "wrong"
+    mutations.append(wrong_schema)
+
+    reordered_dimensions = copy.deepcopy(policy)
+    reordered_dimensions["dimensions"].reverse()
+    mutations.append(reordered_dimensions)
+
+    reordered_profiles = copy.deepcopy(policy)
+    reordered_profiles["profiles"] = {
+        "theorem_grade": reordered_profiles["profiles"]["theorem_grade"],
+        "numerical_paper": reordered_profiles["profiles"]["numerical_paper"],
+    }
+    mutations.append(reordered_profiles)
+
+    invalid_missing_status = copy.deepcopy(policy)
+    invalid_missing_status["dimensions"][0]["missing_status"] = "greenish"
+    mutations.append(invalid_missing_status)
+
+    for mutation in mutations:
+        with pytest.raises(AssuranceError):
+            validate_policy(mutation)
+
+    unknown_evaluator = copy.deepcopy(policy)
+    unknown_evaluator["dimensions"][0]["evaluator"]["type"] = "unknown"
+    with pytest.raises(AssuranceError, match="unknown assurance evaluator"):
+        build_matrix(
+            {
+                "claims": [{"id": "synthetic", "status": "candidate"}],
+                "evidence": [],
+            },
+            unknown_evaluator,
+            ROOT,
+        )
+
+
+@pytest.mark.parametrize(
+    ("relative", "expected_error"),
+    [("../outside.json", "escapes"), ("missing.json", "missing")],
+)
+def test_evidence_paths_must_stay_inside_the_repository_and_exist(
+    tmp_path: Path, relative: str, expected_error: str
+) -> None:
+    root = tmp_path / "root"
+    root.mkdir()
+    (tmp_path / "outside.json").write_text("{}\n", encoding="utf-8")
+    policy = _load(POLICY_PATH)
+    manifest = {
+        "claims": [
+            {
+                "id": "synthetic",
+                "status": "candidate",
+                "statement": "fixture",
+                "method": "fixture",
+                "evidence": ["edge"],
+            }
+        ],
+        "evidence": [
+            {
+                "id": "edge",
+                "kind": "repository_file",
+                "role": "critical_graph",
+                "path": relative,
+                "description": "fixture",
+            }
+        ],
+        "blockers": [],
+        "novelty": {"status": "pending"},
+    }
+    cell = _cells(build_matrix(manifest, policy, root))[
+        ("synthetic", "direct_continuation_topology")
+    ]
+    assert cell["status"] == "infrastructure_blocked"
+    assert expected_error in cell["evidence"][0]["error"]
+
+
+def test_uppercase_actions_digest_is_normalized_before_validation(tmp_path: Path) -> None:
+    policy = _load(POLICY_PATH)
+    manifest = {
+        "claims": [
+            {
+                "id": "synthetic",
+                "status": "candidate",
+                "statement": "fixture",
+                "method": "fixture",
+                "evidence": ["edge"],
+            }
+        ],
+        "evidence": [
+            {
+                "id": "edge",
+                "kind": "actions_artifact",
+                "role": "critical_graph",
+                "sha256": "A" * 64,
+                "description": "fixture",
+            }
+        ],
+        "blockers": [],
+        "novelty": {"status": "pending"},
+    }
+    cell = _cells(build_matrix(manifest, policy, tmp_path))[
+        ("synthetic", "direct_continuation_topology")
+    ]
+    assert cell["status"] == "pass"
+    assert cell["evidence"][0]["sha256"] == "a" * 64
+
+
+def test_novelty_cannot_pass_without_valid_audit_evidence() -> None:
+    policy = _load(POLICY_PATH)
+    manifest = _load(MANIFEST_PATH)
+    manifest["novelty"]["status"] = "pass"
+    manifest["evidence"] = [
+        item for item in manifest["evidence"] if item["role"] != "novelty_audit"
+    ]
+    absent = build_matrix(manifest, policy, ROOT)
+    assert all(
+        _cells(absent)[(row["claim_id"], "literature_novelty")]["status"] == "not_run"
+        for row in absent["claims"]
+    )
+
+    stale = _load(MANIFEST_PATH)
+    stale["novelty"]["status"] = "pass"
+    record = next(item for item in stale["evidence"] if item["role"] == "novelty_audit")
+    record["path"] = "research/DOES_NOT_EXIST.md"
+    stale_matrix = build_matrix(stale, policy, ROOT)
+    assert all(
+        _cells(stale_matrix)[(row["claim_id"], "literature_novelty")]["status"]
+        == "infrastructure_blocked"
+        for row in stale_matrix["claims"]
+    )
 
 
 def test_evidence_parent_mutation_stales_the_matrix_without_manual_edits() -> None:
@@ -132,14 +275,15 @@ def test_novelty_downgrade_changes_only_the_literature_cells() -> None:
     before = _cells(build_matrix(manifest, policy, ROOT))
     changed = copy.deepcopy(manifest)
     changed["novelty"]["status"] = "fail"
-    after = _cells(build_matrix(changed, policy, ROOT))
+    after_matrix = build_matrix(changed, policy, ROOT)
+    after = _cells(after_matrix)
     changed_dimensions = {
         dimension for key, cell in before.items() if cell != after[key] for dimension in [key[1]]
     }
     assert changed_dimensions == {"literature_novelty"}
     assert all(
         after[(row["claim_id"], "literature_novelty")]["status"] == "fail"
-        for row in build_matrix(changed, policy, ROOT)["claims"]
+        for row in after_matrix["claims"]
     )
 
 
@@ -150,13 +294,14 @@ def test_unresolved_box_downgrades_only_the_contradiction_cells() -> None:
     clear["blockers"] = []
     before = _cells(build_matrix(clear, policy, ROOT))
     clear["blockers"] = ["new unresolved box"]
-    after = _cells(build_matrix(clear, policy, ROOT))
+    after_matrix = build_matrix(clear, policy, ROOT)
+    after = _cells(after_matrix)
     changed_dimensions = {key[1] for key, cell in before.items() if cell != after[key]}
     assert changed_dimensions == {"unresolved_contradictions"}
     assert all(
         after[(row["claim_id"], "unresolved_contradictions")]["status"]
         == "scientifically_unresolved"
-        for row in build_matrix(clear, policy, ROOT)["claims"]
+        for row in after_matrix["claims"]
     )
 
 

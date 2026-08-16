@@ -2652,7 +2652,7 @@
     },
     "dimension:literature_novelty": {
       "kind": "assurance_policy_dimension",
-      "sha256": "c69715142d6240ebc6d227c4616d5756d651e8bb6e0ffedfcd4eed4d33d9d917"
+      "sha256": "0b1bb9f1b76685be243db695b74b5236713b11c72886b4594e6ce14511927682"
     },
     "dimension:mutation_metamorphic_coverage": {
       "kind": "assurance_policy_dimension",
@@ -2700,8 +2700,8 @@
     }
   },
   "dimension_count": 14,
-  "matrix_sha256": "2e3dac513679357811250cc054787ae2d1d90355d10113f31956a369cfb0a435",
-  "policy_sha256": "8b9d7e2cabd1512fe161309fd589b4789680f8630a4d0fccf1a77f1377e80542",
+  "matrix_sha256": "2282429cd80d63ba13aab0f5f97184b77da00f0affc81cd117c3a9a96436be27",
+  "policy_sha256": "b915bf08610ed97b6b07c505ba0ea456e99c6c5b9cc87c511c6039c7259376f5",
   "release_policy": {
     "numerical_paper_ready": false,
     "release_claim_ids": [

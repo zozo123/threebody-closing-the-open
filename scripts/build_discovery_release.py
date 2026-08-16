@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 from pathlib import Path
@@ -32,8 +33,6 @@ WEAKEST_LINK_REPORT = ROOT / "research/evidence/V1_WEAKEST_LINK_REPORT.json"
 
 
 def _load_json(path: Path) -> dict:
-    import json
-
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
         raise ValueError(f"{path.relative_to(ROOT)} must contain a JSON object")
