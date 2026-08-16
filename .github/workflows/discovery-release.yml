@@ -2,7 +2,15 @@ name: Discovery release
 
 on:
   push:
+    branches: ["main"]
     tags: ["solved-v*"]
+    paths:
+      - "research/DISCOVERY_RELEASE.json"
+      - "research/evidence/V1_CRITICAL_GRAPH.json"
+      - "paper/**"
+      - "scripts/build_discovery_release.py"
+      - "src/threebody_atlas/discovery.py"
+      - ".github/workflows/discovery-release.yml"
   workflow_dispatch:
 
 permissions:
@@ -19,6 +27,8 @@ jobs:
   release:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    env:
+      SOLVED_TAG: ${{ startsWith(github.ref, 'refs/tags/solved-v') && github.ref_name || 'solved-v1.0.0' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -41,6 +51,7 @@ jobs:
           uv run --no-sync python scripts/build_discovery_release.py
           --validate-only
           --emit-paper-status paper/generated/discovery-release.tex
+          --emit-paper-claims paper/generated/discoveries.tex
       - name: Install TeX
         run: |
           sudo apt-get update
@@ -76,22 +87,41 @@ jobs:
             dist/discovery/discovery.json
       - uses: actions/upload-artifact@v4
         with:
-          name: solved-discovery-${{ github.ref_name }}-${{ github.sha }}
+          name: solved-discovery-${{ env.SOLVED_TAG }}-${{ github.sha }}
           path: |
             dist/*
           if-no-files-found: error
           retention-days: 365
+      - name: Tag the exact validated and packaged main commit
+        if: github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --force --tags origin
+          if git rev-parse --verify "refs/tags/${SOLVED_TAG}" >/dev/null 2>&1; then
+            test "$(git rev-list -n 1 "${SOLVED_TAG}")" = "${GITHUB_SHA}"
+          else
+            git tag "${SOLVED_TAG}" "${GITHUB_SHA}"
+            git push origin "refs/tags/${SOLVED_TAG}"
+          fi
       - name: Publish solved discovery release
-        if: startsWith(github.ref, 'refs/tags/solved-v')
         env:
           GH_TOKEN: ${{ github.token }}
+        shell: bash
         run: |
-          gh release create "${GITHUB_REF_NAME}" \
-            dist/atlas-paper.pdf \
-            dist/*.whl \
-            dist/*.tar.gz \
-            dist/SHA256SUMS \
-            dist/discovery/discovery.json \
-            --title "ATLAS solved discovery ${GITHUB_REF_NAME}" \
-            --notes-file dist/discovery/DISCOVERY_SUMMARY.md \
-            --verify-tag
+          set -euo pipefail
+          assets=(
+            dist/atlas-paper.pdf
+            dist/*.whl
+            dist/*.tar.gz
+            dist/SHA256SUMS
+            dist/discovery/discovery.json
+          )
+          if gh release view "${SOLVED_TAG}" >/dev/null 2>&1; then
+            gh release upload "${SOLVED_TAG}" "${assets[@]}" --clobber
+          else
+            gh release create "${SOLVED_TAG}" "${assets[@]}" \
+              --title "ATLAS solved discovery ${SOLVED_TAG}" \
+              --notes-file dist/discovery/DISCOVERY_SUMMARY.md \
+              --verify-tag
+          fi

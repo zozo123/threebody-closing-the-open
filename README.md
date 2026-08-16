@@ -2,7 +2,7 @@
 
 Reproducible research infrastructure for systematically mapping stable periodic-orbit **families** in the non-hierarchical, unequal-mass planar Newtonian three-body problem.
 
-> **Scientific status: OPEN.** Gate C passed (one continuation-connected family). Gate A passed for the mechanism words the paper is allowed to use (physical `+1`, opposite-Krein Hamiltonian–Hopf, three mixed organizers). Gate B (connected critical graph) and Gate D (solved freeze) are pending. This is not a solution of the general three-body problem. See `research/OPEN_PROBLEM.md` and `paper/main.tex`.
+> **Scientific status: OPEN.** Gate C passed (one continuation-connected family). Gate A passed for the mechanism words the paper is allowed to use (physical `+1`, opposite-Krein Hamiltonian–Hopf, three mixed organizers). Gate B (complete mechanism-resolved Floquet critical graph on that sheet) and Gate D (solved freeze) are pending. The 620-cell census and all twelve mixed germs are complete; the two secondary endpoints, daughter class, and completeness freeze remain gated. This is not a solution of the general three-body problem. See `research/OPEN_PROBLEM.md` and `paper/main.tex`.
 
 ## Scientific target
 

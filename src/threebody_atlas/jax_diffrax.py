@@ -160,6 +160,28 @@ def _event_impl(y, m3, mode: EventMode, *, rtol: float, atol: float, max_steps: 
     return _event_from_invariants(alpha, beta, discriminant, mode)
 
 
+def _mixed_system_impl(y, m3, *, rtol: float, atol: float, max_steps: int):
+    """Integrate once for closure plus both smooth mixed-vertex events."""
+    z0 = chart_state_jax(y, m3)
+    masses = jnp.asarray([y[4], y[5], m3], dtype=jnp.float64)
+    augmented0 = jnp.concatenate((z0, jnp.eye(8, dtype=jnp.float64).reshape(-1)))
+    sol = _solve(
+        diffrax.ODETerm(_normalized_augmented_rhs),
+        augmented0,
+        (masses, y[3]),
+        rtol=rtol,
+        atol=atol,
+        max_steps=max_steps,
+    )
+    final = sol.ys[0]
+    closure = final[:8] - z0
+    monodromy = final[8:].reshape(8, 8)
+    alpha, beta, discriminant = _floquet_invariants_jax(monodromy)
+    plus = _event_from_invariants(alpha, beta, discriminant, "plus_one")
+    minus = _event_from_invariants(alpha, beta, discriminant, "minus_one")
+    return jnp.concatenate((closure, jnp.asarray([plus, minus], dtype=jnp.float64)))
+
+
 @lru_cache(maxsize=8)
 def _compiled_closure(rtol: float, atol: float, max_steps: int):
     require_accelerated_x64()
@@ -178,6 +200,16 @@ def _compiled_event(mode: EventMode, rtol: float, atol: float, max_steps: int):
         return _event_impl(y, m3, mode, rtol=rtol, atol=atol, max_steps=max_steps)
 
     return jax.jit(event), jax.jit(jax.jacfwd(event, argnums=0))
+
+
+@lru_cache(maxsize=8)
+def _compiled_mixed_system(rtol: float, atol: float, max_steps: int):
+    require_accelerated_x64()
+
+    def mixed_system(y, m3):
+        return _mixed_system_impl(y, m3, rtol=rtol, atol=atol, max_steps=max_steps)
+
+    return jax.jit(mixed_system), jax.jit(jax.jacfwd(mixed_system, argnums=0))
 
 
 def _validate_vector(y: Array) -> Array:
@@ -247,6 +279,33 @@ def adaptive_event_and_gradient(
     value = float(jax.device_get(event_fn(y_jax, m3_jax)))
     gradient = np.asarray(jax.device_get(gradient_fn(y_jax, m3_jax)), dtype=float)
     return value, gradient
+
+
+def adaptive_mixed_system_and_jacobian(
+    y: Array,
+    *,
+    m3: float = 1.0,
+    rtol: float = 5e-10,
+    atol: float = 5e-12,
+    max_steps: int = 1 << 18,
+) -> tuple[Array, Array]:
+    """Return ``[closure, G+, G-]`` and its six-parameter Jacobian.
+
+    The mixed organizer previously differentiated three separate integrations:
+    a state flow and two identical state+monodromy flows.  This joint path uses
+    one augmented integration, preserving the same equations while removing
+    duplicated work.  As elsewhere, SciPy values remain the acceptance truth.
+    """
+    require_accelerated_x64()
+    y_arr = _validate_vector(y)
+    value_fn, jacobian_fn = _compiled_mixed_system(
+        float(rtol), float(atol), int(max_steps)
+    )
+    y_jax = jnp.asarray(y_arr, dtype=jnp.float64)
+    m3_jax = jnp.asarray(float(m3), dtype=jnp.float64)
+    value = np.asarray(jax.device_get(value_fn(y_jax, m3_jax)), dtype=float)
+    jacobian = np.asarray(jax.device_get(jacobian_fn(y_jax, m3_jax)), dtype=float)
+    return value, jacobian
 
 
 def rhs_jacobian(state: Array, masses: Array) -> Array:

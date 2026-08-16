@@ -42,7 +42,7 @@ jobs:
           python -m py_compile src/threebody_atlas/hybrid_vertices.py
 
   search:
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 55
     steps:

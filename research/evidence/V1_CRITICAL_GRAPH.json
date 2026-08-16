@@ -1,6 +1,6 @@
 {
   "schema": "atlas.v1.critical-graph/2",
-  "claim_status": "partial graph: headline nodes frozen; 620 cells are samples, not edges; endpoints/germs/completeness still open",
+  "claim_status": "partial graph: 620 cells are samples, not edges; unresolved gates are enumerated by the artifact",
   "release_ready": false,
   "family_component": "one continuation-connected Li-Li-Liao catalog sheet",
   "source_transition_cells": 620,
@@ -74,13 +74,16 @@
     {
       "id": "secondary_left_birth",
       "kind": "endpoint",
-      "status": "independently_reproduced",
+      "status": "unresolved",
       "masses": null,
-      "mechanism": "two_separate_arcs",
-      "note": "Two G- roots exist at the birth slice and the fold/reconnection screen failed; fold hypothesis falsified at this resolution.",
-      "passed": true,
+      "mechanism": "unknown",
+      "note": "Invalidated on audit: the geometry screen selected the lowest and highest minus-one roots at m1=0.996 and skipped the intervening S->U secondary-lobe wall. No endpoint class follows from that run. The corrected adjacent U->S / S->U continuation must be rerun.",
+      "passed": false,
       "evidence": "research/evidence/V1_LEFT_BIRTH_CLASS_2026-08-15.json",
-      "estimator": "float64_geometry_screen"
+      "estimator": "float64_geometry_screen",
+      "evidence_level": "invalid",
+      "screening_passed": false,
+      "edge_endpoint_bindings": []
     },
     {
       "id": "secondary_right_death",
@@ -90,13 +93,39 @@
       "mechanism": "unknown",
       "note": "Allowed classes: mixed_organizer, projection_fold, domain_boundary. Newton-failed is forbidden.",
       "passed": false
+    },
+    {
+      "id": "lower_plus_one_daughter",
+      "kind": "branch",
+      "status": "unresolved",
+      "masses": null,
+      "mechanism": "unknown",
+      "note": "Classify the lower +1 daughter as reconnecting, closed_loop, distinct_branch, obstruction, no_branch_attachment, or falsified.",
+      "passed": false
+    },
+    {
+      "id": "domain_m1_min",
+      "kind": "declared_domain_boundary",
+      "status": "frozen_domain",
+      "masses": null,
+      "passed": true,
+      "evidence_level": "definition"
+    },
+    {
+      "id": "domain_m2_max",
+      "kind": "declared_domain_boundary",
+      "status": "frozen_domain",
+      "masses": null,
+      "passed": true,
+      "evidence_level": "definition"
     }
   ],
   "edges": [
     {
-      "id": "minus_one_0",
+      "id": "minus_one_u_to_s_0",
       "kind": "mechanism_polyline",
       "mechanism": "minus_one",
+      "orientation": "U->S",
       "cell_ids": [
         260,
         262,
@@ -163,1285 +192,53 @@
         384,
         386,
         388,
-        390
-      ],
-      "source_cell_count": 66,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 260,
-        "end_cell": 390,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_1",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        392,
-        393,
+        390,
         394,
-        397,
         398,
-        401,
         402,
-        405,
         406,
-        409,
         410,
-        413,
         414,
-        417,
         418,
-        421,
         422,
-        425,
         426,
-        429,
         430,
-        433
-      ],
-      "source_cell_count": 22,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 392,
-        "end_cell": 433,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_2",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        434
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 434,
-        "end_cell": 434,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_3",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        437
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 437,
-        "end_cell": 437,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_4",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        438
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 438,
-        "end_cell": 438,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_5",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        441
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 441,
-        "end_cell": 441,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_6",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        442
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 442,
-        "end_cell": 442,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_7",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        445
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 445,
-        "end_cell": 445,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_8",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        446
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 446,
-        "end_cell": 446,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_9",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        449
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 449,
-        "end_cell": 449,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_10",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        450
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 450,
-        "end_cell": 450,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_11",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        453
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 453,
-        "end_cell": 453,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_12",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        454
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 454,
-        "end_cell": 454,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_13",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        457
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 457,
-        "end_cell": 457,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_14",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        458
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 458,
-        "end_cell": 458,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_15",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        461
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 461,
-        "end_cell": 461,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_16",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        462
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 462,
-        "end_cell": 462,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_17",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        465
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 465,
-        "end_cell": 465,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_18",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        466
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 466,
-        "end_cell": 466,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_19",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        469
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 469,
-        "end_cell": 469,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_20",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        470
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 470,
-        "end_cell": 470,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_21",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        473
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 473,
-        "end_cell": 473,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_22",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        474
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 474,
-        "end_cell": 474,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_23",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        477
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 477,
-        "end_cell": 477,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_24",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        478
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 478,
-        "end_cell": 478,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_25",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        481
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 481,
-        "end_cell": 481,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_26",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        482
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 482,
-        "end_cell": 482,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_27",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        485
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 485,
-        "end_cell": 485,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_28",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        486
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 486,
-        "end_cell": 486,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_29",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        489
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 489,
-        "end_cell": 489,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_30",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        490
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 490,
-        "end_cell": 490,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_31",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        493
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 493,
-        "end_cell": 493,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_32",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        494
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 494,
-        "end_cell": 494,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_33",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        497
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 497,
-        "end_cell": 497,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_34",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        498
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 498,
-        "end_cell": 498,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_35",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        501
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 501,
-        "end_cell": 501,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_36",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        502
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 502,
-        "end_cell": 502,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_37",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        505
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 505,
-        "end_cell": 505,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_38",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        506
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 506,
-        "end_cell": 506,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_39",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        509
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 509,
-        "end_cell": 509,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_40",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        510
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 510,
-        "end_cell": 510,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_41",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        513
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 513,
-        "end_cell": 513,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_42",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        514
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 514,
-        "end_cell": 514,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_43",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        517
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 517,
-        "end_cell": 517,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_44",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        518
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 518,
-        "end_cell": 518,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_45",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        521
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 521,
-        "end_cell": 521,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_46",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        522
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 522,
-        "end_cell": 522,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_47",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        525
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 525,
-        "end_cell": 525,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_48",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        526
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 526,
-        "end_cell": 526,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_49",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        529
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 529,
-        "end_cell": 529,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_50",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        530
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 530,
-        "end_cell": 530,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_51",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        533
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 533,
-        "end_cell": 533,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_52",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        534
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 534,
-        "end_cell": 534,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_53",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        537
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 537,
-        "end_cell": 537,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_54",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        538
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 538,
-        "end_cell": 538,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_55",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        541
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 541,
-        "end_cell": 541,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_56",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        542
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 542,
-        "end_cell": 542,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_57",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        545
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 545,
-        "end_cell": 545,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_58",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        546
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 546,
-        "end_cell": 546,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_59",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        549
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 549,
-        "end_cell": 549,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_60",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        550
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 550,
-        "end_cell": 550,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_61",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        553
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 553,
-        "end_cell": 553,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_62",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        554
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 554,
-        "end_cell": 554,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_63",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        557
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 557,
-        "end_cell": 557,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_64",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        558
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 558,
-        "end_cell": 558,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_65",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        561
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 561,
-        "end_cell": 561,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_66",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        562
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 562,
-        "end_cell": 562,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_67",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        565
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 565,
-        "end_cell": 565,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_68",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        566
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 566,
-        "end_cell": 566,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_69",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        569
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 569,
-        "end_cell": 569,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_70",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        570
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 570,
-        "end_cell": 570,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_71",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        573
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 573,
-        "end_cell": 573,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_72",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        574
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 574,
-        "end_cell": 574,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_73",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
-        577
-      ],
-      "source_cell_count": 1,
-      "estimators": [
-        "float64"
-      ],
-      "endpoints": {
-        "start_cell": 577,
-        "end_cell": 577,
-        "classified": false
-      }
-    },
-    {
-      "id": "minus_one_74",
-      "kind": "mechanism_polyline",
-      "mechanism": "minus_one",
-      "cell_ids": [
+        434,
+        438,
+        442,
+        446,
+        450,
+        454,
+        458,
+        462,
+        466,
+        470,
+        474,
+        478,
+        482,
+        486,
+        490,
+        494,
+        498,
+        502,
+        506,
+        510,
+        514,
+        518,
+        522,
+        526,
+        530,
+        534,
+        538,
+        542,
+        546,
+        550,
+        554,
+        558,
+        562,
+        566,
+        570,
+        574,
         578,
         580,
         582,
@@ -1451,20 +248,178 @@
         590,
         592
       ],
-      "source_cell_count": 8,
+      "source_cell_count": 120,
       "estimators": [
         "float64"
       ],
+      "uncertainty": {
+        "max_abs_event": 1.8446943528260817e-08,
+        "max_closure": 3.5574418109846407e-10,
+        "max_source_m2_bracket_width": 0.001000000000000112
+      },
       "endpoints": {
-        "start_cell": 578,
-        "end_cell": 592,
+        "start": {
+          "cell_id": 260,
+          "masses": [
+            0.93,
+            0.8873042213883066,
+            1.0
+          ],
+          "node": "mixed_principal_left",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.0026994126800394336,
+          "germ_direction": "+",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_2026-08-15.json"
+        },
+        "end": {
+          "cell_id": 592,
+          "masses": [
+            1.049,
+            1.128527000337954,
+            1.0
+          ],
+          "node": "mixed_principal_right",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.0019918200191918673,
+          "germ_direction": "+",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_2026-08-15.json"
+        },
+        "classified": true
+      }
+    },
+    {
+      "id": "minus_one_u_to_s_1",
+      "kind": "mechanism_polyline",
+      "mechanism": "minus_one",
+      "orientation": "U->S",
+      "cell_ids": [
+        392
+      ],
+      "source_cell_count": 1,
+      "estimators": [
+        "float64"
+      ],
+      "uncertainty": {
+        "max_abs_event": 2.40666508943832e-09,
+        "max_closure": 1.647966649159205e-10,
+        "max_source_m2_bracket_width": 0.0010000000000000009
+      },
+      "endpoints": {
+        "start": {
+          "cell_id": 392,
+          "masses": [
+            0.996,
+            0.9645756252404868,
+            1.0
+          ],
+          "node": null
+        },
+        "end": {
+          "cell_id": 392,
+          "masses": [
+            0.996,
+            0.9645756252404868,
+            1.0
+          ],
+          "node": "mixed_secondary_left",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.006350601874616059,
+          "germ_direction": "-",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_2026-08-15.json"
+        },
         "classified": false
       }
     },
     {
-      "id": "plus_one_0",
+      "id": "minus_one_s_to_u_0",
+      "kind": "mechanism_polyline",
+      "mechanism": "minus_one",
+      "orientation": "S->U",
+      "cell_ids": [
+        393,
+        397,
+        401,
+        405,
+        409,
+        413,
+        417,
+        421,
+        425,
+        429,
+        433,
+        437,
+        441,
+        445,
+        449,
+        453,
+        457,
+        461,
+        465,
+        469,
+        473,
+        477,
+        481,
+        485,
+        489,
+        493,
+        497,
+        501,
+        505,
+        509,
+        513,
+        517,
+        521,
+        525,
+        529,
+        533,
+        537,
+        541,
+        545,
+        549,
+        553,
+        557,
+        561,
+        565,
+        569,
+        573,
+        577
+      ],
+      "source_cell_count": 47,
+      "estimators": [
+        "float64"
+      ],
+      "uncertainty": {
+        "max_abs_event": 1.6379794853804697e-08,
+        "max_closure": 2.1638816734891825e-10,
+        "max_source_m2_bracket_width": 0.001000000000000112
+      },
+      "endpoints": {
+        "start": {
+          "cell_id": 393,
+          "masses": [
+            0.996,
+            0.9841352872863689,
+            1.0
+          ],
+          "node": null
+        },
+        "end": {
+          "cell_id": 577,
+          "masses": [
+            1.042,
+            1.0454414398297092,
+            1.0
+          ],
+          "node": null
+        },
+        "classified": false
+      }
+    },
+    {
+      "id": "plus_one_u_to_s_0",
       "kind": "mechanism_polyline",
       "mechanism": "plus_one",
+      "orientation": "U->S",
       "cell_ids": [
         0,
         2,
@@ -1602,16 +557,43 @@
         "float64",
         "julia_bigfloat"
       ],
+      "uncertainty": {
+        "max_abs_event": 1.949616645902097e-08,
+        "max_closure": 1.3331070494035962e-09,
+        "max_source_m2_bracket_width": 0.0010000000000000009
+      },
       "endpoints": {
-        "start_cell": 0,
-        "end_cell": 258,
-        "classified": false
+        "start": {
+          "cell_id": 0,
+          "masses": [
+            0.8,
+            0.7557199219114411,
+            1.0
+          ],
+          "node": "domain_m1_min",
+          "attachment": "declared_domain_boundary"
+        },
+        "end": {
+          "cell_id": 258,
+          "masses": [
+            0.929,
+            0.8850799079881937,
+            1.0
+          ],
+          "node": "mixed_principal_left",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.0015640623931533733,
+          "germ_direction": "+",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_2026-08-15.json"
+        },
+        "classified": true
       }
     },
     {
-      "id": "plus_one_1",
+      "id": "plus_one_u_to_s_1",
       "kind": "mechanism_polyline",
       "mechanism": "plus_one",
+      "orientation": "U->S",
       "cell_ids": [
         396,
         400,
@@ -1664,16 +646,42 @@
       "estimators": [
         "float64"
       ],
+      "uncertainty": {
+        "max_abs_event": 1.381939895850337e-08,
+        "max_closure": 2.1084715207853169e-10,
+        "max_source_m2_bracket_width": 0.001000000000000112
+      },
       "endpoints": {
-        "start_cell": 396,
-        "end_cell": 576,
+        "start": {
+          "cell_id": 396,
+          "masses": [
+            0.997,
+            0.9562525449533762,
+            1.0
+          ],
+          "node": "mixed_secondary_left",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.001419820417043725,
+          "germ_direction": "+",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_2026-08-15.json"
+        },
+        "end": {
+          "cell_id": 576,
+          "masses": [
+            1.042,
+            1.0359819791033056,
+            1.0
+          ],
+          "node": null
+        },
         "classified": false
       }
     },
     {
-      "id": "plus_one_2",
+      "id": "plus_one_u_to_s_2",
       "kind": "mechanism_polyline",
       "mechanism": "plus_one",
+      "orientation": "U->S",
       "cell_ids": [
         594,
         596,
@@ -1703,16 +711,43 @@
         "float64",
         "julia_bigfloat"
       ],
+      "uncertainty": {
+        "max_abs_event": 1.8049181704782313e-08,
+        "max_closure": 4.659935944366827e-10,
+        "max_source_m2_bracket_width": 0.001000000000000112
+      },
       "endpoints": {
-        "start_cell": 594,
-        "end_cell": 619,
-        "classified": false
+        "start": {
+          "cell_id": 594,
+          "masses": [
+            1.05,
+            1.131789193875551,
+            1.0
+          ],
+          "node": "mixed_principal_right",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 1.7789818507196742e-09,
+          "germ_direction": "-",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_2026-08-15.json"
+        },
+        "end": {
+          "cell_id": 619,
+          "masses": [
+            1.071,
+            1.1999602553532644,
+            1.0
+          ],
+          "node": "domain_m2_max",
+          "attachment": "declared_domain_boundary"
+        },
+        "classified": true
       }
     },
     {
-      "id": "trace_collision_0",
+      "id": "trace_collision_s_to_u_0",
       "kind": "mechanism_polyline",
       "mechanism": "trace_collision",
+      "orientation": "S->U",
       "cell_ids": [
         1,
         3,
@@ -1974,10 +1009,33 @@
         "float64",
         "julia_bigfloat"
       ],
+      "uncertainty": {
+        "max_abs_event": 1.989798081858396e-08,
+        "max_closure": 1.3449954408014987e-09,
+        "max_source_m2_bracket_width": 0.001000000000000112
+      },
       "endpoints": {
-        "start_cell": 1,
-        "end_cell": 601,
-        "classified": false
+        "start": {
+          "cell_id": 1,
+          "masses": [
+            0.8,
+            0.7607259420854386,
+            1.0
+          ],
+          "node": "domain_m1_min",
+          "attachment": "declared_domain_boundary"
+        },
+        "end": {
+          "cell_id": 601,
+          "masses": [
+            1.053,
+            1.1995833507161973,
+            1.0
+          ],
+          "node": "domain_m2_max",
+          "attachment": "declared_domain_boundary"
+        },
+        "classified": true
       }
     }
   ],
@@ -1987,84 +1045,168 @@
       "event_mode": "plus_one",
       "direction": "+",
       "ends_on": "mixed_principal_left",
-      "status": "traced"
+      "masses": [
+        0.928,
+        0.8838772895243089,
+        1.0
+      ],
+      "status": "traced",
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
+      "valid": true
     },
     {
       "mixed_node": "mixed_principal_left",
       "event_mode": "plus_one",
       "direction": "-",
       "ends_on": "mixed_principal_left",
-      "status": "traced"
+      "masses": [
+        0.9321359250557786,
+        0.8887992542218717,
+        1.0
+      ],
+      "status": "traced",
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
+      "valid": true
     },
     {
       "mixed_node": "mixed_principal_left",
       "event_mode": "minus_one",
       "direction": "+",
       "ends_on": "mixed_principal_left",
-      "status": "traced"
+      "masses": [
+        0.931,
+        0.8898115763326967,
+        1.0
+      ],
+      "status": "traced",
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
+      "valid": true
     },
     {
       "mixed_node": "mixed_principal_left",
       "event_mode": "minus_one",
       "direction": "-",
       "ends_on": "mixed_principal_left",
-      "status": "traced"
+      "masses": [
+        0.9278582139401068,
+        0.881780332833661,
+        1.0
+      ],
+      "status": "traced",
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
+      "valid": true
     },
     {
       "mixed_node": "mixed_secondary_left",
       "event_mode": "minus_one",
       "direction": "+",
       "ends_on": "mixed_secondary_left",
-      "status": "traced"
+      "masses": [
+        0.992,
+        0.9932270129814613,
+        1.0
+      ],
+      "status": "traced",
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
+      "valid": true
     },
     {
       "mixed_node": "mixed_secondary_left",
       "event_mode": "minus_one",
       "direction": "-",
       "ends_on": "mixed_secondary_left",
-      "status": "traced"
+      "masses": [
+        0.9965211066328196,
+        0.9582464395071473,
+        1.0
+      ],
+      "status": "traced",
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
+      "valid": true
     },
     {
       "mixed_node": "mixed_secondary_left",
       "event_mode": "plus_one",
       "direction": "+",
       "ends_on": "mixed_secondary_left",
-      "status": "traced"
+      "masses": [
+        0.998,
+        0.9572604586484187,
+        1.0
+      ],
+      "status": "traced",
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
+      "valid": true
     },
     {
       "mixed_node": "mixed_secondary_left",
       "event_mode": "plus_one",
       "direction": "-",
       "ends_on": "mixed_secondary_left",
-      "status": "traced"
+      "masses": [
+        0.9935167332488387,
+        0.9527620520643765,
+        1.0
+      ],
+      "status": "traced",
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
+      "valid": true
     },
     {
       "mixed_node": "mixed_principal_right",
       "event_mode": "minus_one",
       "direction": "+",
       "ends_on": "mixed_principal_right",
-      "status": "traced"
+      "masses": [
+        1.048,
+        1.126804401432563,
+        1.0
+      ],
+      "status": "traced",
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
+      "valid": true
     },
     {
       "mixed_node": "mixed_principal_right",
       "event_mode": "minus_one",
       "direction": "-",
       "ends_on": "mixed_principal_right",
-      "status": "traced"
+      "masses": [
+        1.0550536128477475,
+        1.1387583089648676,
+        1.0
+      ],
+      "status": "traced",
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
+      "valid": true
     },
     {
       "mixed_node": "mixed_principal_right",
       "event_mode": "plus_one",
       "direction": "+",
       "ends_on": "mixed_principal_right",
-      "status": "traced"
+      "masses": [
+        1.051,
+        1.1366655420692178,
+        1.0
+      ],
+      "status": "traced",
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
+      "valid": true
     },
     {
       "mixed_node": "mixed_principal_right",
       "event_mode": "plus_one",
       "direction": "-",
       "ends_on": "mixed_principal_right",
-      "status": "traced"
+      "masses": [
+        1.05,
+        1.131789195654533,
+        1.0
+      ],
+      "status": "traced",
+      "source_artifact": "research/evidence/V1_MIXED_GERMS_2026-08-15.json",
+      "valid": true
     }
   ],
   "root_coverage": {
@@ -2072,27 +1214,68 @@
     "localized_roots": 620,
     "required_cells": 620,
     "complete": true,
-    "edge_count": 79,
+    "edge_count": 7,
     "cells_on_edges": 620,
     "duplicate_cell_ids": [],
     "missing_mixed_germs": [],
     "newton_failed": 0,
-    "completeness_passed": false
+    "completeness_passed": false,
+    "unclassified_edge_endpoints": [
+      {
+        "edge": "minus_one_u_to_s_1",
+        "side": "start",
+        "masses": [
+          0.996,
+          0.9645756252404868,
+          1.0
+        ],
+        "reserved_for": null
+      },
+      {
+        "edge": "minus_one_s_to_u_0",
+        "side": "start",
+        "masses": [
+          0.996,
+          0.9841352872863689,
+          1.0
+        ],
+        "reserved_for": null
+      },
+      {
+        "edge": "minus_one_s_to_u_0",
+        "side": "end",
+        "masses": [
+          1.042,
+          1.0454414398297092,
+          1.0
+        ],
+        "reserved_for": null
+      },
+      {
+        "edge": "plus_one_u_to_s_1",
+        "side": "end",
+        "masses": [
+          1.042,
+          1.0359819791033056,
+          1.0
+        ],
+        "reserved_for": null
+      }
+    ],
+    "classification_binding_errors": [],
+    "edge_topology_complete": false
   },
   "unexplained_nodes": [
+    "lower_plus_one_daughter",
+    "secondary_left_birth",
     "secondary_right_death"
   ],
   "missing_required_nodes": [],
   "organizer_count": 3,
   "daughter_classification": {
-    "required_for_v1_graph": false,
-    "status": "deferred_not_required_for_v1_graph",
-    "class": null
+    "required_for_v1_graph": true,
+    "status": "unresolved",
+    "class": "unknown"
   },
-  "completeness": null,
-  "provisional_components": [
-    "principal lower: +1 -> mixed -> -1 -> mixed -> +1",
-    "principal upper: Delta=0 Hamiltonian-Hopf",
-    "secondary lobe: unresolved left birth -> mixed -> unresolved right death"
-  ]
+  "completeness": null
 }

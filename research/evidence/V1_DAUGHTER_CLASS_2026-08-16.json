@@ -1,0 +1,15 @@
+{
+  "id": "lower_plus_one_daughter",
+  "kind": "branch",
+  "class": "distinct_branch",
+  "passed": true,
+  "status": "independently_reproduced",
+  "evidence_level": "independently_reproduced",
+  "estimator": "independent Julia BigFloat + Vern9 + full 8D variational generic trust-region Levenberg-Marquardt",
+  "note": "The physical soft direction defines a generic strict-periodic branch distinct from the same-mass Li parent; its reversing-symmetry partner is the same daughter.",
+  "trace_point_count": 18,
+  "maximum_trace_closure": 4.9792362659584235e-08,
+  "reversing_symmetry_distance": 3.8779440720421647e-07,
+  "independent_result_count": 1,
+  "known_limitation": "Global long-range daughter genealogy is outside this finite v1 critical-graph classification."
+}

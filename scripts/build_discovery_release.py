@@ -14,6 +14,7 @@ from threebody_atlas.discovery import (  # noqa: E402
     DiscoveryValidationError,
     build_dossier,
     load_manifest,
+    render_latex_claims,
     render_latex_status,
     render_summary,
     validate_manifest,
@@ -27,6 +28,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--require-solved", action="store_true")
     parser.add_argument("--validate-only", action="store_true")
     parser.add_argument("--emit-paper-status")
+    parser.add_argument("--emit-paper-claims")
     return parser.parse_args()
 
 
@@ -44,6 +46,11 @@ def main() -> int:
         tex_path = (ROOT / args.emit_paper_status).resolve()
         tex_path.parent.mkdir(parents=True, exist_ok=True)
         tex_path.write_text(render_latex_status(manifest), encoding="utf-8")
+
+    if args.emit_paper_claims:
+        claims_path = (ROOT / args.emit_paper_claims).resolve()
+        claims_path.parent.mkdir(parents=True, exist_ok=True)
+        claims_path.write_text(render_latex_claims(manifest), encoding="utf-8")
 
     summary = render_summary(manifest)
     if os.getenv("GITHUB_STEP_SUMMARY"):

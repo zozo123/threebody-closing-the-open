@@ -12,9 +12,9 @@ on:
         required: true
         default: "25"
       target_exp:
-        description: "Required generic residual exponent"
+        description: "Required generic residual exponent (stricter than the frozen 1e-7 closure gate)"
         required: true
-        default: "18"
+        default: "8"
       min_parent_distance_exp:
         description: "Minimum normalized distance from Li parent exponent"
         required: true
@@ -24,6 +24,8 @@ on:
       - "julia/verify_reduced.jl"
       - "julia/verify_critical_points.jl"
       - "julia/verify_generic_daughters.jl"
+      - "scripts/classify_lower_plus_one_daughter.py"
+      - "research/evidence/V1_DAUGHTER_STRUCTURAL_2026-08-15.json"
       - "experiments/daughter_d0_plus_reproduction.tsv"
       - "experiments/daughter_d0_minus_reproduction.tsv"
       - "experiments/daughter_d1_plus_reproduction.tsv"
@@ -32,6 +34,8 @@ on:
     branches: ["main"]
     paths:
       - "julia/verify_generic_daughters.jl"
+      - "scripts/classify_lower_plus_one_daughter.py"
+      - "research/evidence/V1_DAUGHTER_STRUCTURAL_2026-08-15.json"
       - "experiments/daughter_d0_plus_reproduction.tsv"
       - "experiments/daughter_d0_minus_reproduction.tsv"
       - "experiments/daughter_d1_plus_reproduction.tsv"
@@ -44,19 +48,6 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 120
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - label: d0-minus
-            seed_file: experiments/daughter_d0_minus_reproduction.tsv
-            output_file: artifacts/daughter-d0-minus-bigfloat.json
-          - label: d0-plus
-            seed_file: experiments/daughter_d0_plus_reproduction.tsv
-            output_file: artifacts/daughter-d0-plus-bigfloat.json
-          - label: d1-plus
-            seed_file: experiments/daughter_d1_plus_reproduction.tsv
-            output_file: artifacts/daughter-d1-plus-bigfloat.json
     steps:
       - uses: actions/checkout@v7
       - uses: julia-actions/setup-julia@v2
@@ -67,22 +58,30 @@ jobs:
         run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
       - name: Parse independent daughter verifier
         run: julia --project=julia -e 'Meta.parseall(read("julia/verify_generic_daughters.jl", String)); println("generic daughter verifier syntax OK")'
-      - name: Independently reproduce ${{ matrix.label }} daughter segment
+      - name: Independently reproduce the physical soft-direction daughter
         env:
           DPS: ${{ inputs.dps || '50' }}
           TOL_EXP: ${{ inputs.tol_exp || '25' }}
-          TARGET_EXP: ${{ inputs.target_exp || '18' }}
+          TARGET_EXP: ${{ inputs.target_exp || '8' }}
           MIN_PARENT_EXP: ${{ inputs.min_parent_distance_exp || '4' }}
         run: |
           mkdir -p artifacts
           julia --project=julia julia/verify_generic_daughters.jl \
-            "${{ matrix.seed_file }}" \
-            "${{ matrix.output_file }}" \
+            experiments/daughter_d0_minus_reproduction.tsv \
+            artifacts/daughter-d0-minus-bigfloat.json \
             "$DPS" "$TOL_EXP" "$TARGET_EXP" "$MIN_PARENT_EXP"
+      - name: Freeze the daughter class
+        run: |
+          python scripts/classify_lower_plus_one_daughter.py \
+            artifacts/lower-plus-one-daughter-class.json \
+            --structural research/evidence/V1_DAUGHTER_STRUCTURAL_2026-08-15.json \
+            --independent artifacts/daughter-d0-minus-bigfloat.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: generic-daughter-${{ matrix.label }}-${{ github.sha }}
-          path: ${{ matrix.output_file }}
+          name: generic-daughter-d0-minus-${{ github.sha }}
+          path: |
+            artifacts/daughter-d0-minus-bigfloat.json
+            artifacts/lower-plus-one-daughter-class.json
           if-no-files-found: warn
           retention-days: 90

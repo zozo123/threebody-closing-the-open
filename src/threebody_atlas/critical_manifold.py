@@ -519,6 +519,7 @@ def advance_augmented_critical(
     max_nfev: int = 70,
     screening_rtol: float = 3e-10,
     screening_atol: float = 3e-12,
+    use_jax_jacobian: bool = False,
 ) -> AugmentedCriticalPoint:
     """Take one full-state pseudo-arclength step on a critical component."""
     if previous.event_mode != current.event_mode:
@@ -537,7 +538,10 @@ def advance_augmented_critical(
     # Residual scales target the relative importance of the three constraints.
     closure_scale = 1e-6
     event_scale = 2e-4
-    arc_scale = max(normalized_step, 1e-4)
+    # Signed steps are useful when launching the two local germs from a known
+    # organizer.  The sign belongs in the predictor; the residual scale must
+    # remain positive.
+    arc_scale = max(abs(normalized_step), 1e-4)
     last: dict[str, object] = {}
 
     def residual(y: Array) -> Array:
@@ -555,11 +559,44 @@ def advance_augmented_critical(
         last["arc"] = arc
         return np.concatenate((closure / closure_scale, [critical / event_scale, arc / arc_scale]))
 
+    def jacobian(y: Array) -> Array:
+        # Optional discovery accelerator.  Acceptance always uses the SciPy
+        # DOP853 values above/below; JAX supplies derivatives only.
+        from .jax_diffrax import (  # noqa: PLC0415
+            adaptive_closure_and_jacobian,
+            adaptive_event_and_gradient,
+        )
+
+        _closure, closure_jac = adaptive_closure_and_jacobian(
+            y,
+            m3=current.sample.point.masses[2],
+            rtol=1e-10,
+            atol=1e-12,
+            max_steps=1 << 18,
+        )
+        _event, event_grad = adaptive_event_and_gradient(
+            y,
+            mode,
+            m3=current.sample.point.masses[2],
+            rtol=5e-10,
+            atol=5e-12,
+            max_steps=1 << 18,
+        )
+        arc_grad = tangent / scales
+        return np.vstack(
+            (
+                closure_jac / closure_scale,
+                event_grad[None, :] / event_scale,
+                arc_grad[None, :] / arc_scale,
+            )
+        )
+
     lower = np.asarray([-2.0, -10.0, -10.0, 0.1, 0.5, 0.5], dtype=float)
     upper = np.asarray([2.0, 10.0, 10.0, 20.0, 1.5, 1.5], dtype=float)
     fit = least_squares(
         residual,
         predictor,
+        jac=jacobian if use_jax_jacobian else "2-point",
         method="trf",
         bounds=(lower, upper),
         x_scale=scales,

@@ -1,11 +1,34 @@
-name: Secondary right mixed organizer E2E
+name: Secondary right endpoint
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - "scripts/locate_secondary_right_mixed.py"
+      - "scripts/classify_secondary_right_death.py"
+      - "scripts/trace_junction_organizer.py"
+      - "scripts/build_mixed_germs_from_junction.py"
+      - "scripts/trace_canonical_mixed_germs.py"
+      - "research/evidence/V1_SECONDARY_RIGHT_SCREEN_2026-08-16.json"
+      - "research/evidence/V1_SECONDARY_RIGHT_CANONICAL_2026-08-16.json"
+      - "src/threebody_atlas/critical_manifold.py"
+      - "julia/verify_mixed_vertices.jl"
+      - "julia/verify_mixed_vertices_canonical.jl"
+      - "julia/physical_quotient_bigfloat.jl"
+      - ".github/workflows/secondary-right-mixed-organizer.yml"
+      - "uv.lock"
+      - "julia/Manifest.toml"
   push:
     branches: ["main"]
     paths:
       - "scripts/locate_secondary_right_mixed.py"
+      - "scripts/classify_secondary_right_death.py"
+      - "scripts/trace_junction_organizer.py"
+      - "scripts/build_mixed_germs_from_junction.py"
+      - "scripts/trace_canonical_mixed_germs.py"
+      - "research/evidence/V1_SECONDARY_RIGHT_SCREEN_2026-08-16.json"
+      - "research/evidence/V1_SECONDARY_RIGHT_CANONICAL_2026-08-16.json"
+      - "src/threebody_atlas/critical_manifold.py"
       - "julia/verify_mixed_vertices.jl"
       - "julia/verify_mixed_vertices_canonical.jl"
       - "julia/physical_quotient_bigfloat.jl"
@@ -14,7 +37,7 @@ on:
       - "julia/Manifest.toml"
 
 concurrency:
-  group: secondary-right-mixed-${{ github.ref }}
+  group: secondary-right-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -25,9 +48,10 @@ env:
   JAX_ENABLE_X64: "true"
 
 jobs:
-  verify:
+  screen:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
       - name: Install uv
@@ -37,16 +61,8 @@ jobs:
           enable-cache: true
       - run: uv python install 3.13
       - run: uv sync --locked --extra accelerated
-      - uses: julia-actions/setup-julia@v2
-        with:
-          version: "1.11.9"
-      - uses: julia-actions/cache@v2
-      - name: Instantiate locked independent solver stack
-        run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
-      - name: Parse endpoint organizer drivers
-        run: |
-          python -m py_compile scripts/locate_secondary_right_mixed.py
-          julia --project=julia -e 'Meta.parseall(read("julia/verify_mixed_vertices.jl", String)); Meta.parseall(read("julia/verify_mixed_vertices_canonical.jl", String)); println("endpoint mixed verifier syntax OK")'
+      - name: Parse endpoint drivers
+        run: python -m py_compile scripts/locate_secondary_right_mixed.py scripts/classify_secondary_right_death.py
       - name: Fetch frozen Li-Li-Liao baseline
         run: |
           mkdir -p data/raw artifacts
@@ -63,42 +79,128 @@ jobs:
               raise SystemExit(f'baseline source changed: {got}')
           print('source_git_blob=', got, 'sha256=', hashlib.sha256(raw).hexdigest())
           PY
-      - name: Extract all published transition brackets
+      - name: Extract published transition brackets
         run: |
           uv run --no-sync python scripts/extract_mass_slice_brackets.py \
             data/raw/non-hierarchical-3b-supplementary_data.txt \
             artifacts/published-transition-brackets.tsv
-      - name: Continue both secondary walls through their hidden right endpoint
+      - name: Test the mixed-organizer hypothesis first, then continue adaptively
         run: |
           uv run --no-sync python scripts/locate_secondary_right_mixed.py \
             artifacts/published-transition-brackets.tsv \
             artifacts/secondary-right-mixed-screen.json \
             artifacts/secondary-right-mixed-seed.tsv \
             --seed-m1 1.042 \
-            --m1-step 0.00002 \
-            --steps 75 \
+            --m1-step 0.0001 \
+            --steps 12 \
             --m2-min 1.0 --m2-max 1.07 \
-            --max-m2-jump 0.004
-      - name: Independently reproduce simultaneous mixed root
-        run: |
-          julia --project=julia julia/verify_mixed_vertices.jl \
-            artifacts/secondary-right-mixed-seed.tsv \
-            artifacts/secondary-right-mixed-bigfloat.json \
-            50 25 18 12 6 4
-      - name: Independently classify physical canonical organizer
+            --max-m2-jump 0.004 \
+            --direct-max-nfev 250
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: secondary-right-screen-${{ github.sha }}
+          path: |
+            artifacts/secondary-right-mixed-screen.json
+            artifacts/secondary-right-mixed-seed.tsv
+          if-no-files-found: warn
+          retention-days: 90
+
+  canonical:
+    if: github.event_name == 'workflow_dispatch'
+    needs: screen
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v5
+        with:
+          name: secondary-right-screen-${{ github.sha }}
+          path: artifacts
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.11.9"
+      - uses: julia-actions/cache@v2
+      - name: Instantiate locked independent solver stack
+        run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+      - name: Parse canonical endpoint verifier
+        run: julia --project=julia -e 'Meta.parseall(read("julia/verify_mixed_vertices_canonical.jl", String)); println("canonical endpoint verifier syntax OK")'
+      - name: Independently reproduce and classify the physical organizer
         run: |
           julia --project=julia julia/verify_mixed_vertices_canonical.jl \
             artifacts/secondary-right-mixed-seed.tsv \
             artifacts/secondary-right-mixed-canonical.json \
             60 28 18 12
+          python scripts/classify_secondary_right_death.py \
+            artifacts/secondary-right-mixed-screen.json \
+            artifacts/secondary-right-death-class.json \
+            --canonical artifacts/secondary-right-mixed-canonical.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: secondary-right-mixed-organizer-${{ github.sha }}
+          name: secondary-right-canonical-${{ github.sha }}
           path: |
-            artifacts/secondary-right-mixed-screen.json
-            artifacts/secondary-right-mixed-seed.tsv
-            artifacts/secondary-right-mixed-bigfloat.json
             artifacts/secondary-right-mixed-canonical.json
+            artifacts/secondary-right-death-class.json
+          if-no-files-found: warn
+          retention-days: 90
+
+  germs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked --extra accelerated
+      - name: Trace four canonical-centered local germs
+        run: |
+          uv run --no-sync python scripts/trace_canonical_mixed_germs.py \
+            research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json \
+            research/evidence/V1_SECONDARY_RIGHT_SCREEN_2026-08-16.json \
+            research/evidence/V1_SECONDARY_RIGHT_CANONICAL_2026-08-16.json \
+            artifacts/secondary-right-mixed-germs.json \
+            --mixed-node secondary_right_death \
+            --cell 576 --cell 577 \
+            --step 0.00075
+      - name: Enforce the exact four-germ contract
+        run: |
+          uv run --no-sync python - <<'PY'
+          import json
+          from pathlib import Path
+          payload = json.loads(Path('artifacts/secondary-right-mixed-germs.json').read_text())
+          keys = {
+              (row.get('mixed_node'), row.get('event_mode'), row.get('direction'))
+              for row in payload.get('germs', [])
+              if row.get('status') == 'traced' and row.get('canonical_bound') is True
+          }
+          required = {
+              ('secondary_right_death', mode, direction)
+              for mode in ('plus_one', 'minus_one')
+              for direction in ('+', '-')
+          }
+          if keys != required:
+              raise SystemExit(f'right mixed germ mismatch: got={sorted(keys)} required={sorted(required)}')
+          if payload.get('passed') is not True:
+              raise SystemExit('right mixed germ artifact did not pass')
+          for row in payload['germs']:
+              if row.get('canonical_bracketed') is not True:
+                  raise SystemExit(f"unbracketed germ: {row.get('event_mode')}:{row.get('direction')}")
+              if abs(float(row.get('event', 'inf'))) > 2e-8:
+                  raise SystemExit(f"germ event gate missed: {row}")
+              if abs(float(row.get('closure', 'inf'))) > 1e-7:
+                  raise SystemExit(f"germ closure gate missed: {row}")
+          print('verified_germs=', len(keys))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: secondary-right-germs-${{ github.sha }}
+          path: |
+            artifacts/secondary-right-mixed-germs.json
           if-no-files-found: warn
           retention-days: 90

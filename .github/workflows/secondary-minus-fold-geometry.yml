@@ -14,11 +14,15 @@ on:
       arclength_steps:
         description: "Hybrid pseudo-arclength steps launched from each side"
         required: true
-        default: "40"
+        default: "50"
   push:
     branches: ["main"]
     paths:
       - "scripts/trace_secondary_minus_fold_geometry.py"
+      - "scripts/classify_secondary_left_birth.py"
+      - "julia/verify_secondary_minus_fold.jl"
+      - "experiments/secondary_minus_fold_bigfloat.tsv"
+      - "experiments/secondary_minus_fold_branches_bigfloat.tsv"
       - "src/threebody_atlas/critical_manifold.py"
       - "src/threebody_atlas/critical_geometry.py"
       - "src/threebody_atlas/hybrid_critical.py"
@@ -28,6 +32,10 @@ on:
   pull_request:
     paths:
       - "scripts/trace_secondary_minus_fold_geometry.py"
+      - "scripts/classify_secondary_left_birth.py"
+      - "julia/verify_secondary_minus_fold.jl"
+      - "experiments/secondary_minus_fold_bigfloat.tsv"
+      - "experiments/secondary_minus_fold_branches_bigfloat.tsv"
       - ".github/workflows/secondary-minus-fold-geometry.yml"
 
 permissions:
@@ -46,10 +54,9 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
-      - run: python -m py_compile scripts/trace_secondary_minus_fold_geometry.py
+      - run: python -m py_compile scripts/trace_secondary_minus_fold_geometry.py scripts/classify_secondary_left_birth.py
 
   trace-fold:
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 100
     steps:
@@ -86,7 +93,7 @@ jobs:
         env:
           M1_STEP: ${{ inputs.m1_step || '0.00002' }}
           DESCENT_STEPS: ${{ inputs.descent_steps || '20' }}
-          ARC_STEPS: ${{ inputs.arclength_steps || '40' }}
+          ARC_STEPS: ${{ inputs.arclength_steps || '50' }}
         run: |
           uv run --no-sync python scripts/trace_secondary_minus_fold_geometry.py \
             artifacts/published-transition-brackets.tsv \
@@ -104,4 +111,60 @@ jobs:
           name: secondary-minus-fold-geometry-${{ github.sha }}
           path: artifacts/secondary-minus-fold-geometry.json
           if-no-files-found: warn
+          retention-days: 90
+
+  bigfloat-fold:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+      - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32
+        with:
+          version: "1.11.9"
+      - uses: julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8
+      - name: Instantiate locked independent solver stack
+        run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+      - name: Parse independent fold verifier
+        run: julia --project=julia -e 'Meta.parseall(read("julia/verify_secondary_minus_fold.jl", String)); println("secondary fold verifier syntax OK")'
+      - name: Independently solve and verify fold nondegeneracy
+        run: |
+          mkdir -p artifacts
+          julia --project=julia julia/verify_secondary_minus_fold.jl \
+            experiments/secondary_minus_fold_bigfloat.tsv \
+            experiments/secondary_minus_fold_branches_bigfloat.tsv \
+            artifacts/secondary-minus-fold-bigfloat.json \
+            60 28 18 12 8
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: secondary-minus-fold-bigfloat-${{ github.sha }}
+          path: artifacts/secondary-minus-fold-bigfloat.json
+          if-no-files-found: warn
+          retention-days: 90
+
+  classify:
+    needs: [trace-fold, bigfloat-fold]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v5
+        with:
+          name: secondary-minus-fold-geometry-${{ github.sha }}
+          path: artifacts
+      - uses: actions/download-artifact@v5
+        with:
+          name: secondary-minus-fold-bigfloat-${{ github.sha }}
+          path: artifacts
+      - name: Freeze the independently reproduced left endpoint class
+        run: |
+          python scripts/classify_secondary_left_birth.py \
+            artifacts/secondary-minus-fold-geometry.json \
+            artifacts/secondary-left-birth-class.json \
+            --bigfloat artifacts/secondary-minus-fold-bigfloat.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: secondary-left-birth-class-${{ github.sha }}
+          path: artifacts/secondary-left-birth-class.json
+          if-no-files-found: error
           retention-days: 90

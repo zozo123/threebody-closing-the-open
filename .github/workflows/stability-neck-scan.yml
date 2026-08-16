@@ -2,10 +2,19 @@ name: Subgrid stability neck scan
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - "scripts/scan_stability_neck.py"
+      - "scripts/merge_stability_neck_scans.py"
+      - "src/threebody_atlas/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/stability-neck-scan.yml"
   push:
     branches: ["main"]
     paths:
       - "scripts/scan_stability_neck.py"
+      - "scripts/merge_stability_neck_scans.py"
       - "src/threebody_atlas/**"
       - "pyproject.toml"
       - "uv.lock"
@@ -19,8 +28,26 @@ env:
 
 jobs:
   scan:
+    name: m1=${{ matrix.m1_min }}..${{ matrix.m1_max }}
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # A 7x131 tile takes about 110 minutes on the hosted runner.  The previous
+    # 50-minute cap froze only three of seven lines and was therefore guaranteed
+    # to produce inadmissible partial checkpoints.
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - tile: "0"
+            m1_min: "0.9970"
+            m1_max: "0.9976"
+          - tile: "1"
+            m1_min: "0.9977"
+            m1_max: "0.9983"
+          - tile: "2"
+            m1_min: "0.9984"
+            m1_max: "0.9990"
     steps:
       - uses: actions/checkout@v7
       - name: Install uv
@@ -46,18 +73,47 @@ jobs:
               raise SystemExit(f'baseline source changed: {got}')
           print('source_git_blob=',got,'sha256=',hashlib.sha256(raw).hexdigest())
           PY
-      - name: Warm-start a ten-times-finer local mass grid
+      - name: Warm-start one checkpointed ten-times-finer mass tile
         run: |
           uv run --no-sync python scripts/scan_stability_neck.py \
             data/raw/non-hierarchical-3b-supplementary_data.txt \
-            artifacts/stability-neck-scan.json \
-            --m1-min 0.997 --m1-max 0.999 \
+            "artifacts/stability-neck-tile-${{ matrix.tile }}.json" \
+            --m1-min "${{ matrix.m1_min }}" --m1-max "${{ matrix.m1_max }}" \
             --m2-min 0.993 --m2-max 1.006 \
             --step 0.0001 --max-residual 1e-7
       - uses: actions/upload-artifact@v4
         if: always()
         with:
+          name: stability-neck-tile-${{ matrix.tile }}-${{ github.sha }}
+          path: artifacts/stability-neck-tile-${{ matrix.tile }}.json
+          if-no-files-found: warn
+          retention-days: 90
+
+  merge:
+    needs: scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - uses: actions/download-artifact@v5
+        with:
+          pattern: stability-neck-tile-*-${{ github.sha }}
+          path: artifacts/neck-tiles
+          merge-multiple: true
+      - name: Verify exact tile coverage and freeze the raster
+        run: |
+          python scripts/merge_stability_neck_scans.py \
+            artifacts/stability-neck-scan.json \
+            artifacts/neck-tiles/*.json \
+            --expected-m1-min 0.997 --expected-m1-max 0.999 \
+            --expected-m2-min 0.993 --expected-m2-max 1.006 \
+            --step 0.0001
+      - uses: actions/upload-artifact@v4
+        with:
           name: stability-neck-scan-${{ github.sha }}
           path: artifacts/stability-neck-scan.json
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 90

@@ -16,8 +16,6 @@ import argparse
 import json
 from pathlib import Path
 
-import numpy as np
-
 from threebody_atlas.baseline import iter_baseline
 from threebody_atlas.boundary import evaluate
 from threebody_atlas.liao_family import correct_family_point
@@ -26,6 +24,53 @@ from threebody_atlas.liao_family import correct_family_point
 def frange(start: float, stop: float, step: float) -> list[float]:
     count = int(round((stop - start) / step))
     return [round(start + i * step, 10) for i in range(count + 1)]
+
+
+def payload_for(
+    *,
+    args: argparse.Namespace,
+    m1_values: list[float],
+    samples: list[dict],
+    summaries: list[dict],
+    max_closure: float,
+    completed: bool,
+) -> dict:
+    positive_gaps = [
+        gap
+        for summary in summaries
+        for gap in summary["interior_unstable_gaps"]
+        if gap >= 0.0
+    ]
+    return {
+        "schema": "atlas.v1.stability-neck-scan/2",
+        "completed": completed,
+        "completed_m1_lines": len(summaries),
+        "expected_m1_lines": len(m1_values),
+        "grid": {
+            "m1": [args.m1_min, args.m1_max],
+            "m2": [args.m2_min, args.m2_max],
+            "step": args.step,
+            "samples": len(samples),
+        },
+        "max_shooting_residual": max_closure,
+        "minimum_resolved_unstable_gap": min(positive_gaps) if positive_gaps else None,
+        "any_vertical_merge": any(len(s["stable_intervals"]) <= 1 for s in summaries),
+        "line_summaries": summaries,
+        "samples": samples,
+        "claim_status": (
+            "completed float64 subgrid topology screen; critical boundaries require "
+            "continuation/BigFloat verification"
+            if completed
+            else "partial float64 subgrid topology checkpoint; not admissible as completeness evidence"
+        ),
+    }
+
+
+def write_checkpoint(path: Path, payload: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    temporary.replace(path)
 
 
 def main() -> None:
@@ -44,6 +89,7 @@ def main() -> None:
     by_key = {(round(r.m1, 3), round(r.m2, 3)): r for r in baseline}
     m1_values = frange(args.m1_min, args.m1_max, args.step)
     m2_values = frange(args.m2_min, args.m2_max, args.step)
+    output = Path(args.output)
     samples = []
     summaries = []
     max_closure = 0.0
@@ -118,24 +164,27 @@ def main() -> None:
                 "interior_unstable_gaps": gaps,
             }
         )
+        write_checkpoint(
+            output,
+            payload_for(
+                args=args,
+                m1_values=m1_values,
+                samples=samples,
+                summaries=summaries,
+                max_closure=max_closure,
+                completed=False,
+            ),
+        )
 
-    positive_gaps = [g for s in summaries for g in s["interior_unstable_gaps"] if g >= 0.0]
-    payload = {
-        "grid": {
-            "m1": [args.m1_min, args.m1_max],
-            "m2": [args.m2_min, args.m2_max],
-            "step": args.step,
-            "samples": len(samples),
-        },
-        "max_shooting_residual": max_closure,
-        "minimum_resolved_unstable_gap": min(positive_gaps) if positive_gaps else None,
-        "any_vertical_merge": any(len(s["stable_intervals"]) <= 1 for s in summaries),
-        "line_summaries": summaries,
-        "samples": samples,
-        "claim_status": "float64 subgrid topology screen; critical boundaries require continuation/BigFloat verification",
-    }
-    Path(args.output).parent.mkdir(parents=True, exist_ok=True)
-    Path(args.output).write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    payload = payload_for(
+        args=args,
+        m1_values=m1_values,
+        samples=samples,
+        summaries=summaries,
+        max_closure=max_closure,
+        completed=True,
+    )
+    write_checkpoint(output, payload)
     print(json.dumps({
         "samples": len(samples),
         "max_shooting_residual": max_closure,

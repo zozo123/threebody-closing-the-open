@@ -30,7 +30,11 @@ import numpy as np
 from scipy.optimize import least_squares
 
 from .critical_manifold import _flow_for_vector, event_value
-from .jax_diffrax import adaptive_closure_and_jacobian, adaptive_event_and_gradient
+from .jax_diffrax import (
+    adaptive_closure_and_jacobian,
+    adaptive_event_and_gradient,
+    adaptive_mixed_system_and_jacobian,
+)
 from .liao_family import FamilyPoint
 
 Array = np.ndarray
@@ -60,6 +64,8 @@ class DirectVertexResult:
     nfev: int
     optimality: float
     cost: float
+    optimizer_success: bool
+    optimizer_message: str
 
     @property
     def vector(self) -> Array:
@@ -112,6 +118,18 @@ def solve_direct_vertex(
         return np.concatenate((closure / closure_scale, [ea / event_scale, eb / event_scale]))
 
     def jacobian(y: Array) -> Array:
+        if mode == "mixed_plus_minus_one":
+            _values, joint = adaptive_mixed_system_and_jacobian(
+                y,
+                m3=m3,
+                rtol=5e-10,
+                atol=5e-12,
+                max_steps=1 << 18,
+            )
+            return np.vstack((
+                joint[:8] / closure_scale,
+                joint[8:10] / event_scale,
+            ))
         _closure_value, closure_jac = adaptive_closure_and_jacobian(
             y,
             m3=m3,
@@ -173,16 +191,17 @@ def solve_direct_vertex(
         floquet.beta - target_beta,
     ))
 
-    if not fit.success:
-        raise RuntimeError(f"direct vertex solve failed: {fit.message}")
     if closure_norm > max_closure or max(abs(ea), abs(eb)) > max_event:
         raise RuntimeError(
             f"direct vertex missed residual gates: closure={closure_norm:.3e}, "
-            f"events=({ea:.3e},{eb:.3e})"
+            f"events=({ea:.3e},{eb:.3e}), masses=({fit.x[4]:.12g},{fit.x[5]:.12g}), "
+            f"nfev={fit.nfev}, optimizer={fit.message}"
         )
     if invariant_error > max_invariant_error:
         raise RuntimeError(
-            f"direct vertex missed invariant target: error={invariant_error:.3e}"
+            f"direct vertex missed invariant target: error={invariant_error:.3e}, "
+            f"masses=({fit.x[4]:.12g},{fit.x[5]:.12g}), nfev={fit.nfev}, "
+            f"optimizer={fit.message}"
         )
 
     point = FamilyPoint(
@@ -206,4 +225,6 @@ def solve_direct_vertex(
         nfev=int(fit.nfev),
         optimality=float(fit.optimality),
         cost=float(fit.cost),
+        optimizer_success=bool(fit.success),
+        optimizer_message=str(fit.message),
     )

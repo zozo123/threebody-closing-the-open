@@ -2,16 +2,6 @@ name: Julia BigFloat secondary minus-one fold verifier
 
 on:
   workflow_dispatch:
-  push:
-    branches: ["main"]
-    paths:
-      - "julia/verify_secondary_minus_fold.jl"
-      - "julia/verify_critical_points.jl"
-      - "julia/verify_reduced.jl"
-      - "experiments/secondary_minus_fold_bigfloat.tsv"
-      - "julia/Project.toml"
-      - "julia/Manifest.toml"
-      - ".github/workflows/julia-secondary-minus-fold-verifier.yml"
 
 concurrency:
   group: julia-secondary-minus-fold-${{ github.ref }}
@@ -39,6 +29,7 @@ jobs:
           mkdir -p artifacts
           julia --project=julia julia/verify_secondary_minus_fold.jl \
             experiments/secondary_minus_fold_bigfloat.tsv \
+            experiments/secondary_minus_fold_branches_bigfloat.tsv \
             artifacts/secondary-minus-fold-bigfloat.json \
             60 28 18 12 8
       - uses: actions/upload-artifact@v4

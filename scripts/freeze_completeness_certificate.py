@@ -22,9 +22,35 @@ def main() -> None:
     neck = None
     if args.neck_scan:
         neck = json.loads(Path(args.neck_scan).read_text(encoding="utf-8"))
-    al_clean = bool(accepted) and not stable
-    neck_done = isinstance(neck, dict) and neck.get("grid") is not None
-    passed = al_clean and neck_done
+    al_clean = bool(
+        len(attempted) >= 12
+        and len(accepted) == len(attempted)
+        and not stable
+        and all(
+            row.get("shooting_success") is True
+            and float(row.get("shooting_residual", float("inf"))) <= 1e-7
+            for row in accepted
+        )
+    )
+    neck_grid = neck.get("grid", {}) if isinstance(neck, dict) else {}
+    neck_step = neck_grid.get("step")
+    neck_gap = neck.get("minimum_resolved_unstable_gap") if isinstance(neck, dict) else None
+    neck_done = bool(
+        isinstance(neck, dict)
+        and neck.get("completed") is True
+        and neck_grid
+        and neck_grid.get("samples")
+        and neck.get("line_summaries")
+        and float(neck.get("max_shooting_residual", float("inf"))) <= 1e-7
+    )
+    neck_clean = bool(
+        neck_done
+        and neck.get("any_vertical_merge") is False
+        and neck_gap is not None
+        and neck_step is not None
+        and float(neck_gap) + 1e-12 >= float(neck_step)
+    )
+    passed = al_clean and neck_clean
     record: dict[str, Any] = {
         "schema": "atlas.v1.completeness-certificate/1",
         "passed": passed,
@@ -50,20 +76,53 @@ def main() -> None:
             "minimum_resolved_unstable_gap": neck.get("minimum_resolved_unstable_gap"),
             "any_vertical_merge": neck.get("any_vertical_merge"),
             "max_shooting_residual": neck.get("max_shooting_residual"),
+            "completed": neck.get("completed"),
+            "topology_clean": neck_clean,
         },
         "note": (
             "Bounded completeness: no additional stability pocket found in the AL sample "
             "and the neck raster completed at the declared local resolution."
             if passed
-            else "Completeness not frozen: need a completed neck raster plus a clean AL pocket screen."
+            else (
+                "Completeness not frozen: require a completed, closure-gated neck raster with no "
+                "vertical merge and at least one resolved unstable-grid step, plus a clean AL pocket screen."
+            )
         ),
+        "sources": [
+            {
+                "role": "active_learning",
+                "path": str(args.al_screen),
+                "sha256": hashlib.sha256(Path(args.al_screen).read_bytes()).hexdigest(),
+            },
+            *(
+                [
+                    {
+                        "role": "neck_scan",
+                        "path": str(args.neck_scan),
+                        "sha256": hashlib.sha256(Path(args.neck_scan).read_bytes()).hexdigest(),
+                    }
+                ]
+                if args.neck_scan
+                else []
+            ),
+        ],
     }
-    text = json.dumps(record, indent=2) + "\n"
-    record["sha256_self"] = hashlib.sha256(text.encode()).hexdigest()
+    canonical = json.dumps(record, sort_keys=True, separators=(",", ":"))
+    record["sha256_content"] = hashlib.sha256(canonical.encode()).hexdigest()
     text = json.dumps(record, indent=2) + "\n"
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)
     Path(args.output).write_text(text, encoding="utf-8")
-    print(json.dumps({"passed": passed, "al_clean": al_clean, "neck_done": neck_done}, indent=2))
+    print(
+        json.dumps(
+            {
+                "passed": passed,
+                "al_clean": al_clean,
+                "neck_done": neck_done,
+                "neck_clean": neck_clean,
+            },
+            indent=2,
+        )
+    )
     if not passed:
         raise SystemExit(2)
 

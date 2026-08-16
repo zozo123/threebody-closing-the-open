@@ -9,6 +9,7 @@ import pytest
 from threebody_atlas.discovery import (
     DiscoveryValidationError,
     load_manifest,
+    render_latex_claims,
     sha256_file,
     validate_manifest,
 )
@@ -57,6 +58,13 @@ def test_release_claim_must_reference_evidence() -> None:
     ]
     with pytest.raises(DiscoveryValidationError, match="has no evidence"):
         validate_manifest(manifest, ROOT, today=date(2026, 8, 15))
+
+
+def test_latex_claims_exclude_candidates() -> None:
+    manifest = load_manifest(MANIFEST)
+    rendered = render_latex_claims(manifest)
+    assert "One Continuation Family" in rendered
+    assert "Coarse Event Network" not in rendered
 
 
 def _closed_manifest() -> dict:
@@ -112,6 +120,15 @@ def test_solved_manifest_requires_assembler_release_ready() -> None:
             item["path"] = "research/evidence/V1_CRITICAL_GRAPH.json"
             item.pop("sha256", None)
     with pytest.raises(DiscoveryValidationError, match="release_ready"):
+        validate_manifest(manifest, ROOT, today=date(2026, 8, 15))
+
+
+def test_solved_manifest_requires_hashed_release_ready_graph() -> None:
+    manifest = _closed_manifest()
+    for item in manifest["evidence"]:
+        if item.get("id") == "critical-graph-fixture":
+            item.pop("sha256")
+    with pytest.raises(DiscoveryValidationError, match="needs a hexadecimal sha256"):
         validate_manifest(manifest, ROOT, today=date(2026, 8, 15))
 
 
