@@ -19,23 +19,32 @@ scale-invariant invariants, and we treat the linear-stability boundary as the
 preimage of a universal Floquet domain rather than as a rectangular S/U mask.
 
 \textbf{Earned results.}
-(i)~The frozen catalog is one continuation-connected component in the declared
-gauge.
-(ii)~The principal lower transition at $m_1\approx0.80234$ is an independently
-reproduced physical $+1$ crossing with $m_2$ uncertainty $1.58\times10^{-9}$.
-(iii)~The principal upper transition at $m_1\approx0.80229$ is an independently
-reproduced opposite-Krein Hamiltonian--Hopf event with $m_2$ uncertainty
+(i)~The frozen catalog is supported as one continuation-connected component in
+the declared gauge; every adversarially chosen cut that could have separated it
+was crossed bidirectionally.
+(ii)~On the slice $m_1\approx0.80234$ the lower transition is an independently
+reproduced physical $+1$ crossing, bracketed to $m_2$ width
+$1.58\times10^{-9}$.
+(iii)~On the slice $m_1\approx0.80229$ the upper transition is an independently
+reproduced opposite-Krein Hamiltonian--Hopf event, bracketed to $m_2$ width
 $6.27\times10^{-9}$.
-(iv)~The three coarse $+1/-1$ switches are independently reproduced mixed
-organizers at $(\alpha,\beta)=(4,4)$.
+(iv)~Near each of the three coarse $+1/-1$ switches there is a root of
+$G_+=G_-=0$, recomputed at $60$ digits in an independent stack; those three
+artifacts sit at the \emph{high-precision supported} rung of the evidence
+ladder, one rung below the two bracketed events.
 
 \textbf{Not earned.}
-The connected critical graph is unfinished: $0/620$ catalog cells are frozen as
-graph edges; the secondary-lobe birth and death are unclassified; the lower
-$+1$ daughter is unclassified.
+The connected critical graph is unfinished.
+All $620$ published S/U cells are now localized once and assigned to seven
+mechanism polylines, but four edge ends remain unclassified, so the assembled
+edge incidence is still two components rather than one; the secondary-lobe
+birth and death are unclassified; the lower $+1$ daughter is unclassified;
+and completeness is not frozen.
 Scientific status remains OPEN.
 This is not a solution of the general three-body problem, and ``stable'' here
-means planar linear Floquet stability only.
+means planar linear Floquet stability only --- not nonlinear stability, not
+KAM stability, and not spatial stability.
+No priority claim is made.
 \end{abstract}
 
 \section{The problem, and what it is not}
@@ -83,8 +92,9 @@ The four gates are:
 \begin{description}
 \item[A] Independent BigFloat plus physical $E^\omega/E$ bind for every
 mechanism word the paper uses.
-\item[B] Connected critical graph: $620$ edges, classified endpoints, no
-``Newton failed''.
+\item[B] Connected critical graph: every published S/U cell assigned to exactly
+one mechanism polyline (the number of polylines need not be $620$), every edge
+end classified, no ``Newton failed'', completeness frozen.
 \item[C] Family identity by continuation, not by $(T,L)$ clusters.
 \item[D] Assembler \texttt{release\_ready}, same-day novelty,
 \texttt{--require-solved}.
@@ -165,14 +175,46 @@ principal upper $\Delta=0$,
 secondary lower $-1\to+1$,
 secondary upper $-1$.
 That census is a seed, not the graph.
+Its worst localized residual is $\lvert\text{event}\rvert=1.9898\times10^{-8}$
+against the frozen gate $2\times10^{-8}$, a margin of about $0.5\%$, with $165$
+of the $620$ roots above $10^{-8}$; the gate is cleared, but not comfortably.
 An off-grid active-learning screen of $12$ proposals all corrected onto the
 known sheet and none were screening-stable: no hidden island in that sample.
+
+\paragraph{How little ``completeness'' covers.}
+The word \emph{complete} is used here only in a bounded sense, and the bound is
+small.  The finest completeness input is the stability-neck raster, frozen over
+$m_1\in[0.997,0.999]$, $m_2\in[0.993,1.006]$ at step $10^{-4}$
+($2751$ samples).  That rectangle is
+$2.6\times10^{-5}$ of the $0.15$ area of the declared domain
+$m_1\in[0.8,1.1]$, $m_2\in[0.7,1.2]$: \textbf{0.0173\%}.
+Everywhere else, ``no hidden stability pocket'' rests on the published $0.001$
+grid and on a $12$-proposal off-grid sample.
+The figure is derived, not asserted: \texttt{scripts/completeness\_scope.py}
+reads the raster extent from the merge job of
+\texttt{.github/workflows/stability-neck-scan.yml} and the declared domain from
+\texttt{scripts/assemble\_critical\_graph.py}, and a test fails if the number
+quoted here drifts from it.
+
+\paragraph{The assembled graph is not yet connected.}
+Continuation-connectedness of the family sheet (Gate~C) and connectedness of
+the critical graph are different statements, and the second does not follow from
+the first.  In the committed
+\texttt{research/evidence/V1\_CRITICAL\_GRAPH.json}, four edge ends are still
+unclassified, so the edge incidence splits into two components ---
+$\{$domain-$m_1$-min, mixed-L, mixed-R, domain-$m_2$-max$\}$ and
+$\{$mixed-S$\}$ --- while five further declared nodes carry no edge at all.
+Attachment of an edge end to an organizer is also threshold-dependent: the
+assembler binds germs within a mass distance
+$\texttt{GERM\_ATTACH\_DISTANCE}=0.008$, and sweeping that constant shows the
+present six-attachment assembly survives only for thresholds in
+$[0.006351,0.009933]$, a window about $1.56\times$ wide.
 
 \section{What remains, and why the status is OPEN}
 
 \begin{enumerate}
-\item Localize all $620$ cells to event residual $\le 2\times10^{-8}$ and
-assign them to edges.
+\item Classify the four unclassified edge ends so the graph's edge incidence is
+one connected object rather than two components plus five unattached nodes.
 \item Classify the secondary-left $G_-$ birth (fold candidate near
 $(0.9957,0.9743)$) and the secondary-right death between $m_1=1.042$ and
 $1.043$.

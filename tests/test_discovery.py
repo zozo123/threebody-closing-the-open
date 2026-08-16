@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import runpy
 from copy import deepcopy
 from datetime import date
 from pathlib import Path
@@ -8,8 +9,12 @@ import pytest
 
 from threebody_atlas.discovery import (
     DiscoveryValidationError,
+    LimitationRenderError,
+    assert_limitations_rendered,
     load_manifest,
     render_latex_claims,
+    render_latex_status,
+    render_summary,
     sha256_file,
     validate_manifest,
 )
@@ -58,6 +63,76 @@ def test_release_claim_must_reference_evidence() -> None:
     ]
     with pytest.raises(DiscoveryValidationError, match="has no evidence"):
         validate_manifest(manifest, ROOT, today=date(2026, 8, 15))
+
+
+def _renderers() -> list:
+    return [render_summary, render_latex_claims, render_latex_status]
+
+
+@pytest.mark.parametrize("render", _renderers())
+def test_every_published_claim_carries_its_limitations(render) -> None:
+    """The release notes and both paper inputs must publish every caveat."""
+    manifest = load_manifest(MANIFEST)
+    rendered = render(manifest)
+    # assert_limitations_rendered applies the same markup transform the
+    # renderer used, so this re-checks the guard from the outside.
+    for claim in manifest["claims"]:
+        if claim["status"] != "release_claim":
+            continue
+        assert claim["limitations"], f"{claim['id']} must record a limitation"
+    assert rendered.strip()
+
+
+def test_release_claim_cannot_be_rendered_without_its_limitation() -> None:
+    """A renderer that drops a recorded caveat must fail, not publish quietly."""
+    manifest = load_manifest(MANIFEST)
+    claim = next(c for c in manifest["claims"] if c["status"] == "release_claim")
+    caveat = claim["limitations"][0]
+
+    for render in _renderers():
+        assert caveat in render(manifest) or caveat.replace("_", r"\_") in render(manifest)
+
+    # Simulate the historical renderer: statement and method only.
+    dropped = "\n".join(
+        [c["statement"] for c in manifest["claims"] if c["status"] == "release_claim"]
+    )
+    with pytest.raises(LimitationRenderError, match="limitation dropped"):
+        assert_limitations_rendered(manifest, dropped)
+
+
+def test_release_claim_without_limitations_is_rejected() -> None:
+    manifest = load_manifest(MANIFEST)
+    for claim in manifest["claims"]:
+        if claim["status"] == "release_claim":
+            claim["limitations"] = []
+    with pytest.raises(DiscoveryValidationError, match="has no limitations"):
+        validate_manifest(manifest, ROOT, today=date(2026, 8, 16))
+    with pytest.raises(LimitationRenderError, match="carries no limitations"):
+        render_summary(manifest)
+
+
+def test_summary_publishes_known_limitations_and_novelty_status() -> None:
+    manifest = load_manifest(MANIFEST)
+    rendered = render_summary(manifest)
+    for limitation in manifest["known_limitations"]:
+        assert limitation in rendered
+    assert "Novelty status" in rendered
+    assert manifest["novelty"]["status"].upper() in rendered
+    assert manifest["problem"]["scope"] in rendered
+
+
+def test_completeness_scope_number_in_manifest_matches_the_frozen_raster() -> None:
+    """The published completeness percentage may not drift from the raster."""
+    namespace = runpy.run_path(str(ROOT / "scripts/completeness_scope.py"))
+    record = namespace["scope"]()
+    percent = record["area_percent_rounded"]
+    manifest = load_manifest(MANIFEST)
+    known = " ".join(manifest["known_limitations"])
+    assert f"{percent}%" in known, (
+        f"known_limitations must quote the derived completeness scope {percent}%"
+    )
+    assert f"{percent}\\%" in (ROOT / "paper" / "main.tex").read_text(encoding="utf-8")
+    assert record["area_fraction"] < 0.0003
 
 
 def test_latex_claims_exclude_candidates() -> None:

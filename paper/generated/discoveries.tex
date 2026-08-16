@@ -1,33 +1,44 @@
-% Authorized release claims only. Fold, daughter class, and a fourth mixed
-% organizer are deliberately absent.
+% Generated from release_claim records in research/DISCOVERY_RELEASE.json.
 \sloppy
-\paragraph{One continuation family.}
-Within the frozen catalog and the declared v1 gauge, the $135{,}445$ orbits
-form one continuation-connected component.
-The 2023 two-set reading of the scale-invariant $(T,L)$ plot is a folded
-non-injective projection, not a dynamical split
-(certificate in \texttt{research/};
-Actions run 31877974928).
+\paragraph{One Continuation Family.}
+Within the frozen Li--Li--Liao catalog and the declared v1 gauge, the evidence supports a single continuation-connected component: the 135,445-row mass-grid adjacency graph is connected (270,087 adjacency edges), and every adversarially selected link that could have separated it was crossed bidirectionally by continuation without branch hysteresis, in the Li chart and again in a generic strict-periodic chart. No surviving rank-loss, directionality, chart-dependence, or worst-MST obstruction to connectivity was found. The competing two-set reading is a reading of the scale-invariant (T,L) projection, which on this sheet is demonstrably folded and non-injective, so two visible branches there do not by themselves establish two dynamical families.
 
-\paragraph{Principal lower $+1$.}
-At $m_1=0.8023446113666945$ the lower change of stability is an independently
-reproduced physical $+1$ crossing, $m_2\in[0.7540187211922449,0.7540187227698909]$,
-width $1.58\times10^{-9}$.
-The smaller-$m_2$ flank has a real reciprocal pair off the unit circle; the
-larger-$m_2$ flank is elliptic.
+\emph{Method.} Full-catalog adjacency plus bidirectional Li-chart and generic-chart continuation of 5 macroscopic MST cuts, 2 pathological invariant-near-duplicate bridges, a 647-point shooting-rank recensus with tight re-correction of the 28 lowest-rank samples, and a 20-edge adaptive worst-MST matrix (run 31877974928) with no surviving disconnection.
 
-\paragraph{Principal upper Hamiltonian--Hopf.}
-At $m_1=0.8022889780964406$ the upper change of stability is an independently
-reproduced opposite-Krein Hamiltonian--Hopf collision,
-$m_2\in[0.7592347034247101,0.7592347096924873]$, width $6.27\times10^{-9}$.
-The stable flank has two upper-half unit modes of opposite Krein sign; the
-unstable flank opens a reciprocal complex quartet (radius deviation $1.83\times10^{-2}$).
+\emph{Limitations.} Numerical continuation statement for the declared catalog domain, not a theorem about the full planar three-body moduli space. Continuation was certified on 27 adversarially chosen links (5 macroscopic bottlenecks, 2 invariant-near-duplicate bridges, the 20 globally worst MST chart jumps), not on all 135,444 MST edges; connectivity across the remainder rests on 0.001-grid adjacency plus the absence of any surviving obstruction. A negative adversarial search cannot exclude a separation finer than the 0.001 catalog grid, or outside the declared domain m1 in [0.8,1.1], m2 in [0.7,1.2] at m3=1. 'One component' is the decomposition best supported by this evidence under this gauge. It is not a disproof of the 2023 analysis on its own (T,L) terms, and it is not a statement about families of the general three-body problem.
 
-\paragraph{Three mixed organizers.}
-The three coarse $+1/-1$ switches are independently reproduced preimages of
-$(\alpha,\beta)=(4,4)$:
-principal-left $(0.9292391921,0.8853664625)$,
-secondary-left $(0.9967681995,0.9560193602)$,
-principal-right $(1.0495531867,1.1294758073)$.
-These are $0$-D roots. Event-arc germs are not yet a release claim.
-A fourth mixed organizer at the secondary-right death is \emph{not} claimed.
+\paragraph{Principal Lower Plus One.}
+On the slice m1=0.8023446113666945 with m3=1, the lower stability change of the sheet is bracketed at m2 in [0.7540187211922449, 0.7540187227698909] (width 1.58e-9) by a sign change of the event function, and is independently reproduced in a separate Julia BigFloat stack, with canonical Jacobi monodromy and physical E\^{}omega/E diagnostics, as a physical +1 crossing of the reduced return map. Across that bracket the smaller-m2 flank carries a real reciprocal pair off the unit circle and the larger-m2 flank is elliptic.
+
+\emph{Method.} Independent Julia BigFloat Vern9 correction and event bisection to a sign-change bracket, then canonical Jacobi monodromy and physical E\^{}omega/E evaluation on both flanks (run 31886247498).
+
+\emph{Limitations.} Planar linear Floquet only. One bracketed representative on one m1 slice; it does not certify the mechanism along the rest of the +1 edge. Flank spectra are evaluated at a fixed +/-5e-6 offset in m2, not as a limit at the critical point. A sign-change bracket at 60 digits localizes a root of the computed event function; it is not an interval-arithmetic existence proof and does not separately certify transversality.
+
+\paragraph{Principal Upper Hamiltonian Hopf.}
+On the slice m1=0.8022889780964406 with m3=1, the upper stability change of the sheet is bracketed at m2 in [0.7592347034247101, 0.7592347096924873] (width 6.27e-9) by a sign change of the event function, and is independently reproduced in a separate Julia BigFloat stack as an opposite-Krein Hamiltonian-Hopf collision. The stable flank has two upper-half unit modes of opposite Krein sign; the unstable flank opens a reciprocal complex quartet (radius deviation 1.83e-2).
+
+\emph{Method.} Independent Julia BigFloat event bracket plus physical E\^{}omega/E Krein diagnostics on both flanks of that bracket (run 31886247498).
+
+\emph{Limitations.} Hamiltonian-Hopf wording is authorized only at this exact bracket, not at neighboring catalog rows. Flank spectra are evaluated at a fixed +/-5e-6 offset in m2, not as a limit at the critical point. A sign-change bracket at 60 digits localizes a root of the computed event function; it is not an interval-arithmetic existence proof and does not separately certify the collision's nondegeneracy.
+
+\paragraph{Three Mixed Organizers.}
+Near each of the three coarse +1/-1 mechanism switches visible on the published 0.001 grid there is a root of the simultaneous conditions G+=G-=0, that is, a preimage of the universal spectral vertex (alpha,beta)=(4,4): principal-left (0.9292391921, 0.8853664625), secondary-left (0.9967681995, 0.9560193602), principal-right (1.0495531867, 1.1294758073). Each root was found by float64 mass-eliminated Newton and then recomputed at 60 digits by an independent Julia BigFloat mass Newton with canonical Jacobi monodromy and physical E\^{}omega/E classification.
+
+\emph{Method.} Float64 mass-eliminated Newton for G+=G-=0, then independent Julia BigFloat mass Newton and physical E\^{}omega/E classification (run 31886247456).
+
+\emph{Limitations.} 0-D roots, not yet event-arc germs. A possible fourth mixed organizer at the secondary-right death is not claimed. The three frozen artifacts declare themselves at the 'high\_precision\_supported' rung of the evidence ladder, not at 'independently\_reproduced'; only the two headline events reach the higher rung. This claim must not be worded as an independent reproduction. Each root is localized by Newton residual (relative event norm of order 1e-14), not by a sign-change bracket or interval arithmetic. Identifying a coarse grid switch with the nearby root is a proximity argument at the 0.001 grid resolution. The assembler binds continuation germs within GERM\_ATTACH\_DISTANCE = 0.008 in mass, and that threshold is admissible only inside a window roughly 1.56x wide, [0.006351, 0.009933].
+
+\paragraph{Known limitations of this release.}
+\begin{itemize}
+\item This is not a solution of the general three-body problem. Every result here is scoped to one published catalog, one declared gauge, and planar linear Floquet stability.
+\item The mechanism-resolved critical graph is not finished. SOLVED is forbidden.
+\item v1 'stable' means planar linear Floquet stability only: not nonlinear stability, not KAM stability, not spatial (non-planar) stability.
+\item Gate A pass is scoped to mechanism words the paper is allowed to use. Fold, fourth mixed, and daughter labels remain unauthorized.
+\item The one-family statement is a numerical continuation certificate for the declared catalog domain.
+\item Negative literature searches are not a novelty theorem, and no priority claim ('first', 'the first') is authorized.
+\item 'Completeness' is bounded, and its bound is small. The frozen stability-neck raster covers m1 in [0.997,0.999] x m2 in [0.993,1.006] at step 1e-4, which is 0.0173\% of the declared domain m1 in [0.8,1.1] x m2 in [0.7,1.2]. Outside that rectangle, completeness rests on the published 0.001 grid and a 12-proposal off-grid active-learning sample. Derive the figure with scripts/completeness\_scope.py; it is read from the merge job of .github/workflows/stability-neck-scan.yml and from DECLARED\_DOMAIN in scripts/assemble\_critical\_graph.py.
+\item The 620/620 critical-root census clears the frozen event gate with little room: maximum |event| is 1.9898e-8 against the frozen gate of 2e-8, a margin of about 0.5 percent, and 165 of the 620 roots exceed 1e-8. Verify from research/evidence/V1\_HYBRID\_CRITICAL\_ROOTS\_2026-08-15.json.
+\item The assembled graph is not yet one connected object. Taking research/evidence/V1\_CRITICAL\_GRAPH.json as committed, the edge incidence yields two components among the edge-incident nodes ({domain\_m1\_min, mixed\_principal\_left, mixed\_principal\_right, domain\_m2\_max} and {mixed\_secondary\_left}), because four edge ends are still unclassified; five further declared nodes (both headline event representatives, both secondary endpoints, the daughter) have no edge incidence at all. Continuation-connectedness of the family sheet (Gate C) is a different statement from connectedness of this critical graph, and does not imply it.
+\item Germ attachment is threshold-dependent. The assembler binds an edge end to a mixed organizer when the mass distance is at most GERM\_ATTACH\_DISTANCE = 0.008; re-running the assembler over a sweep of that constant shows the current six-attachment assembly is reproduced only for thresholds in [0.006351, 0.009933], a window about 1.56x wide. Below it an attachment is lost; above it a seventh, unintended attachment appears.
+\item The novelty audit is stale against Gate D's own rule. Gate D demands a same-day literature search; the manifest records last\_search\_date 2026-08-15 with novelty.status 'pending'. See research/NOVELTY\_AUDIT.md for what must be refreshed, and by whom, before any solved release.
+\end{itemize}

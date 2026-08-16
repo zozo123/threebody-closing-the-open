@@ -1586,3 +1586,70 @@ def test_merger_refuses_julia_m2_outside_source_bracket(tmp_path) -> None:
             assert exc.code not in (0, None)
     finally:
         sys.argv = argv
+
+
+def test_published_caveats_match_the_committed_evidence() -> None:
+    """The manifest's honesty caveats must stay true of the artifacts on disk.
+
+    Each assertion re-derives a number that the public release notes quote.
+    If an artifact changes and the prose does not, this fails.
+    """
+    manifest = json.loads((ROOT / "research/DISCOVERY_RELEASE.json").read_text())
+    known = " ".join(manifest["known_limitations"])
+
+    census = json.loads(
+        (ROOT / "research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json").read_text()
+    )
+    events = [abs(float(row["event"])) for row in census["roots"]]
+    gate = float(census["frozen_gates"]["event"])
+    assert len(events) == 620
+    assert f"{max(events):.4e}".replace("e-08", "e-8") == "1.9898e-8"
+    assert "1.9898e-8" in known
+    assert sum(1 for value in events if value > 1e-8) == 165
+    assert "165 of the 620" in known
+    assert max(events) <= gate
+
+    graph = json.loads((ROOT / "research/evidence/V1_CRITICAL_GRAPH.json").read_text())
+    parent: dict[str, str] = {}
+
+    def find(item: str) -> str:
+        parent.setdefault(item, item)
+        while parent[item] != item:
+            parent[item] = parent[parent[item]]
+            item = parent[item]
+        return item
+
+    incident: set[str] = set()
+    for edge in graph["edges"]:
+        start = edge["endpoints"]["start"].get("node")
+        end = edge["endpoints"]["end"].get("node")
+        for name in (start, end):
+            if name:
+                incident.add(name)
+                find(name)
+        if start and end:
+            parent[find(start)] = find(end)
+    components = {find(name) for name in incident}
+    assert len(components) > 1, "known_limitations claims the edge incidence is disconnected"
+    isolated = [n["id"] for n in graph["nodes"] if n["id"] not in incident]
+    assert len(isolated) == 5
+    assert "five further declared nodes" in known
+
+
+def test_germ_attach_distance_window_matches_the_published_number() -> None:
+    """0.008 is a modelling choice; the release notes must quote its real slack."""
+    import runpy
+
+    namespace = runpy.run_path(str(ROOT / "scripts/audit_germ_attachment_window.py"))
+    record = namespace["window"]()
+    low, high = record["admissible_window"]
+    assert record["default_germ_attach_distance"] == 0.008
+    assert record["default_inside_window"] is True
+    manifest = json.loads((ROOT / "research/DISCOVERY_RELEASE.json").read_text())
+    prose = " ".join(manifest["known_limitations"]) + " ".join(
+        limitation
+        for claim in manifest["claims"]
+        for limitation in claim.get("limitations", [])
+    )
+    assert f"[{low:.6f}, {high:.6f}]" in prose
+    assert f"{record['window_ratio']:.2f}x" in prose

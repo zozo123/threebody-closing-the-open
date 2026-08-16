@@ -74,11 +74,22 @@ The generated dossier contains:
 - the original `DISCOVERY_RELEASE.json`;
 - a normalized `discovery.json` with commit/run metadata and SHA-256 for every included repository file;
 - `DISCOVERY_SUMMARY.md`, answering what was solved, how, evidence, remaining blockers, limitations, and novelty status;
+  this file is the `--notes-file` of the public GitHub Release, so it is the version of the result the world reads;
 - a frozen source/evidence snapshot under `source/`;
 - generated release artifacts such as the manuscript under `generated/`;
 - `SHA256SUMS` for the dossier itself.
 
 External GitHub Actions evidence is not copied blindly. The manifest records its immutable run ID, artifact ID, and artifact ZIP SHA-256 so the release claim points to a specific retained computation.
+
+## Caveats cannot be dropped in rendering
+
+A manifest that records a limitation and a renderer that omits it publish two different results, and the published one is always the stronger. Because `DISCOVERY_SUMMARY.md` becomes the body of a public GitHub Release, rendering is guarded rather than trusted:
+
+- `validate_manifest` rejects any `release_claim` that records no `limitations`;
+- `render_summary`, `render_latex_claims`, and `render_latex_status` each emit every claim's limitations, the manifest-level `known_limitations`, and the novelty status;
+- each of those renderers ends by calling `assert_limitations_rendered`, which re-reads the manifest and raises `LimitationRenderError` if any recorded caveat is missing from the text it is about to return — so a renderer that regressed would fail the build rather than publish a claim stripped of its caveats.
+
+`tests/test_discovery.py` pins this: a claim carrying a limitation cannot be rendered without it, and a release claim with no limitation at all is rejected by both the validator and the renderer.
 
 ## Promoting the final result
 
