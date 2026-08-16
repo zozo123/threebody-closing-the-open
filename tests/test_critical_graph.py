@@ -834,6 +834,7 @@ def test_assembler_is_the_only_path_to_a_fully_ready_graph(tmp_path) -> None:
             "--germs", str(germs),
             "--germs", str(right_germs),
             "--completeness", str(completeness),
+            "--sign-topology", str(_clean_sign_topology(tmp_path)),
         ],
     )
     assert graph["release_ready"] is False
@@ -860,6 +861,7 @@ def test_assembler_is_the_only_path_to_a_fully_ready_graph(tmp_path) -> None:
             "--daughter", str(daughter),
             "--germs", str(base_germs),
             "--completeness", str(completeness),
+            "--sign-topology", str(_clean_sign_topology(tmp_path)),
         ],
     )
     assert graph["release_ready"] is False
@@ -880,6 +882,7 @@ def test_assembler_is_the_only_path_to_a_fully_ready_graph(tmp_path) -> None:
             "--germs", str(base_germs),
             "--germs", str(right_germs),
             "--completeness", str(completeness),
+            "--sign-topology", str(_clean_sign_topology(tmp_path)),
         ],
         expected_ready=True,
     )
@@ -910,6 +913,7 @@ def test_assembler_is_the_only_path_to_a_fully_ready_graph(tmp_path) -> None:
             "--germs", str(base_germs),
             "--germs", str(right_germs),
             "--completeness", str(completeness),
+            "--sign-topology", str(_clean_sign_topology(tmp_path)),
         ],
     )
     assert graph["release_ready"] is False
@@ -1097,6 +1101,35 @@ def test_nonconvergent_germ_leaves_its_edge_endpoint_unclassified(tmp_path) -> N
 # (2) distinct boundary exits are distinct nodes
 # ---------------------------------------------------------------------------
 
+
+
+def _clean_sign_topology(tmp_path) -> Path:
+    """A sign-topology audit reporting no missing curve.
+
+    The assembler's sign_topology_clean conjunct is FAIL-CLOSED: with no audit
+    supplied the answer is false, because not having looked is not the same as
+    having looked and found nothing.  Fixtures that exercise the rest of the
+    release configuration therefore have to supply one explicitly, which is the
+    intended friction -- it is no longer possible to reach release_ready without
+    someone having asked whether the catalogue is the whole catalogue.
+    """
+    path = tmp_path / "sign_topology_clean.json"
+    path.write_text(
+        json.dumps(
+            {
+                "schema": "atlas.v1.sign-topology-audit/1",
+                "probe_count": 0,
+                "violation_counts": {
+                    "missing_critical_curve": 0,
+                    "forbidden_component_flip": 0,
+                    "no_flip_across_edge": 0,
+                    "face_state_mismatch": 0,
+                },
+                "note": "SYNTHETIC FIXTURE, NOT EVIDENCE",
+            }
+        )
+    )
+    return path
 
 def _release_graph(tmp_path) -> dict:
     """The full release configuration, with numerics-complete germ fixtures."""
@@ -1674,15 +1707,21 @@ def test_published_caveats_match_the_committed_evidence() -> None:
         f"the committed graph's edge incidence now has {len(components)} components, not 3; "
         "update the 'assembled graph is not yet one connected object' limitation"
     )
-    assert len(isolated) == 4, (
-        f"{len(isolated)} nodes now carry no edge incidence, not 4; "
+    assert len(isolated) == 3, (
+        f"{len(isolated)} nodes now carry no edge incidence, not 3; "
         "update the known_limitations wording to match"
     )
     assert "three components" in known
-    assert "four further declared nodes" in known
-    assert len(graph["root_coverage"]["unclassified_edge_endpoints"]) == 2
-    assert "two edge ends" in known
-    assert graph["unexplained_nodes"] == ["secondary_left_birth"]
+    assert "three further declared nodes" in known
+    # Both of these closed on 2026-08-16 when the independent BigFloat fold
+    # verification landed and secondary_left_birth became a projection_fold.
+    assert graph["root_coverage"]["unclassified_edge_endpoints"] == []
+    assert graph["unexplained_nodes"] == []
+    # What holds release_ready false is no longer a missing classification but a
+    # missing CURVE: the catalogue is not the complete critical set.
+    assert graph["release_ready"] is False
+    assert graph["root_coverage"]["sign_topology_clean"] is False
+    assert "not the complete critical set" in known
 
 
 def test_germ_attach_distance_window_matches_the_published_number() -> None:
