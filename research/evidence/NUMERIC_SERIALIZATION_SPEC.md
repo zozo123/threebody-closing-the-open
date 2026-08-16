@@ -269,6 +269,6 @@ arbitrary binary values at their declared BigFloat precision, decimal rational
 semantics, and interval ordering.
 
 The repository does not yet contain the proof-verifier implementation tracked by
-#162. Until it exists, no artifact may claim proof-verifier round-trip conformance.
+issue `#162`. Until it exists, no artifact may claim proof-verifier round-trip conformance.
 The format's integer, rational, binary, and hash components are deliberately chosen
 so that a later verifier need not depend on host floating-point parsing.

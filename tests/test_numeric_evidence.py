@@ -84,6 +84,10 @@ def test_generated_artifacts_are_current_and_mutations_pass():
     audit = json.loads(AUDIT.read_text(encoding="utf-8"))
     assert audit["passed"] is True
     assert audit["case_count"] == len(audit["cases"]) == 15
+    rejected = [case for case in audit["cases"] if case["expected"] == "rejected"]
+    assert all(case["rejection_code"].startswith("ATLAS_NUMERIC_") for case in rejected)
+    assert all(case["exception_type"] in {"NumericEvidenceError", "ValidationError"} for case in rejected)
+    assert all("pydantic" not in case["diagnostic"].lower() for case in rejected)
 
 
 def test_roundtrip_matrix_replays_canonical_and_reference_identities():

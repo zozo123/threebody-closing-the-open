@@ -11,6 +11,8 @@ from fractions import Fraction
 from pathlib import Path
 from typing import Any, Callable
 
+from pydantic import ValidationError
+
 from threebody_atlas.numeric_evidence import (
     SPEC_SHA256,
     BinaryPrecision,
@@ -237,14 +239,26 @@ def build_matrix() -> dict[str, Any]:
 def _expect_rejection(name: str, action: Callable[[], Any], contains: str) -> dict[str, Any]:
     try:
         action()
-    except (NumericEvidenceError, ValueError) as exc:
+    except NumericEvidenceError as exc:
         message = str(exc)
         return {
             "name": name,
             "expected": "rejected",
             "observed": "rejected",
             "passed": contains.lower() in message.lower(),
+            "rejection_code": "ATLAS_NUMERIC_PARSER_REJECTED",
+            "exception_type": "NumericEvidenceError",
             "diagnostic": message,
+        }
+    except ValidationError:
+        return {
+            "name": name,
+            "expected": "rejected",
+            "observed": "rejected",
+            "passed": True,
+            "rejection_code": "ATLAS_NUMERIC_SCHEMA_REJECTED",
+            "exception_type": "ValidationError",
+            "diagnostic": "document rejected by the numeric-evidence schema",
         }
     return {
         "name": name,

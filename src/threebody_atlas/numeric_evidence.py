@@ -20,7 +20,7 @@ from typing import Annotated, Any, Literal, TypeAlias
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
 SCHEMA_VERSION = "atlas.numeric-evidence.v1"
-SPEC_SHA256 = "ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3"
+SPEC_SHA256 = "bb93a39787195716603abf45b4fd2f6dfa7b4301c852a9449ff442caefaf54a0"
 
 _CANONICAL_INTEGER = re.compile(r"-?(?:0|[1-9][0-9]*)\Z")
 _FIELD_NAME = re.compile(r"[a-z][a-z0-9_.-]*\Z")
