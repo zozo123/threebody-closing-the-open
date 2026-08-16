@@ -177,16 +177,37 @@ def plan_lattice(
 ) -> Lattice:
     """Choose scan lines and per-line m2 samples from the raster geometry alone.
 
-    The stride is applied to the *global* slice list before ``m1_range`` is
+    Two anchoring decisions, both of which matter:
+
+    The m1 stride is applied to the *global* slice list before ``m1_range`` is
     imposed, so a shard cover of the domain plans the same lattice a single run
-    would.  No published label and no committed edge enters this function.
+    would.
+
+    The m2 stride is applied to the *global* m2 axis -- the union of every
+    slice's rows -- rather than to each slice's own rows.  The published support
+    starts at a different m2 on nearly every slice, so a per-slice stride would
+    give adjacent scan lines almost no m2 values in common, and the cross-line
+    sign changes (the only ones that can see a curve steep enough to slip
+    between two scan lines) would be computable in the middle of the domain and
+    nowhere else.  Each slice additionally keeps its own first and last row, so
+    the lattice always reaches the edge of the support.
+
+    No published label and no committed edge enters this function.
     """
     all_m1 = sorted(m2_by_m1)
-    selected_m1 = [m for m in strided(all_m1, m1_stride) if m1_range[0] - 1e-12 <= m <= m1_range[1] + 1e-12]
+    selected_m1 = [
+        m for m in strided(all_m1, m1_stride) if m1_range[0] - 1e-12 <= m <= m1_range[1] + 1e-12
+    ]
+    global_axis = sorted({m2 for rows in m2_by_m1.values() for m2 in rows})
+    anchored = set(strided(global_axis, m2_stride))
     points: list[tuple[float, tuple[float, ...]]] = []
     for m1 in selected_m1:
-        in_window = [m2 for m2 in sorted(m2_by_m1[m1]) if m2_range[0] - 1e-12 <= m2 <= m2_range[1] + 1e-12]
-        m2s = strided(in_window, m2_stride)
+        in_window = [
+            m2 for m2 in sorted(m2_by_m1[m1]) if m2_range[0] - 1e-12 <= m2 <= m2_range[1] + 1e-12
+        ]
+        if len(in_window) < 2:
+            continue
+        m2s = sorted({m2 for m2 in in_window if m2 in anchored} | {in_window[0], in_window[-1]})
         if len(m2s) >= 2:
             points.append((m1, tuple(m2s)))
     return Lattice(tuple(m1 for m1, _ in points), tuple(points))

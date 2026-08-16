@@ -108,6 +108,31 @@ def test_strided_always_keeps_the_support_boundary():
     assert set(kept) <= set(values)
 
 
+def test_adjacent_scan_lines_share_their_m2_samples_even_where_the_support_shifts():
+    """The published support starts at a different m2 on nearly every slice.
+
+    Anchoring the m2 stride to each slice's own first row would make adjacent
+    scan lines almost disjoint in m2, and the cross-line sign changes -- the
+    only ones that can see a curve steep enough to slip between two scan lines
+    -- would be computable in the middle of the domain and nowhere else.
+    """
+    # Support that slides down by one raster row per slice, as it does below m1
+    # = 0.87 in the frozen raster.
+    m2_by_m1 = {
+        round(0.80 + 0.001 * i, 3): [round(0.75 - 0.001 * i + 0.001 * j, 3) for j in range(120)]
+        for i in range(40)
+    }
+    lattice = SWEEP.plan_lattice(
+        m2_by_m1, m1_stride=10, m2_stride=5, m1_range=(0.8, 1.1), m2_range=(0.0, 2.0)
+    )
+    per_line = dict(lattice.points)
+    lines = sorted(per_line)
+    for left, right in zip(lines, lines[1:], strict=False):
+        shared = set(per_line[left]) & set(per_line[right])
+        # Not a token overlap: most of the shorter line must be shared.
+        assert len(shared) >= 0.8 * min(len(per_line[left]), len(per_line[right]))
+
+
 def test_sharding_cannot_change_which_points_are_probed():
     """A cover by shards plans exactly the lattice one unsharded run would.
 
