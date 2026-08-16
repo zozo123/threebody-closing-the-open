@@ -148,6 +148,13 @@ if [[ $# -ne 1 ]]; then
   exit 64
 fi
 
+# Resolve OUTPUT against the CALLER's cwd -- this script cd's to the repo root
+# below, so a bare relative path would otherwise silently land in the repo
+# instead of where the caller asked.  Then, if the resolved path is inside the
+# repo, express it back as repo-relative: the assembler echoes its --output into
+# stdout, the closure runner captures that stdout into its provenance ledger,
+# and an absolute path there would make the ledger machine-specific and defeat
+# its byte-reproducibility.  Correct destination, reproducible record.
 OUTPUT="$1"
 case "$OUTPUT" in
   /*) ;;
@@ -159,6 +166,10 @@ esac
 # reproduces byte-for-byte when these stay repo-relative and the cwd is the repo
 # root.  That is why this script cd's above, and why OUTPUT is absolutised first.
 read -r -a PYTHON_CMD <<<"${PYTHON:-uv run --no-sync python}"
+
+case "$OUTPUT" in
+  "$REPO_ROOT"/*) OUTPUT="${OUTPUT#"$REPO_ROOT"/}" ;;
+esac
 
 "${PYTHON_CMD[@]}" scripts/assemble_critical_graph.py \
   --output "$OUTPUT" \

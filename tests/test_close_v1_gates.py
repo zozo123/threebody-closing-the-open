@@ -175,8 +175,12 @@ def test_chain_runs_end_to_end_and_is_not_release_ready(evidence_dir, capsys):
     # and the completeness certificate verified, so neither is a blocker.
     assert "no_unexplained_nodes" not in blockers
     assert "completeness_certificate_verified" not in blockers
-    # What remains is the genuine open work, reported exactly.
-    assert "no_missing_mixed_germs" in blockers
+    # What remains is the genuine open work, reported exactly.  Until 2026-08-16
+    # that was no_missing_mixed_germs; the twelve headline germs were regenerated
+    # with real numbers that day, so the sole remaining blocker is the one the
+    # sign-topology audit found: seven gate-passing critical curves outside the
+    # committed edges.
+    assert "sign_topology_clean" in blockers
 
     graph = json.loads((evidence_dir / runner.CRITICAL_GRAPH).read_text())
     assert graph["release_ready"] is False

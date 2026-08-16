@@ -57,10 +57,18 @@ def release_inputs(script: Path = RELEASE_INVOCATION) -> list[str]:
     onto a superseded germ artifact in the first place.
     """
     text = script.read_text(encoding="utf-8")
-    match = re.search(r"^\s*\"\$\{PYTHON_CMD\[@\]\}\".*?(?=\n\s*\n|\Z)", text, re.M | re.S)
+    # The canonical invocation builds its flags in an EVIDENCE_ARGS array so the
+    # closure runner can enumerate them via PRINT_INPUTS without a second copy of
+    # the list.  Parse that array, not the "${PYTHON_CMD[@]}" line, and resolve
+    # the two documented ${VAR:-default} overrides to their committed defaults.
+    match = re.search(r"^EVIDENCE_ARGS=\((.*?)^\)", text, re.M | re.S)
     if match is None:
-        raise RuntimeError(f"{script} has no assembler invocation")
-    tokens = shlex.split(match.group(0).replace("\\\n", " "))
+        raise RuntimeError(f"{script} has no EVIDENCE_ARGS array")
+    defaults = dict(re.findall(r'^(\w+)="\$\{\1:-([^}]*)\}"', text, re.M))
+    body = match.group(1)
+    for name, value in defaults.items():
+        body = body.replace(f'"${name}"', value).replace(f"${name}", value)
+    tokens = shlex.split(body)
     inputs: list[str] = []
     index = 0
     while index < len(tokens):
