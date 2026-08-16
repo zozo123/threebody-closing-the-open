@@ -871,6 +871,16 @@ def release_conjuncts(graph: dict[str, Any]) -> list[dict[str, Any]]:
             ),
         },
         {
+            "conjunct": "sign_topology_clean",
+            "satisfied": bool(coverage.get("sign_topology_clean")),
+            "detail": coverage.get("sign_topology_errors") or [],
+            "explanation": (
+                "a sign-vector face-consistency audit must show no critical curve "
+                "outside the committed edges; fail-closed, because not having "
+                "looked is not the same as having looked and found nothing"
+            ),
+        },
+        {
             "conjunct": "all_headline_nodes_passed",
             "satisfied": not unpassed_headline,
             "detail": unpassed_headline,
