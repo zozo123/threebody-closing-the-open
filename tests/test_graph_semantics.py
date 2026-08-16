@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import json
 import random
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -241,6 +242,68 @@ def test_parallel_edge_multiplicity_is_semantic():
     comparison = compare_graphs(graph, duplicated, ComparisonLevel.TOPOLOGY_ONLY)
     assert not comparison.equivalent
     assert {difference.kind for difference in comparison.differences} == {"added_edge"}
+
+
+def _referenced_evidence_paths(document: dict) -> set[str]:
+    paths: set[str] = set()
+    for node in document.get("nodes", []):
+        evidence = node.get("evidence")
+        if isinstance(evidence, str) and evidence:
+            paths.add(evidence)
+    for edge in document.get("edges", []):
+        endpoints = edge.get("endpoints") or {}
+        for endpoint in endpoints.values():
+            if not isinstance(endpoint, dict):
+                continue
+            binding = endpoint.get("binding_evidence")
+            if isinstance(binding, str) and binding:
+                paths.add(binding)
+    return paths
+
+
+def test_deleted_referenced_evidence_fails_closed(tmp_path: Path):
+    document = json.loads(SOURCE.read_text(encoding="utf-8"))
+    referenced = sorted(_referenced_evidence_paths(document))
+    assert referenced
+    for relative in referenced:
+        destination = tmp_path / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / relative, destination)
+    graph_path = tmp_path / "mutated-critical-graph.json"
+    graph_path.write_text(json.dumps(document), encoding="utf-8")
+    present = load_graph(graph_path, repository_root=tmp_path)
+    assert any(node.evidence and node.evidence.artifact_sha256s for node in present.nodes)
+
+    deleted = tmp_path / referenced[0]
+    deleted.unlink()
+    with pytest.raises(GraphSemanticsError, match="missing or unreadable"):
+        load_graph(graph_path, repository_root=tmp_path)
+
+
+def test_renamed_binding_evidence_fails_closed(tmp_path: Path):
+    document = json.loads(SOURCE.read_text(encoding="utf-8"))
+    edge = next(
+        item
+        for item in document["edges"]
+        if (item.get("endpoints") or {}).get("start", {}).get("binding_evidence")
+    )
+    original = edge["endpoints"]["start"]["binding_evidence"]
+    edge["endpoints"]["start"]["binding_evidence"] = original.replace(
+        ".json", ".renamed-away.json"
+    )
+    graph_path = tmp_path / "renamed-evidence-graph.json"
+    graph_path.write_text(json.dumps(document), encoding="utf-8")
+    with pytest.raises(GraphSemanticsError, match="missing or unreadable"):
+        load_graph(graph_path, repository_root=ROOT)
+    # The original artifact still exists; only the referenced name changed.
+    assert (ROOT / original).is_file()
+
+
+def test_null_evidence_still_loads_without_a_digest():
+    graph = shipped_graph()
+    domain = next(node for node in graph.nodes if node.id.startswith("domain_"))
+    assert domain.evidence is not None
+    assert domain.evidence.artifact_sha256s == ()
 
 
 def test_evidence_is_excluded_until_the_strictest_level():

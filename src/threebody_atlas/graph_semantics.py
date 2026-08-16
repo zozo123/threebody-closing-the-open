@@ -909,12 +909,29 @@ def compare_graphs(
     )
 
 
-def _artifact_digest(path: str | None, root: Path | None) -> str | None:
-    if path is None or root is None:
+def _artifact_digest(path: Any, root: Path | None, *, label: str) -> str | None:
+    """Hash a referenced evidence file.
+
+    A missing path is allowed and means "no supporting artifact". A non-null
+    path must resolve to a readable file under ``root``; otherwise evidence
+    equivalence would silently compare two unverifiable reconstructions.
+    """
+    if path is None:
         return None
-    candidate = root / path
+    if not isinstance(path, str) or not path:
+        raise GraphSemanticsError(f"{label} must be a non-empty path")
+    if root is None:
+        raise GraphSemanticsError(
+            f"{label} {path!r} cannot be hashed without a repository root"
+        )
+    root = root.resolve()
+    candidate = (root / path).resolve()
+    try:
+        candidate.relative_to(root)
+    except ValueError as exc:
+        raise GraphSemanticsError(f"{label} artifact escapes the repository: {path}") from exc
     if not candidate.is_file():
-        return None
+        raise GraphSemanticsError(f"{label} artifact is missing or unreadable: {path}")
     return hashlib.sha256(candidate.read_bytes()).hexdigest()
 
 
@@ -965,7 +982,12 @@ def adapt_v1_critical_graph(
                 axis=str(exit_coordinate["axis"]),
                 value=_canonical_decimal(exit_coordinate["grid_value"]),
             )
-        artifact = _artifact_digest(raw.get("evidence"), repository_root)
+        node_id = str(raw.get("id") or "<missing-id>")
+        artifact = _artifact_digest(
+            raw.get("evidence"),
+            repository_root,
+            label=f"node {node_id} evidence",
+        )
         evidence = EvidenceIdentity(
             status=str(raw["status"]) if raw.get("status") is not None else None,
             level=str(raw["evidence_level"]) if raw.get("evidence_level") is not None else None,
@@ -1000,11 +1022,20 @@ def adapt_v1_critical_graph(
         endpoint_document = raw.get("endpoints") or {}
         start = endpoint_document.get("start") or {}
         end = endpoint_document.get("end") or {}
+        edge_id = str(raw.get("id") or "<missing-id>")
         artifacts = {
             digest
             for digest in (
-                _artifact_digest(start.get("binding_evidence"), repository_root),
-                _artifact_digest(end.get("binding_evidence"), repository_root),
+                _artifact_digest(
+                    start.get("binding_evidence"),
+                    repository_root,
+                    label=f"edge {edge_id} start binding_evidence",
+                ),
+                _artifact_digest(
+                    end.get("binding_evidence"),
+                    repository_root,
+                    label=f"edge {edge_id} end binding_evidence",
+                ),
             )
             if digest is not None
         }

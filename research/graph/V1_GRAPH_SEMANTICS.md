@@ -142,7 +142,10 @@ This is the default scientific comparison level.
 
 Adds evidence state, level, pass bit, content digests, and hashed supporting payloads.
 Two graphs may be sheet-aware equivalent while differing at this level because one
-uses stale or different evidence.
+uses stale or different evidence. A non-null `evidence` or `binding_evidence`
+path must resolve to a readable artifact and be hashed; a missing or renamed
+reference fails closed at load time instead of dropping the digest and comparing
+as evidence-equivalent.
 
 ## 5. Coordinate tolerance
 
