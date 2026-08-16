@@ -1,0 +1,417 @@
+{
+  "case_count": 10,
+  "cases": [
+    {
+      "canonical_json": "{\"fields\":{\"case.float64-one\":{\"display\":\"1.000\",\"release_critical\":true,\"unit\":{\"dimension\":\"dimensionless\",\"symbol\":\"1\",\"system\":\"dimensionless\"},\"value\":{\"bits\":\"3ff0000000000000\",\"kind\":\"float64\",\"precision\":{\"bits\":53,\"mode\":\"binary\",\"rounding\":\"nearest_ties_even\"}}}},\"producer\":{\"implementation\":\"threebody_atlas.numeric_evidence\",\"version\":\"v1\"},\"schema_version\":\"atlas.numeric-evidence.v1\",\"spec_sha256\":\"ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3\"}",
+      "canonical_sha256": "5a44bf327288fd9306bb566b50c315e1b5214d4bf1eeb9204023bc7ecb30e944",
+      "compact_reference_base64": "Rj/wAAAAAAAA",
+      "compact_reference_sha256": "0de29df33517827b4a9d2f3fb02cba01c2ebae2699afa1f055c7be27ee602733",
+      "decoded": {
+        "bits": "3ff0000000000000",
+        "negative_zero": false,
+        "type": "float64"
+      },
+      "document": {
+        "fields": {
+          "case.float64-one": {
+            "display": "1.000",
+            "release_critical": true,
+            "unit": {
+              "dimension": "dimensionless",
+              "symbol": "1",
+              "system": "dimensionless"
+            },
+            "value": {
+              "bits": "3ff0000000000000",
+              "kind": "float64",
+              "precision": {
+                "bits": 53,
+                "mode": "binary",
+                "rounding": "nearest_ties_even"
+              }
+            }
+          }
+        },
+        "producer": {
+          "implementation": "threebody_atlas.numeric_evidence",
+          "version": "v1"
+        },
+        "schema_version": "atlas.numeric-evidence.v1",
+        "spec_sha256": "ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3"
+      },
+      "name": "float64-one"
+    },
+    {
+      "canonical_json": "{\"fields\":{\"case.float64-negative-zero\":{\"display\":\"-0\",\"release_critical\":true,\"unit\":{\"dimension\":\"dimensionless\",\"symbol\":\"1\",\"system\":\"dimensionless\"},\"value\":{\"bits\":\"8000000000000000\",\"kind\":\"float64\",\"precision\":{\"bits\":53,\"mode\":\"binary\",\"rounding\":\"nearest_ties_even\"}}}},\"producer\":{\"implementation\":\"threebody_atlas.numeric_evidence\",\"version\":\"v1\"},\"schema_version\":\"atlas.numeric-evidence.v1\",\"spec_sha256\":\"ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3\"}",
+      "canonical_sha256": "2fe5004021daacf84072fa615afe50d914d43632bbcedc2dbd8be4adf6a9d5ce",
+      "compact_reference_base64": "RoAAAAAAAAAA",
+      "compact_reference_sha256": "77d087042710da042d6e4a19b913fc5d32d521ed19141e990b62933120feb1c8",
+      "decoded": {
+        "bits": "8000000000000000",
+        "negative_zero": true,
+        "type": "float64"
+      },
+      "document": {
+        "fields": {
+          "case.float64-negative-zero": {
+            "display": "-0",
+            "release_critical": true,
+            "unit": {
+              "dimension": "dimensionless",
+              "symbol": "1",
+              "system": "dimensionless"
+            },
+            "value": {
+              "bits": "8000000000000000",
+              "kind": "float64",
+              "precision": {
+                "bits": 53,
+                "mode": "binary",
+                "rounding": "nearest_ties_even"
+              }
+            }
+          }
+        },
+        "producer": {
+          "implementation": "threebody_atlas.numeric_evidence",
+          "version": "v1"
+        },
+        "schema_version": "atlas.numeric-evidence.v1",
+        "spec_sha256": "ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3"
+      },
+      "name": "float64-negative-zero"
+    },
+    {
+      "canonical_json": "{\"fields\":{\"case.float64-min-subnormal\":{\"display\":\"4.9406564584124654e-324\",\"release_critical\":true,\"unit\":{\"dimension\":\"dimensionless\",\"symbol\":\"1\",\"system\":\"dimensionless\"},\"value\":{\"bits\":\"0000000000000001\",\"kind\":\"float64\",\"precision\":{\"bits\":53,\"mode\":\"binary\",\"rounding\":\"nearest_ties_even\"}}}},\"producer\":{\"implementation\":\"threebody_atlas.numeric_evidence\",\"version\":\"v1\"},\"schema_version\":\"atlas.numeric-evidence.v1\",\"spec_sha256\":\"ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3\"}",
+      "canonical_sha256": "5517112faa881e109c7f5181e2e765b89fdf321f205f437d56f1a6bbc93dc0aa",
+      "compact_reference_base64": "RgAAAAAAAAAB",
+      "compact_reference_sha256": "412c084fa9f17e2e57dc9c2fb8856485dd3348c6b2f77dbf68d478028e2e2449",
+      "decoded": {
+        "bits": "0000000000000001",
+        "negative_zero": false,
+        "type": "float64"
+      },
+      "document": {
+        "fields": {
+          "case.float64-min-subnormal": {
+            "display": "4.9406564584124654e-324",
+            "release_critical": true,
+            "unit": {
+              "dimension": "dimensionless",
+              "symbol": "1",
+              "system": "dimensionless"
+            },
+            "value": {
+              "bits": "0000000000000001",
+              "kind": "float64",
+              "precision": {
+                "bits": 53,
+                "mode": "binary",
+                "rounding": "nearest_ties_even"
+              }
+            }
+          }
+        },
+        "producer": {
+          "implementation": "threebody_atlas.numeric_evidence",
+          "version": "v1"
+        },
+        "schema_version": "atlas.numeric-evidence.v1",
+        "spec_sha256": "ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3"
+      },
+      "name": "float64-min-subnormal"
+    },
+    {
+      "canonical_json": "{\"fields\":{\"case.binary-200-bit\":{\"release_critical\":true,\"unit\":{\"dimension\":\"dimensionless\",\"symbol\":\"1\",\"system\":\"dimensionless\"},\"value\":{\"exponent2\":-199,\"kind\":\"binary\",\"precision\":{\"bits\":200,\"mode\":\"binary\",\"rounding\":\"nearest_ties_even\"},\"significand\":\"803469022129495137770981046170581301261101496891396417650689\"}}},\"producer\":{\"implementation\":\"threebody_atlas.numeric_evidence\",\"version\":\"v1\"},\"schema_version\":\"atlas.numeric-evidence.v1\",\"spec_sha256\":\"ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3\"}",
+      "canonical_sha256": "6d140fc418bcb767469f4c030e6d30b5933fe90ce92d0da54f79f1160be5cbae",
+      "compact_reference_base64": "QgAAAAAZgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf////////85AAAAyAAAABFuZWFyZXN0X3RpZXNfZXZlbg==",
+      "compact_reference_sha256": "9b31ddcf6795f7e35a61016ea6b960d73e6af1d75ae5463dd1bd3b1f9edf2e70",
+      "decoded": {
+        "denominator": "803469022129495137770981046170581301261101496891396417650688",
+        "numerator": "803469022129495137770981046170581301261101496891396417650689",
+        "type": "rational"
+      },
+      "document": {
+        "fields": {
+          "case.binary-200-bit": {
+            "release_critical": true,
+            "unit": {
+              "dimension": "dimensionless",
+              "symbol": "1",
+              "system": "dimensionless"
+            },
+            "value": {
+              "exponent2": -199,
+              "kind": "binary",
+              "precision": {
+                "bits": 200,
+                "mode": "binary",
+                "rounding": "nearest_ties_even"
+              },
+              "significand": "803469022129495137770981046170581301261101496891396417650689"
+            }
+          }
+        },
+        "producer": {
+          "implementation": "threebody_atlas.numeric_evidence",
+          "version": "v1"
+        },
+        "schema_version": "atlas.numeric-evidence.v1",
+        "spec_sha256": "ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3"
+      },
+      "name": "binary-200-bit"
+    },
+    {
+      "canonical_json": "{\"fields\":{\"case.decimal-60-digit-context\":{\"display\":\"3.14159265358979323846264338327950288419716939937510582097494\",\"release_critical\":true,\"unit\":{\"definition\":\"period in the frozen G=1 atlas normalization\",\"dimension\":\"time\",\"symbol\":\"T\",\"system\":\"atlas_normalized\"},\"value\":{\"coefficient\":\"314159265358979323846264338327950288419716939937510582097494\",\"exponent10\":-59,\"kind\":\"decimal\",\"precision\":{\"digits\":60,\"mode\":\"decimal\",\"rounding\":\"nearest_ties_even\"}}}},\"producer\":{\"implementation\":\"threebody_atlas.numeric_evidence\",\"version\":\"v1\"},\"schema_version\":\"atlas.numeric-evidence.v1\",\"spec_sha256\":\"ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3\"}",
+      "canonical_sha256": "344082e4c9f172c58de1870d01eb2c4a3061d20ed11fff79c6e8c5bbddd5801a",
+      "compact_reference_base64": "RAAAAAAZMgxnxczKza4BkgASgaJuny/hrLPI8N+WVv/////////FAAAAPAAAABFuZWFyZXN0X3RpZXNfZXZlbg==",
+      "compact_reference_sha256": "f771e913acbb0656acbe78c836b6ef1fc761a79335820780b1ae4e8f9a623ebf",
+      "decoded": {
+        "coefficient_exponent": "3.14159265358979323846264338327950288419716939937510582097494",
+        "type": "decimal"
+      },
+      "document": {
+        "fields": {
+          "case.decimal-60-digit-context": {
+            "display": "3.14159265358979323846264338327950288419716939937510582097494",
+            "release_critical": true,
+            "unit": {
+              "definition": "period in the frozen G=1 atlas normalization",
+              "dimension": "time",
+              "symbol": "T",
+              "system": "atlas_normalized"
+            },
+            "value": {
+              "coefficient": "314159265358979323846264338327950288419716939937510582097494",
+              "exponent10": -59,
+              "kind": "decimal",
+              "precision": {
+                "digits": 60,
+                "mode": "decimal",
+                "rounding": "nearest_ties_even"
+              }
+            }
+          }
+        },
+        "producer": {
+          "implementation": "threebody_atlas.numeric_evidence",
+          "version": "v1"
+        },
+        "schema_version": "atlas.numeric-evidence.v1",
+        "spec_sha256": "ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3"
+      },
+      "name": "decimal-60-digit-context"
+    },
+    {
+      "canonical_json": "{\"fields\":{\"case.large-integer\":{\"release_critical\":true,\"unit\":{\"dimension\":\"dimensionless\",\"symbol\":\"1\",\"system\":\"dimensionless\"},\"value\":{\"kind\":\"integer\",\"precision\":{\"mode\":\"exact\"},\"value\":\"6864797660130609714981900799081393217269435300143305409394463459185543183397656052122559640661454554977296311391480858037121987999716643812574028291115057151\"}}},\"producer\":{\"implementation\":\"threebody_atlas.numeric_evidence\",\"version\":\"v1\"},\"schema_version\":\"atlas.numeric-evidence.v1\",\"spec_sha256\":\"ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3\"}",
+      "canonical_sha256": "b14bb9596210e6e061d4dcd566f578e05e1e320e7ae81b6d63ef2dc95ea8e4af",
+      "compact_reference_base64": "SQAAAABCAf//////////////////////////////////////////////////////////////////////////////////////",
+      "compact_reference_sha256": "de10c80a521ddbf8edace1cf913054dffa331881c74d1463e38784a7de850e8a",
+      "decoded": {
+        "denominator": "1",
+        "numerator": "6864797660130609714981900799081393217269435300143305409394463459185543183397656052122559640661454554977296311391480858037121987999716643812574028291115057151",
+        "type": "rational"
+      },
+      "document": {
+        "fields": {
+          "case.large-integer": {
+            "release_critical": true,
+            "unit": {
+              "dimension": "dimensionless",
+              "symbol": "1",
+              "system": "dimensionless"
+            },
+            "value": {
+              "kind": "integer",
+              "precision": {
+                "mode": "exact"
+              },
+              "value": "6864797660130609714981900799081393217269435300143305409394463459185543183397656052122559640661454554977296311391480858037121987999716643812574028291115057151"
+            }
+          }
+        },
+        "producer": {
+          "implementation": "threebody_atlas.numeric_evidence",
+          "version": "v1"
+        },
+        "schema_version": "atlas.numeric-evidence.v1",
+        "spec_sha256": "ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3"
+      },
+      "name": "large-integer"
+    },
+    {
+      "canonical_json": "{\"fields\":{\"case.exact-rational\":{\"display\":\"-355/113\",\"release_critical\":true,\"unit\":{\"dimension\":\"dimensionless\",\"symbol\":\"1\",\"system\":\"dimensionless\"},\"value\":{\"denominator\":\"113\",\"kind\":\"rational\",\"numerator\":\"-355\",\"precision\":{\"mode\":\"exact\"}}}},\"producer\":{\"implementation\":\"threebody_atlas.numeric_evidence\",\"version\":\"v1\"},\"schema_version\":\"atlas.numeric-evidence.v1\",\"spec_sha256\":\"ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3\"}",
+      "canonical_sha256": "a4023bf794975e6afb87f444bec271265bf48395b8c5d0403934106f338ef729",
+      "compact_reference_base64": "UgEAAAACAWMAAAAAAXE=",
+      "compact_reference_sha256": "41ebd7a243edb96994edfa2dccd411126051e7a9df3df6d55a688b3cb51d9fca",
+      "decoded": {
+        "denominator": "113",
+        "numerator": "-355",
+        "type": "rational"
+      },
+      "document": {
+        "fields": {
+          "case.exact-rational": {
+            "display": "-355/113",
+            "release_critical": true,
+            "unit": {
+              "dimension": "dimensionless",
+              "symbol": "1",
+              "system": "dimensionless"
+            },
+            "value": {
+              "denominator": "113",
+              "kind": "rational",
+              "numerator": "-355",
+              "precision": {
+                "mode": "exact"
+              }
+            }
+          }
+        },
+        "producer": {
+          "implementation": "threebody_atlas.numeric_evidence",
+          "version": "v1"
+        },
+        "schema_version": "atlas.numeric-evidence.v1",
+        "spec_sha256": "ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3"
+      },
+      "name": "exact-rational"
+    },
+    {
+      "canonical_json": "{\"fields\":{\"case.closed-decimal-interval\":{\"display\":\"[0.7540187211922449, 0.7540187227698909]\",\"release_critical\":true,\"unit\":{\"definition\":\"mass ratio in the frozen m3=1 atlas normalization\",\"dimension\":\"mass_ratio\",\"symbol\":\"m2/m3\",\"system\":\"atlas_normalized\"},\"value\":{\"kind\":\"interval\",\"lower\":{\"coefficient\":\"7540187211922449\",\"exponent10\":-16,\"kind\":\"decimal\",\"precision\":{\"digits\":60,\"mode\":\"decimal\",\"rounding\":\"nearest_ties_even\"}},\"lower_closed\":true,\"upper\":{\"coefficient\":\"7540187227698909\",\"exponent10\":-16,\"kind\":\"decimal\",\"precision\":{\"digits\":60,\"mode\":\"decimal\",\"rounding\":\"nearest_ties_even\"}},\"upper_closed\":true}}},\"producer\":{\"implementation\":\"threebody_atlas.numeric_evidence\",\"version\":\"v1\"},\"schema_version\":\"atlas.numeric-evidence.v1\",\"spec_sha256\":\"ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3\"}",
+      "canonical_sha256": "6ff48f15d0d19e1cf7d8a2129d147260ac910023fb1437ed06f46d1a7886ddcb",
+      "compact_reference_base64": "VgMAAAAuRAAAAAAHGsnCpE58Ef/////////wAAAAPAAAABFuZWFyZXN0X3RpZXNfZXZlbgAAAC5EAAAAAAcaycKlPzbd//////////AAAAA8AAAAEW5lYXJlc3RfdGllc19ldmVu",
+      "compact_reference_sha256": "11931f4b5c2f46090ea77bd888cfbd01b5ddd085825cc20da700e43a68b83c7e",
+      "decoded": {
+        "lower": "7540187211922449/10000000000000000",
+        "lower_closed": true,
+        "type": "interval",
+        "upper": "7540187227698909/10000000000000000",
+        "upper_closed": true
+      },
+      "document": {
+        "fields": {
+          "case.closed-decimal-interval": {
+            "display": "[0.7540187211922449, 0.7540187227698909]",
+            "release_critical": true,
+            "unit": {
+              "definition": "mass ratio in the frozen m3=1 atlas normalization",
+              "dimension": "mass_ratio",
+              "symbol": "m2/m3",
+              "system": "atlas_normalized"
+            },
+            "value": {
+              "kind": "interval",
+              "lower": {
+                "coefficient": "7540187211922449",
+                "exponent10": -16,
+                "kind": "decimal",
+                "precision": {
+                  "digits": 60,
+                  "mode": "decimal",
+                  "rounding": "nearest_ties_even"
+                }
+              },
+              "lower_closed": true,
+              "upper": {
+                "coefficient": "7540187227698909",
+                "exponent10": -16,
+                "kind": "decimal",
+                "precision": {
+                  "digits": 60,
+                  "mode": "decimal",
+                  "rounding": "nearest_ties_even"
+                }
+              },
+              "upper_closed": true
+            }
+          }
+        },
+        "producer": {
+          "implementation": "threebody_atlas.numeric_evidence",
+          "version": "v1"
+        },
+        "schema_version": "atlas.numeric-evidence.v1",
+        "spec_sha256": "ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3"
+      },
+      "name": "closed-decimal-interval"
+    },
+    {
+      "canonical_json": "{\"fields\":{\"case.sha256\":{\"release_critical\":true,\"unit\":{\"dimension\":\"dimensionless\",\"symbol\":\"1\",\"system\":\"dimensionless\"},\"value\":{\"algorithm\":\"sha256\",\"digest\":\"b56fcc9ccc139c143c2509f2f600f1643225e8889cdc7d33b05c28de1b4afc6b\",\"kind\":\"hash\"}}},\"producer\":{\"implementation\":\"threebody_atlas.numeric_evidence\",\"version\":\"v1\"},\"schema_version\":\"atlas.numeric-evidence.v1\",\"spec_sha256\":\"ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3\"}",
+      "canonical_sha256": "22a6af691b54ac213647077205e281a840de7bb044957c5131434ca7aefe8c38",
+      "compact_reference_base64": "SLVvzJzME5wUPCUJ8vYA8WQyJeiInNx9M7BcKN4bSvxr",
+      "compact_reference_sha256": "7b06d90a69330b366a5c02c07f64616b6ed6fa458684994c2081c6f539d3134e",
+      "decoded": {
+        "hex": "b56fcc9ccc139c143c2509f2f600f1643225e8889cdc7d33b05c28de1b4afc6b",
+        "type": "bytes"
+      },
+      "document": {
+        "fields": {
+          "case.sha256": {
+            "release_critical": true,
+            "unit": {
+              "dimension": "dimensionless",
+              "symbol": "1",
+              "system": "dimensionless"
+            },
+            "value": {
+              "algorithm": "sha256",
+              "digest": "b56fcc9ccc139c143c2509f2f600f1643225e8889cdc7d33b05c28de1b4afc6b",
+              "kind": "hash"
+            }
+          }
+        },
+        "producer": {
+          "implementation": "threebody_atlas.numeric_evidence",
+          "version": "v1"
+        },
+        "schema_version": "atlas.numeric-evidence.v1",
+        "spec_sha256": "ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3"
+      },
+      "name": "sha256"
+    },
+    {
+      "canonical_json": "{\"fields\":{\"case.unresolved\":{\"release_critical\":true,\"unit\":{\"dimension\":\"dimensionless\",\"symbol\":\"1\",\"system\":\"dimensionless\"},\"value\":{\"detail\":\"gate cannot be resolved at the declared precision\",\"kind\":\"missing\",\"reason\":\"precision_insufficient\"}}},\"producer\":{\"implementation\":\"threebody_atlas.numeric_evidence\",\"version\":\"v1\"},\"schema_version\":\"atlas.numeric-evidence.v1\",\"spec_sha256\":\"ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3\"}",
+      "canonical_sha256": "cae7a0019f230931c88c9551d432412f3d118d80f95266e5427782ce530d0ab6",
+      "compact_reference_base64": "TQAAABZwcmVjaXNpb25faW5zdWZmaWNpZW50AAAAMWdhdGUgY2Fubm90IGJlIHJlc29sdmVkIGF0IHRoZSBkZWNsYXJlZCBwcmVjaXNpb24=",
+      "compact_reference_sha256": "0fd5d0963a7df31a72b47b1fbb64edaea392668cc6432eb82393cdccc8160568",
+      "decoded": {
+        "type": "missing"
+      },
+      "document": {
+        "fields": {
+          "case.unresolved": {
+            "release_critical": true,
+            "unit": {
+              "dimension": "dimensionless",
+              "symbol": "1",
+              "system": "dimensionless"
+            },
+            "value": {
+              "detail": "gate cannot be resolved at the declared precision",
+              "kind": "missing",
+              "reason": "precision_insufficient"
+            }
+          }
+        },
+        "producer": {
+          "implementation": "threebody_atlas.numeric_evidence",
+          "version": "v1"
+        },
+        "schema_version": "atlas.numeric-evidence.v1",
+        "spec_sha256": "ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3"
+      },
+      "name": "unresolved"
+    }
+  ],
+  "generated_on": "2026-08-16",
+  "implementations": {
+    "julia": "julia/verify_numeric_evidence.jl",
+    "proof_verifier": "not_available; tracked by issue #162",
+    "python": "threebody_atlas.numeric_evidence"
+  },
+  "schema": "atlas.numeric-roundtrip-matrix.v1",
+  "serialization_schema": "atlas.numeric-evidence.v1",
+  "spec_sha256": "ed5898d8ae6d006d2a4a16c0d396e91757a832f13218e974deab088b868f3cb3"
+}
