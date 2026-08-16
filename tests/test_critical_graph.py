@@ -1721,11 +1721,11 @@ def test_published_caveats_match_the_committed_evidence() -> None:
     assert graph["root_coverage"]["unclassified_edge_endpoints"] == []
     assert graph["unexplained_nodes"] == []
     # The defined sign-topology conjuncts are clean and the assembler has
-    # flipped release_ready.  Three G+ L-path face mismatches remain in the
-    # right-hand corridor; that is a known limitation, not a false conjunct.
+    # flipped release_ready.  The previous G+ L-paths were the unfinished
+    # climb to secondary_right_death, now recorded as closed.
     assert graph["release_ready"] is True
     assert graph["root_coverage"]["sign_topology_clean"] is True
-    assert "L-path" in known
+    assert "secondary_right_death" in known
 
 
 def test_germ_attach_distance_window_matches_the_published_number() -> None:

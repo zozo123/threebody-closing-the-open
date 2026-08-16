@@ -1,6 +1,6 @@
 {
   "schema": "atlas.v1.sign-topology-audit/1",
-  "created_at": "2026-08-16T22:10:09.880384+00:00",
+  "created_at": "2026-08-16T22:47:54.946316+00:00",
   "code_revision": null,
   "run_id": null,
   "python": "3.13.13",
@@ -8,7 +8,7 @@
   "inputs": {
     "graph": "research/evidence/V1_CRITICAL_GRAPH.json",
     "graph_schema": "atlas.v1.critical-graph/3",
-    "graph_release_ready": false,
+    "graph_release_ready": true,
     "roots": [
       "research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json",
       "research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json"
@@ -89,9 +89,9 @@
       "orientation": "S->U",
       "m1_range": [
         0.996,
-        1.042
+        1.0426234457894452
       ],
-      "vertices": 47,
+      "vertices": 48,
       "degenerate": false
     },
     {
@@ -111,9 +111,9 @@
       "orientation": "U->S",
       "m1_range": [
         0.9967681995217997,
-        1.042
+        1.0426234457894452
       ],
-      "vertices": 47,
+      "vertices": 48,
       "degenerate": false
     },
     {
@@ -165,10 +165,10 @@
       "mechanism": "minus_one",
       "orientation": "sweep_component_3",
       "m1_range": [
-        1.044,
+        1.0426234457894452,
         1.1
       ],
-      "vertices": 29,
+      "vertices": 30,
       "degenerate": false
     },
     {
@@ -212,97 +212,10 @@
     "converged": 75,
     "failed": 1,
     "undecidable_state": 0,
-    "cpu_seconds": 866.7
+    "cpu_seconds": 780.7
   },
-  "violation_counts": {
-    "face_state_mismatch": 3
-  },
-  "violations": [
-    {
-      "kind": "face_state_mismatch",
-      "components": [
-        "G_plus"
-      ],
-      "from": [
-        1.04,
-        1.039625445139478
-      ],
-      "to": [
-        1.08,
-        0.9323612111188085
-      ],
-      "state_from": [
-        1,
-        1,
-        1,
-        0
-      ],
-      "state_to": [
-        -1,
-        1,
-        1,
-        1
-      ],
-      "path_clearance": 0.0036434660361723825,
-      "detail": "L-path (1.0400,1.0396) -> (1.0800,1.0396) -> (1.0800,0.9324) meets no committed edge yet S changes (1, 1, 1, 0) -> (-1, 1, 1, 1)"
-    },
-    {
-      "kind": "face_state_mismatch",
-      "components": [
-        "G_plus"
-      ],
-      "from": [
-        1.04,
-        1.039625445139478
-      ],
-      "to": [
-        1.08,
-        1.004722422237617
-      ],
-      "state_from": [
-        1,
-        1,
-        1,
-        0
-      ],
-      "state_to": [
-        -1,
-        1,
-        1,
-        1
-      ],
-      "path_clearance": 0.0036434660361723825,
-      "detail": "L-path (1.0400,1.0396) -> (1.0800,1.0396) -> (1.0800,1.0047) meets no committed edge yet S changes (1, 1, 1, 0) -> (-1, 1, 1, 1)"
-    },
-    {
-      "kind": "face_state_mismatch",
-      "components": [
-        "G_plus"
-      ],
-      "from": [
-        1.04,
-        1.039625445139478
-      ],
-      "to": [
-        1.08,
-        1.0730836333564255
-      ],
-      "state_from": [
-        1,
-        1,
-        1,
-        0
-      ],
-      "state_to": [
-        -1,
-        1,
-        1,
-        1
-      ],
-      "path_clearance": 0.0036434660361723825,
-      "detail": "L-path (1.0400,1.0396) -> (1.0800,1.0396) -> (1.0800,1.0731) meets no committed edge yet S changes (1, 1, 1, 0) -> (-1, 1, 1, 1)"
-    }
-  ],
+  "violation_counts": {},
+  "violations": [],
   "missing_curve_refinements": [],
   "probes": [
     {
@@ -317,7 +230,7 @@
       "discriminant": 5.081031879678849,
       "n_unstable": 0,
       "closure": 4.4118375846622203e-10,
-      "seconds": 20.524,
+      "seconds": 17.918,
       "chart": [
         -0.2290823390558807,
         1.7498383253181609,
@@ -337,7 +250,7 @@
       "discriminant": 0.9123756374560815,
       "n_unstable": 0,
       "closure": 3.772276904814445e-10,
-      "seconds": 9.756,
+      "seconds": 8.516,
       "chart": [
         -0.23528146761656246,
         1.720521430807044,
@@ -357,7 +270,7 @@
       "discriminant": -0.8674520363030461,
       "n_unstable": 2,
       "closure": 3.6059410368307757e-10,
-      "seconds": 14.683,
+      "seconds": 12.616,
       "chart": [
         -0.2382423010633975,
         1.7070122000942878,
@@ -377,7 +290,7 @@
       "discriminant": -11.450255391358233,
       "n_unstable": 2,
       "closure": 2.758587582536979e-10,
-      "seconds": 56.374,
+      "seconds": 48.849,
       "chart": [
         -0.26002282449555764,
         1.6177372152622003,
@@ -397,7 +310,7 @@
       "discriminant": -16.312985152617127,
       "n_unstable": 2,
       "closure": 2.661361374861475e-10,
-      "seconds": 11.686,
+      "seconds": 10.109,
       "chart": [
         -0.26768974594181305,
         1.595350722854967,
@@ -417,7 +330,7 @@
       "discriminant": -16.353391821731726,
       "n_unstable": 2,
       "closure": 3.0137299298289926e-10,
-      "seconds": 17.256,
+      "seconds": 14.88,
       "chart": [
         -0.257607399165323,
         1.6435604800234123,
@@ -437,7 +350,7 @@
       "discriminant": 19.313408949536047,
       "n_unstable": 1,
       "closure": 4.75617895877576e-10,
-      "seconds": 7.665,
+      "seconds": 6.683,
       "chart": [
         -0.2419412931870624,
         1.6754639844536243,
@@ -457,7 +370,7 @@
       "discriminant": 17.853581971919404,
       "n_unstable": 1,
       "closure": 3.7445995782682085e-10,
-      "seconds": 7.7,
+      "seconds": 6.65,
       "chart": [
         -0.24337672054462864,
         1.6690822206497005,
@@ -477,7 +390,7 @@
       "discriminant": 16.455687084494823,
       "n_unstable": 1,
       "closure": 4.1514220808421713e-10,
-      "seconds": 12.356,
+      "seconds": 10.73,
       "chart": [
         -0.24480123964207848,
         1.662814000355809,
@@ -497,7 +410,7 @@
       "discriminant": 13.23141293981662,
       "n_unstable": 0,
       "closure": 3.202649355017359e-10,
-      "seconds": 16.269,
+      "seconds": 14.706,
       "chart": [
         -0.24829493738992994,
         1.6477122109341067,
@@ -517,7 +430,7 @@
       "discriminant": 6.102198702607908,
       "n_unstable": 0,
       "closure": 3.219706405314167e-10,
-      "seconds": 13.196,
+      "seconds": 13.783,
       "chart": [
         -0.25730417972996666,
         1.61051392339259,
@@ -537,7 +450,7 @@
       "discriminant": 0.8202145628526184,
       "n_unstable": 0,
       "closure": 3.697546799190267e-10,
-      "seconds": 6.72,
+      "seconds": 5.866,
       "chart": [
         -0.2654651115808648,
         1.578963462510123,
@@ -557,7 +470,7 @@
       "discriminant": -0.7804992336519091,
       "n_unstable": 2,
       "closure": 2.3899085693762034e-10,
-      "seconds": 7.704,
+      "seconds": 6.627,
       "chart": [
         -0.26822134950516363,
         1.5687756718300458,
@@ -577,7 +490,7 @@
       "discriminant": -9.900527612487375,
       "n_unstable": 2,
       "closure": 2.8606834362830386e-10,
-      "seconds": 16.023,
+      "seconds": 14.319,
       "chart": [
         -0.2843470277112667,
         1.514962428041706,
@@ -597,7 +510,7 @@
       "discriminant": -15.631291978918137,
       "n_unstable": 2,
       "closure": 2.3168442851538914e-10,
-      "seconds": 13.075,
+      "seconds": 12.735,
       "chart": [
         -0.28774794547099314,
         1.5106238358879371,
@@ -617,7 +530,7 @@
       "discriminant": -17.441051070240505,
       "n_unstable": 2,
       "closure": 3.470572295184092e-10,
-      "seconds": 9.615,
+      "seconds": 9.629,
       "chart": [
         -0.27672916172629425,
         1.5569821304161477,
@@ -637,7 +550,7 @@
       "discriminant": 26.215529127117488,
       "n_unstable": 2,
       "closure": 1.9607821440740468e-10,
-      "seconds": 9.341,
+      "seconds": 8.742,
       "chart": [
         -0.26340866366396365,
         1.5721204444033376,
@@ -657,7 +570,7 @@
       "discriminant": 18.811401386402803,
       "n_unstable": 2,
       "closure": 1.9885016873202332e-10,
-      "seconds": 7.524,
+      "seconds": 6.524,
       "chart": [
         -0.270506666529737,
         1.5450624347795405,
@@ -677,7 +590,7 @@
       "discriminant": 15.486633547586237,
       "n_unstable": 1,
       "closure": 2.006447079786913e-10,
-      "seconds": 6.535,
+      "seconds": 5.651,
       "chart": [
         -0.2741581014726587,
         1.5316585798488138,
@@ -697,7 +610,7 @@
       "discriminant": 14.5763584521528,
       "n_unstable": 1,
       "closure": 2.7617034950780923e-10,
-      "seconds": 7.464,
+      "seconds": 6.413,
       "chart": [
         -0.2752192411844808,
         1.5278283849276952,
@@ -717,7 +630,7 @@
       "discriminant": 13.69955184309506,
       "n_unstable": 1,
       "closure": 3.5068993414026763e-10,
-      "seconds": 6.559,
+      "seconds": 5.853,
       "chart": [
         -0.2762687713800456,
         1.5240688720673359,
@@ -737,7 +650,7 @@
       "discriminant": 10.979279298400096,
       "n_unstable": 0,
       "closure": 2.9078437698535176e-10,
-      "seconds": 7.508,
+      "seconds": 6.62,
       "chart": [
         -0.27971081204717047,
         1.5119401163373427,
@@ -757,7 +670,7 @@
       "discriminant": 5.04218923463832,
       "n_unstable": 0,
       "closure": 3.2824016491139133e-10,
-      "seconds": 15.688,
+      "seconds": 13.614,
       "chart": [
         -0.28835482750179675,
         1.4828571870920435,
@@ -777,7 +690,7 @@
       "discriminant": 0.6812679225649707,
       "n_unstable": 0,
       "closure": 2.333579089848804e-10,
-      "seconds": 8.47,
+      "seconds": 7.351,
       "chart": [
         -0.2956911390921644,
         1.459816721234332,
@@ -797,7 +710,7 @@
       "discriminant": -0.6547106466034653,
       "n_unstable": 2,
       "closure": 2.541223993835363e-10,
-      "seconds": 6.627,
+      "seconds": 5.762,
       "chart": [
         -0.29801206257901824,
         1.4528854888220843,
@@ -817,7 +730,7 @@
       "discriminant": -10.462061423738973,
       "n_unstable": 2,
       "closure": 2.7475949958771337e-10,
-      "seconds": 9.67,
+      "seconds": 8.694,
       "chart": [
         -0.3096125505872303,
         1.4240510751829027,
@@ -837,7 +750,7 @@
       "discriminant": -17.07622085117196,
       "n_unstable": 2,
       "closure": 2.817051476857656e-10,
-      "seconds": 14.335,
+      "seconds": 12.408,
       "chart": [
         -0.3015911031007453,
         1.4582013269132732,
@@ -857,7 +770,7 @@
       "discriminant": 36.65228312407975,
       "n_unstable": 2,
       "closure": 1.9989431324859176e-10,
-      "seconds": 8.151,
+      "seconds": 8.438,
       "chart": [
         -0.29470024211189066,
         1.440934478101671,
@@ -877,7 +790,7 @@
       "discriminant": 19.580213811105306,
       "n_unstable": 2,
       "closure": 1.8884972333822986e-10,
-      "seconds": 7.133,
+      "seconds": 6.963,
       "chart": [
         -0.31086568051695623,
         1.3907239694498004,
@@ -897,7 +810,7 @@
       "discriminant": 16.533063322107953,
       "n_unstable": 1,
       "closure": 2.5659085135378814e-10,
-      "seconds": 7.082,
+      "seconds": 6.981,
       "chart": [
         -0.31465727318077524,
         1.3797307136596804,
@@ -917,7 +830,7 @@
       "discriminant": 12.474076273851367,
       "n_unstable": 1,
       "closure": 1.9221937828471254e-10,
-      "seconds": 8.857,
+      "seconds": 9.034,
       "chart": [
         -0.32043626836566935,
         1.3635651799916213,
@@ -937,7 +850,7 @@
       "discriminant": 9.342210623392658,
       "n_unstable": 1,
       "closure": 2.3024128830415298e-10,
-      "seconds": 6.357,
+      "seconds": 6.281,
       "chart": [
         -0.3256253490058826,
         1.3496915633218893,
@@ -957,7 +870,7 @@
       "discriminant": 7.776750807559656,
       "n_unstable": 0,
       "closure": 1.801660169548247e-10,
-      "seconds": 8.09,
+      "seconds": 7.898,
       "chart": [
         -0.32848311755894916,
         1.3423349223024912,
@@ -977,7 +890,7 @@
       "discriminant": 3.802035361212207,
       "n_unstable": 0,
       "closure": 2.058242948496709e-10,
-      "seconds": 10.866,
+      "seconds": 10.508,
       "chart": [
         -0.33608609916956467,
         1.3239805678554453,
@@ -997,7 +910,7 @@
       "discriminant": 0.5043028580546383,
       "n_unstable": 0,
       "closure": 1.4125769443462154e-10,
-      "seconds": 7.403,
+      "seconds": 7.028,
       "chart": [
         -0.34109987853271223,
         1.3134891812030474,
@@ -1017,7 +930,7 @@
       "discriminant": -0.5079829385859995,
       "n_unstable": 2,
       "closure": 2.371760952413797e-10,
-      "seconds": 6.575,
+      "seconds": 6.192,
       "chart": [
         -0.34212248567780423,
         1.3117395050060436,
@@ -1037,7 +950,7 @@
       "discriminant": -7.948606504106468,
       "n_unstable": 2,
       "closure": 1.9073592024922836e-10,
-      "seconds": 8.749,
+      "seconds": 8.31,
       "chart": [
         -0.3426340390243502,
         1.3171188211512301,
@@ -1057,7 +970,7 @@
       "discriminant": -15.317770383365799,
       "n_unstable": 2,
       "closure": 3.290648250429038e-10,
-      "seconds": 14.347,
+      "seconds": 13.922,
       "chart": [
         -0.3314738671301942,
         1.3538857516022993,
@@ -1077,7 +990,7 @@
       "discriminant": 52.03024196150144,
       "n_unstable": 2,
       "closure": 1.7277252891037492e-10,
-      "seconds": 12.209,
+      "seconds": 10.465,
       "chart": [
         -0.3217085023032838,
         1.3405779211080313,
@@ -1097,7 +1010,7 @@
       "discriminant": 25.17173175866849,
       "n_unstable": 2,
       "closure": 1.4362451468408777e-10,
-      "seconds": 7.759,
+      "seconds": 6.698,
       "chart": [
         -0.34380235403647075,
         1.2811890289063776,
@@ -1117,7 +1030,7 @@
       "discriminant": 21.435537783624312,
       "n_unstable": 1,
       "closure": 1.8444365678496532e-10,
-      "seconds": 7.789,
+      "seconds": 6.747,
       "chart": [
         -0.34824613702658297,
         1.2702211271060004,
@@ -1137,7 +1050,7 @@
       "discriminant": 18.881836914337093,
       "n_unstable": 1,
       "closure": 1.8070217479711591e-10,
-      "seconds": 6.086,
+      "seconds": 5.3,
       "chart": [
         -0.35170266283564106,
         1.2619224686537442,
@@ -1157,7 +1070,7 @@
       "discriminant": 16.74120605158778,
       "n_unstable": 1,
       "closure": 1.8791262147723026e-10,
-      "seconds": 6.925,
+      "seconds": 5.967,
       "chart": [
         -0.3549748415153149,
         1.254259999475436,
@@ -1177,7 +1090,7 @@
       "discriminant": 14.623344750844826,
       "n_unstable": 0,
       "closure": 1.7177330964033942e-10,
-      "seconds": 6.917,
+      "seconds": 5.984,
       "chart": [
         -0.3586992930416436,
         1.2457783454688258,
@@ -1197,7 +1110,7 @@
       "discriminant": 11.427253373955947,
       "n_unstable": 0,
       "closure": 1.9553728075044186e-10,
-      "seconds": 7.03,
+      "seconds": 6.077,
       "chart": [
         -0.3659115652196126,
         1.2301601077575708,
@@ -1217,7 +1130,7 @@
       "discriminant": 9.583455852104318,
       "n_unstable": 0,
       "closure": 1.1043786829048711e-10,
-      "seconds": 6.208,
+      "seconds": 5.782,
       "chart": [
         -0.3716575914309648,
         1.2186696769062135,
@@ -1237,7 +1150,7 @@
       "discriminant": 8.985295024982252,
       "n_unstable": 1,
       "closure": 1.2705537021754587e-10,
-      "seconds": 6.31,
+      "seconds": 5.588,
       "chart": [
         -0.373769435202459,
         1.2147491208953112,
@@ -1257,7 +1170,7 @@
       "discriminant": 8.82370423263798,
       "n_unstable": 1,
       "closure": 1.7975433901341274e-10,
-      "seconds": 5.388,
+      "seconds": 4.8,
       "chart": [
         -0.3743325857357254,
         1.2137416336126017,
@@ -1277,7 +1190,7 @@
       "discriminant": 8.294275842237527,
       "n_unstable": 0,
       "closure": 1.5423647600867421e-10,
-      "seconds": 6.305,
+      "seconds": 5.747,
       "chart": [
         -0.3760619114892729,
         1.2107788510797817,
@@ -1297,7 +1210,7 @@
       "discriminant": 5.40145116116458,
       "n_unstable": 0,
       "closure": 2.727343195015964e-10,
-      "seconds": 9.053,
+      "seconds": 8.05,
       "chart": [
         -0.38031367833941204,
         1.2058804509407053,
@@ -1317,7 +1230,7 @@
       "discriminant": 0.6340599040942431,
       "n_unstable": 0,
       "closure": 2.2598136323042475e-10,
-      "seconds": 17.442,
+      "seconds": 15.109,
       "chart": [
         -0.37898096180153007,
         1.2136167529535566,
@@ -1337,7 +1250,7 @@
       "discriminant": -0.650820374021309,
       "n_unstable": 2,
       "closure": 2.082951750262294e-10,
-      "seconds": 7.728,
+      "seconds": 6.649,
       "chart": [
         -0.377992506617665,
         1.2168608877348361,
@@ -1357,7 +1270,7 @@
       "discriminant": -9.243998013885166,
       "n_unstable": 2,
       "closure": 4.999173031706296e-10,
-      "seconds": 18.174,
+      "seconds": 15.761,
       "chart": [
         -0.3669621056934837,
         1.2480873124066947,
@@ -1377,7 +1290,7 @@
       "discriminant": null,
       "n_unstable": null,
       "closure": NaN,
-      "seconds": 45.823,
+      "seconds": 45.323,
       "chart": null
     },
     {
@@ -1392,7 +1305,7 @@
       "discriminant": 57.101484013374204,
       "n_unstable": 1,
       "closure": 1.3815380164187212e-10,
-      "seconds": 11.462,
+      "seconds": 9.452,
       "chart": [
         -0.3671067068909636,
         1.2022128631307591,
@@ -1412,7 +1325,7 @@
       "discriminant": 16.016082838636375,
       "n_unstable": 1,
       "closure": 2.1861814681268217e-10,
-      "seconds": 10.304,
+      "seconds": 8.221,
       "chart": [
         -0.4071849825663409,
         1.118117163872914,
@@ -1432,7 +1345,7 @@
       "discriminant": 12.908624202328875,
       "n_unstable": 1,
       "closure": 1.6156268638413032e-10,
-      "seconds": 7.286,
+      "seconds": 5.932,
       "chart": [
         -0.42832667289405185,
         1.0833269224330835,
@@ -1452,7 +1365,7 @@
       "discriminant": 13.61633449320749,
       "n_unstable": 0,
       "closure": 1.1331406342671696e-10,
-      "seconds": 6.089,
+      "seconds": 5.33,
       "chart": [
         -0.43027081888835833,
         1.0808385524526496,
@@ -1472,7 +1385,7 @@
       "discriminant": 14.318273744680823,
       "n_unstable": 0,
       "closure": 9.631233599693467e-11,
-      "seconds": 6.951,
+      "seconds": 6.073,
       "chart": [
         -0.431717360057259,
         1.0792058640763837,
@@ -1492,7 +1405,7 @@
       "discriminant": 15.010079453262541,
       "n_unstable": 0,
       "closure": 1.3260021781064008e-10,
-      "seconds": 6.117,
+      "seconds": 5.281,
       "chart": [
         -0.43286244507810984,
         1.0781480560719217,
@@ -1512,7 +1425,7 @@
       "discriminant": 15.693883781187619,
       "n_unstable": 1,
       "closure": 1.6732874947034343e-10,
-      "seconds": 6.954,
+      "seconds": 6.291,
       "chart": [
         -0.43378335953380276,
         1.0776143188084388,
@@ -1532,7 +1445,7 @@
       "discriminant": 16.73647226958124,
       "n_unstable": 1,
       "closure": 1.4356998918750175e-10,
-      "seconds": 15.51,
+      "seconds": 13.845,
       "chart": [
         -0.4343080635583067,
         1.0810271698064566,
@@ -1552,7 +1465,7 @@
       "discriminant": 14.418778428526956,
       "n_unstable": 1,
       "closure": 1.5052636959012806e-10,
-      "seconds": 10.923,
+      "seconds": 9.508,
       "chart": [
         -0.43056878972702434,
         1.0920862181880084,
@@ -1572,7 +1485,7 @@
       "discriminant": 13.258487471263434,
       "n_unstable": 0,
       "closure": 1.5694844896417012e-10,
-      "seconds": 7.408,
+      "seconds": 6.677,
       "chart": [
         -0.4289510293224496,
         1.0961350388268039,
@@ -1592,7 +1505,7 @@
       "discriminant": 7.8356806011959375,
       "n_unstable": 0,
       "closure": 3.3536404950052484e-10,
-      "seconds": 9.622,
+      "seconds": 8.586,
       "chart": [
         -0.4214864725353633,
         1.1136199958110193,
@@ -1612,7 +1525,7 @@
       "discriminant": 1.0285018436364914,
       "n_unstable": 0,
       "closure": 3.6397030178235784e-10,
-      "seconds": 9.819,
+      "seconds": 8.552,
       "chart": [
         -0.41138494270850934,
         1.136268170088469,
@@ -1632,7 +1545,7 @@
       "discriminant": -1.0290044186369136,
       "n_unstable": 2,
       "closure": 2.74605629009688e-10,
-      "seconds": 8.036,
+      "seconds": 7.649,
       "chart": [
         -0.4080208855455484,
         1.1437457815992556,
@@ -1652,7 +1565,7 @@
       "discriminant": -3.0656386946295178,
       "n_unstable": 2,
       "closure": 4.3801985112566575e-10,
-      "seconds": 8.114,
+      "seconds": 7.68,
       "chart": [
         -0.4044807472225665,
         1.1516145187928297,
@@ -1672,7 +1585,7 @@
       "discriminant": 46.503294739529345,
       "n_unstable": 1,
       "closure": 1.393725210651404e-10,
-      "seconds": 52.082,
+      "seconds": 45.273,
       "chart": [
         -0.4227861782848457,
         1.0673312287575158,
@@ -1692,7 +1605,7 @@
       "discriminant": 9.684223790411025,
       "n_unstable": 1,
       "closure": 1.3741393329363842e-10,
-      "seconds": 16.776,
+      "seconds": 15.943,
       "chart": [
         -0.4842595820924271,
         0.969263650588784,
@@ -1712,7 +1625,7 @@
       "discriminant": 28.10628248298298,
       "n_unstable": 1,
       "closure": 1.3489435371243413e-10,
-      "seconds": 7.759,
+      "seconds": 6.001,
       "chart": [
         -0.49688922210773634,
         0.9610447162214151,
@@ -1732,7 +1645,7 @@
       "discriminant": 30.06125045390733,
       "n_unstable": 2,
       "closure": 7.675379095144252e-11,
-      "seconds": 8.368,
+      "seconds": 7.187,
       "chart": [
         -0.4963331625212533,
         0.963107646924526,
@@ -1752,7 +1665,7 @@
       "discriminant": 33.95639110212168,
       "n_unstable": 2,
       "closure": 1.8893603356021262e-10,
-      "seconds": 17.833,
+      "seconds": 16.743,
       "chart": [
         -0.4869499178958766,
         0.9839744578493428,
@@ -1772,7 +1685,7 @@
       "discriminant": 25.042959442662756,
       "n_unstable": 2,
       "closure": 4.720677383914641e-10,
-      "seconds": 11.16,
+      "seconds": 10.37,
       "chart": [
         -0.4689500579291192,
         1.0179182573235532,
@@ -1792,7 +1705,7 @@
       "discriminant": 22.56201434131933,
       "n_unstable": 1,
       "closure": 3.5387442451737734e-10,
-      "seconds": 8.952,
+      "seconds": 8.508,
       "chart": [
         -0.4651405732923876,
         1.0249509954134117,
@@ -1812,7 +1725,7 @@
       "discriminant": 20.290335995237093,
       "n_unstable": 1,
       "closure": 5.2426778730806e-10,
-      "seconds": 8.07,
+      "seconds": 7.761,
       "chart": [
         -0.4617276483762979,
         1.0312479860511758,
@@ -1822,5 +1735,5 @@
     }
   ],
   "scope": "This audit falsifies completeness where it fires; it cannot certify completeness where it does not.  A critical curve that both begins and ends between two adjacent scan lines, or that never separates two probes, is not sampled.",
-  "claim_status": "13-edge re-audit of the committed wide suite after ingesting event-sign polylines and extending them through mixed organizers. missing_critical_curve and forbidden_component_flip are the release conjuncts."
+  "claim_status": "13-edge re-audit of the committed wide suite after extending polylines through mixed organizers including the retained secondary_right_death endpoint (mechanism=mixed_organizer). missing=0, forbidden=0, face=0."
 }

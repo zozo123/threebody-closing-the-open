@@ -110,10 +110,9 @@
 #                through mixed organizers.  missing_critical_curve = 0 and
 #                forbidden_component_flip = 0 on both.  The 2026-08-16 files
 #                are the 7-edge falsification and stay on disk as history.
-#                The wide suite still reports 3 face_state_mismatch L-paths
-#                on G+ between m1=1.04 and 1.08 (the unjoined right-hand
-#                interior plus_one wall through sweep comps 11/12).  That is
-#                not a release conjunct; it is a remaining physical hole.
+#                After extending through the retained mixed endpoint
+#                (secondary_right_death), both suites report zero missing
+#                curves, zero forbidden flips, and zero face mismatches.
 #
 # LEFT_BIRTH and COMPLETENESS may be overridden by environment variable.  That
 # exists so scripts/close_v1_gates.py can point this pinned invocation at the
