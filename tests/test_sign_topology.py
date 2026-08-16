@@ -474,6 +474,35 @@ def test_auditor_extends_polylines_through_mixed_organizers() -> None:
     assert right.m2_at(0.9295) == pytest.approx(0.885676, abs=1e-4)
 
 
+def test_auditor_extends_through_classified_mixed_endpoint() -> None:
+    """secondary_right_death is a mixed organizer stored as kind=endpoint."""
+    graph = {
+        "edges": [
+            {
+                "id": "plus_one_u_to_s_1",
+                "kind": "mechanism_polyline",
+                "mechanism": "plus_one",
+                "cell_ids": [576],
+                "endpoints": {"start": {}, "end": {"node": "secondary_right_death"}},
+            }
+        ],
+        "nodes": [
+            {
+                "id": "secondary_right_death",
+                "kind": "endpoint",
+                "mechanism": "mixed_organizer",
+                "masses": [1.0426234457894452, 1.0460039217640023, 1.0],
+            }
+        ],
+    }
+    roots = [{"cell_id": 576, "masses": [1.042, 1.0359819791033056, 1.0]}]
+    edges = AST.edges_from_graph(graph, roots)
+    edge = edges[0]
+    assert edge.m1_max == pytest.approx(1.0426234457894452)
+    # The L-path that fired at m2=1.0396 lives on this climb.
+    assert edge.m2_at(1.0423) == pytest.approx(1.0408, abs=5e-3)
+
+
 @pytest.mark.skipif(not SHIPPED_CROSSING.exists(), reason="crossing artifact not present")
 def test_forbidden_component_flip_fired_on_real_data():
     """The mechanism-permission check is not decorative: it caught something."""

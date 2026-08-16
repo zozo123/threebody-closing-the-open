@@ -190,13 +190,9 @@
     }
   ],
   "blockers": [
-    "Classify the secondary-left G- birth (#110).",
-    "Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127).",
-    "Classify the lower +1 daughter, including no_branch_attachment as a valid close.",
-    "Completeness is now frozen as a sealed, source-verified certificate (research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json, passed true, zero verification errors) over the widened neck raster; what remains is to keep release_ready flippable only by the assembler (#116 / #128), never by hand.",
-    "Continue the right-hand interior plus_one wall (sweep comps 11/12) until the three G+ L-path face mismatches between m1=1.04 and 1.08 go away; do not widen GERM_ATTACH_DISTANCE to glue the stub.",
-    "Refresh the novelty search on the actual freeze day and record its outcome; the recorded search date is 2026-08-15 and Gate D requires same-day.",
-    "Then #118: same-day novelty, manuscript from release_claim records, --require-solved."
+    "Continue the right-hand interior plus_one wall through secondary_right_death (kind=endpoint, mechanism=mixed_organizer) until the three G+ L-path face mismatches between m1=1.04 and 1.08 go away; do not widen GERM_ATTACH_DISTANCE.",
+    "Novelty search must be performed and signed by the named human author on the freeze day. An agent may prepare queries; an agent may not set novelty.status to pass. See research/NOVELTY_AUDIT.md.",
+    "Gate D: same-day novelty pass, empty blockers, manuscript regenerated from release_claim records, --require-solved twice on a tagged commit."
   ],
   "known_limitations": [
     "This is not a solution of the general three-body problem. Every result here is scoped to one published catalog, one declared gauge, and planar linear Floquet stability.",

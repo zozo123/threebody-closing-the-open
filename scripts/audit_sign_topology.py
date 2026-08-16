@@ -208,8 +208,16 @@ def mixed_organizer_point(graph: dict[str, Any], node_id: str | None) -> tuple[f
     if not node_id:
         return None
     for item in graph.get("nodes", ()):
-        if item.get("id") != node_id or item.get("kind") != "mixed_organizer":
+        if item.get("id") != node_id:
             continue
+        kind = str(item.get("kind") or "")
+        mechanism = str(item.get("mechanism") or "")
+        # Headline mixed vertices are kind=mixed_organizer.  The retained
+        # secondary-right death is kind=endpoint with mechanism=mixed_organizer
+        # because it entered through an endpoint classification; physically it
+        # is still a (+1,-1) vertex of every incident plus_one/minus_one edge.
+        if kind != "mixed_organizer" and mechanism != "mixed_organizer":
+            return None
         masses = item.get("masses") or []
         if len(masses) < 2:
             return None
