@@ -709,8 +709,20 @@ def evaluate_probes(
         return []
     ordered = sorted(m2_values)
     middle = ordered[len(ordered) // 2]
+    charted = [
+        row
+        for row in seeds
+        if row.get("x1") is not None
+        and row.get("v1") is not None
+        and row.get("v2") is not None
+        and row.get("period") is not None
+    ]
+    if not charted:
+        raise RuntimeError(
+            "no shooting-chart seeds (x1, v1, v2, period) available for this scan line"
+        )
     anchor = min(
-        seeds,
+        charted,
         key=lambda r: (
             abs(float(r["masses"][0]) - m1),
             abs(float(r["masses"][1]) - middle),

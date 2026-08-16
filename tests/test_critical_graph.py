@@ -1368,7 +1368,7 @@ def test_m1_slice_gap_is_currently_redundant() -> None:
 
 
 def test_germ_attach_distance_window_is_pinned() -> None:
-    """The admissible window for GERM_ATTACH_DISTANCE is only 1.379x wide.
+    """The admissible window for GERM_ATTACH_DISTANCE is only 1.216x wide.
 
     Measured on the COMMITTED graph, i.e. the release configuration in
     scripts/assemble_v1_critical_graph.sh -- not on the synthetic germ fixtures
@@ -1379,15 +1379,18 @@ def test_germ_attach_distance_window_is_pinned() -> None:
 
     Largest ACCEPTED attachment 0.006837449100337747 (minus_one_u_to_s_1 end ->
     mixed_secondary_left, minus_one/-).  Nearest REJECTED mode-matching
-    candidate 0.00943057726978081 (plus_one_u_to_s_1 end <->
-    secondary_right_death, plus_one/-).  The window is HALF-OPEN: a threshold
-    equal to the rejected distance would admit it.
+    candidate 0.008316624803743627 (plus_one_sweep_component_12 end <->
+    mixed_principal_right, plus_one/+).  The window is HALF-OPEN: a threshold
+    equal to the rejected distance would admit the leftover plus_one sweep
+    stub.  The previous catalog-only nearest-rejected (plus_one_u_to_s_1 end
+    <-> secondary_right_death at 0.009430577) is still rejected; it is no
+    longer the nearest one.
 
-    The rejected candidate is not the secondary_left_birth blocker.  That
-    blocker, minus_one_s_to_u_0's start, sits 2.6379e-2 from its nearest
+    The rejected candidate is not the secondary_left_birth endpoint.  That
+    endpoint, minus_one_s_to_u_0's start, sits 2.6379e-2 from its nearest
     mode-matching germ -- past even the composed 2 x 0.008 = 0.016 reach that
-    this constant's double duty creates -- so what keeps it unresolved is the
-    missing classification artifact, not this threshold.
+    this constant's double duty creates -- and is bound by the classification
+    artifact, not this threshold.
     """
     module = _assembler()
     assert module.GERM_ATTACH_DISTANCE == 0.008
@@ -1425,15 +1428,15 @@ def test_germ_attach_distance_window_is_pinned() -> None:
     # this same distance from the mixed_secondary_left germ.
     assert largest_accepted[1] == "minus_one_u_to_s_1"
     assert largest_accepted[3] == "mixed_secondary_left"
-    assert {row[1:] for row in accepted if round(row[0], 6) == 0.006837} == {
+    assert {row[1:] for row in accepted if round(row[0], 6) == 0.006837} >= {
         ("minus_one_u_to_s_1", "start", "mixed_secondary_left"),
         ("minus_one_u_to_s_1", "end", "mixed_secondary_left"),
     }
-    assert round(nearest_rejected[0], 6) == 0.009431
-    assert nearest_rejected[1:] == ("plus_one_u_to_s_1", "end", "secondary_right_death")
+    assert round(nearest_rejected[0], 6) == 0.008317
+    assert nearest_rejected[1:] == ("plus_one_sweep_component_12", "end", "mixed_principal_right")
 
     assert largest_accepted[0] < module.GERM_ATTACH_DISTANCE < nearest_rejected[0]
-    assert round(nearest_rejected[0] / largest_accepted[0], 3) == 1.379
+    assert round(nearest_rejected[0] / largest_accepted[0], 3) == 1.216
 
     # The secondary_left_birth blocker is far outside even the composed reach,
     # so this constant is not what leaves it unresolved.
@@ -1743,7 +1746,7 @@ def test_germ_attach_distance_window_matches_the_published_number() -> None:
     assert record["effective_organizer_reach"] == 0.016
     # The audit must be reading the release germs, not the superseded file.
     assert "research/evidence/V1_MIXED_GERMS_2026-08-15.json" not in record["inputs"]
-    assert record["attachments_at_default"] == 6
+    assert record["attachments_at_default"] == 12
     manifest = json.loads((ROOT / "research/DISCOVERY_RELEASE.json").read_text())
     prose = " ".join(manifest["known_limitations"]) + " ".join(
         limitation

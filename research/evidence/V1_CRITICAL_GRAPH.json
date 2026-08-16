@@ -168,6 +168,31 @@
       "edge_endpoint_bindings": []
     },
     {
+      "id": "domain_m1_max_m2_1p092",
+      "kind": "declared_domain_boundary",
+      "status": "frozen_domain",
+      "masses": null,
+      "passed": true,
+      "evidence_level": "definition",
+      "domain_face": "domain_m1_max",
+      "exit_coordinate": {
+        "axis": "m2",
+        "grid_value": 1.092
+      },
+      "observed_exits": [
+        {
+          "edge": "minus_one_sweep_component_3",
+          "side": "end",
+          "masses": [
+            1.1,
+            1.0920538262672421,
+            1.0
+          ],
+          "distance_to_face": 0.0
+        }
+      ]
+    },
+    {
       "id": "domain_m1_min_m2_0p756",
       "kind": "declared_domain_boundary",
       "status": "frozen_domain",
@@ -266,6 +291,87 @@
           "distance_to_face": 3.9744646735506706e-05
         }
       ]
+    },
+    {
+      "id": "domain_m2_max_m1_1p094",
+      "kind": "declared_domain_boundary",
+      "status": "frozen_domain",
+      "masses": null,
+      "passed": true,
+      "evidence_level": "definition",
+      "domain_face": "domain_m2_max",
+      "exit_coordinate": {
+        "axis": "m1",
+        "grid_value": 1.094
+      },
+      "observed_exits": [
+        {
+          "edge": "minus_one_sweep_component_4",
+          "side": "end",
+          "masses": [
+            1.094,
+            1.1992739572322855,
+            1.0
+          ],
+          "distance_to_face": 0.0007260427677144854
+        }
+      ]
+    },
+    {
+      "id": "interior_terminus_minus_one_sweep_component_0_start",
+      "kind": "interior_lattice_terminus",
+      "status": "certified_on_event_sign_lattice",
+      "masses": [
+        0.892,
+        0.7530804199278561,
+        1.0
+      ],
+      "passed": true,
+      "evidence": "research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json",
+      "evidence_level": "float64_structural",
+      "note": "Terminus of a label-invisible event curve on the finite event-sign lattice. Not a domain face and not a mixed germ."
+    },
+    {
+      "id": "interior_terminus_minus_one_sweep_component_1_end",
+      "kind": "interior_lattice_terminus",
+      "status": "certified_on_event_sign_lattice",
+      "masses": [
+        1.042,
+        0.8579757167987885,
+        1.0
+      ],
+      "passed": true,
+      "evidence": "research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json",
+      "evidence_level": "float64_structural",
+      "note": "Terminus of a label-invisible event curve on the finite event-sign lattice. Not a domain face and not a mixed germ."
+    },
+    {
+      "id": "interior_terminus_plus_one_sweep_component_12_start",
+      "kind": "interior_lattice_terminus",
+      "status": "certified_on_event_sign_lattice",
+      "masses": [
+        1.046,
+        1.106030306004638,
+        1.0
+      ],
+      "passed": true,
+      "evidence": "research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json",
+      "evidence_level": "float64_structural",
+      "note": "Terminus of a label-invisible event curve on the finite event-sign lattice. Not a domain face and not a mixed germ."
+    },
+    {
+      "id": "interior_terminus_plus_one_sweep_component_12_end",
+      "kind": "interior_lattice_terminus",
+      "status": "certified_on_event_sign_lattice",
+      "masses": [
+        1.048,
+        1.1205842861285262,
+        1.0
+      ],
+      "passed": true,
+      "evidence": "research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json",
+      "evidence_level": "float64_structural",
+      "note": "Terminus of a label-invisible event curve on the finite event-sign lattice. Not a domain face and not a mixed germ."
     }
   ],
   "edges": [
@@ -1205,6 +1311,405 @@
         },
         "classified": true
       }
+    },
+    {
+      "id": "minus_one_sweep_component_0",
+      "kind": "mechanism_polyline",
+      "mechanism": "minus_one",
+      "orientation": "sweep_component_0",
+      "cell_ids": [
+        10000,
+        10001,
+        10002,
+        10003,
+        10004,
+        10005,
+        10006,
+        10007,
+        10008,
+        10009,
+        10010,
+        10011,
+        10012,
+        10013,
+        10014,
+        10015,
+        10016,
+        10017,
+        10018
+      ],
+      "source_cell_count": 19,
+      "estimators": [
+        "float64"
+      ],
+      "source": "full_domain_event_sign_sweep",
+      "uncertainty": {
+        "max_abs_event": 1.885809730595156e-08,
+        "max_closure": 9.137607630075553e-10,
+        "max_source_m2_bracket_width": null
+      },
+      "endpoints": {
+        "start": {
+          "cell_id": 10000,
+          "masses": [
+            0.892,
+            0.7530804199278561,
+            1.0
+          ],
+          "node": "interior_terminus_minus_one_sweep_component_0_start",
+          "attachment": "certified_interior_lattice_terminus"
+        },
+        "end": {
+          "cell_id": 10018,
+          "masses": [
+            0.928,
+            0.8821527119651636,
+            1.0
+          ],
+          "node": "mixed_principal_left",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.003232827691818646,
+          "germ_direction": "+",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_LEFT_2026-08-16.json"
+        },
+        "classified": true
+      }
+    },
+    {
+      "id": "minus_one_sweep_component_1",
+      "kind": "mechanism_polyline",
+      "mechanism": "minus_one",
+      "orientation": "sweep_component_1",
+      "cell_ids": [
+        10019,
+        10020,
+        10021,
+        10022,
+        10023,
+        10024,
+        10025,
+        10026,
+        10027,
+        10028,
+        10029,
+        10030,
+        10031,
+        10032,
+        10033,
+        10034,
+        10035,
+        10036,
+        10037,
+        10038,
+        10039,
+        10040,
+        10041,
+        10042
+      ],
+      "source_cell_count": 24,
+      "estimators": [
+        "float64"
+      ],
+      "source": "full_domain_event_sign_sweep",
+      "uncertainty": {
+        "max_abs_event": 1.9595166378394424e-08,
+        "max_closure": 3.656488589109922e-10,
+        "max_source_m2_bracket_width": null
+      },
+      "endpoints": {
+        "start": {
+          "cell_id": 10019,
+          "masses": [
+            0.996,
+            0.9645756243241325,
+            1.0
+          ],
+          "node": "mixed_secondary_left",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.006837448187195435,
+          "germ_direction": "-",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_SECONDARY_LEFT_2026-08-16.json"
+        },
+        "end": {
+          "cell_id": 10042,
+          "masses": [
+            1.042,
+            0.8579757167987885,
+            1.0
+          ],
+          "node": "interior_terminus_minus_one_sweep_component_1_end",
+          "attachment": "certified_interior_lattice_terminus"
+        },
+        "classified": true
+      }
+    },
+    {
+      "id": "minus_one_sweep_component_3",
+      "kind": "mechanism_polyline",
+      "mechanism": "minus_one",
+      "orientation": "sweep_component_3",
+      "cell_ids": [
+        10043,
+        10044,
+        10045,
+        10046,
+        10047,
+        10048,
+        10049,
+        10050,
+        10051,
+        10052,
+        10053,
+        10054,
+        10055,
+        10056,
+        10057,
+        10058,
+        10059,
+        10060,
+        10061,
+        10062,
+        10063,
+        10064,
+        10065,
+        10066,
+        10067,
+        10068,
+        10069,
+        10070,
+        10071
+      ],
+      "source_cell_count": 29,
+      "estimators": [
+        "float64"
+      ],
+      "source": "full_domain_event_sign_sweep",
+      "uncertainty": {
+        "max_abs_event": 1.7938379670567883e-08,
+        "max_closure": 1.9624311954906006e-10,
+        "max_source_m2_bracket_width": null
+      },
+      "endpoints": {
+        "start": {
+          "cell_id": 10043,
+          "masses": [
+            1.044,
+            1.0472399087321451,
+            1.0
+          ],
+          "node": "secondary_right_death",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.0016494610674554222,
+          "germ_direction": "+",
+          "binding_evidence": "research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json"
+        },
+        "end": {
+          "cell_id": 10071,
+          "masses": [
+            1.1,
+            1.0920538262672421,
+            1.0
+          ],
+          "node": "domain_m1_max_m2_1p092",
+          "attachment": "declared_domain_boundary",
+          "domain_face": "domain_m1_max",
+          "distance_to_domain_face": 0.0
+        },
+        "classified": true
+      }
+    },
+    {
+      "id": "minus_one_sweep_component_4",
+      "kind": "mechanism_polyline",
+      "mechanism": "minus_one",
+      "orientation": "sweep_component_4",
+      "cell_ids": [
+        10072,
+        10073,
+        10074,
+        10075,
+        10076,
+        10077,
+        10078,
+        10079,
+        10080,
+        10081,
+        10082,
+        10083,
+        10084,
+        10085,
+        10086,
+        10087,
+        10088,
+        10089,
+        10090,
+        10091,
+        10092,
+        10093,
+        10094
+      ],
+      "source_cell_count": 23,
+      "estimators": [
+        "float64"
+      ],
+      "source": "full_domain_event_sign_sweep",
+      "uncertainty": {
+        "max_abs_event": 1.928211190715956e-08,
+        "max_closure": 4.462652177706033e-10,
+        "max_source_m2_bracket_width": null
+      },
+      "endpoints": {
+        "start": {
+          "cell_id": 10072,
+          "masses": [
+            1.05,
+            1.1302398903640616,
+            1.0
+          ],
+          "node": "mixed_principal_right",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.0004642621246719595,
+          "germ_direction": "+",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json"
+        },
+        "end": {
+          "cell_id": 10094,
+          "masses": [
+            1.094,
+            1.1992739572322855,
+            1.0
+          ],
+          "node": "domain_m2_max_m1_1p094",
+          "attachment": "declared_domain_boundary",
+          "domain_face": "domain_m2_max",
+          "distance_to_domain_face": 0.0007260427677144854
+        },
+        "classified": true
+      }
+    },
+    {
+      "id": "plus_one_sweep_component_10",
+      "kind": "mechanism_polyline",
+      "mechanism": "plus_one",
+      "orientation": "sweep_component_10",
+      "cell_ids": [
+        10096,
+        10097,
+        10098,
+        10099,
+        10100,
+        10101,
+        10102,
+        10103,
+        10104,
+        10105,
+        10106,
+        10107,
+        10108,
+        10109,
+        10110,
+        10111,
+        10112,
+        10113,
+        10114,
+        10115,
+        10116,
+        10117,
+        10118,
+        10119,
+        10120,
+        10121,
+        10122,
+        10123,
+        10124,
+        10125,
+        10126,
+        10127,
+        10128,
+        10129
+      ],
+      "source_cell_count": 34,
+      "estimators": [
+        "float64"
+      ],
+      "source": "full_domain_event_sign_sweep",
+      "uncertainty": {
+        "max_abs_event": 1.9852436139444762e-08,
+        "max_closure": 3.039826299665485e-10,
+        "max_source_m2_bracket_width": null
+      },
+      "endpoints": {
+        "start": {
+          "cell_id": 10096,
+          "masses": [
+            0.93,
+            0.8862743135234491,
+            1.0
+          ],
+          "node": "mixed_principal_left",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.0010106756229952762,
+          "germ_direction": "+",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_LEFT_2026-08-16.json"
+        },
+        "end": {
+          "cell_id": 10129,
+          "masses": [
+            0.996,
+            0.9552474657369026,
+            1.0
+          ],
+          "node": "mixed_secondary_left",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.00038312980174477567,
+          "germ_direction": "+",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_SECONDARY_LEFT_2026-08-16.json"
+        },
+        "classified": true
+      }
+    },
+    {
+      "id": "plus_one_sweep_component_12",
+      "kind": "mechanism_polyline",
+      "mechanism": "plus_one",
+      "orientation": "sweep_component_12",
+      "cell_ids": [
+        10131,
+        10132
+      ],
+      "source_cell_count": 2,
+      "estimators": [
+        "float64"
+      ],
+      "source": "full_domain_event_sign_sweep",
+      "uncertainty": {
+        "max_abs_event": 1.8694588987955285e-08,
+        "max_closure": 2.15454415319918e-10,
+        "max_source_m2_bracket_width": null
+      },
+      "endpoints": {
+        "start": {
+          "cell_id": 10131,
+          "masses": [
+            1.046,
+            1.106030306004638,
+            1.0
+          ],
+          "node": "interior_terminus_plus_one_sweep_component_12_start",
+          "attachment": "certified_interior_lattice_terminus"
+        },
+        "end": {
+          "cell_id": 10132,
+          "masses": [
+            1.048,
+            1.1205842861285262,
+            1.0
+          ],
+          "node": "interior_terminus_plus_one_sweep_component_12_end",
+          "attachment": "certified_interior_lattice_terminus"
+        },
+        "classified": true
+      }
     }
   ],
   "mixed_germs": [
@@ -1548,10 +2053,12 @@
   "root_coverage": {
     "source_transition_cells": 620,
     "localized_roots": 620,
+    "supplemental_roots": 133,
     "required_cells": 620,
     "complete": true,
-    "edge_count": 7,
+    "edge_count": 13,
     "cells_on_edges": 620,
+    "all_vertices_on_edges": 751,
     "duplicate_cell_ids": [],
     "missing_mixed_germs": [],
     "newton_failed": 0,
@@ -3142,42 +3649,47 @@
     "edge_topology_complete": true
   },
   "root_residual_margin": {
-    "localized_roots": 620,
+    "localized_roots": 753,
     "event_gate": 2e-08,
     "max_abs_event": 1.989798081858396e-08,
     "gate_occupancy_max": 0.994899040929198,
     "headroom_fraction": 0.005100959070801991,
-    "median_abs_event": 3.28579821634308e-09,
-    "p90_abs_event": 1.578564702287011e-08,
-    "p99_abs_event": 1.904002139951899e-08,
-    "roots_above_1e_8": 165,
-    "roots_above_half_gate": 165,
-    "roots_above_95_percent_of_gate": 7,
+    "median_abs_event": 4.038113843307656e-09,
+    "p90_abs_event": 1.6122978796495608e-08,
+    "p99_abs_event": 1.938485809205304e-08,
+    "roots_above_1e_8": 211,
+    "roots_above_half_gate": 211,
+    "roots_above_95_percent_of_gate": 11,
     "closure_conditioning": {
       "reported": 0,
-      "missing": 620
+      "missing": 753
     },
     "event_conditioning": {
       "reported": 0,
-      "missing": 620
+      "missing": 753
     },
     "max_reported_m2_uncertainty": null
   },
   "incidence": {
-    "node_count": 12,
-    "edge_count": 7,
-    "attached_endpoints": 14,
+    "node_count": 18,
+    "edge_count": 13,
+    "attached_endpoints": 26,
     "nodes_touching_more_than_one_edge": {
       "mixed_principal_left": [
+        "minus_one_sweep_component_0:end",
         "minus_one_u_to_s_0:start",
+        "plus_one_sweep_component_10:start",
         "plus_one_u_to_s_0:end"
       ],
       "mixed_principal_right": [
+        "minus_one_sweep_component_4:start",
         "minus_one_u_to_s_0:end",
         "plus_one_u_to_s_2:start"
       ],
       "mixed_secondary_left": [
+        "minus_one_sweep_component_1:start",
         "minus_one_u_to_s_1:end",
+        "plus_one_sweep_component_10:end",
         "plus_one_u_to_s_1:start"
       ],
       "secondary_left_birth": [
@@ -3186,6 +3698,7 @@
       ],
       "secondary_right_death": [
         "minus_one_s_to_u_0:end",
+        "minus_one_sweep_component_3:start",
         "plus_one_u_to_s_1:end"
       ]
     },
@@ -3193,13 +3706,19 @@
     "edge_components": [
       [
         "minus_one_s_to_u_0",
+        "minus_one_sweep_component_0",
+        "minus_one_sweep_component_1",
+        "minus_one_sweep_component_3",
+        "minus_one_sweep_component_4",
+        "minus_one_u_to_s_0",
         "minus_one_u_to_s_1",
-        "plus_one_u_to_s_1"
+        "plus_one_sweep_component_10",
+        "plus_one_u_to_s_0",
+        "plus_one_u_to_s_1",
+        "plus_one_u_to_s_2"
       ],
       [
-        "minus_one_u_to_s_0",
-        "plus_one_u_to_s_0",
-        "plus_one_u_to_s_2"
+        "plus_one_sweep_component_12"
       ],
       [
         "trace_collision_s_to_u_0"

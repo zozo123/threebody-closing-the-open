@@ -19,13 +19,20 @@
 #
 #   --roots      V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json
 #                The 620/620 float64+Julia-BigFloat hybrid census.  This is the
-#                canonical roots file: tests/test_critical_graph.py pins its shape
-#                (620 localized roots, 7 polyline edges, source-cell counts
-#                [1, 22, 46, 47, 120, 130, 254]).
+#                canonical CATALOG roots file: tests/test_critical_graph.py pins
+#                that those 620 cells still form 7 catalog polylines with
+#                source-cell counts [1, 22, 46, 47, 120, 130, 254].  They are
+#                not the complete critical set -- see --supplemental-roots.
 #                V1_HYBRID_CRITICAL_ROOTS_PARTIAL.json is byte-identical to it (a
 #                leftover rolling name from the same run), and
 #                V1_FLOAT64_CRITICAL_CENSUS_2026-08-15.json only carries the 462
 #                float64-localized cells, so neither can be the graph's input.
+#
+#   --supplemental-roots V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json
+#                Label-invisible / graph-absent event-sign roots harvested from
+#                the full-domain sweep (CI run 31956195570).  Catalog S/U cells
+#                cannot see interior 2→1 / 1→2 curves.  These roots extend the
+#                graph; they do not replace the 620-cell covering count.
 #
 #   --left-birth V1_LEFT_BIRTH_CLASS_2026-08-16.json
 #                projection_fold, passed, evidence_level independently_reproduced,
@@ -118,6 +125,7 @@ COMPLETENESS="${COMPLETENESS:-research/evidence/V1_COMPLETENESS_CERTIFICATE_2026
 
 EVIDENCE_ARGS=(
   --roots research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json
+  --supplemental-roots research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json
   --left-birth "$LEFT_BIRTH"
   --right-death research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json
   --daughter research/evidence/V1_DAUGHTER_CLASS_2026-08-16.json

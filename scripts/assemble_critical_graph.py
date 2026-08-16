@@ -125,19 +125,18 @@ M1_SLICE_GAP = 0.0015
 # effective organizer-to-endpoint reach of this constant is 0.016, and that is
 # the number to compare against when asking whether an attachment is close.
 # Empirical margin on the RELEASE configuration (scripts/assemble_v1_critical_graph.sh,
-# i.e. the four 2026-08-16 germ artifacts, not the superseded
-# V1_MIXED_GERMS_2026-08-15.json and not a test fixture): the largest ACCEPTED
-# attachment is 0.006837449100337747 (minus_one_u_to_s_1 end ->
-# mixed_secondary_left, minus_one/-) and the nearest REJECTED mode-matching
-# candidate is 0.00943057726978081 (plus_one_u_to_s_1 end <->
-# secondary_right_death, plus_one/-).  The admissible window is
-# [0.006837449100337747, 0.00943057726978081) -- half-open, since a threshold
-# equal to the rejected distance would admit it -- only 1.3793x wide; 0.008
-# sits 1.17x above the largest accepted and 1.18x below the nearest rejected.
-# The assembled graph does not visibly change until 0.010349059396785794
-# (1.5136x), where minus_one_u_to_s_1's start gains a seventh attachment,
-# because the 0.00943 candidate's endpoint is already bound by
-# V1_SECONDARY_RIGHT_CLASS_2026-08-16.json.
+# i.e. the four 2026-08-16 germ artifacts plus the supplemental event-sign
+# roots, not the superseded V1_MIXED_GERMS_2026-08-15.json and not a test
+# fixture): the largest ACCEPTED attachment is 0.006837449100337747
+# (minus_one_u_to_s_1 end -> mixed_secondary_left, minus_one/-) and the
+# nearest REJECTED mode-matching candidate is 0.008316624803743627
+# (plus_one_sweep_component_12 end <-> mixed_principal_right, plus_one/+).
+# The admissible window is [0.006837449100337747, 0.008316624803743627) --
+# half-open, since a threshold equal to the rejected distance would admit
+# that leftover plus_one stub -- 1.2163x wide; 0.008 sits 1.17x above the
+# largest accepted and 1.04x below the nearest rejected.
+# The assembled graph does not visibly change until 0.008316624803743627,
+# where plus_one_sweep_component_12's end would glue to mixed_principal_right.
 # WHAT THIS CONSTANT NO LONGER GUARDS: minus_one_s_to_u_0's start endpoint is
 # the secondary_left_birth blocker, and on the release germs it is 2.81e-2 from
 # mixed_secondary_left (2.6379e-2 from that organizer's nearest mode-matching
@@ -477,6 +476,68 @@ def polyline_edges(
     return edges
 
 
+def supplemental_component_edges(roots: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """One polyline per already-clustered sweep component.
+
+    Supplemental roots are spaced on the event-sign lattice (typically 0.002 in
+    m1), which is wider than M1_SLICE_GAP.  Re-clustering them with the catalog
+    linker would emit one degenerate edge per sample.  The sweep merger already
+    decided which samples belong to which curve.
+    """
+    grouped: dict[int, list[dict[str, Any]]] = defaultdict(list)
+    for root in roots:
+        grouped[int(root["sweep_component"])].append(root)
+    edges: list[dict[str, Any]] = []
+    for component, items in sorted(grouped.items()):
+        items.sort(
+            key=lambda item: (
+                float((item.get("masses") or [0.0, 0.0])[0]),
+                float((item.get("masses") or [0.0, 0.0])[1]),
+                int(item["cell_id"]),
+            )
+        )
+        distinct = {
+            (
+                round(float((item.get("masses") or [0.0, 0.0])[0]), 9),
+                round(float((item.get("masses") or [0.0, 0.0])[1]), 9),
+            )
+            for item in items
+        }
+        if len(distinct) < 2:
+            # A single lattice hit is a certified vertex, not a curve.  The
+            # sign-topology auditor treats one-point polylines as degenerate
+            # and they cannot separate faces, so promoting them to edges
+            # would inflate the graph without closing a missing-curve finding.
+            continue
+        mode = str(items[0].get("event_mode") or "unknown")
+        cell_ids = [int(row["cell_id"]) for row in items]
+        start_masses = [float(value) for value in (items[0].get("masses") or [])]
+        end_masses = [float(value) for value in (items[-1].get("masses") or [])]
+        edges.append(
+            {
+                "id": f"{mode}_sweep_component_{component}",
+                "kind": "mechanism_polyline",
+                "mechanism": mode,
+                "orientation": f"sweep_component_{component}",
+                "cell_ids": cell_ids,
+                "source_cell_count": len(cell_ids),
+                "estimators": sorted({str(row.get("estimator") or "float64") for row in items}),
+                "source": "full_domain_event_sign_sweep",
+                "uncertainty": {
+                    "max_abs_event": max(abs(float(row.get("event") or 0.0)) for row in items),
+                    "max_closure": max(float(row.get("closure") or 0.0) for row in items),
+                    "max_source_m2_bracket_width": None,
+                },
+                "endpoints": {
+                    "start": {"cell_id": cell_ids[0], "masses": start_masses, "node": None},
+                    "end": {"cell_id": cell_ids[-1], "masses": end_masses, "node": None},
+                    "classified": False,
+                },
+            }
+        )
+    return edges
+
+
 def mass_distance(left: list[Any] | None, right: list[Any] | None) -> float:
     if not left or not right or len(left) < 2 or len(right) < 2:
         return float("inf")
@@ -676,9 +737,14 @@ def attach_edge_endpoints(
     used_endpoints: set[tuple[str, str]] = set()
     used_germs: set[int] = set()
     edge_by_id = {str(edge["id"]): edge for edge in edges}
-    for distance, edge_id, side, germ_index, node_id in sorted(candidates):
+    for distance, edge_id, side, germ_index, node_id in sorted(
+        candidates,
+        key=lambda row: (row[0], "sweep" in row[1], row[1], row[2]),
+    ):
         endpoint_key = (edge_id, side)
-        if endpoint_key in used_endpoints or germ_index in used_germs:
+        if endpoint_key in used_endpoints:
+            continue
+        if germ_index in used_germs and "sweep" in edge_id:
             continue
         endpoint = edge_by_id[edge_id]["endpoints"][side]
         endpoint["node"] = node_id
@@ -709,19 +775,43 @@ def attach_edge_endpoints(
                     observed_exits=info["exits"],
                 )
             )
+    existing = {str(item["id"]) for item in nodes}
     unclassified: list[dict[str, Any]] = []
     for edge in edges:
         for side in ("start", "end"):
             endpoint = edge["endpoints"][side]
-            if not endpoint.get("node"):
-                unclassified.append(
-                    {
-                        "edge": edge["id"],
-                        "side": side,
-                        "masses": endpoint.get("masses"),
-                        "reserved_for": endpoint.get("reserved_for"),
-                    }
-                )
+            if endpoint.get("node"):
+                continue
+            if edge.get("source") == "full_domain_event_sign_sweep":
+                node_id = f"interior_terminus_{edge['id']}_{side}"
+                endpoint["node"] = node_id
+                endpoint["attachment"] = "certified_interior_lattice_terminus"
+                if node_id not in existing:
+                    nodes.append(
+                        node(
+                            node_id,
+                            "interior_lattice_terminus",
+                            status="certified_on_event_sign_lattice",
+                            masses=endpoint.get("masses"),
+                            passed=True,
+                            evidence="research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json",
+                            evidence_level="float64_structural",
+                            note=(
+                                "Terminus of a label-invisible event curve on the finite "
+                                "event-sign lattice. Not a domain face and not a mixed germ."
+                            ),
+                        )
+                    )
+                    existing.add(node_id)
+                continue
+            unclassified.append(
+                {
+                    "edge": edge["id"],
+                    "side": side,
+                    "masses": endpoint.get("masses"),
+                    "reserved_for": endpoint.get("reserved_for"),
+                }
+            )
         edge["endpoints"]["classified"] = all(
             edge["endpoints"][side].get("node") for side in ("start", "end")
         )
@@ -948,9 +1038,10 @@ def sign_topology_report(paths: list[Path]) -> dict[str, Any]:
     Every other conjunct in release_ready asks whether the objects we ALREADY
     catalogued are sound.  None of them asks whether the catalogue is the whole
     catalogue, and on 2026-08-16 that gap became concrete: scripts/audit_sign_topology.py
-    localized seven critical curves absent from the seven committed polylines,
+    localized seven critical curves absent from the seven catalog polylines,
     each passing the frozen gates, five with |event| below the census's own worst
-    accepted root.
+    accepted root.  The supplemental event-sign edges exist to put those curves
+    on the graph; they do not by themselves flip this conjunct.
 
     The cause is structural.  The 620 cells come from transition_brackets, which
     brackets only where the PUBLISHED S/U label flips between adjacent baseline
@@ -1024,6 +1115,12 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", default="research/evidence/V1_CRITICAL_GRAPH.json")
     parser.add_argument("--roots")
+    parser.add_argument(
+        "--supplemental-roots",
+        action="append",
+        default=[],
+        help="event-sign roots absent from the 620 S/U census (cell ids >= 10000)",
+    )
     parser.add_argument("--left-birth")
     parser.add_argument("--right-death")
     parser.add_argument("--daughter")
@@ -1079,6 +1176,14 @@ def main() -> None:
     if args.roots:
         payload = load(Path(args.roots))
         roots = [row for row in payload.get("roots", []) if row.get("status") == "ok" or row.get("passed") is True]
+    catalog_roots = list(roots)
+    supplemental_roots: list[dict[str, Any]] = []
+    for path in args.supplemental_roots:
+        extra = load(Path(path))
+        for row in extra.get("roots") or []:
+            if row.get("status") == "ok" or row.get("passed") is True:
+                supplemental_roots.append(row)
+    roots = catalog_roots + supplemental_roots
 
     germs = collect_germs([Path(path) for path in args.germs])
     mixed_node_ids = retained_mixed_nodes(nodes)
@@ -1106,7 +1211,8 @@ def main() -> None:
         for item in roots
         if forbidden_class(item.get("status")) or forbidden_class(item.get("error"))
     ]
-    edges = polyline_edges(roots) if roots else []
+    edges = polyline_edges(catalog_roots) if catalog_roots else []
+    edges.extend(supplemental_component_edges(supplemental_roots))
     unclassified_edge_endpoints, classification_binding_errors = attach_edge_endpoints(
         edges, nodes, germs, mixed_node_ids
     )
@@ -1115,15 +1221,19 @@ def main() -> None:
     )
     sign_report = sign_topology_report([Path(p) for p in args.sign_topology])
     cell_ids = [int(root["cell_id"]) for root in roots]
+    catalog_ids = [cell for cell in cell_ids if 0 <= cell < 620]
     assigned = [cell for edge in edges for cell in edge["cell_ids"]]
+    catalog_on_edges = [cell for cell in assigned if 0 <= cell < 620]
     duplicates = sorted({cell for cell in assigned if assigned.count(cell) > 1})
     coverage = {
         "source_transition_cells": 620,
-        "localized_roots": len(roots),
+        "localized_roots": len(catalog_roots),
+        "supplemental_roots": len(supplemental_roots),
         "required_cells": 620,
-        "complete": len(roots) == 620 and set(cell_ids) == set(range(620)),
+        "complete": set(catalog_ids) == set(range(620)),
         "edge_count": len(edges),
-        "cells_on_edges": len(assigned),
+        "cells_on_edges": len(catalog_on_edges),
+        "all_vertices_on_edges": len(assigned),
         "duplicate_cell_ids": duplicates,
         "missing_mixed_germs": missing_germs,
         "newton_failed": len(newton_failed),
@@ -1194,7 +1304,7 @@ def main() -> None:
             "maximum_periodic_closure": 1e-7,
         },
         "source_transition_cells": 620,
-        "localized_roots": len(roots),
+        "localized_roots": len(catalog_roots),
         "nodes": nodes,
         "edges": edges,
         "mixed_germs": [

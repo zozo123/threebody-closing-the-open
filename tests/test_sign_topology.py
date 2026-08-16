@@ -20,8 +20,16 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 REAL_GRAPH = ROOT / "research/evidence/V1_CRITICAL_GRAPH.json"
 REAL_ROOTS = ROOT / "research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json"
+SUPPLEMENTAL_ROOTS = ROOT / "research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json"
 SHIPPED_AUDIT = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json"
 SHIPPED_CROSSING = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json"
+
+
+def _all_roots() -> list[dict]:
+    roots = list(json.loads(REAL_ROOTS.read_text())["roots"])
+    if SUPPLEMENTAL_ROOTS.exists():
+        roots.extend(json.loads(SUPPLEMENTAL_ROOTS.read_text())["roots"])
+    return roots
 
 
 def _module():
@@ -329,7 +337,7 @@ def test_state_components_match_the_repository_event_definitions():
 @pytest.mark.skipif(not REAL_GRAPH.exists(), reason="committed graph not present")
 def test_committed_edges_are_graphs_over_m1():
     graph = json.loads(REAL_GRAPH.read_text())
-    roots = json.loads(REAL_ROOTS.read_text())["roots"]
+    roots = _all_roots()
     assert AST.non_graph_edges(graph, roots) == []
     edges = AST.edges_from_graph(graph, roots)
     assert len(edges) == len(graph["edges"])
@@ -398,7 +406,7 @@ def test_two_uncommitted_curves_cross_where_the_graph_has_a_dangling_endpoint():
     # on the earlier scan line the order is the other way round
     minus_at_925 = certified[(0.925, "minus_one")]
     graph = json.loads(REAL_GRAPH.read_text())
-    roots = json.loads(REAL_ROOTS.read_text())["roots"]
+    roots = _all_roots()
     edges = AST.edges_from_graph(graph, roots)
     plus_edge = next(e for e in edges if e.edge_id == "plus_one_u_to_s_0")
     plus_at_925 = plus_edge.m2_at(0.925)
@@ -421,15 +429,20 @@ def test_forbidden_component_flip_fired_on_real_data():
 
 @pytest.mark.skipif(not REAL_GRAPH.exists(), reason="committed graph not present")
 def test_committed_edges_leave_the_declared_domain_uncovered():
-    """The committed edges stop well short of the declared m1 domain.
+    """Catalog polylines still stop short of m1 = 1.1; one sweep edge does not.
 
-    This is a fact about the shipped artifact, asserted so that it cannot be
-    quietly changed without a test going red.
+    The 620-cell census never reached the m1-max face.  The event-sign sweep
+    did: minus_one_sweep_component_3 exits at (1.1, 1.092).  That is a fact
+    about the shipped artifact, asserted so neither side can quietly change.
     """
     graph = json.loads(REAL_GRAPH.read_text())
-    roots = json.loads(REAL_ROOTS.read_text())["roots"]
+    roots = _all_roots()
     edges = AST.edges_from_graph(graph, roots)
     declared_hi = float(graph["declared_mass_domain"]["m1"][1])
-    covered_hi = max(e.m1_max for e in edges)
-    assert covered_hi < declared_hi
-    assert declared_hi - covered_hi > 0.02
+    catalog = [edge for edge in edges if "sweep_component" not in edge.edge_id]
+    sweep = [edge for edge in edges if "sweep_component" in edge.edge_id]
+    catalog_hi = max(edge.m1_max for edge in catalog)
+    assert catalog_hi < declared_hi
+    assert declared_hi - catalog_hi > 0.02
+    assert sweep
+    assert any(abs(edge.m1_max - declared_hi) < 1e-12 for edge in sweep)
