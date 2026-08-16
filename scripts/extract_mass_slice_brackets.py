@@ -210,12 +210,14 @@ def main() -> None:
                 flush=True,
             )
 
-    summary = f"m1_slices={len(grouped)} criterion={args.criterion} brackets={total}"
-    if args.criterion == "event-sign":
-        summary += f" label_invisible={interior} rows_failing_closure={failed_rows}"
-    else:
-        # Historical wording, kept because logs and workflow summaries grep for it.
+    if args.criterion == "published-label":
+        # Historical wording, unchanged: workflow logs and summaries read this line.
         summary = f"m1_slices={len(grouped)} transition_brackets={total}"
+    else:
+        summary = (
+            f"m1_slices={len(grouped)} criterion={args.criterion} brackets={total} "
+            f"label_invisible={interior} rows_failing_closure={failed_rows}"
+        )
     print(f"{summary} output={args.output}")
 
 
