@@ -11,7 +11,7 @@
     "baseline": "Li, Li & Liao (2021), arXiv:2007.10184 / Science China Physics, Mechanics & Astronomy 64, 219511. The published 135,445-orbit catalog and its 13,315 stable labels are baseline facts, not ATLAS discoveries."
   },
   "decision": {
-    "summary": "OPEN. Gate C passed: the frozen catalog is supported as one continuation-connected component and the 2023 two-set reading rests on a projection we show to be folded and non-injective. Gate A passed for the three mechanism words the paper is allowed to use: a bracketed physical +1 crossing, a bracketed opposite-Krein Hamiltonian-Hopf collision, and three (4,4) mixed roots. Every one of the 620 published adjacent S/U cells has been localized once and assigned to one of seven mechanism polylines, and sixteen mixed continuation germs are frozen (four for each of the three headline organizers plus four the retained secondary-right node owes in its own right); that is a covering of the published cell list, not a finished critical graph. As assembled, the polyline incidence still leaves three connected components, two edge ends are unclassified, and secondary_left_birth is unexplained. Completeness IS now frozen, but only in the bounded sense the known_limitations spell out: a 0.0253% neck rectangle plus one 0.002539% off-grid pocket. Gate B and Gate D remain pending, so SOLVED is forbidden.",
+    "summary": "OPEN. Gate C passed: the frozen catalog is supported as one continuation-connected component and the 2023 two-set reading rests on a projection we show to be folded and non-injective. Gate A passed for the three mechanism words the paper is allowed to use: a bracketed physical +1 crossing, a bracketed opposite-Krein Hamiltonian-Hopf collision, and three (4,4) mixed roots. Every one of the 620 published adjacent S/U cells has been localized once and assigned to one of seven mechanism polylines, and sixteen mixed continuation germs are frozen (four for each of the three headline organizers plus four the retained secondary-right node owes in its own right); that is a covering of the published cell list, not a finished critical graph. As assembled, the polyline incidence still leaves three connected components, two edge ends are unclassified, and secondary_left_birth is unexplained. Completeness IS now frozen, but only in the bounded sense the known_limitations spell out: a 0.0253% neck rectangle plus one 0.002539% off-grid pocket. Gate B is now RED on a live contradiction (label-invisible event roots with continuation still unresolved) and Gate D remains pending, so SOLVED is forbidden.",
     "if_v1_closes": "If and only if every gate closes, v1 would establish the following, and nothing wider. Within the frozen Li--Li--Liao unequal-mass non-hierarchical catalog on the declared domain m1 in [0.8,1.1], m2 in [0.7,1.2] at m3 = 1, and under one declared normalization and continuation gauge, the catalog behaves as a single continuation-connected sheet rather than the two families a scale-invariant projection appears to show; and on that sheet the planar linear-Floquet stability boundary can be decomposed into mechanism-specific arcs (+1 crossings, -1 crossings, and trace collisions) that meet at a small number of mixed (4,4) organizers, with representative events reproduced by an independent arbitrary-precision implementation and physical symplectic-quotient diagnostics rather than by deletion of trivial multipliers. That is a finite, numerical, resolution-bounded statement about one published catalog under one gauge. It is not a theorem, not a statement about the general three-body problem, not a statement about nonlinear or KAM stability, not a statement about spatial (non-planar) stability, and not a claim of priority.",
     "solved_at": null
   },
@@ -34,7 +34,7 @@
     {
       "id": "B",
       "title": "Complete mechanism-resolved Floquet critical graph on the connected family sheet",
-      "status": "pending",
+      "status": "fail",
       "criterion": "Every catalog S/U cell belongs to exactly one mechanism-specific polyline; N edges need not equal 620; every endpoint is a domain boundary, mixed organizer, or verified fold; mixed germs come from continuation artifacts; Newton-failed is forbidden; completeness is frozen; V1_CRITICAL_GRAPH.json has release_ready true.",
       "evidence": [
         "result-ledger",
@@ -43,7 +43,8 @@
         "global-event-network-artifact",
         "mixed-vertex-screening-file",
         "secondary-fold-topology-screen",
-        "al-pocket-screen"
+        "al-pocket-screen",
+        "label-invisible-event-continuation"
       ]
     },
     {
@@ -190,6 +191,7 @@
     }
   ],
   "blockers": [
+    "Resolve #192: continue and classify all nine label-invisible event roots bidirectionally, including the marginal m1=0.930 seed and the two newly exposed slice roots.",
     "Classify the secondary-left G- birth (#110).",
     "Classify the secondary-right death without claiming a fourth organizer until it is bound (#111 / #127).",
     "Classify the lower +1 daughter, including no_branch_attachment as a valid close.",
@@ -201,6 +203,7 @@
   "known_limitations": [
     "This is not a solution of the general three-body problem. Every result here is scoped to one published catalog, one declared gauge, and planar linear Floquet stability.",
     "The mechanism-resolved critical graph is not finished. SOLVED is forbidden.",
+    "620/620 localized transition roots are historical-substrate completeness only; they are not full-critical-set completeness. Nine certified label-invisible U->U event roots now require bidirectional continuation witnesses (research/evidence/V1_LABEL_INVISIBLE_EVENT_CONTINUATION_2026-08-16.json).",
     "v1 'stable' means planar linear Floquet stability only: not nonlinear stability, not KAM stability, not spatial (non-planar) stability.",
     "Gate A pass is scoped to mechanism words the paper is allowed to use. Fold, fourth mixed, and daughter labels remain unauthorized.",
     "The one-family statement is a numerical continuation certificate for the declared catalog domain.",
@@ -456,6 +459,14 @@
       "role": "paper",
       "path": "paper/main.pdf",
       "description": "Manuscript built after injecting the machine-readable discovery status."
+    },
+    {
+      "id": "label-invisible-event-continuation",
+      "kind": "repository_file",
+      "role": "critical_set_contradiction",
+      "path": "research/evidence/V1_LABEL_INVISIBLE_EVENT_CONTINUATION_2026-08-16.json",
+      "sha256": "65059f3b9c7165200347331ba4523c8a35199fdad9725676e2c35e62cf369487",
+      "description": "Frozen nine label-invisible seeds with unresolved bidirectional continuation and contradiction stop-rule status."
     }
   ],
   "release": {

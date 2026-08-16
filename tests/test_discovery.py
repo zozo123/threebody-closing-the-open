@@ -31,7 +31,7 @@ def test_current_open_manifest_is_valid() -> None:
     assert manifest["status"] == "open"
     assert {g["id"]: g["status"] for g in manifest["gates"]} == {
         "A": "pass",
-        "B": "pending",
+        "B": "fail",
         "C": "pass",
         "D": "pending",
     }
@@ -42,6 +42,19 @@ def test_current_open_manifest_is_valid() -> None:
         "principal-upper-hamiltonian-hopf",
         "three-mixed-organizers",
     }
+
+
+def test_label_invisible_continuation_artifact_is_frozen_in_manifest() -> None:
+    manifest = load_manifest(MANIFEST)
+    evidence = {item["id"]: item for item in manifest["evidence"]}
+    record = evidence["label-invisible-event-continuation"]
+    payload = json.loads((ROOT / record["path"]).read_text())
+    assert payload["claim_status"] == "open_contradiction_gate_B_red_continuation_unresolved"
+    assert len(payload["frozen_seed_ledger"]) == 9
+    assert payload["graph_classification"]["new_critical_arc"] == [
+        "seed_m1_0.920_minus_one_0.859_0.860",
+        "seed_m1_1.040_minus_one_0.860_0.861",
+    ]
 
 
 def test_open_manifest_cannot_be_published_as_solved() -> None:

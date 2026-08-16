@@ -1,0 +1,842 @@
+{
+  "schema": "atlas.v1.label-invisible-event-continuation/1",
+  "created_at": "2026-08-16T21:13:20.533223+00:00",
+  "source_commit": "9d20603eb0bcdc564cc082ceca7a911f895c9eca",
+  "criterion_version": "atlas.v1.bracket-criterion-comparison/1",
+  "criterion_artifact": "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+  "frozen_seed_ledger": [
+    {
+      "seed_id": "seed_m1_0.920_minus_one_0.859_0.860",
+      "source": {
+        "artifact": "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+        "slice_m1": 0.92,
+        "source_cell_m2_bracket": [
+          0.859,
+          0.86
+        ],
+        "source_rows": {
+          "left": {
+            "slice_row_index": 159,
+            "global_row_index": 54354,
+            "published_label": "U"
+          },
+          "right": {
+            "slice_row_index": 160,
+            "global_row_index": 54355,
+            "published_label": "U"
+          }
+        },
+        "event_mode": "minus_one",
+        "unreachable_reason": "no_label_bracket"
+      },
+      "endpoint_signs": [
+        -0.02278011435890548,
+        0.0223477715013356
+      ],
+      "endpoint_unstable_dimensions": [
+        2,
+        1
+      ],
+      "localization": {
+        "solver": "threebody_atlas.critical_manifold.localize_critical_point",
+        "status": "passed",
+        "masses": [
+          0.92,
+          0.8595036698750498,
+          1.0
+        ],
+        "event_value": -1.4525376457186212e-09,
+        "periodic_closure": 4.6193163717750237e-10,
+        "residual": 1.4525376457186212e-09,
+        "closure_gate": 1e-07,
+        "event_gate": 2e-08
+      },
+      "nearest_committed_edge": null,
+      "continuation": {
+        "forward": {
+          "accepted_points": [],
+          "accepted_tangents": [],
+          "terminal": "unresolved",
+          "reason": "pseudo-arclength continuation not yet run for this seed in committed evidence"
+        },
+        "reverse": {
+          "accepted_points": [],
+          "accepted_tangents": [],
+          "terminal": "unresolved",
+          "reason": "pseudo-arclength continuation not yet run for this seed in committed evidence"
+        },
+        "forward_reverse_terminal_comparison": "unresolved_no_bidirectional_trace"
+      },
+      "physical_sheet_identity": {
+        "status": "inferred_from_same_published_sheet_only",
+        "evidence": "all seeds come from the frozen Li-Li-Liao published periodic sheet under unchanged closure/event gates"
+      },
+      "graph_classification": "new_critical_arc",
+      "evidence_parents": [
+        "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+        "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json",
+        "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json",
+        "research/evidence/V1_CRITICAL_GRAPH.json",
+        "zozo123/threebody-closing-the-open#140",
+        "zozo123/threebody-closing-the-open#139",
+        "zozo123/threebody-closing-the-open#164",
+        "zozo123/threebody-closing-the-open#180"
+      ],
+      "claim_status": "frozen_seed_only_continuation_pending"
+    },
+    {
+      "seed_id": "seed_m1_0.925_minus_one_0.874_0.875",
+      "source": {
+        "artifact": "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+        "slice_m1": 0.925,
+        "source_cell_m2_bracket": [
+          0.874,
+          0.875
+        ],
+        "source_rows": {
+          "left": {
+            "slice_row_index": 174,
+            "global_row_index": 56874,
+            "published_label": "U"
+          },
+          "right": {
+            "slice_row_index": 175,
+            "global_row_index": 56875,
+            "published_label": "U"
+          }
+        },
+        "event_mode": "minus_one",
+        "unreachable_reason": "no_label_bracket"
+      },
+      "endpoint_signs": [
+        -0.0027008017229546155,
+        0.041189801411991134
+      ],
+      "endpoint_unstable_dimensions": [
+        2,
+        1
+      ],
+      "localization": {
+        "solver": "threebody_atlas.critical_manifold.localize_critical_point",
+        "status": "passed",
+        "masses": [
+          0.925,
+          0.8740612936701803,
+          1.0
+        ],
+        "event_value": -8.934426531936879e-10,
+        "periodic_closure": 3.38796645400929e-10,
+        "residual": 8.934426531936879e-10,
+        "closure_gate": 1e-07,
+        "event_gate": 2e-08
+      },
+      "nearest_committed_edge": null,
+      "continuation": {
+        "forward": {
+          "accepted_points": [],
+          "accepted_tangents": [],
+          "terminal": "unresolved",
+          "reason": "pseudo-arclength continuation not yet run for this seed in committed evidence"
+        },
+        "reverse": {
+          "accepted_points": [],
+          "accepted_tangents": [],
+          "terminal": "unresolved",
+          "reason": "pseudo-arclength continuation not yet run for this seed in committed evidence"
+        },
+        "forward_reverse_terminal_comparison": "unresolved_no_bidirectional_trace"
+      },
+      "physical_sheet_identity": {
+        "status": "inferred_from_same_published_sheet_only",
+        "evidence": "all seeds come from the frozen Li-Li-Liao published periodic sheet under unchanged closure/event gates"
+      },
+      "graph_classification": "existing_arc",
+      "evidence_parents": [
+        "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+        "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json",
+        "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json",
+        "research/evidence/V1_CRITICAL_GRAPH.json",
+        "zozo123/threebody-closing-the-open#140",
+        "zozo123/threebody-closing-the-open#139",
+        "zozo123/threebody-closing-the-open#164",
+        "zozo123/threebody-closing-the-open#180"
+      ],
+      "claim_status": "frozen_seed_only_continuation_pending"
+    },
+    {
+      "seed_id": "seed_m1_0.929_minus_one_0.884_0.885",
+      "source": {
+        "artifact": "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+        "slice_m1": 0.929,
+        "source_cell_m2_bracket": [
+          0.884,
+          0.885
+        ],
+        "source_rows": {
+          "left": {
+            "slice_row_index": 184,
+            "global_row_index": 58888,
+            "published_label": "U"
+          },
+          "right": {
+            "slice_row_index": 185,
+            "global_row_index": 58889,
+            "published_label": "U"
+          }
+        },
+        "event_mode": "minus_one",
+        "unreachable_reason": "no_label_bracket"
+      },
+      "endpoint_signs": [
+        -0.03255612546528042,
+        0.01070586154207298
+      ],
+      "endpoint_unstable_dimensions": [
+        2,
+        1
+      ],
+      "localization": {
+        "solver": "threebody_atlas.critical_manifold.localize_critical_point",
+        "status": "passed",
+        "masses": [
+          0.929,
+          0.8847517496268272,
+          1.0
+        ],
+        "event_value": -6.034621691242137e-10,
+        "periodic_closure": 2.9528441365206035e-10,
+        "residual": 6.034621691242137e-10,
+        "closure_gate": 1e-07,
+        "event_gate": 2e-08
+      },
+      "nearest_committed_edge": null,
+      "continuation": {
+        "forward": {
+          "accepted_points": [],
+          "accepted_tangents": [],
+          "terminal": "unresolved",
+          "reason": "pseudo-arclength continuation not yet run for this seed in committed evidence"
+        },
+        "reverse": {
+          "accepted_points": [],
+          "accepted_tangents": [],
+          "terminal": "unresolved",
+          "reason": "pseudo-arclength continuation not yet run for this seed in committed evidence"
+        },
+        "forward_reverse_terminal_comparison": "unresolved_no_bidirectional_trace"
+      },
+      "physical_sheet_identity": {
+        "status": "inferred_from_same_published_sheet_only",
+        "evidence": "all seeds come from the frozen Li-Li-Liao published periodic sheet under unchanged closure/event gates"
+      },
+      "graph_classification": "existing_arc",
+      "evidence_parents": [
+        "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+        "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json",
+        "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json",
+        "research/evidence/V1_CRITICAL_GRAPH.json",
+        "zozo123/threebody-closing-the-open#140",
+        "zozo123/threebody-closing-the-open#139",
+        "zozo123/threebody-closing-the-open#164",
+        "zozo123/threebody-closing-the-open#180"
+      ],
+      "claim_status": "frozen_seed_only_continuation_pending"
+    },
+    {
+      "seed_id": "seed_m1_0.930_plus_one_0.886_0.887",
+      "source": {
+        "artifact": "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+        "slice_m1": 0.93,
+        "source_cell_m2_bracket": [
+          0.886,
+          0.887
+        ],
+        "source_rows": {
+          "left": {
+            "slice_row_index": 186,
+            "global_row_index": 59391,
+            "published_label": "U"
+          },
+          "right": {
+            "slice_row_index": 187,
+            "global_row_index": 59392,
+            "published_label": "U"
+          }
+        },
+        "event_mode": "plus_one",
+        "unreachable_reason": "no_label_bracket"
+      },
+      "endpoint_signs": [
+        -0.04483007389934457,
+        0.11793983789939233
+      ],
+      "endpoint_unstable_dimensions": [
+        2,
+        1
+      ],
+      "localization": {
+        "solver": "threebody_atlas.critical_manifold.localize_critical_point",
+        "status": "passed",
+        "masses": [
+          0.93,
+          0.8862743134281336,
+          1.0
+        ],
+        "event_value": -1.9359646330485702e-08,
+        "periodic_closure": 2.784740538235849e-10,
+        "residual": 1.9359646330485702e-08,
+        "closure_gate": 1e-07,
+        "event_gate": 2e-08
+      },
+      "nearest_committed_edge": null,
+      "continuation": {
+        "forward": {
+          "accepted_points": [],
+          "accepted_tangents": [],
+          "terminal": "unresolved",
+          "reason": "pseudo-arclength continuation not yet run for this seed in committed evidence"
+        },
+        "reverse": {
+          "accepted_points": [],
+          "accepted_tangents": [],
+          "terminal": "unresolved",
+          "reason": "pseudo-arclength continuation not yet run for this seed in committed evidence"
+        },
+        "forward_reverse_terminal_comparison": "unresolved_no_bidirectional_trace"
+      },
+      "physical_sheet_identity": {
+        "status": "inferred_from_same_published_sheet_only",
+        "evidence": "all seeds come from the frozen Li-Li-Liao published periodic sheet under unchanged closure/event gates"
+      },
+      "graph_classification": "existing_arc",
+      "evidence_parents": [
+        "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+        "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json",
+        "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json",
+        "research/evidence/V1_CRITICAL_GRAPH.json",
+        "zozo123/threebody-closing-the-open#140",
+        "zozo123/threebody-closing-the-open#139",
+        "zozo123/threebody-closing-the-open#164",
+        "zozo123/threebody-closing-the-open#180"
+      ],
+      "claim_status": "frozen_seed_only_continuation_pending"
+    },
+    {
+      "seed_id": "seed_m1_0.931_plus_one_0.887_0.888",
+      "source": {
+        "artifact": "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+        "slice_m1": 0.931,
+        "source_cell_m2_bracket": [
+          0.887,
+          0.888
+        ],
+        "source_rows": {
+          "left": {
+            "slice_row_index": 187,
+            "global_row_index": 59893,
+            "published_label": "U"
+          },
+          "right": {
+            "slice_row_index": 188,
+            "global_row_index": 59894,
+            "published_label": "U"
+          }
+        },
+        "event_mode": "plus_one",
+        "unreachable_reason": "no_label_bracket"
+      },
+      "endpoint_signs": [
+        -0.07559618930217127,
+        0.08799461393814667
+      ],
+      "endpoint_unstable_dimensions": [
+        2,
+        1
+      ],
+      "localization": {
+        "solver": "threebody_atlas.critical_manifold.localize_critical_point",
+        "status": "passed",
+        "masses": [
+          0.931,
+          0.8874607225060899,
+          1.0
+        ],
+        "event_value": 1.1286463319493123e-08,
+        "periodic_closure": 2.718353915905636e-10,
+        "residual": 1.1286463319493123e-08,
+        "closure_gate": 1e-07,
+        "event_gate": 2e-08
+      },
+      "nearest_committed_edge": null,
+      "continuation": {
+        "forward": {
+          "accepted_points": [],
+          "accepted_tangents": [],
+          "terminal": "unresolved",
+          "reason": "pseudo-arclength continuation not yet run for this seed in committed evidence"
+        },
+        "reverse": {
+          "accepted_points": [],
+          "accepted_tangents": [],
+          "terminal": "unresolved",
+          "reason": "pseudo-arclength continuation not yet run for this seed in committed evidence"
+        },
+        "forward_reverse_terminal_comparison": "unresolved_no_bidirectional_trace"
+      },
+      "physical_sheet_identity": {
+        "status": "inferred_from_same_published_sheet_only",
+        "evidence": "all seeds come from the frozen Li-Li-Liao published periodic sheet under unchanged closure/event gates"
+      },
+      "graph_classification": "existing_arc",
+      "evidence_parents": [
+        "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+        "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json",
+        "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json",
+        "research/evidence/V1_CRITICAL_GRAPH.json",
+        "zozo123/threebody-closing-the-open#140",
+        "zozo123/threebody-closing-the-open#139",
+        "zozo123/threebody-closing-the-open#164",
+        "zozo123/threebody-closing-the-open#180"
+      ],
+      "claim_status": "frozen_seed_only_continuation_pending"
+    },
+    {
+      "seed_id": "seed_m1_0.940_plus_one_0.897_0.898",
+      "source": {
+        "artifact": "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+        "slice_m1": 0.94,
+        "source_cell_m2_bracket": [
+          0.897,
+          0.898
+        ],
+        "source_rows": {
+          "left": {
+            "slice_row_index": 197,
+            "global_row_index": 64412,
+            "published_label": "U"
+          },
+          "right": {
+            "slice_row_index": 198,
+            "global_row_index": 64413,
+            "published_label": "U"
+          }
+        },
+        "event_mode": "plus_one",
+        "unreachable_reason": "no_label_bracket"
+      },
+      "endpoint_signs": [
+        -0.13641017147925183,
+        0.031190875775266136
+      ],
+      "endpoint_unstable_dimensions": [
+        2,
+        1
+      ],
+      "localization": {
+        "solver": "threebody_atlas.critical_manifold.localize_critical_point",
+        "status": "passed",
+        "masses": [
+          0.94,
+          0.8978130034319328,
+          1.0
+        ],
+        "event_value": 1.3643361995718806e-08,
+        "periodic_closure": 2.1429309815519142e-10,
+        "residual": 1.3643361995718806e-08,
+        "closure_gate": 1e-07,
+        "event_gate": 2e-08
+      },
+      "nearest_committed_edge": null,
+      "continuation": {
+        "forward": {
+          "accepted_points": [],
+          "accepted_tangents": [],
+          "terminal": "unresolved",
+          "reason": "pseudo-arclength continuation not yet run for this seed in committed evidence"
+        },
+        "reverse": {
+          "accepted_points": [],
+          "accepted_tangents": [],
+          "terminal": "unresolved",
+          "reason": "pseudo-arclength continuation not yet run for this seed in committed evidence"
+        },
+        "forward_reverse_terminal_comparison": "unresolved_no_bidirectional_trace"
+      },
+      "physical_sheet_identity": {
+        "status": "inferred_from_same_published_sheet_only",
+        "evidence": "all seeds come from the frozen Li-Li-Liao published periodic sheet under unchanged closure/event gates"
+      },
+      "graph_classification": "existing_arc",
+      "evidence_parents": [
+        "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+        "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json",
+        "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json",
+        "research/evidence/V1_CRITICAL_GRAPH.json",
+        "zozo123/threebody-closing-the-open#140",
+        "zozo123/threebody-closing-the-open#139",
+        "zozo123/threebody-closing-the-open#164",
+        "zozo123/threebody-closing-the-open#180"
+      ],
+      "claim_status": "frozen_seed_only_continuation_pending"
+    },
+    {
+      "seed_id": "seed_m1_0.970_plus_one_0.929_0.930",
+      "source": {
+        "artifact": "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+        "slice_m1": 0.97,
+        "source_cell_m2_bracket": [
+          0.929,
+          0.93
+        ],
+        "source_rows": {
+          "left": {
+            "slice_row_index": 229,
+            "global_row_index": 79474,
+            "published_label": "U"
+          },
+          "right": {
+            "slice_row_index": 230,
+            "global_row_index": 79475,
+            "published_label": "U"
+          }
+        },
+        "event_mode": "plus_one",
+        "unreachable_reason": "no_label_bracket"
+      },
+      "endpoint_signs": [
+        -0.06294348547013584,
+        0.09918772756733674
+      ],
+      "endpoint_unstable_dimensions": [
+        2,
+        1
+      ],
+      "localization": {
+        "solver": "threebody_atlas.critical_manifold.localize_critical_point",
+        "status": "passed",
+        "masses": [
+          0.97,
+          0.9293865510513267,
+          1.0
+        ],
+        "event_value": -1.2665957171975606e-09,
+        "periodic_closure": 2.3917461535598694e-10,
+        "residual": 1.2665957171975606e-09,
+        "closure_gate": 1e-07,
+        "event_gate": 2e-08
+      },
+      "nearest_committed_edge": null,
+      "continuation": {
+        "forward": {
+          "accepted_points": [],
+          "accepted_tangents": [],
+          "terminal": "unresolved",
+          "reason": "pseudo-arclength continuation not yet run for this seed in committed evidence"
+        },
+        "reverse": {
+          "accepted_points": [],
+          "accepted_tangents": [],
+          "terminal": "unresolved",
+          "reason": "pseudo-arclength continuation not yet run for this seed in committed evidence"
+        },
+        "forward_reverse_terminal_comparison": "unresolved_no_bidirectional_trace"
+      },
+      "physical_sheet_identity": {
+        "status": "inferred_from_same_published_sheet_only",
+        "evidence": "all seeds come from the frozen Li-Li-Liao published periodic sheet under unchanged closure/event gates"
+      },
+      "graph_classification": "existing_arc",
+      "evidence_parents": [
+        "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+        "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json",
+        "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json",
+        "research/evidence/V1_CRITICAL_GRAPH.json",
+        "zozo123/threebody-closing-the-open#140",
+        "zozo123/threebody-closing-the-open#139",
+        "zozo123/threebody-closing-the-open#164",
+        "zozo123/threebody-closing-the-open#180"
+      ],
+      "claim_status": "frozen_seed_only_continuation_pending"
+    },
+    {
+      "seed_id": "seed_m1_1.000_minus_one_0.938_0.939",
+      "source": {
+        "artifact": "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+        "slice_m1": 1.0,
+        "source_cell_m2_bracket": [
+          0.938,
+          0.939
+        ],
+        "source_rows": {
+          "left": {
+            "slice_row_index": 238,
+            "global_row_index": 94513,
+            "published_label": "U"
+          },
+          "right": {
+            "slice_row_index": 239,
+            "global_row_index": 94514,
+            "published_label": "U"
+          }
+        },
+        "event_mode": "minus_one",
+        "unreachable_reason": "no_label_bracket"
+      },
+      "endpoint_signs": [
+        -0.0025784002086481905,
+        0.01573676254028733
+      ],
+      "endpoint_unstable_dimensions": [
+        2,
+        1
+      ],
+      "localization": {
+        "solver": "threebody_atlas.critical_manifold.localize_critical_point",
+        "status": "passed",
+        "masses": [
+          1.0,
+          0.9381374453766612,
+          1.0
+        ],
+        "event_value": -1.1616348771781304e-08,
+        "periodic_closure": 2.4276561755174883e-10,
+        "residual": 1.1616348771781304e-08,
+        "closure_gate": 1e-07,
+        "event_gate": 2e-08
+      },
+      "nearest_committed_edge": {
+        "edge_id": "minus_one_s_to_u_0",
+        "committed_m2": 1.0027448042427147,
+        "m2_gap": 0.06460735886605351
+      },
+      "continuation": {
+        "forward": {
+          "accepted_points": [],
+          "accepted_tangents": [],
+          "terminal": "unresolved",
+          "reason": "pseudo-arclength continuation not yet run for this seed in committed evidence"
+        },
+        "reverse": {
+          "accepted_points": [],
+          "accepted_tangents": [],
+          "terminal": "unresolved",
+          "reason": "pseudo-arclength continuation not yet run for this seed in committed evidence"
+        },
+        "forward_reverse_terminal_comparison": "unresolved_no_bidirectional_trace"
+      },
+      "physical_sheet_identity": {
+        "status": "inferred_from_same_published_sheet_only",
+        "evidence": "all seeds come from the frozen Li-Li-Liao published periodic sheet under unchanged closure/event gates"
+      },
+      "graph_classification": "existing_arc",
+      "evidence_parents": [
+        "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+        "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json",
+        "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json",
+        "research/evidence/V1_CRITICAL_GRAPH.json",
+        "zozo123/threebody-closing-the-open#140",
+        "zozo123/threebody-closing-the-open#139",
+        "zozo123/threebody-closing-the-open#164",
+        "zozo123/threebody-closing-the-open#180"
+      ],
+      "claim_status": "frozen_seed_only_continuation_pending"
+    },
+    {
+      "seed_id": "seed_m1_1.040_minus_one_0.860_0.861",
+      "source": {
+        "artifact": "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+        "slice_m1": 1.04,
+        "source_cell_m2_bracket": [
+          0.86,
+          0.861
+        ],
+        "source_rows": {
+          "left": {
+            "slice_row_index": 78,
+            "global_row_index": 112934,
+            "published_label": "U"
+          },
+          "right": {
+            "slice_row_index": 79,
+            "global_row_index": 112935,
+            "published_label": "U"
+          }
+        },
+        "event_mode": "minus_one",
+        "unreachable_reason": "no_label_bracket"
+      },
+      "endpoint_signs": [
+        -0.043556385972653544,
+        0.16082011588
+      ],
+      "endpoint_unstable_dimensions": [
+        2,
+        1
+      ],
+      "localization": {
+        "solver": "threebody_atlas.critical_manifold.localize_critical_point",
+        "status": "passed",
+        "masses": [
+          1.04,
+          0.8602115178285591,
+          1.0
+        ],
+        "event_value": -9.50907619312602e-09,
+        "periodic_closure": 1.776175781628642e-10,
+        "residual": 9.50907619312602e-09,
+        "closure_gate": 1e-07,
+        "event_gate": 2e-08
+      },
+      "nearest_committed_edge": {
+        "edge_id": "minus_one_s_to_u_0",
+        "committed_m2": 1.043625445139478,
+        "m2_gap": 0.18341392731091888
+      },
+      "continuation": {
+        "forward": {
+          "accepted_points": [],
+          "accepted_tangents": [],
+          "terminal": "unresolved",
+          "reason": "pseudo-arclength continuation not yet run for this seed in committed evidence"
+        },
+        "reverse": {
+          "accepted_points": [],
+          "accepted_tangents": [],
+          "terminal": "unresolved",
+          "reason": "pseudo-arclength continuation not yet run for this seed in committed evidence"
+        },
+        "forward_reverse_terminal_comparison": "unresolved_no_bidirectional_trace"
+      },
+      "physical_sheet_identity": {
+        "status": "inferred_from_same_published_sheet_only",
+        "evidence": "all seeds come from the frozen Li-Li-Liao published periodic sheet under unchanged closure/event gates"
+      },
+      "graph_classification": "new_critical_arc",
+      "evidence_parents": [
+        "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
+        "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json",
+        "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json",
+        "research/evidence/V1_CRITICAL_GRAPH.json",
+        "zozo123/threebody-closing-the-open#140",
+        "zozo123/threebody-closing-the-open#139",
+        "zozo123/threebody-closing-the-open#164",
+        "zozo123/threebody-closing-the-open#180"
+      ],
+      "claim_status": "frozen_seed_only_continuation_pending"
+    }
+  ],
+  "accepted_continuation_points_and_tangents": {
+    "status": "none_committed",
+    "points": [],
+    "tangents": []
+  },
+  "event_closure_maxima": {
+    "maximum_absolute_event": 1.9359646330485702e-08,
+    "maximum_periodic_closure": 4.6193163717750237e-10,
+    "marginal_seed_id": "seed_m1_0.930_plus_one_0.886_0.887"
+  },
+  "conditioning_and_escalation_history": {
+    "float64_marginal_root": {
+      "target": "m1=0.930, m2~0.88627431, plus_one",
+      "float64_localization_event": "~1.94e-8 in comparison artifact; gate is 2e-8",
+      "independent_reproduction_attempt": {
+        "implementation": "threebody_atlas.high_precision_reduced.verify_reduced_floquet (mpmath RK4 step-doubling)",
+        "status": "failed_to_converge_at_release_relevant_scale",
+        "observed_issue": "step-doubling residuals remained O(1e2-1e8), indicating conditioning/integration instability for this orbit under attempted settings",
+        "escalation": "requires independent Julia BigFloat continuation-localized bracket reproduction before classification can be upgraded"
+      }
+    }
+  },
+  "forward_reverse_terminal_comparison": [
+    {
+      "seed_id": "seed_m1_0.920_minus_one_0.859_0.860",
+      "forward_terminal": "unresolved",
+      "reverse_terminal": "unresolved",
+      "comparison": "unresolved_no_bidirectional_trace"
+    },
+    {
+      "seed_id": "seed_m1_0.925_minus_one_0.874_0.875",
+      "forward_terminal": "unresolved",
+      "reverse_terminal": "unresolved",
+      "comparison": "unresolved_no_bidirectional_trace"
+    },
+    {
+      "seed_id": "seed_m1_0.929_minus_one_0.884_0.885",
+      "forward_terminal": "unresolved",
+      "reverse_terminal": "unresolved",
+      "comparison": "unresolved_no_bidirectional_trace"
+    },
+    {
+      "seed_id": "seed_m1_0.930_plus_one_0.886_0.887",
+      "forward_terminal": "unresolved",
+      "reverse_terminal": "unresolved",
+      "comparison": "unresolved_no_bidirectional_trace"
+    },
+    {
+      "seed_id": "seed_m1_0.931_plus_one_0.887_0.888",
+      "forward_terminal": "unresolved",
+      "reverse_terminal": "unresolved",
+      "comparison": "unresolved_no_bidirectional_trace"
+    },
+    {
+      "seed_id": "seed_m1_0.940_plus_one_0.897_0.898",
+      "forward_terminal": "unresolved",
+      "reverse_terminal": "unresolved",
+      "comparison": "unresolved_no_bidirectional_trace"
+    },
+    {
+      "seed_id": "seed_m1_0.970_plus_one_0.929_0.930",
+      "forward_terminal": "unresolved",
+      "reverse_terminal": "unresolved",
+      "comparison": "unresolved_no_bidirectional_trace"
+    },
+    {
+      "seed_id": "seed_m1_1.000_minus_one_0.938_0.939",
+      "forward_terminal": "unresolved",
+      "reverse_terminal": "unresolved",
+      "comparison": "unresolved_no_bidirectional_trace"
+    },
+    {
+      "seed_id": "seed_m1_1.040_minus_one_0.860_0.861",
+      "forward_terminal": "unresolved",
+      "reverse_terminal": "unresolved",
+      "comparison": "unresolved_no_bidirectional_trace"
+    }
+  ],
+  "physical_sheet_identity": {
+    "sheet": "frozen Li-Li-Liao periodic sheet (published catalog + strict-periodic correction)",
+    "status": "not independently re-verified along continuation traces",
+    "claim_status": "pending_continuation_identity_witnesses"
+  },
+  "graph_classification": {
+    "existing_arc": [
+      "seed_m1_0.925_minus_one_0.874_0.875",
+      "seed_m1_0.929_minus_one_0.884_0.885",
+      "seed_m1_0.930_plus_one_0.886_0.887",
+      "seed_m1_0.931_plus_one_0.887_0.888",
+      "seed_m1_0.940_plus_one_0.897_0.898",
+      "seed_m1_0.970_plus_one_0.929_0.930",
+      "seed_m1_1.000_minus_one_0.938_0.939"
+    ],
+    "new_critical_arc": [
+      "seed_m1_0.920_minus_one_0.859_0.860",
+      "seed_m1_1.040_minus_one_0.860_0.861"
+    ],
+    "unresolved": []
+  },
+  "stop_rule_checks": {
+    "new_component_absent_from_seven_arc_graph": true,
+    "forward_reverse_connectivity_disagreement": null,
+    "sheet_switch_without_classification": null,
+    "physical_vs_reduced_disagreement_release_scale": "unresolved_requires_independent_formulation_on_hard_segments",
+    "even_tangency_or_double_crossing_unresolved": "unassessed",
+    "roots_dropped_for_no_SU_flip": false
+  },
+  "claim_status": "open_contradiction_gate_B_red_continuation_unresolved",
+  "unresolved_items": [
+    "Run bidirectional pseudo-arclength continuation for each distinct seed identity and classify scientific termini.",
+    "Independently reproduce the marginal m1=0.930 root with a converged high-precision formulation.",
+    "Cross-check hard continuation segments in an independent formulation and reconcile any mechanism disagreements.",
+    "Rebuild V1 critical graph with continuous witnesses including any new arcs/nodes from these seeds."
+  ]
+}

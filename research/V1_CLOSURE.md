@@ -31,7 +31,12 @@ A float64/JAX point is a proposal. It is never publication truth by itself.
 
 ### Gate B -- complete mechanism-resolved Floquet critical graph on the connected family sheet
 
-**Status: PENDING. This is the remaining theorem.**
+**Status: FAIL (red contradiction). This is the remaining theorem.**
+
+`research/evidence/V1_LABEL_INVISIBLE_EVENT_CONTINUATION_2026-08-16.json` freezes nine
+certified label-invisible (`U`/`U`) event roots and records that bidirectional
+pseudo-arclength continuation/classification is still unresolved; Gate B stays red until those
+continuous witnesses are reconciled into the critical graph.
 
 The final object is a graph, not a cloud, and it need not be connected just because the family sheet is connected. State `y=(x1,v1,v2,T,m1,m2)`. Mixed organizers are preimages of `(alpha,beta)=(4,4)`. The 620 catalog S/U cells are samples supporting the graph; they are not 620 edges.
 
