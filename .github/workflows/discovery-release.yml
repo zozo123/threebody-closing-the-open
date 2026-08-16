@@ -54,17 +54,24 @@ jobs:
         run: >-
           uv run --no-sync ruff check
           src tests scripts/build_discovery_release.py scripts/verify_actions_evidence.py
+          scripts/check_manuscript_claims.py
           --output-format github
       - name: Test
         run: uv run --no-sync pytest
       - name: Validate scientific state before manuscript build
         run: uv run --no-sync python scripts/build_discovery_release.py --validate-only
+      # Run on the committed tree, before injection overwrites it.  A release is
+      # the one place where a hand-forged claim file must never be laundered by
+      # the very step that regenerates it.
+      - name: Refuse a manuscript that outruns the committed evidence
+        run: uv run --no-sync python scripts/check_manuscript_claims.py
       - name: Inject discovery status into manuscript
         run: >-
           uv run --no-sync python scripts/build_discovery_release.py
           --validate-only
           --emit-paper-status paper/generated/discovery-release.tex
           --emit-paper-claims paper/generated/discoveries.tex
+          --emit-paper-macros paper/generated/claim-macros.tex
       - name: Install TeX
         run: |
           sudo apt-get update

@@ -3,9 +3,33 @@
 \usepackage{amsmath,amssymb,booktabs,graphicx,hyperref}
 \title{One continuation family, three mixed organizers, and two bound Floquet events\\
 in the Li--Li--Liao unequal-mass catalog\\
-\large (claim-gated atlas; scientific status OPEN)}
+\large (claim-gated atlas; scientific status \atlasstatus)}
 \author{Yossi Eliaz}
 \date{\today}
+
+% The manuscript may not assert a closure-dependent fact in hardcoded prose.
+% Every such sentence branches on a macro in generated/claim-macros.tex, which
+% scripts/build_discovery_release.py writes from research/DISCOVERY_RELEASE.json
+% and from the assembler's release_ready bit in research/evidence/.
+% If that file is absent the fallbacks below take over and collapse every gated
+% sentence to its weakest branch, so a manuscript built with no evidence channel
+% attached asserts strictly less, never more.  scripts/check_manuscript_claims.py
+% additionally fails CI when the file is missing or does not match the generator.
+\IfFileExists{generated/claim-macros.tex}
+  {\input{generated/claim-macros.tex}}
+  {%
+    \newcommand{\atlasstatus}{UNVERIFIED}%
+    \newcommand{\atlasreleaseready}{unknown}%
+    \expandafter\newcommand\csname atlasgateA\endcsname{UNKNOWN}%
+    \expandafter\newcommand\csname atlasgateB\endcsname{UNKNOWN}%
+    \expandafter\newcommand\csname atlasgateC\endcsname{UNKNOWN}%
+    \expandafter\newcommand\csname atlasgateD\endcsname{UNKNOWN}%
+    \newcommand{\atlasifsolved}[2]{#2}%
+    \newcommand{\atlasifgraphready}[2]{#2}%
+    \newcommand{\atlascompleteness}{No discovery manifest was attached to this
+      build, so this document certifies no completeness of any kind.}%
+    \makeatletter\newcommand{\atlasifclaim}[3]{#3}\makeatother
+  }
 
 \begin{document}
 \maketitle
@@ -19,23 +43,44 @@ scale-invariant invariants, and we treat the linear-stability boundary as the
 preimage of a universal Floquet domain rather than as a rectangular S/U mask.
 
 \textbf{Earned results.}
-(i)~The frozen catalog is one continuation-connected component in the declared
-gauge.
-(ii)~The principal lower transition at $m_1\approx0.80234$ is an independently
-reproduced physical $+1$ crossing with $m_2$ uncertainty $1.58\times10^{-9}$.
-(iii)~The principal upper transition at $m_1\approx0.80229$ is an independently
-reproduced opposite-Krein Hamiltonian--Hopf event with $m_2$ uncertainty
-$6.27\times10^{-9}$.
-(iv)~The three coarse $+1/-1$ switches are independently reproduced mixed
-organizers at $(\alpha,\beta)=(4,4)$.
+Each item below is printed only while the matching record in
+\texttt{research/DISCOVERY\_RELEASE.json} still carries
+\texttt{release\_claim}; withdrawing a record deletes the sentence.
+\atlasifclaim{one-continuation-family}{(i)~The frozen catalog is one
+continuation-connected component in the declared gauge.}{}
+\atlasifclaim{principal-lower-plus-one}{(ii)~The principal lower transition at
+$m_1\approx0.80234$ is an independently reproduced physical $+1$ crossing with
+$m_2$ uncertainty $1.58\times10^{-9}$.}{}
+\atlasifclaim{principal-upper-hamiltonian-hopf}{(iii)~The principal upper
+transition at $m_1\approx0.80229$ is an independently reproduced opposite-Krein
+Hamiltonian--Hopf event with $m_2$ uncertainty $6.27\times10^{-9}$.}{}
+\atlasifclaim{three-mixed-organizers}{(iv)~The three coarse $+1/-1$ switches are
+independently reproduced mixed organizers at $(\alpha,\beta)=(4,4)$.}{}
+
+\textbf{Scope.}
+% ATLAS-SCOPE: frozen-catalog-sheet
+The object of study is one continuation-connected sheet of the frozen
+Li--Li--Liao unequal-mass non-hierarchical catalog, not the catalog's ambient
+moduli space.
+% ATLAS-SCOPE: declared-mass-box
+Every statement is confined to the declared mass box $m_3=1$,
+$m_1\in[0.8,1.1]$, $m_2\in[0.7,1.2]$, in the declared gauge; outside that box
+this manuscript asserts nothing.
+% ATLAS-SCOPE: linear-floquet-only
+``Stable'' means planar \emph{linear} Floquet stability only: it is not
+nonlinear stability, not KAM stability, and not spatial stability.
+% ATLAS-SCOPE: bounded-completeness
+\atlascompleteness\
+% ATLAS-SCOPE: not-general-three-body
+This is not a solution of the general Newtonian three-body problem, and no
+result here is a theorem about that problem.
 
 \textbf{Not earned.}
-The connected critical graph is unfinished: $0/620$ catalog cells are frozen as
-graph edges; the secondary-lobe birth and death are unclassified; the lower
-$+1$ daughter is unclassified.
-Scientific status remains OPEN.
-This is not a solution of the general three-body problem, and ``stable'' here
-means planar linear Floquet stability only.
+\atlasifgraphready{}{The connected critical graph is unfinished; the enumerated
+blockers and their evidence are listed in the machine-generated status section
+below, which is the only authoritative account of what is closed.}
+Scientific status is \atlasstatus, and the assembler's release-ready bit for the
+critical graph is \texttt{\atlasreleaseready}.
 \end{abstract}
 
 \section{The problem, and what it is not}
@@ -89,9 +134,11 @@ mechanism word the paper uses.
 \item[D] Assembler \texttt{release\_ready}, same-day novelty,
 \texttt{--require-solved}.
 \end{description}
-Gate~C has passed.
-Gate~A has passed for the mechanism words used below.
-Gates~B and~D are open, so the project is OPEN.
+Gate statuses are not hardcoded here; they are injected from the manifest:
+A~=~\atlasgateA, B~=~\atlasgateB, C~=~\atlasgateC, D~=~\atlasgateD.
+\atlasifsolved{}{At least one gate is unmet, so the scientific status is
+\atlasstatus{} and no sentence in this manuscript may be read as a closure
+statement.}
 
 \section{Equations and the universal Floquet domain}
 
@@ -129,7 +176,7 @@ The mass-space critical set is the preimage of this universal boundary under
 the continuation-sheet map $(m_1,m_2)\mapsto(\alpha,\beta)$.
 
 \section{Reproduction of the published table}
-\IfFileExists{generated/reproduction.tex}{\input{generated/reproduction.tex}}{No frozen reproduction results have yet been inserted.}
+\IfFileExists{handwritten/reproduction.tex}{\input{handwritten/reproduction.tex}}{No frozen reproduction results have yet been inserted.}
 
 \section{Authorized ATLAS results}
 \IfFileExists{generated/discoveries.tex}{\input{generated/discoveries.tex}}{No new scientific claims have yet passed the release gate.}
@@ -138,18 +185,21 @@ the continuation-sheet map $(m_1,m_2)\mapsto(\alpha,\beta)$.
 \centering
 \caption{Independently bound critical objects.
 Masses have $m_3=1$.
-Uncertainties are independent-bracket widths, not formal theorems.}
+Uncertainties are independent-bracket widths, not formal theorems.
+Each row is emitted only while its release claim stands; the mechanism words in
+the last column are the paper's own ladder-restricted vocabulary, so a withdrawn
+claim removes the row rather than leaving an unsupported bifurcation name.}
 \label{tab:bound}
 {\small
 \begin{tabular}{@{}llll@{}}
 \toprule
 Object & $m_1$ & $m_2$ & Mechanism \\
 \midrule
-Lower $+1$ & $0.8023446114$ & $0.7540187220$ & physical $+1$, width $1.58\times10^{-9}$ \\
-Upper HH & $0.8022889781$ & $0.7592347066$ & opposite-Krein, width $6.27\times10^{-9}$ \\
-Mixed L & $0.9292391921$ & $0.8853664625$ & $(\alpha,\beta)=(4,4)$ \\
+\atlasifclaim{principal-lower-plus-one}{Lower $+1$ & $0.8023446114$ & $0.7540187220$ & physical $+1$, width $1.58\times10^{-9}$ \\}{}
+\atlasifclaim{principal-upper-hamiltonian-hopf}{Upper HH & $0.8022889781$ & $0.7592347066$ & opposite-Krein, width $6.27\times10^{-9}$ \\}{}
+\atlasifclaim{three-mixed-organizers}{Mixed L & $0.9292391921$ & $0.8853664625$ & $(\alpha,\beta)=(4,4)$ \\
 Mixed S & $0.9967681995$ & $0.9560193602$ & $(\alpha,\beta)=(4,4)$ \\
-Mixed R & $1.0495531867$ & $1.1294758073$ & $(\alpha,\beta)=(4,4)$ \\
+Mixed R & $1.0495531867$ & $1.1294758073$ & $(\alpha,\beta)=(4,4)$ \\}{}
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -168,7 +218,7 @@ That census is a seed, not the graph.
 An off-grid active-learning screen of $12$ proposals all corrected onto the
 known sheet and none were screening-stable: no hidden island in that sample.
 
-\section{What remains, and why the status is OPEN}
+\section{What remains, and why the status is \atlasstatus}
 
 \begin{enumerate}
 \item Localize all $620$ cells to event residual $\le 2\times10^{-8}$ and
@@ -183,8 +233,33 @@ $1.043$.
 \item Rerun the novelty search on the freeze day and run
 \texttt{--require-solved}.
 \end{enumerate}
-Until those close, a sentence of the form ``we computed the connected
-stability-boundary manifold'' is false.
+\atlasifgraphready{}{The assembler has not set \texttt{release\_ready}, so a
+sentence of the form ``we computed the connected stability-boundary manifold''
+would be false and does not appear anywhere in this manuscript.}
+
+\section{Conclusion and the exact extent of the claim}
+
+% ATLAS-SCOPE: frozen-catalog-sheet
+What is studied is a single continuation-connected sheet of the frozen
+Li--Li--Liao unequal-mass non-hierarchical catalog, identified by bidirectional
+continuation rather than by clustering scale-invariant invariants.
+% ATLAS-SCOPE: declared-mass-box
+The declared domain is the mass box $m_3=1$, $m_1\in[0.8,1.1]$,
+$m_2\in[0.7,1.2]$; nothing here extends past its boundary.
+% ATLAS-SCOPE: linear-floquet-only
+The stability notion throughout is planar \emph{linear} Floquet stability of the
+reduced return map, obtained from the physical symplectic quotient
+$E^\omega/E$; nonlinear, KAM and spatial stability are all outside this work.
+% ATLAS-SCOPE: bounded-completeness
+\atlascompleteness\
+% ATLAS-SCOPE: not-general-three-body
+None of this is a solution of the general Newtonian three-body problem; the
+catalog, the mass box, the gauge, and the linear stability notion are all
+finite restrictions chosen in advance.
+\atlasifsolved{The closure gates recorded in the generated status section are
+all met at the state this document was built from.}{The closure gates are not
+all met at the state this document was built from, so every result above is a
+partial, bounded, evidence-backed statement and nothing more.}
 
 \section{Discovery release status}
 \IfFileExists{generated/discovery-release.tex}{\input{generated/discovery-release.tex}}{No machine-readable discovery status was injected into this manuscript build.}

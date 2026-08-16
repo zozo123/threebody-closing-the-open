@@ -15,6 +15,7 @@ from threebody_atlas.discovery import (  # noqa: E402
     build_dossier,
     load_manifest,
     render_latex_claims,
+    render_latex_macros,
     render_latex_status,
     render_summary,
     validate_manifest,
@@ -29,6 +30,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--validate-only", action="store_true")
     parser.add_argument("--emit-paper-status")
     parser.add_argument("--emit-paper-claims")
+    parser.add_argument("--emit-paper-macros")
     return parser.parse_args()
 
 
@@ -51,6 +53,11 @@ def main() -> int:
         claims_path = (ROOT / args.emit_paper_claims).resolve()
         claims_path.parent.mkdir(parents=True, exist_ok=True)
         claims_path.write_text(render_latex_claims(manifest), encoding="utf-8")
+
+    if args.emit_paper_macros:
+        macros_path = (ROOT / args.emit_paper_macros).resolve()
+        macros_path.parent.mkdir(parents=True, exist_ok=True)
+        macros_path.write_text(render_latex_macros(manifest, ROOT), encoding="utf-8")
 
     summary = render_summary(manifest)
     if os.getenv("GITHUB_STEP_SUMMARY"):

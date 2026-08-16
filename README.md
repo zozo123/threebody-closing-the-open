@@ -157,4 +157,43 @@ GitHub-hosted runners are useful for reproducible CPU experiments, but expensive
 
 Do not write “new”, “discovered”, “stable”, or a named bifurcation into generated results unless the corresponding frozen record has passed the required evidence state. See `research/PROTOCOL.md`.
 
+### The manuscript cannot outrun the evidence
+
+That rule used to be honour-system for `paper/main.tex`: only the two `\input`-ed
+generated sections were derived from the manifest, and nothing in CI ever read the
+manuscript sources. A hardcoded sentence asserting the v1 problem was solved built
+green with `release_ready` false. It is now enforced by
+`scripts/check_manuscript_claims.py`, which every CI workflow that touches the paper
+runs **before** regeneration, on the tree as committed:
+
+1. **Generated channel integrity.** Every file in `paper/generated/` must byte-match
+   what `scripts/build_discovery_release.py` emits, and nothing else may live there.
+   Hand-written prose belongs in `paper/handwritten/`.
+2. **Hand-written prose lock.** Each hand-written manuscript sentence is hashed into
+   `paper/CLAIM_LOCK.json` with the evidence fingerprint it was reviewed under. New
+   or altered prose fails until re-frozen, and re-freezing is refused outright when
+   the evidence has weakened since the last review.
+3. **Claim-vocabulary screen.** Solvedness/completeness vocabulary in hand-written
+   prose *and* in `release_claim` statements is rejected unless the evidence state
+   actually supports it. Negation and scoping analysis keeps honest disclaimers legal.
+
+Closure-dependent sentences are not hardcoded at all. They branch on
+`\atlasifsolved`, `\atlasifgraphready` and `\atlasifclaim`, defined in the generated
+`paper/generated/claim-macros.tex` from the manifest and from the assembler's
+`release_ready` bit. Withdraw a release claim and the corresponding abstract item and
+`tab:bound` row physically disappear from the PDF.
+
+When the assembler flips `release_ready`, the deterministic sequence is:
+
+```bash
+python scripts/build_discovery_release.py --validate-only \
+  --emit-paper-status paper/generated/discovery-release.tex \
+  --emit-paper-claims paper/generated/discoveries.tex \
+  --emit-paper-macros paper/generated/claim-macros.tex
+python scripts/check_manuscript_claims.py --freeze   # prints every new sentence first
+python scripts/check_manuscript_claims.py            # must exit 0
+```
+
+`--freeze` is the deliberate human re-review step; it refuses to run on the way down.
+
 The intended first paper is narrower and defensible: **reproduce a documented stable subset, independently validate continuation/Floquet machinery, then extend selected unequal-mass branches to resolve previously unmapped stability boundaries and bifurcation structure with released numerical evidence.**

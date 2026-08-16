@@ -5,15 +5,19 @@ on:
     paths:
       - "paper/**"
       - "research/DISCOVERY_RELEASE.json"
+      - "research/evidence/V1_CRITICAL_GRAPH.json"
       - "src/threebody_atlas/discovery.py"
       - "scripts/build_discovery_release.py"
+      - "scripts/check_manuscript_claims.py"
       - ".github/workflows/paper.yml"
   pull_request:
     paths:
       - "paper/**"
       - "research/DISCOVERY_RELEASE.json"
+      - "research/evidence/V1_CRITICAL_GRAPH.json"
       - "src/threebody_atlas/discovery.py"
       - "scripts/build_discovery_release.py"
+      - "scripts/check_manuscript_claims.py"
       - ".github/workflows/paper.yml"
   workflow_dispatch:
 
@@ -29,12 +33,19 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
+      # The manuscript gate runs BEFORE regeneration, on the tree as committed.
+      # Regenerating first would silently overwrite a hand-forged
+      # paper/generated/*.tex and hide exactly the tampering this check exists
+      # to catch.
+      - name: Refuse a manuscript that outruns the committed evidence
+        run: python scripts/check_manuscript_claims.py
       - name: Validate discovery contract and inject status
         run: >-
           python scripts/build_discovery_release.py
           --validate-only
           --emit-paper-status paper/generated/discovery-release.tex
           --emit-paper-claims paper/generated/discoveries.tex
+          --emit-paper-macros paper/generated/claim-macros.tex
       - name: Install TeX
         run: |
           sudo apt-get update
@@ -48,5 +59,6 @@ jobs:
           path: |
             paper/main.pdf
             paper/generated/discovery-release.tex
+            paper/generated/claim-macros.tex
           if-no-files-found: error
           retention-days: 30

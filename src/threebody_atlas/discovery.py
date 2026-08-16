@@ -326,6 +326,145 @@ def render_latex_claims(manifest: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def load_critical_graphs(manifest: dict[str, Any], root: str | Path) -> list[tuple[str, dict[str, Any]]]:
+    """Return every assembler critical-graph JSON the manifest points at.
+
+    Only records that actually carry a ``release_ready`` bit count: that bit is
+    written exclusively by ``scripts/assemble_critical_graph.py``, so it is the
+    single machine-authored fact that says whether the v1 graph is closed.
+    """
+    root = Path(root)
+    graphs: list[tuple[str, dict[str, Any]]] = []
+    for item in manifest.get("evidence", []):
+        if not isinstance(item, dict):
+            continue
+        if item.get("role") != "critical_graph" or item.get("kind") != "repository_file":
+            continue
+        rel = str(item.get("path", ""))
+        if not rel.endswith(".json"):
+            continue
+        path = root / rel
+        if not path.is_file():
+            continue
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            continue
+        if isinstance(payload, dict) and "release_ready" in payload:
+            graphs.append((rel, payload))
+    return graphs
+
+
+def evidence_state(manifest: dict[str, Any], root: str | Path) -> dict[str, Any]:
+    """Collapse manifest plus assembler output into the facts prose may depend on."""
+    graphs = load_critical_graphs(manifest, root)
+    release_ready = bool(graphs) and all(graph.get("release_ready") is True for _, graph in graphs)
+    completeness: dict[str, Any] | None = None
+    for _, graph in graphs:
+        candidate = graph.get("completeness")
+        if isinstance(candidate, dict) and candidate.get("passed") is True:
+            completeness = candidate
+            break
+    return {
+        "status": str(manifest.get("status", "")).lower(),
+        "gates": {str(g.get("id")): str(g.get("status", "")).lower() for g in manifest.get("gates", [])},
+        "release_claims": sorted(
+            str(c.get("id"))
+            for c in manifest.get("claims", [])
+            if c.get("status") == "release_claim" and _nonempty(c.get("id"))
+        ),
+        "release_ready": release_ready,
+        "graph_paths": sorted(rel for rel, _ in graphs),
+        "completeness": completeness,
+        "solved": manifest.get("status") == "solved" and release_ready,
+    }
+
+
+def _format_interval(pair: Any) -> str | None:
+    if not isinstance(pair, (list, tuple)) or len(pair) != 2:
+        return None
+    try:
+        low, high = float(pair[0]), float(pair[1])
+    except (TypeError, ValueError):
+        return None
+    return rf"[{low:g},{high:g}]"
+
+
+def _completeness_sentence(certificate: dict[str, Any] | None) -> str:
+    """Describe exactly how far a frozen completeness certificate reaches."""
+    if not isinstance(certificate, dict) or certificate.get("passed") is not True:
+        return (
+            "No bounded completeness certificate is frozen, so this manuscript makes "
+            "no completeness claim of any kind: additional stability pockets inside "
+            "the declared mass box are not excluded."
+        )
+    pieces: list[str] = []
+    sample = certificate.get("active_learning", {}) or {}
+    attempted = sample.get("attempted")
+    if isinstance(attempted, int):
+        pieces.append(
+            rf"an active-learning pocket screen of {attempted} off-grid proposals, all of "
+            "which corrected onto the known sheet and none of which was screening-stable"
+        )
+    grid = (certificate.get("domain", {}) or {}).get("neck") or {}
+    m1_span = _format_interval(grid.get("m1"))
+    m2_span = _format_interval(grid.get("m2"))
+    step = grid.get("step", certificate.get("resolution"))
+    if m1_span and m2_span:
+        resolution = rf" at step ${float(step):g}$" if isinstance(step, (int, float)) else ""
+        pieces.append(
+            rf"a completed neck raster over the sub-box $m_1\in{m1_span}$, $m_2\in{m2_span}$"
+            rf"{resolution} with no vertical merge"
+        )
+    if not pieces:
+        pieces.append("a frozen certificate whose declared domain is recorded in the artifact")
+    body = pieces[0] if len(pieces) == 1 else " and ".join(pieces)
+    return (
+        "Completeness is certified only in a bounded sense, from "
+        + body
+        + ". Outside that sub-box the manuscript claims no completeness: the declared "
+        "mass box as a whole is not certified free of further stability pockets."
+    )
+
+
+def render_latex_macros(manifest: dict[str, Any], root: str | Path) -> str:
+    """Emit the switches that let manuscript prose depend on the evidence state.
+
+    ``paper/main.tex`` may not hardcode a sentence whose truth depends on how far
+    the computation got.  Instead it writes ``\\atlasifsolved``, ``\\atlasifgraphready``
+    or ``\\atlasifclaim`` and this file decides which branch survives.  The branch
+    is chosen here, from the manifest and from the assembler's ``release_ready``
+    bit, so no manuscript edit can widen a claim on its own.
+    """
+    state = evidence_state(manifest, root)
+    esc = _latex_escape
+    lines = [
+        "% Generated from research/DISCOVERY_RELEASE.json plus the assembler critical graph.",
+        "% Do not hand-edit: scripts/check_manuscript_claims.py requires byte equality with",
+        "% the generator output, and the manuscript prose branches on these macros.",
+        rf"\newcommand{{\atlasstatus}}{{{esc(state['status'].upper() or 'UNKNOWN')}}}",
+        rf"\newcommand{{\atlasreleaseready}}{{{'true' if state['release_ready'] else 'false'}}}",
+    ]
+    for gate_id in sorted(state["gates"]):
+        lines.append(
+            rf"\expandafter\newcommand\csname atlasgate{esc(gate_id)}\endcsname"
+            rf"{{{esc(state['gates'][gate_id].upper())}}}"
+        )
+    lines.append(
+        r"\newcommand{\atlasifsolved}[2]{" + ("#1" if state["solved"] else "#2") + "}"
+    )
+    lines.append(
+        r"\newcommand{\atlasifgraphready}[2]{" + ("#1" if state["release_ready"] else "#2") + "}"
+    )
+    lines.append(rf"\newcommand{{\atlascompleteness}}{{{_completeness_sentence(state['completeness'])}}}")
+    lines.append(r"\makeatletter")
+    lines.append(r"\newcommand{\atlasifclaim}[3]{\@ifundefined{atlas@claim@#1}{#3}{#2}}")
+    for claim_id in state["release_claims"]:
+        lines.append(rf"\expandafter\gdef\csname atlas@claim@{claim_id}\endcsname{{}}")
+    lines.append(r"\makeatother")
+    return "\n".join(lines) + "\n"
+
+
 def render_latex_status(manifest: dict[str, Any]) -> str:
     esc = _latex_escape
 

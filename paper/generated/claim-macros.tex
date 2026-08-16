@@ -1,0 +1,19 @@
+% Generated from research/DISCOVERY_RELEASE.json plus the assembler critical graph.
+% Do not hand-edit: scripts/check_manuscript_claims.py requires byte equality with
+% the generator output, and the manuscript prose branches on these macros.
+\newcommand{\atlasstatus}{OPEN}
+\newcommand{\atlasreleaseready}{false}
+\expandafter\newcommand\csname atlasgateA\endcsname{PASS}
+\expandafter\newcommand\csname atlasgateB\endcsname{PENDING}
+\expandafter\newcommand\csname atlasgateC\endcsname{PASS}
+\expandafter\newcommand\csname atlasgateD\endcsname{PENDING}
+\newcommand{\atlasifsolved}[2]{#2}
+\newcommand{\atlasifgraphready}[2]{#2}
+\newcommand{\atlascompleteness}{No bounded completeness certificate is frozen, so this manuscript makes no completeness claim of any kind: additional stability pockets inside the declared mass box are not excluded.}
+\makeatletter
+\newcommand{\atlasifclaim}[3]{\@ifundefined{atlas@claim@#1}{#3}{#2}}
+\expandafter\gdef\csname atlas@claim@one-continuation-family\endcsname{}
+\expandafter\gdef\csname atlas@claim@principal-lower-plus-one\endcsname{}
+\expandafter\gdef\csname atlas@claim@principal-upper-hamiltonian-hopf\endcsname{}
+\expandafter\gdef\csname atlas@claim@three-mixed-organizers\endcsname{}
+\makeatother
