@@ -20,6 +20,8 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+import yaml
+
 
 MANIFEST_SCHEMA = "atlas.v1.environment-lock-manifest/1"
 SBOM_SCHEMA = "CycloneDX/1.6"
@@ -30,7 +32,6 @@ LOCKFILES = (
     "julia/Manifest.toml",
     "julia-latest/Project.toml",
 )
-_USES = re.compile(r"^\s*(?:-\s*)?uses:\s*([^\s#]+)")
 _FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
 _DOCKER_DIGEST = re.compile(r"^docker://[^\s@]+@sha256:[0-9a-f]{64}$")
 _RUNNER = re.compile(r"^\s*runs-on:\s*(.+?)\s*(?:#.*)?$")
@@ -57,57 +58,121 @@ def workflow_files(repo_root: Path) -> list[Path]:
     return sorted([*github.rglob("*.yml"), *github.rglob("*.yaml")])
 
 
-def action_inventory(repo_root: Path) -> tuple[list[dict[str, Any]], list[str]]:
-    actions: list[dict[str, Any]] = []
-    errors: list[str] = []
-    for path in workflow_files(repo_root):
-        relative = str(path.relative_to(repo_root))
-        for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
-            match = _USES.match(line)
-            if match is None:
-                continue
-            spec = match.group(1)
-            local = spec.startswith("./")
-            docker = spec.startswith("docker://")
-            repository = None
-            reference = None
-            immutable = local
-            if docker:
-                immutable = bool(_DOCKER_DIGEST.fullmatch(spec))
-                if immutable:
-                    repository, reference = spec.rsplit("@", 1)
-            elif not local:
-                if "@" not in spec:
-                    errors.append(f"{relative}:{line_number}: external action has no ref: {spec}")
-                    actions.append(
-                        {
-                            "workflow": relative,
-                            "line": line_number,
-                            "uses": spec,
-                            "repository": None,
-                            "commit": None,
-                            "local": False,
-                            "immutable": False,
-                        }
-                    )
-                    continue
-                else:
-                    repository, reference = spec.rsplit("@", 1)
-                    immutable = bool(_FULL_SHA.fullmatch(reference))
-            if not immutable:
-                errors.append(
-                    f"{relative}:{line_number}: action ref must be an immutable commit SHA: {spec}"
-                )
+def _record_action_use(
+    spec: str,
+    *,
+    relative: str,
+    line_number: int,
+    actions: list[dict[str, Any]],
+    errors: list[str],
+) -> None:
+    local = spec.startswith("./")
+    docker = spec.startswith("docker://")
+    repository = None
+    reference = None
+    immutable = local
+    if docker:
+        immutable = bool(_DOCKER_DIGEST.fullmatch(spec))
+        if immutable:
+            repository, reference = spec.rsplit("@", 1)
+    elif not local:
+        if "@" not in spec:
+            errors.append(f"{relative}:{line_number}: external action has no ref: {spec}")
             actions.append(
                 {
                     "workflow": relative,
                     "line": line_number,
                     "uses": spec,
-                    "repository": repository,
-                    "commit": reference if reference and immutable else None,
-                    "local": local,
-                    "immutable": immutable,
+                    "repository": None,
+                    "commit": None,
+                    "local": False,
+                    "immutable": False,
                 }
+            )
+            return
+        repository, reference = spec.rsplit("@", 1)
+        immutable = bool(_FULL_SHA.fullmatch(reference))
+    if not immutable:
+        errors.append(
+            f"{relative}:{line_number}: action ref must be an immutable commit SHA: {spec}"
+        )
+    actions.append(
+        {
+            "workflow": relative,
+            "line": line_number,
+            "uses": spec,
+            "repository": repository,
+            "commit": reference if reference and immutable else None,
+            "local": local,
+            "immutable": immutable,
+        }
+    )
+
+
+def _collect_uses_from_node(
+    node: yaml.Node,
+    *,
+    relative: str,
+    actions: list[dict[str, Any]],
+    errors: list[str],
+) -> None:
+    if isinstance(node, yaml.MappingNode):
+        for key_node, value_node in node.value:
+            key = key_node.value if isinstance(key_node, yaml.ScalarNode) else None
+            if key == "uses":
+                line_number = value_node.start_mark.line + 1
+                if not isinstance(value_node, yaml.ScalarNode):
+                    errors.append(f"{relative}:{line_number}: uses value must be a scalar")
+                else:
+                    spec = str(value_node.value).strip()
+                    _record_action_use(
+                        spec,
+                        relative=relative,
+                        line_number=line_number,
+                        actions=actions,
+                        errors=errors,
+                    )
+            else:
+                _collect_uses_from_node(
+                    key_node, relative=relative, actions=actions, errors=errors
+                )
+            _collect_uses_from_node(
+                value_node, relative=relative, actions=actions, errors=errors
+            )
+        return
+    if isinstance(node, yaml.SequenceNode):
+        for child in node.value:
+            _collect_uses_from_node(
+                child, relative=relative, actions=actions, errors=errors
+            )
+
+
+def action_inventory(repo_root: Path) -> tuple[list[dict[str, Any]], list[str]]:
+    """Inventory every YAML ``uses`` value, including quoted-key spellings.
+
+    A line-oriented ``uses:`` regex is not a safety gate: GitHub accepts
+    equivalent YAML such as ``"uses": actions/checkout@v7``.  Those must still
+    be pinned, or the workflow is rejected.
+    """
+    actions: list[dict[str, Any]] = []
+    errors: list[str] = []
+    for path in workflow_files(repo_root):
+        relative = str(path.relative_to(repo_root))
+        try:
+            text = path.read_text(encoding="utf-8")
+        except OSError as exc:
+            errors.append(f"{relative}: unreadable workflow: {exc}")
+            continue
+        try:
+            documents = list(yaml.compose_all(text))
+        except yaml.YAMLError as exc:
+            errors.append(f"{relative}: workflow is not parseable YAML: {exc}")
+            continue
+        for document in documents:
+            if document is None:
+                continue
+            _collect_uses_from_node(
+                document, relative=relative, actions=actions, errors=errors
             )
     return actions, errors
 

@@ -69,6 +69,53 @@ def test_external_action_without_at_reports_one_error(tmp_path: Path) -> None:
     ]
 
 
+def test_quoted_uses_key_with_moving_tag_is_rejected(tmp_path: Path) -> None:
+    workflow = tmp_path / ".github/workflows/test.yml"
+    workflow.parent.mkdir(parents=True)
+    workflow.write_text(
+        'jobs:\n  build:\n    steps:\n      - "uses": actions/checkout@v7\n',
+        encoding="utf-8",
+    )
+    actions, errors = action_inventory(tmp_path)
+    assert len(actions) == 1
+    assert actions[0]["uses"] == "actions/checkout@v7"
+    assert actions[0]["immutable"] is False
+    assert errors == [
+        ".github/workflows/test.yml:4: action ref must be an immutable commit SHA: "
+        "actions/checkout@v7"
+    ]
+
+
+def test_single_quoted_uses_key_with_moving_tag_is_rejected(tmp_path: Path) -> None:
+    workflow = tmp_path / ".github/workflows/test.yml"
+    workflow.parent.mkdir(parents=True)
+    workflow.write_text(
+        "jobs:\n  build:\n    steps:\n      - 'uses': actions/setup-python@v5\n",
+        encoding="utf-8",
+    )
+    actions, errors = action_inventory(tmp_path)
+    assert actions[0]["uses"] == "actions/setup-python@v5"
+    assert actions[0]["immutable"] is False
+    assert any("actions/setup-python@v5" in error for error in errors)
+
+
+def test_unparseable_workflow_fails_closed(tmp_path: Path) -> None:
+    workflow = tmp_path / ".github/workflows/test.yml"
+    workflow.parent.mkdir(parents=True)
+    workflow.write_text("jobs: [\n  uses: actions/checkout@v7\n", encoding="utf-8")
+    actions, errors = action_inventory(tmp_path)
+    assert actions == []
+    assert any("not parseable YAML" in error for error in errors)
+
+
+def test_non_scalar_uses_value_fails_closed(tmp_path: Path) -> None:
+    workflow = tmp_path / ".github/workflows/test.yml"
+    workflow.parent.mkdir(parents=True)
+    workflow.write_text("steps:\n  - uses:\n      action: actions/checkout@v7\n", encoding="utf-8")
+    actions, errors = action_inventory(tmp_path)
+    assert any("uses value must be a scalar" in error for error in errors)
+
+
 def test_committed_environment_manifest_is_exactly_reproducible() -> None:
     expected = build_environment_manifest(ROOT)
     committed = json.loads(
@@ -131,5 +178,28 @@ def test_manifest_build_refuses_any_moving_action(tmp_path: Path) -> None:
     workflow = tmp_path / ".github/workflows/bad.yml"
     workflow.parent.mkdir(parents=True)
     workflow.write_text("steps:\n  - uses: actions/upload-artifact@v4\n", encoding="utf-8")
+    with pytest.raises(SupplyChainError, match="immutable commit SHA"):
+        build_environment_manifest(tmp_path)
+
+
+def test_manifest_build_refuses_quoted_moving_action(tmp_path: Path) -> None:
+    import shutil
+
+    for relative in (
+        "pyproject.toml",
+        "uv.lock",
+        "julia/Project.toml",
+        "julia/Manifest.toml",
+        "julia-latest/Project.toml",
+    ):
+        destination = tmp_path / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / relative, destination)
+    workflow = tmp_path / ".github/workflows/quoted.yml"
+    workflow.parent.mkdir(parents=True)
+    workflow.write_text(
+        'steps:\n  - "uses": actions/upload-artifact@v4\n',
+        encoding="utf-8",
+    )
     with pytest.raises(SupplyChainError, match="immutable commit SHA"):
         build_environment_manifest(tmp_path)
