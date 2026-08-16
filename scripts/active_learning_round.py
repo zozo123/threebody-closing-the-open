@@ -11,6 +11,7 @@ import numpy as np
 from threebody_atlas.active_learning import AtlasSurrogate
 from threebody_atlas.baseline import iter_baseline
 from threebody_atlas.boundary import stability_score
+from threebody_atlas.evidence_semantics import artifact_semantics
 from threebody_atlas.liao_family import correct_family_point
 from threebody_atlas.reduced import compute_reduced_floquet
 
@@ -79,6 +80,9 @@ def main() -> None:
             break
 
     payload = {
+        "search_semantics": artifact_semantics(
+            Path(__file__).resolve().parents[1], "active_learning_pocket/v1"
+        ),
         "training_rows": len(rows),
         "reported_stable_fraction_in_training": float(stable.mean()),
         "pool_size": len(pool),

@@ -1,6 +1,22 @@
 {
-  "schema": "atlas.v1.completeness-certificate/2",
+  "schema": "atlas.v1.completeness-certificate/3",
   "passed": true,
+  "search_semantics": {
+    "criterion_id": "bounded_completeness_bundle/v1",
+    "claim_scope": {
+      "enumerates_label_transition_roots": false,
+      "enumerates_full_critical_set": false,
+      "excludes_even_root_pairs": false,
+      "excludes_tangencies": false,
+      "bounded_resolution_only": true
+    },
+    "parent_criteria": {
+      "active_learning": "active_learning_pocket/v1",
+      "neck_scan": "local_neck_raster/v1"
+    },
+    "release_requirement": "full_critical_set_release/v1",
+    "semantic_contract_sha256": "85dcd3e9ef9efa1fc4e775c5bca3f4a50c01b808e9ab41a5bf986ea12b403531"
+  },
   "domain": {
     "catalog": "Li-Li-Liao unequal-mass non-hierarchical published grid",
     "neck": {
@@ -70,13 +86,17 @@
     {
       "role": "active_learning",
       "path": "research/evidence/V1_AL_POCKET_SCREEN_2026-08-15.json",
-      "sha256": "87a2ae43ac899220f86dea835696101158509b93e675bac2c03842599a247be6"
+      "sha256": "87a2ae43ac899220f86dea835696101158509b93e675bac2c03842599a247be6",
+      "criterion_id": "active_learning_pocket/v1",
+      "semantic_origin": "frozen_binding"
     },
     {
       "role": "neck_scan",
       "path": "research/evidence/V1_NECK_RASTER_2026-08-16.json",
-      "sha256": "616f5fdfc97c1b6fc1bd10391eb8f941efc610b38ffa41c51369191c065fff19"
+      "sha256": "616f5fdfc97c1b6fc1bd10391eb8f941efc610b38ffa41c51369191c065fff19",
+      "criterion_id": "local_neck_raster/v1",
+      "semantic_origin": "frozen_binding"
     }
   ],
-  "sha256_content": "f3a36566d37cb06a9c9234f1008df626e42b8d606bca2091d6288fe483757c16"
+  "sha256_content": "c76df085b393bc783084255b82acb8ecc2340da81da8e41b1453b87116a9341e"
 }

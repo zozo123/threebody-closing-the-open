@@ -67,6 +67,7 @@ from threebody_atlas.bracket_criteria import (  # noqa: E402
     label_invisible_brackets,
     published_label_brackets,
 )
+from threebody_atlas.evidence_semantics import artifact_semantics  # noqa: E402
 
 SCHEMA = "atlas.v1.bracket-criterion-comparison/1"
 EVENT_TOLERANCE = 2e-8
@@ -541,6 +542,9 @@ def main() -> None:
 
     payload = {
         "schema": SCHEMA,
+        "search_semantics": artifact_semantics(
+            Path(__file__).resolve().parents[1], "event_sign_brackets/v1"
+        ),
         "created_at": datetime.now(timezone.utc).isoformat(),
         "code_revision": revision(),
         "python": platform.python_version(),

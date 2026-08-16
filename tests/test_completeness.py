@@ -14,6 +14,11 @@ from threebody_atlas.completeness import (
     sha256_file,
     verify_certificate,
 )
+from threebody_atlas.evidence_semantics import (
+    build_certificate_semantics,
+    criterion_claims,
+    load_registry,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -90,11 +95,29 @@ def _sealed(tmp_path: Path) -> tuple[Path, dict]:
     al_path.write_text(json.dumps(_clean_al()))
     neck_path.write_text(json.dumps(_clean_neck()))
     sources = [
-        {"role": "active_learning", "path": str(al_path), "sha256": sha256_file(al_path)},
-        {"role": "neck_scan", "path": str(neck_path), "sha256": sha256_file(neck_path)},
+        {
+            "role": "active_learning",
+            "path": str(al_path),
+            "sha256": sha256_file(al_path),
+            "criterion_id": "active_learning_pocket/v1",
+            "semantic_origin": "legacy_role",
+        },
+        {
+            "role": "neck_scan",
+            "path": str(neck_path),
+            "sha256": sha256_file(neck_path),
+            "criterion_id": "local_neck_raster/v1",
+            "semantic_origin": "legacy_role",
+        },
     ]
+    registry = load_registry(ROOT)
     record = seal(
-        build_record(json.loads(al_path.read_text()), json.loads(neck_path.read_text()), sources)
+        build_record(
+            json.loads(al_path.read_text()),
+            json.loads(neck_path.read_text()),
+            sources,
+            search_semantics=build_certificate_semantics(sources, registry),
+        )
     )
     certificate = tmp_path / "comp.json"
     certificate.write_text(json.dumps(record, indent=2))
@@ -129,3 +152,42 @@ def test_verification_refuses_an_absolute_source_outside_the_allowed_roots(tmp_p
     passed, errors = verify_certificate(record, repo_root=ROOT, certificate_path=certificate)
     assert passed is False
     assert any("outside the repository" in error for error in errors)
+
+
+def test_bounded_certificate_cannot_satisfy_full_critical_set_release(tmp_path) -> None:
+    certificate, record = _sealed(tmp_path)
+    from threebody_atlas.completeness import verification_report
+
+    report = verification_report(record, repo_root=ROOT, certificate_path=certificate)
+    assert report["passed"] is True
+    assert report["release_scope_passed"] is False
+    assert set(report["release_scope_errors"]) == {
+        "claim enumerates_full_critical_set must be True, got False",
+        "claim excludes_even_root_pairs must be True, got False",
+        "claim excludes_tangencies must be True, got False",
+        "claim bounded_resolution_only must be False, got True",
+    }
+
+
+def test_relabeling_a_parent_criterion_invalidates_a_resealed_certificate(tmp_path) -> None:
+    certificate, record = _sealed(tmp_path)
+    source = next(row for row in record["sources"] if row["role"] == "active_learning")
+    source["criterion_id"] = "published_label_brackets/v1"
+    record["search_semantics"]["parent_criteria"]["active_learning"] = source[
+        "criterion_id"
+    ]
+    record = seal(record)
+    passed, errors = verify_certificate(record, repo_root=ROOT, certificate_path=certificate)
+    assert passed is False
+    assert any("derived 'active_learning_pocket/v1'" in error for error in errors)
+
+
+def test_claim_scope_cannot_be_strengthened_by_resealing(tmp_path) -> None:
+    certificate, record = _sealed(tmp_path)
+    record["search_semantics"]["claim_scope"] = criterion_claims(
+        load_registry(ROOT), "validated_full_event_cover/v1"
+    )
+    record = seal(record)
+    passed, errors = verify_certificate(record, repo_root=ROOT, certificate_path=certificate)
+    assert passed is False
+    assert "certificate claim_scope disagrees with the search-scope registry" in errors

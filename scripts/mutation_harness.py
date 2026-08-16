@@ -430,6 +430,20 @@ def _truncate_neck_raster(tree: Path) -> None:
     certificate_path.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
 
 
+def _change_sampling_semantics_without_version_bump(tree: Path) -> None:
+    """Strengthen a criterion's meaning while keeping its /v1 identifier.
+
+    Source bytes and their sha256 bindings remain untouched.  Only the semantic
+    contract changes, so a digest-only evidence DAG would miss this mutation.
+    """
+    patch_text(
+        tree,
+        "research/SEARCH_SCOPE_REGISTRY.json",
+        '"description": "Corrected proposals in one bounded acquisition pocket; screening evidence only.",',
+        '"description": "MUTATED to imply a broader search without a criterion version bump.",',
+    )
+
+
 def _loosen_assembler_event_gate(tree: Path) -> None:
     patch_text(tree, "scripts/assemble_critical_graph.py", "EVENT_GATE = 2e-8", "EVENT_GATE = 2e-7")
 
@@ -611,7 +625,7 @@ def mutations() -> list[Mutation]:
             "edit a source file after the completeness certificate sealed it",
             _alter_evidence_after_sealing,
             ("completeness_certificate_verifier",),
-            rationale="the recorded per-source sha256 is the whole point of schema /2",
+            rationale="the recorded per-source sha256 is one half of the schema /3 contract",
         ),
         Mutation(
             "truncate_neck_raster",
@@ -622,6 +636,17 @@ def mutations() -> list[Mutation]:
             rationale=(
                 "re-sealing defeats digest-only tamper evidence; only re-deriving the neck "
                 "predicate catches a raster whose merge question left the scan window"
+            ),
+        ),
+        Mutation(
+            "change_sampling_semantics_without_version_bump",
+            "provenance",
+            "change a parent criterion's semantics without changing its /v1 identifier",
+            _change_sampling_semantics_without_version_bump,
+            ("completeness_certificate_verifier",),
+            rationale=(
+                "file hashes still match; the certificate's semantic-contract digest must "
+                "invalidate when the meaning of a parent criterion changes"
             ),
         ),
         Mutation(

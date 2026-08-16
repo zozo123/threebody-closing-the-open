@@ -871,6 +871,16 @@ def release_conjuncts(graph: dict[str, Any]) -> list[dict[str, Any]]:
             ),
         },
         {
+            "conjunct": "full_critical_set_search_scope",
+            "satisfied": bool(coverage.get("full_critical_set_scope_passed")),
+            "detail": coverage.get("completeness_scope_errors") or [],
+            "explanation": (
+                "the verified certificate's criterion semantics must enumerate the full "
+                "critical set, exclude even root pairs and tangencies, and not be only a "
+                "bounded-resolution screen"
+            ),
+        },
+        {
             "conjunct": "sign_topology_clean",
             "satisfied": bool(coverage.get("sign_topology_clean")),
             "detail": coverage.get("sign_topology_errors") or [],

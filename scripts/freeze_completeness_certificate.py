@@ -24,6 +24,11 @@ try:  # pragma: no cover - exercised implicitly by both install layouts
         sha256_file,
         verify_certificate,
     )
+    from threebody_atlas.evidence_semantics import (
+        build_certificate_semantics,
+        classify_artifact,
+        load_registry,
+    )
 except ModuleNotFoundError:  # running from a source checkout without an install
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
     from threebody_atlas.completeness import (
@@ -33,6 +38,11 @@ except ModuleNotFoundError:  # running from a source checkout without an install
         seal,
         sha256_file,
         verify_certificate,
+    )
+    from threebody_atlas.evidence_semantics import (
+        build_certificate_semantics,
+        classify_artifact,
+        load_registry,
     )
 
 
@@ -68,7 +78,29 @@ def main() -> None:
 
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
-    record = seal(build_record(al, neck, sources))
+    repo_root = Path(__file__).resolve().parents[1]
+    registry = load_registry(repo_root)
+    payloads = {"active_learning": al, "neck_scan": neck}
+    paths = {"active_learning": al_path, "neck_scan": neck_path}
+    for source in sources:
+        role = str(source["role"])
+        payload = payloads[role]
+        path = paths[role]
+        assert isinstance(payload, dict) and isinstance(path, Path)
+        criterion_id, semantic_origin = classify_artifact(
+            role=role,
+            path=path,
+            payload=payload,
+            sha256=str(source["sha256"]),
+            repo_root=repo_root,
+            registry=registry,
+        )
+        source["criterion_id"] = criterion_id
+        source["semantic_origin"] = semantic_origin
+    search_semantics = build_certificate_semantics(sources, registry)
+    record = seal(
+        build_record(al, neck, sources, search_semantics=search_semantics)
+    )
     passed = record["passed"] is True
 
     verification_errors: list[str] = []
@@ -77,7 +109,6 @@ def main() -> None:
         # claiming to have passed.  This keeps freezer and verifier in lockstep:
         # if the sources cannot be re-read, re-hashed, and re-derived from where
         # this record says they are, the claim is downgraded before it is written.
-        repo_root = Path(__file__).resolve().parents[1]
         passed, verification_errors = verify_certificate(
             record, repo_root=repo_root, certificate_path=output
         )

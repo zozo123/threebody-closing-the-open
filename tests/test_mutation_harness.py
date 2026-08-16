@@ -79,6 +79,7 @@ def test_every_mutation_still_finds_its_target(tmp_path, mutation) -> None:
         "src/threebody_atlas/critical_manifold.py",
         "src/threebody_atlas/completeness.py",
         "scripts/assemble_critical_graph.py",
+        "research/SEARCH_SCOPE_REGISTRY.json",
         HARNESS.ROOTS_FILE,
         HARNESS.RIGHT_GERMS_FILE,
     ):

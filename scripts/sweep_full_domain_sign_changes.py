@@ -567,6 +567,16 @@ def shard_document(
     converged = [p for p in probes if p.get("ok")]
     return {
         "schema": SHARD_SCHEMA,
+        "search_semantics": {
+            "criterion_id": "event_sign_brackets/v1",
+            "claim_scope": {
+                "enumerates_label_transition_roots": False,
+                "enumerates_full_critical_set": False,
+                "excludes_even_root_pairs": False,
+                "excludes_tangencies": False,
+                "bounded_resolution_only": True,
+            },
+        },
         "phase": phase,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "code_revision": os.getenv("GITHUB_SHA"),

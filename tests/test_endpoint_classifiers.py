@@ -414,7 +414,7 @@ def test_completeness_passes_with_neck_and_clean_al(tmp_path) -> None:
     assert _run("freeze_completeness_certificate.py", [str(out), "--al-screen", str(al), "--neck-scan", str(neck)]) == 0
     record = json.loads(out.read_text())
     assert record["passed"] is True
-    assert record["schema"] == "atlas.v1.completeness-certificate/2"
+    assert record["schema"] == "atlas.v1.completeness-certificate/3"
     assert record["active_learning"]["screening_stable_hidden_pockets"] == 0
     assert {row["role"] for row in record["sources"]} == {"active_learning", "neck_scan"}
 

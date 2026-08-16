@@ -15,6 +15,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from threebody_atlas.evidence_semantics import artifact_semantics
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from neck_topology import summarize  # noqa: E402
@@ -134,6 +136,9 @@ def main() -> None:
     ]
     record: dict[str, Any] = {
         "schema": "atlas.v1.stability-neck-scan/3",
+        "search_semantics": artifact_semantics(
+            Path(__file__).resolve().parents[1], "local_neck_raster/v1"
+        ),
         "completed": True,
         "fragment_count": len(args.fragments),
         "grid": {

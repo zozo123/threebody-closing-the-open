@@ -68,7 +68,8 @@
 #                mixed node and may not borrow the headline twelve)
 #
 #   --completeness V1_COMPLETENESS_CERTIFICATE_2026-08-16.json
-#                A sealed atlas.v1.completeness-certificate/2, frozen 2026-08-16
+#                A sealed atlas.v1.completeness-certificate/3, frozen 2026-08-16;
+#                its semantic scope is checked separately from numerical validity
 #                from the AL pocket screen plus the WIDENED neck raster
 #                (V1_NECK_RASTER_2026-08-16.json).  This replaces the earlier
 #                --al-screen input, which deliberately yielded

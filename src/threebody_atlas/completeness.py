@@ -26,11 +26,20 @@ import string
 from pathlib import Path
 from typing import Any
 
+from .evidence_semantics import (
+    SemanticContractError,
+    load_registry,
+    verify_certificate_semantics,
+)
 
-SCHEMA = "atlas.v1.completeness-certificate/2"
-"""Schema 2 differs from 1 only in what a *verifier* must do: re-hash and
-re-derive every source.  The version is bumped so that self-sealed schema-1
-records can never be replayed against the strict verifier."""
+SCHEMA = "atlas.v1.completeness-certificate/3"
+"""Schema 3 adds a machine-checked search-semantics contract.
+
+Schema 2 re-hashed and re-derived every numerical source, but a hash-preserving
+change in what a sampling criterion meant could still leave stronger downstream
+completeness claims green.  Schema 3 binds the criterion versions and their
+claim scopes as well as the bytes.
+"""
 
 REQUIRED_SOURCE_ROLES = ("active_learning", "neck_scan")
 SHOOTING_RESIDUAL_GATE = 1e-7
@@ -233,6 +242,8 @@ def build_record(
     al: dict[str, Any] | None,
     neck: dict[str, Any] | None,
     sources: list[dict[str, Any]],
+    *,
+    search_semantics: dict[str, Any],
 ) -> dict[str, Any]:
     """Build the unsealed certificate body from the two artifacts.
 
@@ -245,6 +256,7 @@ def build_record(
     return {
         "schema": SCHEMA,
         "passed": passed,
+        "search_semantics": search_semantics,
         "domain": {
             "catalog": "Li-Li-Liao unequal-mass non-hierarchical published grid",
             "neck": neck_stats["grid"],
@@ -406,6 +418,7 @@ def verify_certificate(
         allowed_roots.append(Path(certificate_path).resolve().parent)
 
     payloads: dict[str, dict[str, Any]] = {}
+    resolved_paths: dict[str, Path] = {}
     for entry in sources:
         role = str(entry.get("role") or "")
         recorded_digest = entry.get("sha256")
@@ -430,8 +443,23 @@ def verify_certificate(
             continue
         if role in REQUIRED_SOURCE_ROLES:
             payloads[role] = payload
+            resolved_paths[role] = resolved
     if errors:
         return False, errors
+
+    try:
+        registry = load_registry(repo_root)
+    except SemanticContractError as exc:
+        return False, [str(exc)]
+    semantic_errors, _semantic_report = verify_certificate_semantics(
+        block=record.get("search_semantics"),
+        sources=sources,
+        payloads=payloads,
+        resolved_paths=resolved_paths,
+        repo_root=repo_root,
+        registry=registry,
+    )
+    errors.extend(semantic_errors)
 
     al_stats = al_summary(payloads.get("active_learning"))
     neck_stats = neck_summary(payloads.get("neck_scan"))
@@ -523,6 +551,47 @@ def verification_report(
     passed, errors = verify_certificate(
         record, repo_root=repo_root, certificate_path=certificate_path
     )
+    semantic_report: dict[str, Any] = {
+        "release_scope_passed": False,
+        "release_scope_errors": ["certificate semantics were not verified"],
+    }
+    if isinstance(record, dict) and isinstance(record.get("sources"), list):
+        allowed_roots = [repo_root]
+        if certificate_path is not None:
+            allowed_roots.append(Path(certificate_path).resolve().parent)
+        payloads: dict[str, dict[str, Any]] = {}
+        resolved_paths: dict[str, Path] = {}
+        for entry in record["sources"]:
+            if not isinstance(entry, dict):
+                continue
+            role = str(entry.get("role") or "")
+            resolved, _problem = resolve_source_path(entry.get("path"), allowed_roots)
+            if resolved is None:
+                continue
+            try:
+                payloads[role] = json.loads(resolved.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                continue
+            resolved_paths[role] = resolved
+        try:
+            registry = load_registry(repo_root)
+            semantic_errors, semantic_report = verify_certificate_semantics(
+                block=record.get("search_semantics"),
+                sources=record["sources"],
+                payloads=payloads,
+                resolved_paths=resolved_paths,
+                repo_root=repo_root,
+                registry=registry,
+            )
+            if semantic_errors:
+                semantic_report["release_scope_passed"] = False
+                semantic_report["semantic_errors"] = semantic_errors
+        except SemanticContractError as exc:
+            semantic_report = {
+                "release_scope_passed": False,
+                "release_scope_errors": [str(exc)],
+                "semantic_errors": [str(exc)],
+            }
     sources_in_repository = None
     if isinstance(record, dict) and isinstance(record.get("sources"), list):
         allowed_roots = [repo_root]
@@ -543,4 +612,7 @@ def verification_report(
         "errors": errors,
         "sources_in_repository": sources_in_repository,
         "certificate_path": None if certificate_path is None else str(certificate_path),
+        "search_semantics": semantic_report,
+        "release_scope_passed": bool(passed and semantic_report["release_scope_passed"]),
+        "release_scope_errors": semantic_report.get("release_scope_errors", []),
     }

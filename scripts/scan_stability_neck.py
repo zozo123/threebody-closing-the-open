@@ -19,6 +19,7 @@ from pathlib import Path
 
 from threebody_atlas.baseline import iter_baseline
 from threebody_atlas.boundary import evaluate
+from threebody_atlas.evidence_semantics import artifact_semantics
 from threebody_atlas.liao_family import correct_family_point
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -54,6 +55,9 @@ def payload_for(
     )
     return {
         "schema": "atlas.v1.stability-neck-scan/3",
+        "search_semantics": artifact_semantics(
+            Path(__file__).resolve().parents[1], "local_neck_raster/v1"
+        ),
         "completed": completed,
         "completed_m1_lines": len(summaries),
         "expected_m1_lines": len(m1_values),

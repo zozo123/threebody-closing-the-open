@@ -1132,6 +1132,10 @@ def main() -> None:
         "sign_topology_audits": sign_report["audits"],
         "completeness_passed": bool(completeness_report["passed"]),
         "completeness_verification_errors": completeness_report["errors"],
+        "full_critical_set_scope_passed": bool(
+            completeness_report["release_scope_passed"]
+        ),
+        "completeness_scope_errors": completeness_report["release_scope_errors"],
         "completeness_sources_in_repository": completeness_report["sources_in_repository"],
         "unclassified_edge_endpoints": unclassified_edge_endpoints,
         "classification_binding_errors": classification_binding_errors,
@@ -1164,6 +1168,7 @@ def main() -> None:
         and not unclassified_edge_endpoints
         and not classification_binding_errors
         and coverage["completeness_passed"]
+        and coverage["full_critical_set_scope_passed"]
         and coverage["sign_topology_clean"]
         and all(item.get("passed") for item in nodes if item["id"] in REQUIRED_HEADLINE_IDS)
     )
@@ -1241,6 +1246,10 @@ def main() -> None:
                 "missing_mixed_germs": coverage["missing_mixed_germs"],
                 "completeness_passed": coverage["completeness_passed"],
                 "completeness_verification_errors": coverage["completeness_verification_errors"],
+                "full_critical_set_scope_passed": coverage[
+                    "full_critical_set_scope_passed"
+                ],
+                "completeness_scope_errors": coverage["completeness_scope_errors"],
             },
             indent=2,
         )

@@ -405,6 +405,7 @@ def test_hand_written_self_sealed_certificate_is_rejected(tmp_path) -> None:
     for schema in (
         "atlas.v1.completeness-certificate/1",
         "atlas.v1.completeness-certificate/2",
+        "atlas.v1.completeness-certificate/3",
     ):
         _reseal(certificate, {"schema": schema, "passed": True})
         coverage = _completeness_state(tmp_path, certificate)
@@ -503,7 +504,7 @@ def test_certificate_source_paths_may_not_escape_the_allowed_roots(tmp_path) -> 
 def test_frozen_certificate_from_the_freezer_is_accepted(tmp_path) -> None:
     certificate = _freeze_certificate(tmp_path)
     record = json.loads(certificate.read_text())
-    assert record["schema"] == "atlas.v1.completeness-certificate/2"
+    assert record["schema"] == "atlas.v1.completeness-certificate/3"
     assert record["passed"] is True
     assert {row["role"] for row in record["sources"]} == {"active_learning", "neck_scan"}
     coverage = _completeness_state(tmp_path, certificate)
@@ -884,9 +885,11 @@ def test_assembler_is_the_only_path_to_a_fully_ready_graph(tmp_path) -> None:
             "--completeness", str(completeness),
             "--sign-topology", str(_clean_sign_topology(tmp_path)),
         ],
-        expected_ready=True,
     )
-    assert graph["release_ready"] is True
+    assert graph["release_ready"] is False
+    assert graph["root_coverage"]["completeness_passed"] is True
+    assert graph["root_coverage"]["full_critical_set_scope_passed"] is False
+    assert graph["root_coverage"]["completeness_scope_errors"]
     assert graph["root_coverage"]["cells_on_edges"] == 620
     assert graph["root_coverage"]["unclassified_edge_endpoints"] == []
     assert len(graph["edges"]) == 7
