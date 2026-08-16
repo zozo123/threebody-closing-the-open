@@ -228,7 +228,9 @@ def main() -> int:
         "roundoff_floor_exceeds_event_gate": len(floor_over_gate),
         "recomputed_closure_exceeds_closure_gate": len(closure_over_gate),
         "recorded_closure_optimistic_by_more_than_10x": len(closure_optimistic),
-        "first_step_jitter_spread_exceeds_event_gate": len(jitter_over_gate),
+        # None, not 0, when --jitter was not requested: "0 findings" and "not
+        # measured" must never look the same in a summary.
+        "first_step_jitter_spread_exceeds_event_gate": len(jitter_over_gate) if args.jitter else None,
         "max_event_discrepancy": max((r["event_discrepancy"] for r in records), default=0.0),
         "max_monodromy_norm": max((r["monodromy_norm"] for r in records), default=0.0),
         "max_recomputed_closure": max((r["recomputed_closure"] for r in records), default=0.0),

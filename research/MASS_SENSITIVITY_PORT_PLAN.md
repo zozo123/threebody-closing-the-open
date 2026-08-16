@@ -281,10 +281,24 @@ converge as the tolerance is tightened.  Separately, the recorded closure norms
 are optimistic by 30-100x because they were measured at `screening_rtol`; one
 sampled root's converged closure, 1.27e-7, is **above** the frozen 1e-7 gate.
 
+On a seeded random sample of 160 of the 620 roots: **61%** of recorded event
+values are not reproducible within the gate, **100%** of recorded closure norms
+are optimistic by >10x, and 4 roots have a converged closure above the frozen
+1e-7 gate.  The failure rate is monotone in `||M||` (37% below 2e3, 100% above
+5e3).  The sharpest evidence is a jitter probe: fixing everything and varying
+only the integrator's `first_step` moves one root's event by 1.35e-6, 67x the
+gate.
+
 This does not challenge the root locations (an event error of 1e-6 displaces a
-root by ~1e-7 in `m2`, against 1e-3 cells).  It challenges the certificates, and
-it means "max |event| = 1.9898e-8 against a 2e-8 gate, a 0.5% margin" is a
-statement about a number whose own uncertainty is 10-100x the gate.
+root by 2e-9 … 1e-8 in `m2` at the worst cells, against 1e-3 cells).  It
+challenges the certificates, and it means "max |event| = 1.9898e-8 against a
+2e-8 gate, a 0.5% margin" is a statement about a number whose own uncertainty is
+10-100x the gate.
+
+**Good news for this branch's own lane:** `minus_one` is the one event mode where
+not a single sampled root failed to reproduce (0 of 40).  The secondary `G- = 0`
+fold lives entirely in `minus_one`, so the float64 corroboration in §3 stands and
+`dG-/dm2` is safe as a Newton slope.
 
 ## 9. Scope discipline
 

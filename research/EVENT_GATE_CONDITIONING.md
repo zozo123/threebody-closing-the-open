@@ -3,12 +3,17 @@
 Found while validating `src/threebody_atlas/mass_sensitivity.py`.  Reproduce with
 
 ```
-# every 4th root, one converged integration each (~20 min in float64)
+# seeded random 160 of 620, one converged integration each (~35 min in float64)
 PYTHONPATH=src python scripts/audit_event_conditioning.py \
     research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json \
-    --estimator all --stride 4 --no-coarse
+    --estimator all --sample 160 --no-coarse
 
-# all 620, both tolerances (~3 h) -- drop --stride and --no-coarse
+# the decisive round-off probe on a handful of roots (5x the cost per root)
+PYTHONPATH=src python scripts/audit_event_conditioning.py \
+    research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json \
+    --estimator all --sample 12 --no-coarse --jitter
+
+# all 620, both tolerances (~3 h) -- drop --sample and --no-coarse
 ```
 
 The audit uses `critical_manifold._flow_for_vector` -- the census's **own** code
@@ -17,11 +22,18 @@ evidence and refuses an `--output` under `research/evidence`.
 
 ## The claim
 
-For each root, take the chart and masses **exactly as recorded** and integrate at
-a converged tolerance.  For a large fraction of the 462 float64-estimated roots
-the recorded event value does not come back, missing the frozen `2e-8` gate by
-one to two orders of magnitude, and the recorded closure norm is optimistic by
-30-100x.
+Take each root's chart and masses **exactly as recorded** and integrate at a
+converged tolerance.  On a seeded random sample of 160 of the 620 roots:
+
+* **61%** of recorded event values do not come back within the frozen `2e-8`
+  gate, missing it by up to `2.19e-6` -- 110x.
+* **100%** of recorded closure norms are optimistic by more than 10x (median
+  48.6x), and **4 roots** have a converged closure above the frozen `1e-7`
+  closure gate.
+* The failure rate rises monotonically with `||M||`, from 37% below `2e3` to
+  100% above `5e3`, exactly where `eps * ||M||^2` crosses the gate.
+* `minus_one` is entirely clean (0 of 40).  The damage is in `trace_collision`
+  (91%) and `plus_one` (71%).
 
 This is a statement about the **certificates**, not about the root locations.
 See "What this does and does not invalidate" below.
@@ -125,31 +137,67 @@ from theirs" objection: the same build disagrees with itself by 67x the gate.
 
 ## Population statistics
 
-Seeded random sample of the 620 localized roots (`--sample`, seed 20260816),
-one converged integration each at `rtol = 1e-13`.  `RANDOM_SAMPLE_TABLE`
+Seeded random sample, **160 of the 620** localized roots
+(`--sample 160 --seed 20260816`), one converged integration each at
+`rtol = 1e-13`.  Mode mix 55 / 40 / 65 (`plus_one` / `minus_one` /
+`trace_collision`), matching the census's 198 / 168 / 254.
 
-The dose-response against `||M||` is the point.  From a systematic every-4th
-sample of 155 roots (which, see below, is a biased sample but a large one):
-
-| `\|\|M\|\|` | roots | recorded event not reproducible within 2e-8 | median discrepancy |
+| finding | count | rate | extrapolated to 620 |
 | --- | --- | --- | --- |
-| < 2e3 | 77 | 7 (9%) | 9.3e-9 |
-| 2e3 – 5e3 | 28 | 15 (54%) | 7.2e-8 |
-| 5e3 – 1e4 | 14 | 14 (100%) | 1.9e-7 |
-| >= 1e4 | 36 | 34 (94%) | 2.4e-7 |
+| recorded event not reproducible within the 2e-8 gate | 98 | **61%** | ~380 |
+| round-off floor `eps*\|\|M\|\|^2` alone exceeds the 2e-8 gate | 37 | 23% | ~143 |
+| recomputed closure exceeds the frozen 1e-7 gate | 4 | 2.5% | ~15 |
+| recorded closure optimistic by more than 10x | 160 | **100%** | 620 |
 
-Monotone in `||M||`, crossing over exactly where `eps * ||M||^2` crosses `2e-8`
-(at `||M|| ~ 9.5e3`, or `~4.7e3` for `trace_collision`).  That is a mechanism
-with a dose-response curve, not a fishing expedition.
+Worst event discrepancy `2.19e-6` (110x the gate); worst recomputed closure
+`1.543e-7`; median closure optimism factor **48.6x**.
+
+### Dose-response in `||M||` -- the reason this is a mechanism, not a fishing trip
+
+| `\|\|M\|\|` | roots | event not reproducible | median discrepancy |
+| --- | --- | --- | --- |
+| < 2e3 | 89 | 33 (37%) | 1.1e-8 |
+| 2e3 – 5e3 | 26 | 20 (77%) | 1.1e-7 |
+| 5e3 – 1e4 | 11 | 11 (100%) | 1.3e-7 |
+| >= 1e4 | 34 | 34 (100%) | 5.2e-7 |
+
+Monotone, saturating exactly where `eps*||M||^2` crosses `2e-8`
+(`||M|| ~ 9.5e3`, or `~4.7e3` in `trace_collision`).
+
+### By event mode -- `minus_one` is clean
+
+| mode | roots | event not reproducible |
+| --- | --- | --- |
+| `minus_one` | 40 | **0 (0%)** |
+| `plus_one` | 55 | 39 (71%) |
+| `trace_collision` | 65 | 59 (91%) |
+
+This matters for what is currently being verified.  The secondary `G- = 0` fold
+that three CI runs died on lives entirely in `minus_one`, the one mode where not
+a single sampled root failed to reproduce.  The float64 corroboration of the fold
+in `research/MASS_SENSITIVITY_PORT_PLAN.md` §3 is therefore on solid ground, and
+so is `dG-/dm2` as a Newton slope.  The damage is concentrated in
+`trace_collision` (whose `Delta` carries the extra factor of 4) and `plus_one`.
+
+### By estimator
+
+| estimator | roots | event not reproducible | floor > gate |
+| --- | --- | --- | --- |
+| `float64` | 125 | 64 (51%) | 15 (12%) |
+| `julia_bigfloat` | 35 | 34 (97%) | 22 (63%) |
+
+The `julia_bigfloat` row is the cleanest statement in the whole audit: those
+recorded values are *correct*, computed at dps=60, and float64 cannot reproduce
+34 of 35 of them to within the gate that float64-estimated roots are asserted to
+meet.  If float64 cannot re-derive a known-good value to 2e-8, it cannot certify
+an unknown one to 2e-8 either.
 
 **Sampling caveat, stated because it bit this audit.**  Cell ids advance in
-steps of about 4 per `m1` slice, so `--stride 4` aliases onto one track: the
-155-root stride sample above contains 117 `plus_one` and 38 `minus_one` roots and
-**zero** `trace_collision` roots, despite `trace_collision` being 254 of the 620.
-Since `trace_collision` carries the extra factor of 4 in its round-off floor, the
-strided numbers understate the problem.  `--sample` (seeded random) exists
-because of this and should be preferred; `--stride` is kept only for
-reproducing the table above.
+steps of about 4 per `m1` slice, so an earlier `--stride 4` run aliased onto one
+track: 117 `plus_one`, 38 `minus_one`, and **zero** `trace_collision`, despite
+`trace_collision` being 254 of the 620 -- and `trace_collision` is the worst
+mode.  The strided run therefore understated the problem (45% vs the unbiased
+61%).  `--sample` exists because of that and should be preferred.
 
 ## Consequence for the headline fragility number
 
