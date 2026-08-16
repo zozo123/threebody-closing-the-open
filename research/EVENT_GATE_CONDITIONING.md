@@ -3,8 +3,12 @@
 Found while validating `src/threebody_atlas/mass_sensitivity.py`.  Reproduce with
 
 ```
+# every 4th root, one converged integration each (~20 min in float64)
 PYTHONPATH=src python scripts/audit_event_conditioning.py \
-    research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json --estimator all
+    research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json \
+    --estimator all --stride 4 --no-coarse
+
+# all 620, both tolerances (~3 h) -- drop --stride and --no-coarse
 ```
 
 The audit uses `critical_manifold._flow_for_vector` -- the census's **own** code

@@ -49,7 +49,7 @@ from threebody_atlas.critical_manifold import _flow_for_vector, event_value  # n
 EPS = float(np.finfo(float).eps)
 
 
-def audit_root(root, *, rtol, atol, coarse_rtol, coarse_atol):
+def audit_root(root, *, rtol, atol, coarse_rtol, coarse_atol, with_coarse=True):
     m1, m2, m3 = (float(v) for v in root["masses"])
     y = np.array(
         [
@@ -59,10 +59,13 @@ def audit_root(root, *, rtol, atol, coarse_rtol, coarse_atol):
     )
     mode = root["event_mode"]
     closure, floquet = _flow_for_vector(y, m3=m3, rtol=rtol, atol=atol)
-    closure_c, floquet_c = _flow_for_vector(y, m3=m3, rtol=coarse_rtol, atol=coarse_atol)
     norm_m = float(np.linalg.norm(floquet.monodromy))
     ev = float(event_value(floquet, mode))
-    ev_c = float(event_value(floquet_c, mode))
+    if with_coarse:
+        _, floquet_c = _flow_for_vector(y, m3=m3, rtol=coarse_rtol, atol=coarse_atol)
+        ev_c = float(event_value(floquet_c, mode))
+    else:
+        ev_c = float("nan")
     floor = EPS * norm_m * norm_m
     if mode == "trace_collision":
         floor *= 4.0  # Delta = (alpha-4)^2 - 4(beta - 4 alpha + 8)
@@ -91,6 +94,10 @@ def main() -> int:
     ap.add_argument("--coarse-atol", type=float, default=5e-15)
     ap.add_argument("--estimator", default="float64")
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--stride", type=int, default=1,
+                    help="audit every k-th root; an unbiased sample when the full run is too slow")
+    ap.add_argument("--no-coarse", action="store_true",
+                    help="skip the second, coarser integration (halves the cost)")
     ap.add_argument("--output", type=Path, default=None)
     args = ap.parse_args()
 
@@ -102,6 +109,8 @@ def main() -> int:
     roots = [r for r in census["roots"] if r["status"] == "ok"]
     if args.estimator != "all":
         roots = [r for r in roots if r["estimator"] == args.estimator]
+    if args.stride > 1:
+        roots = roots[:: args.stride]
     if args.limit:
         roots = roots[: args.limit]
 
@@ -110,6 +119,7 @@ def main() -> int:
         rec = audit_root(
             r, rtol=args.rtol, atol=args.atol,
             coarse_rtol=args.coarse_rtol, coarse_atol=args.coarse_atol,
+            with_coarse=not args.no_coarse,
         )
         records.append(rec)
         if i % 25 == 0:
@@ -125,6 +135,7 @@ def main() -> int:
     summary = {
         "census": args.census.as_posix(),
         "estimator_filter": args.estimator,
+        "stride": args.stride,
         "frozen_gates": gates,
         "roots_audited": len(records),
         "recorded_event_not_reproducible_beyond_gate": len(over_event),
