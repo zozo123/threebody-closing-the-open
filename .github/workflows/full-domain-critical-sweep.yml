@@ -1,0 +1,315 @@
+name: Full-domain critical sign-change sweep
+
+# WHY THIS WORKFLOW EXISTS
+#
+# The 620 cells behind the committed critical graph all come from adjacent rows
+# of the frozen raster whose published S/U label flips.  A critical curve that
+# lives inside the unstable region flips no label and is therefore invisible to
+# that construction at ANY grid resolution.  On 2026-08-16 the seven-scan-line
+# sign-topology audit found seven such curves that pass the frozen gates -- but
+# seven scan lines give a lower bound with no denominator.
+#
+# This workflow supplies the denominator.  It sweeps a lattice chosen from the
+# raster geometry alone -- never from the published labels, never from the
+# committed graph -- enumerates every sign change of G_plus, G_minus and the
+# discriminant, and localizes each with the repository's own localizer at the
+# unchanged gates |event| <= 2e-8 and closure <= 1e-7.
+#
+# The sweep is sharded by m1 window because one full-resolution pass is tens of
+# CPU-hours.  The stride is applied to the global slice list BEFORE the window,
+# so shard boundaries cannot change which points are probed, and the merge step
+# re-derives the census from the raw probe records rather than trusting any
+# shard's own findings.
+#
+# FINDINGS ARE NOT BUILD FAILURES.  This sweep exists to falsify a completeness
+# claim; a run that finds uncommitted critical curves has succeeded.  Only a
+# tooling failure fails the job.  Nothing here writes release_ready and nothing
+# here touches research/evidence/V1_CRITICAL_GRAPH.json.
+
+on:
+  workflow_dispatch:
+    inputs:
+      m1_stride:
+        description: "keep every Nth published m1 slice (1 = all 301)"
+        default: "2"
+      m2_stride:
+        description: "keep every Nth published m2 row (1 = all)"
+        default: "5"
+      shards:
+        description: "number of m1 windows to split the domain into"
+        default: "20"
+      certify_budget:
+        description: "process CPU seconds one localization may consume"
+        default: "600"
+  push:
+    paths:
+      - "scripts/sweep_full_domain_sign_changes.py"
+      - "scripts/merge_full_domain_sign_sweep.py"
+      - "tests/test_full_domain_sign_sweep.py"
+      - ".github/workflows/full-domain-critical-sweep.yml"
+
+concurrency:
+  group: full-domain-critical-sweep-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  UV_PYTHON: "3.13"
+  BASELINE_URL: https://raw.githubusercontent.com/sjtu-liao/three-body/main/non-hierarchical-3b-supplementary_data.txt
+  BASELINE_BLOB_SHA1: 79b2963df43e62201c35690bfc22bec166132427
+
+jobs:
+  # ---------------------------------------------------------------- plan ----
+  plan:
+    name: Plan the shard matrix and project its cost
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked
+
+      - name: Fetch and verify the frozen Li-Li-Liao raster
+        run: |
+          mkdir -p data/raw
+          curl -L --fail --retry 3 "$BASELINE_URL" \
+            -o data/raw/non-hierarchical-3b-supplementary_data.txt
+          uv run --no-sync python - <<'PY'
+          import hashlib, os
+          from pathlib import Path
+          raw = Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
+          got = hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
+          expected = os.environ['BASELINE_BLOB_SHA1']
+          if got != expected:
+              raise SystemExit(f'baseline source changed: {got} != {expected}')
+          print('baseline git blob', got)
+          print('baseline sha256  ', hashlib.sha256(raw).hexdigest())
+          PY
+
+      - name: Build the m1 window matrix
+        id: matrix
+        env:
+          SHARDS: ${{ inputs.shards || '20' }}
+        run: |
+          uv run --no-sync python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          shards = int(os.environ['SHARDS'])
+          lo, hi = 0.8, 1.1
+          edges = [lo + (hi - lo) * k / shards for k in range(shards + 1)]
+          windows = []
+          for k in range(shards):
+              start = round(edges[k], 6)
+              # Windows abut without overlapping: the next window starts half a
+              # raster step (0.0005) above this one's end.
+              end = round(hi if k == shards - 1 else edges[k + 1] - 0.0005, 6)
+              windows.append({"id": f"{k:02d}", "m1_range": f"{start},{end}"})
+          print("matrix=" + json.dumps({"window": windows}))
+          PY
+          cat "$GITHUB_OUTPUT"
+
+      - name: Project the cost of the requested resolution before spending it
+        env:
+          M1_STRIDE: ${{ inputs.m1_stride || '2' }}
+          M2_STRIDE: ${{ inputs.m2_stride || '5' }}
+          SHARDS: ${{ inputs.shards || '20' }}
+        run: |
+          uv run --no-sync python scripts/sweep_full_domain_sign_changes.py \
+            --baseline data/raw/non-hierarchical-3b-supplementary_data.txt \
+            --output /dev/null \
+            --m1-stride "$M1_STRIDE" --m2-stride "$M2_STRIDE" \
+            --plan-only | tee projection.json
+          {
+            echo "## Projected cost"
+            echo
+            echo '```json'
+            cat projection.json
+            echo '```'
+            echo
+            echo "Split across \`$SHARDS\` shards.  The per-probe and per-localization"
+            echo "calibrations are from an Apple-silicon laptop; a GitHub runner is"
+            echo "slower, so treat the projection as a lower bound."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  # --------------------------------------------------------------- sweep ----
+  sweep:
+    name: Sweep m1 ${{ matrix.window.m1_range }}
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked
+
+      - name: Fetch and verify the frozen Li-Li-Liao raster
+        run: |
+          mkdir -p data/raw artifacts/sweep
+          curl -L --fail --retry 3 "$BASELINE_URL" \
+            -o data/raw/non-hierarchical-3b-supplementary_data.txt
+          uv run --no-sync python - <<'PY'
+          import hashlib, os
+          from pathlib import Path
+          raw = Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
+          got = hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
+          if got != os.environ['BASELINE_BLOB_SHA1']:
+              raise SystemExit(f'baseline source changed: {got}')
+          PY
+
+      # A wall-clock kill has destroyed three long runs in this repository.  The
+      # shard rewrites its checkpoint after every scan line and after every
+      # localization, and the checkpoint is uploaded even when the job is
+      # cancelled or times out, so a killed shard costs one line, not a day.
+      - name: Sweep this m1 window
+        env:
+          M1_STRIDE: ${{ inputs.m1_stride || '2' }}
+          M2_STRIDE: ${{ inputs.m2_stride || '5' }}
+          CERTIFY_BUDGET: ${{ inputs.certify_budget || '600' }}
+        run: |
+          uv run --no-sync python scripts/sweep_full_domain_sign_changes.py \
+            --baseline data/raw/non-hierarchical-3b-supplementary_data.txt \
+            --output "artifacts/sweep/shard-${{ matrix.window.id }}.json" \
+            --checkpoint "artifacts/sweep/shard-${{ matrix.window.id }}.json.partial" \
+            --m1-range "${{ matrix.window.m1_range }}" \
+            --m1-stride "$M1_STRIDE" \
+            --m2-stride "$M2_STRIDE" \
+            --shard-label "m1-${{ matrix.window.m1_range }}" \
+            --probe-budget 45 \
+            --certify-budget "$CERTIFY_BUDGET" \
+            --resume
+
+      - name: Promote the checkpoint if the shard did not finish
+        if: always()
+        run: |
+          out="artifacts/sweep/shard-${{ matrix.window.id }}.json"
+          if [ ! -s "$out" ] && [ -s "$out.partial" ]; then
+            echo "::warning::shard ${{ matrix.window.id }} did not finish; publishing its checkpoint"
+            cp "$out.partial" "$out"
+          fi
+          ls -l artifacts/sweep || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sign-sweep-shard-${{ matrix.window.id }}-${{ github.sha }}
+          path: artifacts/sweep/shard-${{ matrix.window.id }}.json*
+          if-no-files-found: warn
+          retention-days: 90
+
+  # --------------------------------------------------------------- merge ----
+  merge:
+    name: Re-derive the census from the shards
+    needs: sweep
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked
+
+      - name: Fetch and verify the frozen Li-Li-Liao raster
+        run: |
+          mkdir -p data/raw artifacts
+          curl -L --fail --retry 3 "$BASELINE_URL" \
+            -o data/raw/non-hierarchical-3b-supplementary_data.txt
+          uv run --no-sync python - <<'PY'
+          import hashlib, os
+          from pathlib import Path
+          raw = Path('data/raw/non-hierarchical-3b-supplementary_data.txt').read_bytes()
+          got = hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
+          if got != os.environ['BASELINE_BLOB_SHA1']:
+              raise SystemExit(f'baseline source changed: {got}')
+          PY
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: sign-sweep-shard-*-${{ github.sha }}
+          path: artifacts/shards
+          merge-multiple: true
+
+      # The merger discards every shard conclusion and recomputes it: the event
+      # scalars from (alpha, beta), the brackets from the merged lattice, the
+      # pass/fail from the frozen gates, and the census-blindness verdict from
+      # the raster it loads itself.  A shard cannot promote a gate-missing root.
+      - name: Merge by re-derivation
+        run: |
+          shopt -s nullglob
+          files=(artifacts/shards/shard-*.json)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "::error::no shard artifacts to merge"
+            exit 1
+          fi
+          uv run --no-sync python scripts/merge_full_domain_sign_sweep.py \
+            "${files[@]}" \
+            --baseline data/raw/non-hierarchical-3b-supplementary_data.txt \
+            --output artifacts/V1_FULL_DOMAIN_SIGN_SWEEP.json \
+            | tee artifacts/merge-summary.json
+
+      - name: Report the census
+        if: always()
+        run: |
+          uv run --no-sync python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+          document = json.loads(Path('artifacts/V1_FULL_DOMAIN_SIGN_SWEEP.json').read_text())
+          headline = document['headline']
+          coverage = document['coverage']
+          print("## Full-domain critical sign-change sweep\n")
+          print(f"- scan lines probed: {coverage['probed_m1_scan_lines']} of "
+                f"{coverage['published_m1_slices_in_domain']} published m1 slices "
+                f"({coverage['m1_scan_line_fraction_of_published_slices']:.1%})")
+          print(f"- probes: {coverage['probes']} of {coverage['published_raster_rows_in_domain']} "
+                f"raster rows in the declared domain "
+                f"({coverage['probe_fraction_of_published_raster_rows']:.1%})")
+          print(f"- vertical sign changes: {headline['vertical_sign_changes_on_the_lattice']}")
+          print(f"- roots passing the frozen gates: {headline['roots_passing_frozen_gates']}")
+          print(f"- **absent from the committed graph: "
+                f"{headline['roots_absent_from_the_committed_graph']}**")
+          print(f"- **invisible to the published S/U labels: "
+                f"{headline['roots_invisible_to_the_published_S_U_labels']}**")
+          print(f"- curve components: {headline['curve_components']}, of which "
+                f"{headline['curve_components_absent_from_the_committed_graph']} are not in "
+                "the committed graph")
+          print("\n### Re-derivation audit\n")
+          audit = document['rederivation_audit']
+          print(f"- probes whose stored events contradicted their own (alpha, beta): "
+                f"{len(audit['probes_with_rederivation_mismatch'])}")
+          print(f"- gate verdicts overridden by the merge: "
+                f"{audit['gate_status_overridden_by_merge']}")
+          print(f"- census-blindness verdicts overridden by the merge: "
+                f"{audit['census_blindness_verdict_overridden_by_merge']}")
+          print(f"- localizations with no re-derived bracket behind them: "
+                f"{len(audit['localizations_without_a_rederived_bracket'])}")
+          print("\n> " + coverage['honest_scope'].replace("\n", " "))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: full-domain-sign-sweep-census-${{ github.sha }}
+          path: artifacts/V1_FULL_DOMAIN_SIGN_SWEEP.json
+          if-no-files-found: error
+          retention-days: 90
