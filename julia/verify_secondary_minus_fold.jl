@@ -250,6 +250,33 @@ function audit_json(records)
         for r in records),",")*"]"
 end
 
+# Persist-and-SWAT: every expensive stage writes an INCOMPLETE checkpoint the
+# moment it succeeds, so a job wall (which has already destroyed three runs of
+# this verifier) can never again discard solved BigFloat work.  A checkpoint
+# hardcodes "passed": false and carries no branch_curvature_audit, so
+# scripts/classify_secondary_left_birth.py can never mistake one for the real
+# artifact -- it requires bigfloat["passed"] === true plus a two-branch audit.
+function write_checkpoint(path,stage,root,shift,iters,audit)
+    mkpath(dirname(path))
+    open(path,"w") do io
+        print(io,
+            "{\n",
+            "  \"stage\": \"",stage,"\",\n",
+            "  \"claim_status\": \"INCOMPLETE CHECKPOINT, NOT A RELEASE ARTIFACT. Written so a job wall never discards solved BigFloat work. Gates after this stage have not run.\",\n",
+            "  \"masses\": [\"",root.masses[1],"\",\"",root.masses[2],"\",\"",root.masses[3],"\"],\n",
+            "  \"chart\": [\"",root.p[1],"\",\"",root.p[2],"\",\"",root.p[3],"\",\"",root.p[4],"\"],\n",
+            "  \"closure_norm\": \"",root.closure,"\",\n",
+            "  \"minus_one_event\": \"",minus_event(root),"\",\n",
+            "  \"mass_shift_from_screening_seed\": \"",shift,"\",\n",
+            "  \"newton_iterations\": ",iters,",\n",
+            "  \"stationarity_stencil_audit\": ",(audit===nothing ? "null" : audit_json(audit)),",\n",
+            "  \"passed\": false\n",
+            "}\n")
+    end
+    println("checkpoint written stage=",stage," -> ",path)
+    flush(stdout)
+end
+
 function main()
     length(ARGS)>=3 || error("usage: verify_secondary_minus_fold.jl FOLD_SEED_TSV BRANCH_SEEDS_TSV OUTPUT [DPS] [TOL_EXP] [CLOSURE_EXP] [EVENT_EXP] [DERIV_EXP]")
     seed_path,branch_path,output=ARGS[1],ARGS[2],ARGS[3]
@@ -280,9 +307,11 @@ function main()
         abs(minus_event(root))<=event_target || error("fold G- gate failed: $(minus_event(root))")
         shift=norm(BigFloat[root.masses[1]-seed.m1,root.masses[2]-seed.m2])
         shift<=max_shift || error("fold root moved outside locality gate: $shift")
+        write_checkpoint(output*".partial","fold_root",root,shift,iters,nothing)
 
         hs=BigFloat[parse(BigFloat,"8e-5"),parse(BigFloat,"4e-5"),parse(BigFloat,"2e-5"),parse(BigFloat,"1e-5")]
         audit=audit_fold(root;hs=hs,tol=tol,target=target)
+        write_checkpoint(output*".partial","fold_root_and_stencil_audit",root,shift,iters,audit)
         last=audit[end]
         prev=audit[end-1]
         abs(last.dGdm2)<=parse(BigFloat,"1e-6") || error("fold stationarity failed at finest audit: $(last.dGdm2)")

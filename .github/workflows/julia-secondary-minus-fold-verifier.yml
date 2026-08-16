@@ -13,7 +13,14 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    # Measured cost at dps=60 from run 31932398513 (job bigfloat-fold): one
+    # BigFloat `corrected_at` is ~5.5 min, so a five-point stencil is ~27 min.
+    # Warm-started from the converged fold root, solve_fold is ~26 min, the four
+    # stencil audit_fold levels are ~154 min, and the two branch solves are
+    # ~60 min: about 240 min total.  The old 150-minute wall could never fit
+    # that and killed three consecutive runs, twice discarding a fully solved
+    # fold root.  360 min is the GitHub hosted-runner ceiling.
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v7
       - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32
@@ -36,6 +43,8 @@ jobs:
         if: always()
         with:
           name: secondary-minus-fold-bigfloat-${{ github.sha }}
-          path: artifacts/secondary-minus-fold-bigfloat.json
+          path: |
+            artifacts/secondary-minus-fold-bigfloat.json
+            artifacts/secondary-minus-fold-bigfloat.json.partial
           if-no-files-found: warn
           retention-days: 90
