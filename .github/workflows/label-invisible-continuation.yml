@@ -9,6 +9,16 @@ on:
       - ".github/workflows/label-invisible-continuation.yml"
   workflow_dispatch:
     inputs:
+      supplemental:
+        description: >-
+          Supplemental event-sign roots artifact to continue.  Pinning a filename
+          here is how this campaign went stale; pass what you want traced.
+        required: false
+        default: "research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json"
+      comparison:
+        description: "Bracket-criterion comparison artifact"
+        required: false
+        default: "research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json"
       mass_step:
         description: "Variational mass-plane arclength step"
         required: true
@@ -58,8 +68,8 @@ jobs:
           mkdir -p artifacts/label-invisible-continuation
           set +e
           uv run --no-sync python scripts/trace_label_invisible_continuous.py \
-            research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json \
-            research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json \
+            "${{ inputs.comparison || 'research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json' }}" \
+            "${{ inputs.supplemental || 'research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json' }}" \
             artifacts/label-invisible-continuation/continuous-reconciliation.json \
             --mass-step "$MASS_STEP" \
             --max-steps "$MAX_STEPS"
