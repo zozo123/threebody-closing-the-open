@@ -32,6 +32,8 @@ CATALOG_MATCH_TOL = 7e-3
 CATALOG_TANGENT_COS = 0.94
 LOOP_MATCH_TOL = 5e-3
 LOOP_MIN_SEPARATION = 12
+ORGANIZER_MATCH_TOL = 8e-3
+GRAPH_PATH = Path(__file__).resolve().parents[1] / "research/evidence/V1_CRITICAL_GRAPH.json"
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -74,6 +76,44 @@ def strict_supplemental(row: dict[str, Any]) -> cont.StrictPoint:
         source="research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json",
         source_id=f"supplemental-cell-{int(row['cell_id'])}",
     )
+
+
+def mixed_organizers(mode: str) -> list[dict[str, Any]]:
+    """Passed mixed organizers that a matching-mechanism branch may terminate on."""
+    if not GRAPH_PATH.is_file():
+        return []
+    graph = load(GRAPH_PATH)
+    rows = []
+    for node in graph.get("nodes", []):
+        kind = str(node.get("kind") or "")
+        mechanism = str(node.get("mechanism") or "")
+        if not node.get("passed"):
+            continue
+        if kind != "mixed_organizer" and mechanism != "mixed_organizer":
+            continue
+        masses = node.get("masses") or []
+        if len(masses) < 2:
+            continue
+        rows.append(
+            {
+                "id": str(node["id"]),
+                "masses": [float(masses[0]), float(masses[1])],
+            }
+        )
+    return rows
+
+
+def nearest_organizer(
+    point: np.ndarray,
+    organizers: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    best = None
+    for item in organizers:
+        target = np.asarray(item["masses"], dtype=float)
+        miss = float(np.linalg.norm(point[4:6] - target))
+        if best is None or miss < best["miss_mass"]:
+            best = {"id": item["id"], "miss_mass": miss, "masses": item["masses"]}
+    return best
 
 
 def catalog_candidates(payload: dict[str, Any], mode: str) -> list[dict[str, Any]]:
@@ -168,6 +208,7 @@ def trace_endpoint(
     outward_side: str,
     mass_step: float,
     max_steps: int,
+    organizers: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     rows = sorted(rows, key=lambda row: (float(row["masses"][0]), float(row["masses"][1])))
     if outward_side == "low":
@@ -241,6 +282,17 @@ def trace_endpoint(
                     stop = "existing_catalog_curve_reached"
 
         if terminal is None:
+            hit = nearest_organizer(b, organizers or [])
+            if hit is not None and hit["miss_mass"] <= ORGANIZER_MATCH_TOL:
+                terminal = {
+                    "kind": "mixed_organizer",
+                    "node_id": hit["id"],
+                    "miss_mass": float(hit["miss_mass"]),
+                    "organizer_masses": hit["masses"],
+                }
+                stop = "mixed_organizer_reached"
+
+        if terminal is None:
             loop = loop_hit(history, a, b)
             if loop is not None:
                 terminal = loop
@@ -256,6 +308,7 @@ def trace_endpoint(
     passed = terminal is not None and terminal["kind"] in {
         "declared_domain_boundary",
         "existing_catalog_critical_curve",
+        "mixed_organizer",
         "closed_loop",
     }
     return {
@@ -285,32 +338,41 @@ def main() -> None:
     supplemental = load(Path(args.supplemental_roots))
     catalog_payload = load(Path(args.catalog_roots))
     minus_catalog = catalog_candidates(catalog_payload, "minus_one")
+    plus_catalog = catalog_candidates(catalog_payload, "plus_one")
+    minus_organizers = mixed_organizers("minus_one")
+    plus_organizers = mixed_organizers("plus_one")
 
-    comp0 = [row for row in supplemental.get("roots", []) if int(row.get("sweep_component", -1)) == 0]
-    comp1 = [row for row in supplemental.get("roots", []) if int(row.get("sweep_component", -1)) == 1]
-    if len(comp0) < 2 or len(comp1) < 2:
-        raise RuntimeError("supplemental components 0/1 no longer contain enough roots")
+    by_component: dict[int, list[dict[str, Any]]] = {}
+    for row in supplemental.get("roots", []):
+        by_component.setdefault(int(row.get("sweep_component", -1)), []).append(row)
+    missing = [index for index in (0, 1, 12) if len(by_component.get(index, [])) < 2]
+    if missing:
+        raise RuntimeError(f"supplemental components {missing} no longer contain enough roots")
 
+    jobs = (
+        (0, "low", minus_catalog, minus_organizers),
+        (1, "high", minus_catalog, minus_organizers),
+        (12, "high", plus_catalog, plus_organizers),
+        (12, "low", plus_catalog, plus_organizers),
+    )
     results = [
         trace_endpoint(
-            comp0,
-            minus_catalog,
-            outward_side="low",
+            by_component[component],
+            catalog,
+            outward_side=side,
             mass_step=args.mass_step,
             max_steps=args.max_steps,
-        ),
-        trace_endpoint(
-            comp1,
-            minus_catalog,
-            outward_side="high",
-            mass_step=args.mass_step,
-            max_steps=args.max_steps,
-        ),
+            organizers=organizers,
+        )
+        for component, side, catalog, organizers in jobs
     ]
     passed = all(item["scientific_endpoint_resolved"] for item in results)
     payload = {
         "schema": "atlas.v1.sampled-endpoint-resolution/1",
-        "claim": "continuous classification of the two unmatched minus-one finite-lattice endpoints",
+        "claim": (
+            "continuous classification of the unmatched finite-lattice endpoints "
+            "on minus-one components 0/1 and plus-one component 12"
+        ),
         "frozen_gates": {
             "maximum_absolute_event": cont.EVENT_GATE,
             "maximum_periodic_closure": cont.CLOSURE_GATE,
