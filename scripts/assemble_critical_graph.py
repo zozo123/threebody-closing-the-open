@@ -1362,7 +1362,92 @@ def endpoint_resolution_bindings(
             applied += 1
     return applied, errors
 
-def sign_topology_report(paths: list[Path]) -> dict[str, Any]:
+
+# SIGN_TOPOLOGY_MAX_GAP -- the largest gap between adjacent CONVERGED probes on a
+# scan line that may still be called measured.
+#
+# Derived, not chosen.  A sign-change detector sees a critical curve only if the
+# curve's crossing separates two converged probes.  The narrowest m2 feature the
+# release must not miss is set by the mass grid the census is defined on: two
+# distinct critical curves are resolved as distinct only when they sit at least one
+# grid step apart, so a gap wider than a grid step can hide a crossing that the
+# catalogue itself would consider a separate object.  Anything coarser is not a
+# measurement of that interval, it is an absence of one.
+SIGN_TOPOLOGY_MAX_GAP = MASS_GRID_STEP
+
+# Fraction of the declared m2 span that converged probes must actually cover on a
+# line before that line's silence counts as evidence.  1.0 means the whole declared
+# interval; nothing less is defensible for a COMPLETENESS claim, which is a
+# statement about the entire domain.
+SIGN_TOPOLOGY_REQUIRED_COVERAGE = 1.0
+
+
+def sign_topology_coverage(record: dict[str, Any], domain: dict[str, Any]) -> dict[str, Any]:
+    """Measure what an audit actually probed, as opposed to what it was asked to.
+
+    scripts/audit_sign_topology.py drops every probe whose orbit failed to close
+    (usable = [p for p in line_probes if p.ok]), so an interval where the shooting
+    solve fails contributes no probes, produces no sign change, and is reported
+    exactly like an interval that was measured and found empty.  The audit script
+    says so itself -- "it cannot certify completeness where it does not fire" --
+    but nothing machine-checked that disclaimer, so the assembler consumed silence
+    as evidence.
+
+    Measured on the release configuration 2026-08-17: the 35-line audit backing
+    sign_topology_clean had 100 of 465 probes fail, 97 of them closure failures with
+    residuals between 3.9e-2 and 3.8e0 against a 1e-7 gate.  Its converged probes
+    covered a mean 47.4% of the declared m2 width and as little as 9.1% on one line.
+    At m1 0.889 exactly one probe was planned below m2 0.8231, it failed, and a
+    critical curve sits in the resulting hole at m2 in [0.73947, 0.74921].
+    """
+    m2_lo, m2_hi = (float(v) for v in domain["m2"])
+    span = m2_hi - m2_lo
+    probes = record.get("probes")
+    if not isinstance(probes, list):
+        return {"decidable": False, "reason": "the audit records no per-probe list"}
+    by_line: dict[float, list[float]] = {}
+    for probe in probes:
+        if not isinstance(probe, dict) or not probe.get("ok"):
+            continue
+        try:
+            by_line.setdefault(round(float(probe["m1"]), 9), []).append(float(probe["m2"]))
+        except (KeyError, TypeError, ValueError):
+            continue
+    if not by_line:
+        return {"decidable": False, "reason": "no converged probes"}
+    lines = []
+    for m1, values in sorted(by_line.items()):
+        values.sort()
+        # treat the declared endpoints as the outer edges of the interval that must
+        # be covered; a probe never lands exactly on them (range(1, pieces))
+        edges = [m2_lo, *values, m2_hi]
+        gaps = [b - a for a, b in zip(edges, edges[1:])]
+        widest = max(gaps) if gaps else span
+        covered = sum(g for g in gaps if g <= SIGN_TOPOLOGY_MAX_GAP)
+        lines.append(
+            {
+                "m1": m1,
+                "converged": len(values),
+                "hull": [values[0], values[-1]],
+                "widest_gap": widest,
+                "covered_fraction": covered / span if span else 0.0,
+            }
+        )
+    worst = max(lines, key=lambda item: item["widest_gap"])
+    return {
+        "decidable": True,
+        "lines": len(lines),
+        "max_gap_allowed": SIGN_TOPOLOGY_MAX_GAP,
+        "worst_line_m1": worst["m1"],
+        "worst_gap": worst["widest_gap"],
+        "min_covered_fraction": min(item["covered_fraction"] for item in lines),
+        "mean_covered_fraction": sum(item["covered_fraction"] for item in lines) / len(lines),
+        "per_line": lines,
+    }
+
+def sign_topology_report(
+    paths: list[Path], domain: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """Require positive evidence that no critical curve is missing from the graph.
 
     Every other conjunct in release_ready asks whether the objects we ALREADY
@@ -1424,6 +1509,30 @@ def sign_topology_report(paths: list[Path]) -> dict[str, Any]:
         # A conjunct that ignores this would pass a graph asserting curves that
         # are not there, which is the same error as missing the ones that are.
         no_flip = int(counts.get("no_flip_across_edge", 0))
+        # An audit that fired no violation has only shown that its falsifier did
+        # not trigger.  For that silence to be evidence, the audit must have
+        # actually measured the domain it is silent about.
+        coverage = sign_topology_coverage(record, domain or DECLARED_DOMAIN)
+        if not coverage.get("decidable"):
+            report["errors"].append(
+                f"{path}: coverage cannot be established ({coverage.get('reason')}); "
+                "an audit that cannot show what it measured cannot certify completeness"
+            )
+        else:
+            if coverage["worst_gap"] > SIGN_TOPOLOGY_MAX_GAP:
+                report["errors"].append(
+                    f"{path}: scan line m1={coverage['worst_line_m1']} leaves a gap of "
+                    f"{coverage['worst_gap']:.4f} between converged probes, wider than "
+                    f"the {SIGN_TOPOLOGY_MAX_GAP} mass grid step; a critical curve can "
+                    "cross inside it undetected, so this line is unmeasured there, not clean"
+                )
+            if coverage["min_covered_fraction"] < SIGN_TOPOLOGY_REQUIRED_COVERAGE:
+                report["errors"].append(
+                    f"{path}: converged probes cover only "
+                    f"{coverage['min_covered_fraction']:.1%} of the declared m2 span on "
+                    f"the worst line (mean {coverage['mean_covered_fraction']:.1%}); "
+                    "completeness is a claim about the whole domain"
+                )
         missing_total += missing
         forbidden_total += forbidden
         no_flip_total += no_flip
@@ -1435,6 +1544,7 @@ def sign_topology_report(paths: list[Path]) -> dict[str, Any]:
                 "missing_critical_curve": missing,
                 "forbidden_component_flip": forbidden,
                 "no_flip_across_edge": no_flip,
+                "coverage": coverage,
             }
         )
         if missing:
@@ -1587,7 +1697,9 @@ def main() -> None:
     completeness_report = completeness_verification(
         completeness, root=root, certificate_path=completeness_path
     )
-    sign_report = sign_topology_report([Path(p) for p in args.sign_topology])
+    sign_report = sign_topology_report(
+        [Path(p) for p in args.sign_topology], DECLARED_DOMAIN
+    )
     cell_ids = [int(root["cell_id"]) for root in roots]
     catalog_ids = [cell for cell in cell_ids if 0 <= cell < 620]
     assigned = [cell for edge in edges for cell in edge["cell_ids"]]

@@ -1120,6 +1120,20 @@ def _clean_sign_topology(tmp_path) -> Path:
             {
                 "schema": "atlas.v1.sign-topology-audit/1",
                 "probe_count": 0,
+                # A synthetic audit must now also SHOW what it measured, because
+                # sign_topology_report refuses silence from an audit that cannot
+                # demonstrate coverage.  Before that guard this fixture carried
+                # probe_count 0 and still reached release_ready, which is the same
+                # hole the real 35-line audit had: 100 of its 465 probes failed and
+                # its converged probes covered a mean 47.4% of the declared m2 span,
+                # yet it reported clean.  These probes are fabricated for the test
+                # and are marked as such; they exist to exercise the guard, not to
+                # stand in for evidence.
+                "probes": [
+                    {"m1": 0.9, "m2": round(0.7 + 0.0005 * index, 6), "ok": True,
+                     "note": "SYNTHETIC FIXTURE PROBE, NOT EVIDENCE"}
+                    for index in range(1001)
+                ],
                 "violation_counts": {
                     "missing_critical_curve": 0,
                     "forbidden_component_flip": 0,
@@ -1752,7 +1766,15 @@ def test_published_caveats_match_the_committed_evidence() -> None:
     # release_ready stays false on the two unclassified lattice ends alone.
     # Neither may be papered over.
     assert graph["release_ready"] is False
-    assert graph["root_coverage"]["sign_topology_clean"] is True
+    # sign_topology_clean is FALSE again, and this time for the right reason.
+    # It was true on an audit that reported zero violations while its converged
+    # probes covered a mean 47.4% of the declared m2 span -- 100 of 465 probes
+    # failed, 97 of them closure failures with residuals 3.9e-2 to 3.8e0 against a
+    # 1e-7 gate.  An audit that drops non-converging probes reports an unmeasured
+    # interval exactly like a measured empty one, and sign_topology_report used to
+    # read only violation_counts, so silence counted as evidence.  It now also
+    # requires the audit to SHOW its coverage.
+    assert graph["root_coverage"]["sign_topology_clean"] is False
     assert graph["root_coverage"]["edge_topology_complete"] is False
     assert "not the complete critical set" in known
     assert "interior_lattice_terminus" in known

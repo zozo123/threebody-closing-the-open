@@ -2040,8 +2040,13 @@
     "duplicate_cell_ids": [],
     "missing_mixed_germs": [],
     "newton_failed": 0,
-    "sign_topology_clean": true,
-    "sign_topology_errors": [],
+    "sign_topology_clean": false,
+    "sign_topology_errors": [
+      "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_INDEPENDENT_35LINE_2026-08-17.json: scan line m1=1.065 leaves a gap of 0.4101 between converged probes, wider than the 0.001 mass grid step; a critical curve can cross inside it undetected, so this line is unmeasured there, not clean",
+      "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_INDEPENDENT_35LINE_2026-08-17.json: converged probes cover only 0.0% of the declared m2 span on the worst line (mean 0.0%); completeness is a claim about the whole domain",
+      "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_INDEPENDENT_2026-08-17.json: scan line m1=0.925 leaves a gap of 0.3089 between converged probes, wider than the 0.001 mass grid step; a critical curve can cross inside it undetected, so this line is unmeasured there, not clean",
+      "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_INDEPENDENT_2026-08-17.json: converged probes cover only 0.0% of the declared m2 span on the worst line (mean 0.0%); completeness is a claim about the whole domain"
+    ],
     "sign_topology_audits": [
       {
         "path": "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_INDEPENDENT_35LINE_2026-08-17.json",
@@ -10850,7 +10855,368 @@
         ],
         "missing_critical_curve": 0,
         "forbidden_component_flip": 0,
-        "no_flip_across_edge": 0
+        "no_flip_across_edge": 0,
+        "coverage": {
+          "decidable": true,
+          "lines": 35,
+          "max_gap_allowed": 0.001,
+          "worst_line_m1": 1.065,
+          "worst_gap": 0.41006099775905924,
+          "min_covered_fraction": 0.0,
+          "mean_covered_fraction": 0.0,
+          "per_line": [
+            {
+              "m1": 0.895,
+              "converged": 5,
+              "hull": [
+                0.8335687574742543,
+                0.8790839007767428
+              ],
+              "widest_gap": 0.32091609922325715,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 0.905,
+              "converged": 8,
+              "hull": [
+                0.8026505101023622,
+                0.9001270361466138
+              ],
+              "widest_gap": 0.29987296385338613,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 0.91,
+              "converged": 12,
+              "hull": [
+                0.8218140143368138,
+                1.1412198750981535
+              ],
+              "widest_gap": 0.12181401433681383,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 0.915,
+              "converged": 8,
+              "hull": [
+                0.8394226580047782,
+                0.919800395885898
+              ],
+              "widest_gap": 0.28019960411410194,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 0.925,
+              "converged": 10,
+              "hull": [
+                0.8700349946305669,
+                1.1336591354096748
+              ],
+              "widest_gap": 0.17003499463056693,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 0.93,
+              "converged": 8,
+              "hull": [
+                0.8822743135234491,
+                1.1359730887609747
+              ],
+              "widest_gap": 0.18227431352344914,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 0.935,
+              "converged": 9,
+              "hull": [
+                0.8881272103689823,
+                1.1382809601346604
+              ],
+              "widest_gap": 0.1881272103689824,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 0.945,
+              "converged": 12,
+              "hull": [
+                0.8355610043522173,
+                1.1429498351420821
+              ],
+              "widest_gap": 0.1355610043522173,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 0.95,
+              "converged": 11,
+              "hull": [
+                0.9047445013874595,
+                1.1453512992716115
+              ],
+              "widest_gap": 0.2047445013874596,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 0.955,
+              "converged": 11,
+              "hull": [
+                0.8605229065535779,
+                1.1304355553152803
+              ],
+              "widest_gap": 0.16052290655357793,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 0.96,
+              "converged": 11,
+              "hull": [
+                0.8644186924435093,
+                1.1338620805133974
+              ],
+              "widest_gap": 0.16441869244350937,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 0.965,
+              "converged": 11,
+              "hull": [
+                0.868252396497035,
+                1.1374340321423277
+              ],
+              "widest_gap": 0.16825239649703505,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 0.975,
+              "converged": 11,
+              "hull": [
+                0.8757894012951266,
+                1.1450049770405097
+              ],
+              "widest_gap": 0.17578940129512666,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 0.98,
+              "converged": 11,
+              "hull": [
+                0.8795152503225824,
+                1.14894501020253
+              ],
+              "widest_gap": 0.17951525032258242,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 0.985,
+              "converged": 11,
+              "hull": [
+                0.883229061966217,
+                1.1529233258262783
+              ],
+              "widest_gap": 0.18322906196621702,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 0.99,
+              "converged": 10,
+              "hull": [
+                0.8869459238928977,
+                1.135335125071935
+              ],
+              "widest_gap": 0.18694592389289777,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 0.995,
+              "converged": 10,
+              "hull": [
+                0.8906845395556005,
+                1.1412091403423044
+              ],
+              "widest_gap": 0.1906845395556005,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 1.005,
+              "converged": 16,
+              "hull": [
+                0.8662954299976363,
+                1.1525887984748475
+              ],
+              "widest_gap": 0.16629542999763636,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 1.01,
+              "converged": 15,
+              "hull": [
+                0.9052932077632422,
+                1.158063272282089
+              ],
+              "widest_gap": 0.20529320776324222,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 1.015,
+              "converged": 15,
+              "hull": [
+                0.8948702497878405,
+                1.16338975955257
+              ],
+              "widest_gap": 0.1948702497878405,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 1.02,
+              "converged": 15,
+              "hull": [
+                0.8855528510090034,
+                1.1685727170797198
+              ],
+              "widest_gap": 0.18555285100900343,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 1.025,
+              "converged": 15,
+              "hull": [
+                0.8771086119160085,
+                1.1736189922961437
+              ],
+              "widest_gap": 0.17710861191600857,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 1.03,
+              "converged": 13,
+              "hull": [
+                0.9342424337965012,
+                1.17853750065438
+              ],
+              "widest_gap": 0.23424243379650123,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 1.035,
+              "converged": 13,
+              "hull": [
+                0.9355929097159283,
+                1.183337447495032
+              ],
+              "widest_gap": 0.2355929097159284,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 1.045,
+              "converged": 14,
+              "hull": [
+                0.9088783666033136,
+                1.1926223688091138
+              ],
+              "widest_gap": 0.2088783666033136,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 1.05,
+              "converged": 10,
+              "hull": [
+                0.935023138132869,
+                1.1982541815415706
+              ],
+              "widest_gap": 0.23502313813286901,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 1.055,
+              "converged": 11,
+              "hull": [
+                0.9378908798948699,
+                1.1766312556939962
+              ],
+              "widest_gap": 0.2378908798948699,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 1.06,
+              "converged": 11,
+              "hull": [
+                0.9406995743702921,
+                1.1850660512771056
+              ],
+              "widest_gap": 0.2406995743702921,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 1.065,
+              "converged": 7,
+              "hull": [
+                1.1100609977590592,
+                1.1922900868782556
+              ],
+              "widest_gap": 0.41006099775905924,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 1.07,
+              "converged": 9,
+              "hull": [
+                0.9461453792733121,
+                1.1935104193263917
+              ],
+              "widest_gap": 0.24614537927331215,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 1.075,
+              "converged": 8,
+              "hull": [
+                0.9487898978769087,
+                1.1853164726112158
+              ],
+              "widest_gap": 0.24878989787690875,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 1.085,
+              "converged": 8,
+              "hull": [
+                0.9539423825628819,
+                1.1929314498647934
+              ],
+              "widest_gap": 0.25394238256288193,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 1.09,
+              "converged": 6,
+              "hull": [
+                0.9564561170169874,
+                1.197344436641652
+              ],
+              "widest_gap": 0.25645611701698745,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 1.095,
+              "converged": 5,
+              "hull": [
+                0.9589298668362822,
+                1.1441974001272115
+              ],
+              "widest_gap": 0.2589298668362823,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 1.1,
+              "converged": 5,
+              "hull": [
+                0.9613692175114947,
+                1.1460269131336212
+              ],
+              "widest_gap": 0.2613692175114948,
+              "covered_fraction": 0.0
+            }
+          ]
+        }
       },
       {
         "path": "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_INDEPENDENT_2026-08-17.json",
@@ -11219,7 +11585,48 @@
         ],
         "missing_critical_curve": 0,
         "forbidden_component_flip": 0,
-        "no_flip_across_edge": 0
+        "no_flip_across_edge": 0,
+        "coverage": {
+          "decidable": true,
+          "lines": 3,
+          "max_gap_allowed": 0.001,
+          "worst_line_m1": 0.925,
+          "worst_gap": 0.3088984845469389,
+          "min_covered_fraction": 0.0,
+          "mean_covered_fraction": 0.0,
+          "per_line": [
+            {
+              "m1": 0.925,
+              "converged": 6,
+              "hull": [
+                0.8695174973152835,
+                0.891101515453061
+              ],
+              "widest_gap": 0.3088984845469389,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 0.9295,
+              "converged": 6,
+              "hull": [
+                0.8701694193373867,
+                0.8917245438261294
+              ],
+              "widest_gap": 0.30827545617387053,
+              "covered_fraction": 0.0
+            },
+            {
+              "m1": 0.9305,
+              "converged": 6,
+              "hull": [
+                0.8704663924586518,
+                0.894183652065833
+              ],
+              "widest_gap": 0.305816347934167,
+              "covered_fraction": 0.0
+            }
+          ]
+        }
       }
     ],
     "completeness_passed": true,
