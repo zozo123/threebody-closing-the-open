@@ -381,6 +381,16 @@ def main() -> None:
     parser.add_argument("output")
     parser.add_argument("--mass-step", type=float, default=0.0025)
     parser.add_argument("--max-steps", type=int, default=100)
+    parser.add_argument(
+        "--components",
+        help=(
+            "comma-separated sweep_component indices to resolve.  Default: every "
+            "component in the artifact that carries at least two roots.  This used "
+            "to be the literal tuple (0, 1, 12), which meant the script could only "
+            "ever resolve the first supplemental artifact and raised "
+            "'components no longer contain enough roots' on any other."
+        ),
+    )
     args = parser.parse_args()
 
     cont.require_accelerated_x64()
@@ -394,16 +404,44 @@ def main() -> None:
     by_component: dict[int, list[dict[str, Any]]] = {}
     for row in supplemental.get("roots", []):
         by_component.setdefault(int(row.get("sweep_component", -1)), []).append(row)
-    missing = [index for index in (0, 1, 12) if len(by_component.get(index, [])) < 2]
-    if missing:
-        raise RuntimeError(f"supplemental components {missing} no longer contain enough roots")
+    if args.components:
+        requested = [int(x) for x in args.components.split(",") if x.strip()]
+        missing = [i for i in requested if len(by_component.get(i, [])) < 2]
+        if missing:
+            raise RuntimeError(
+                f"supplemental components {missing} carry fewer than two roots"
+            )
+    else:
+        # Every component with enough roots to have two distinguishable termini.
+        requested = sorted(i for i, rows in by_component.items() if i >= 0 and len(rows) >= 2)
+    if not requested:
+        raise RuntimeError(
+            "no sweep component in this artifact carries two or more roots, so it "
+            "has no finite termini to continue"
+        )
 
-    jobs = (
-        (0, "low", minus_catalog, minus_organizers),
-        (1, "high", minus_catalog, minus_organizers),
-        (12, "high", plus_catalog, plus_organizers),
-        (12, "low", plus_catalog, plus_organizers),
-    )
+    # A component's mechanism comes from its own roots, not from a table keyed by
+    # component index: indices are per-artifact and carry no cross-artifact meaning.
+    def mechanism_of(rows: list[dict[str, Any]]) -> str:
+        modes = {str(r.get("event_mode")) for r in rows}
+        if len(modes) != 1:
+            raise RuntimeError(f"component spans mixed mechanisms {sorted(modes)}")
+        return modes.pop()
+
+    jobs = []
+    for component in requested:
+        rows = by_component[component]
+        mode = mechanism_of(rows)
+        if mode == "minus_one":
+            catalog, organizers = minus_catalog, minus_organizers
+        elif mode == "plus_one":
+            catalog, organizers = plus_catalog, plus_organizers
+        else:
+            raise RuntimeError(f"component {component} has unsupported mechanism {mode!r}")
+        # Both finite termini of every component, low-m1 and high-m1 side.
+        jobs.append((component, "low", catalog, organizers))
+        jobs.append((component, "high", catalog, organizers))
+    jobs = tuple(jobs)
     results = [
         trace_endpoint(
             by_component[component],
@@ -419,9 +457,10 @@ def main() -> None:
     payload = {
         "schema": "atlas.v1.sampled-endpoint-resolution/1",
         "claim": (
-            "continuous classification of the unmatched finite-lattice endpoints "
-            "on minus-one components 0/1 and plus-one component 12"
+            "continuous classification of the finite-lattice endpoints of sweep "
+            f"components {list(requested)} in {Path(args.supplemental_roots).name}"
         ),
+        "components_resolved": list(requested),
         "frozen_gates": {
             "maximum_absolute_event": cont.EVENT_GATE,
             "maximum_periodic_closure": cont.CLOSURE_GATE,
