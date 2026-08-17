@@ -691,8 +691,16 @@ def attach_edge_endpoints(
     nodes: list[dict[str, Any]],
     germs: list[dict[str, Any]],
     mixed_node_ids: frozenset[str],
-) -> tuple[list[dict[str, Any]], list[str]]:
+    endpoint_resolutions: list[Path] | None = None,
+) -> tuple[list[dict[str, Any]], list[str], int]:
     binding_errors = apply_classification_bindings(edges, nodes)
+    # Resolution evidence binds BEFORE the geometric fallbacks below.  A
+    # continuation that was actually followed to its terminus outranks a
+    # domain-face proximity guess about where the end probably goes.
+    resolved_count, resolution_errors = endpoint_resolution_bindings(
+        list(endpoint_resolutions or []), edges, nodes
+    )
+    binding_errors.extend(resolution_errors)
     used_domains: dict[str, dict[str, Any]] = {}
     for edge in edges:
         for side in ("start", "end"):
@@ -801,7 +809,7 @@ def attach_edge_endpoints(
         edge["endpoints"]["classified"] = all(
             edge["endpoints"][side].get("node") for side in ("start", "end")
         )
-    return unclassified, binding_errors
+    return unclassified, binding_errors, resolved_count
 
 
 def germ_key(record: dict[str, Any]) -> tuple[str, str, str]:
@@ -1018,6 +1026,158 @@ def valid_completeness_certificate(
     )
 
 
+
+def endpoint_resolution_bindings(
+    paths: list[Path], edges: list[dict[str, Any]], nodes: list[dict[str, Any]]
+) -> tuple[int, list[str]]:
+    """Bind sweep-edge termini that a continuation actually resolved.
+
+    scripts/resolve_sampled_sweep_endpoints.py continues outward from a sampled
+    lattice end and reports where the zero set really goes.  Until now nothing
+    consumed its answer: the artifact carried ``terminal`` and ``stopped_reason``
+    but no ``edge_endpoint_bindings``, and no script or workflow read it, so a
+    terminus could be resolved and still leave the graph reporting it
+    unclassified.  Dense component 30 had BOTH ends confirmed
+    ``mixed_organizer_reached`` and still could not reduce
+    unclassified_edge_endpoints.
+
+    Fail-closed throughout.  A result binds only when it resolved, names a node
+    the graph actually has, identifies exactly one edge, lands within the
+    organizer-attachment reach already used elsewhere, and targets a side nothing
+    else has claimed.  Anything else is an error, never a silent skip -- an
+    unresolved terminus must keep blocking.
+    """
+    applied = 0
+    errors: list[str] = []
+    known_nodes = {str(item["id"]) for item in nodes}
+    seen_termini: dict[tuple[Any, str], str] = {}
+
+    # Pre-pass.  A low and a high continuation are different computations; if two
+    # sides of one component present an IDENTICAL terminal record, one was
+    # duplicated rather than run, and there is no way to tell which side the
+    # surviving computation belongs to.  So NEITHER may bind -- rejecting only
+    # the second occurrence would let the first bind on evidence that might be
+    # the other terminus's.
+    poisoned: set[tuple[Any, str]] = set()
+    fingerprints: dict[Any, dict[str, set[str]]] = {}
+    for path in paths:
+        if not path.is_file():
+            continue
+        for result in load(path).get("results", []) or []:
+            if not result.get("scientific_endpoint_resolved"):
+                continue
+            component = result.get("source_component")
+            side_word = str(result.get("outward_side") or "")
+            mark = json.dumps(result.get("terminal") or {}, sort_keys=True)
+            fingerprints.setdefault(component, {}).setdefault(mark, set()).add(side_word)
+    for component, marks in fingerprints.items():
+        for mark, sides in marks.items():
+            if len(sides) > 1:
+                for side_word in sides:
+                    poisoned.add((component, side_word))
+    for path in paths:
+        if not path.is_file():
+            errors.append(f"endpoint resolution not readable: {path}")
+            continue
+        record = load(path)
+        for result in record.get("results", []) or []:
+            component = result.get("source_component")
+            side_word = str(result.get("outward_side") or "")
+            if not result.get("scientific_endpoint_resolved"):
+                continue  # still blocking, by design
+            key = (component, side_word)
+            if key in seen_termini:
+                errors.append(
+                    f"{path.name}: component {component} {side_word} resolved "
+                    f"twice (also {seen_termini[key]})"
+                )
+                continue
+            seen_termini[key] = path.name
+            if (component, side_word) in poisoned:
+                errors.append(
+                    f"{path.name}: component {component} {side_word} shares a "
+                    "terminal record with the opposite side -- one continuation "
+                    "was duplicated, not run, so neither side may bind"
+                )
+                continue
+            terminal = result.get("terminal") or {}
+            node_id = str(terminal.get("node_id") or "")
+            if not node_id:
+                errors.append(f"{path.name}: component {component} resolved with no terminal node_id")
+                continue
+            if node_id not in known_nodes:
+                errors.append(f"{path.name}: terminal node {node_id!r} is not a node of this graph")
+                continue
+            side = {"low": "start", "high": "end"}.get(side_word)
+            if side is None:
+                errors.append(f"{path.name}: outward_side must be low or high, got {side_word!r}")
+                continue
+            # Edges from this path are keyed by orientation, and cell ids are
+            # per-artifact so they cannot be matched on instead.
+            matches = [
+                edge
+                for edge in edges
+                if str(edge.get("orientation")) == f"sweep_component_{component}"
+            ]
+            if len(matches) != 1:
+                errors.append(
+                    f"{path.name}: component {component} matched {len(matches)} edges"
+                )
+                continue
+            endpoint = matches[0]["endpoints"][side]
+            # Recompute the miss distance FROM THE ENDPOINT BEING BOUND.  The
+            # artifact's self-reported miss_mass is not trusted: a resolution
+            # record can carry a distance measured at the OTHER terminus of the
+            # same edge, which would bind a far end on a near end's evidence.
+            # (V1_SAMPLED_ENDPOINT_RESOLUTION_2026-08-17.json does exactly that
+            # -- its two component-12 results are byte-identical, and the shared
+            # miss_mass 6.5263e-3 is the distance from the `end` terminus, while
+            # `start` sits 2.3713e-2 away, 2.96x beyond the reach.)
+            organizer = terminal.get("organizer_masses")
+            here = endpoint.get("masses")
+            if not organizer or not here:
+                errors.append(
+                    f"{path.name}: component {component} {side_word} cannot be "
+                    "checked -- missing organizer_masses or endpoint masses"
+                )
+                continue
+            recomputed = math.dist(
+                [float(v) for v in list(here)[:2]],
+                [float(v) for v in list(organizer)[:2]],
+            )
+            if recomputed > GERM_ATTACH_DISTANCE:
+                errors.append(
+                    f"{path.name}: component {component} {side_word} sits "
+                    f"{recomputed:.4e} from {node_id}, beyond the "
+                    f"{GERM_ATTACH_DISTANCE} organizer-attachment reach"
+                )
+                continue
+            claimed = terminal.get("miss_mass")
+            if claimed is not None and not math.isclose(
+                float(claimed), recomputed, rel_tol=1e-6, abs_tol=1e-12
+            ):
+                errors.append(
+                    f"{path.name}: component {component} {side_word} reports "
+                    f"miss_mass {float(claimed):.6e} but this terminus is "
+                    f"{recomputed:.6e} from {node_id} -- the reported distance "
+                    "was not measured at this endpoint"
+                )
+                continue
+            if endpoint.get("node"):
+                errors.append(
+                    f"{path.name}: {matches[0]['id']} {side} already bound to "
+                    f"{endpoint['node']}"
+                )
+                continue
+            endpoint["node"] = node_id
+            endpoint["attachment"] = "continuation_resolved_terminus"
+            endpoint["terminal_kind"] = str(terminal.get("kind") or "")
+            endpoint["stopped_reason"] = str(result.get("stopped_reason") or "")
+            endpoint["miss_mass"] = recomputed
+            endpoint["binding_evidence"] = str(path)
+            applied += 1
+    return applied, errors
+
 def sign_topology_report(paths: list[Path]) -> dict[str, Any]:
     """Require positive evidence that no critical curve is missing from the graph.
 
@@ -1132,6 +1292,16 @@ def main() -> None:
     parser.add_argument("--germs", action="append", default=[])
     parser.add_argument("--completeness")
     parser.add_argument(
+        "--endpoint-resolution",
+        action="append",
+        default=[],
+        help=(
+            "sampled-endpoint resolution artifact(s) from "
+            "scripts/resolve_sampled_sweep_endpoints.py; resolved termini bind, "
+            "unresolved ones keep blocking"
+        ),
+    )
+    parser.add_argument(
         "--sign-topology",
         action="append",
         default=[],
@@ -1218,8 +1388,16 @@ def main() -> None:
     ]
     edges = polyline_edges(catalog_roots) if catalog_roots else []
     edges.extend(supplemental_component_edges(supplemental_roots))
-    unclassified_edge_endpoints, classification_binding_errors = attach_edge_endpoints(
-        edges, nodes, germs, mixed_node_ids
+    (
+        unclassified_edge_endpoints,
+        classification_binding_errors,
+        endpoint_resolutions_applied,
+    ) = attach_edge_endpoints(
+        edges,
+        nodes,
+        germs,
+        mixed_node_ids,
+        endpoint_resolutions=[Path(p) for p in args.endpoint_resolution],
     )
     completeness_report = completeness_verification(
         completeness, root=root, certificate_path=completeness_path
@@ -1249,6 +1427,7 @@ def main() -> None:
         "completeness_verification_errors": completeness_report["errors"],
         "completeness_sources_in_repository": completeness_report["sources_in_repository"],
         "unclassified_edge_endpoints": unclassified_edge_endpoints,
+        "endpoint_resolutions_applied": endpoint_resolutions_applied,
         "classification_binding_errors": classification_binding_errors,
         "edge_topology_complete": not unclassified_edge_endpoints
         and not classification_binding_errors,

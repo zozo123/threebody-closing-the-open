@@ -3623,6 +3623,7 @@
         "reserved_for": null
       }
     ],
+    "endpoint_resolutions_applied": 0,
     "classification_binding_errors": [],
     "edge_topology_complete": false
   },
