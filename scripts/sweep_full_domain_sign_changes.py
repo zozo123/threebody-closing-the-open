@@ -667,7 +667,25 @@ def main() -> None:
 
     graph = json.loads(Path(args.graph).read_text(encoding="utf-8"))
     roots_doc = json.loads(Path(args.roots).read_text(encoding="utf-8"))
-    edges = AST.edges_from_graph(graph, roots_doc["roots"])
+    all_roots = list(roots_doc["roots"])
+    # The committed graph spans TWO root sources: the 620-cell census and the
+    # sweep-derived supplemental roots (cell ids from 10000).  Resolve the
+    # supplemental set here rather than making every caller remember to combine,
+    # which is how "KeyError: edge ... references unknown cell 10133" reached CI
+    # three separate times.
+    #
+    # NEWEST artifact only, never a union: the 2026-08-16 and 2026-08-17 sets are
+    # superset-by-cell-id but assign DIFFERENT masses to all 133 shared cells, so
+    # unioning them is silently last-write-wins.
+    supplemental = sorted(
+        Path(args.roots).resolve().parent.glob("V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_*.json")
+    )
+    if supplemental:
+        known = {int(r["cell_id"]) for r in all_roots}
+        for extra in json.loads(supplemental[-1].read_text(encoding="utf-8"))["roots"]:
+            if int(extra["cell_id"]) not in known:
+                all_roots.append(extra)
+    edges = AST.edges_from_graph(graph, all_roots)
     declared = graph["declared_mass_domain"]
     m1_lo = max(m1_lo, float(declared["m1"][0]))
     m1_hi = min(m1_hi, float(declared["m1"][1]))
