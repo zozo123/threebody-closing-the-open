@@ -59,7 +59,7 @@ The gate may be green while `status` is `open`; green means the decision record 
 
 ### Paper
 
-`.github/workflows/paper.yml` validates the discovery contract, generates `paper/generated/discovery-release.tex`, and then compiles the manuscript. The PDF therefore carries the same OPEN/SOLVED gate state as the machine-readable manifest used for that build.
+`.github/workflows/release.yml` and `.github/workflows/discovery-release.yml` validate the discovery contract, generate `paper/generated/discovery-release.tex`, and then compile the manuscript (the former standalone `paper.yml` was a strict subset of both and was removed in the 2026-08-17 consolidation, issue #212). The PDF therefore carries the same OPEN/SOLVED gate state as the machine-readable manifest used for that build.
 
 ### Solved discovery release
 
