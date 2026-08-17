@@ -151,6 +151,27 @@ M1_SLICE_GAP = 0.0015
 # Pinned by test_germ_attach_distance_window_is_pinned.
 GERM_ATTACH_DISTANCE = 0.008
 
+# CATALOG_COINCIDENCE -- 1/1000 of a grid step.
+# How close a resolved continuation must land to an already-committed catalog
+# cell before the two are treated as the SAME critical root rather than two
+# curves that happen to meet.  This is a coincidence test, not a proximity
+# argument: minus_one sweep component 1's low walk lands on catalog cell 392 at
+# 9.164e-10 in the mass plane, because cell 392 (census, m2 0.9645756252404868)
+# and cell 10019 (full-domain sweep, m2 0.9645756243241325) are one root
+# localized twice by two independent methods.  minus_one_u_to_s_1 is a
+# DEGENERATE one-cell edge at that point; the sweep caught 24 cells of the same
+# curve.  A threshold three orders below the grid step cannot admit two genuinely
+# distinct roots, which sit at least one grid step apart.
+CATALOG_COINCIDENCE = MASS_GRID_STEP / 1000.0
+
+# CATALOG_TANGENT_ALIGNMENT -- how parallel the two samplings must be.
+# Two DISTINCT critical curves meeting generically cross transversally, so their
+# tangents differ.  One curve sampled twice has aligned tangents.  Component 1's
+# walk reports |cos| = 0.9985786625964568, about 3.1 degrees.  Requiring 0.99
+# admits that and rejects anything approaching a transversal crossing.
+CATALOG_TANGENT_ALIGNMENT = 0.99
+
+
 # DOMAIN_TOLERANCE -- 1.5 grid steps.
 # How close an edge endpoint must sit to a declared face of the mass box for
 # the terminus to count as a declared domain exit.
@@ -692,13 +713,14 @@ def attach_edge_endpoints(
     germs: list[dict[str, Any]],
     mixed_node_ids: frozenset[str],
     endpoint_resolutions: list[Path] | None = None,
+    all_roots: list[dict[str, Any]] | None = None,
 ) -> tuple[list[dict[str, Any]], list[str], int]:
     binding_errors = apply_classification_bindings(edges, nodes)
     # Resolution evidence binds BEFORE the geometric fallbacks below.  A
     # continuation that was actually followed to its terminus outranks a
     # domain-face proximity guess about where the end probably goes.
     resolved_count, resolution_errors = endpoint_resolution_bindings(
-        list(endpoint_resolutions or []), edges, nodes
+        list(endpoint_resolutions or []), edges, nodes, all_roots
     )
     binding_errors.extend(resolution_errors)
     used_domains: dict[str, dict[str, Any]] = {}
@@ -1027,8 +1049,111 @@ def valid_completeness_certificate(
 
 
 
+
+
+def catalog_cell_masses(cell: Any, roots: list[dict[str, Any]]) -> list[float] | None:
+    """The mass point of a committed root, by cell id."""
+    if cell is None:
+        return None
+    for item in roots:
+        if item.get("cell_id") == cell:
+            return [float(v) for v in list(item.get("masses") or [])[:2]] or None
+    return None
+
+
+def edge_vertices(edge: dict[str, Any], roots: list[dict[str, Any]]) -> list[list[float]]:
+    """Mass points of every root this edge carries."""
+    wanted = {int(x) for x in (edge.get("cell_ids") or [])}
+    return [
+        [float(v) for v in list(item["masses"])[:2]]
+        for item in roots
+        if item.get("cell_id") in wanted and item.get("masses")
+    ]
+
+
+def _is_interior_vertex(
+    seed: list[float],
+    endpoint: list[float],
+    other_endpoint: list[float] | None,
+    vertices: list[list[float]],
+) -> bool:
+    """True when the walk started at an INTERIOR vertex -- neither terminus.
+
+    Three cases must stay distinct, and conflating the last two is how a bad
+    binding gets in:
+
+      seed at THIS terminus       -> bind; the walk explains this end
+      seed at the OTHER terminus  -> refuse; this is the original defect, a walk
+                                     from the far end filed under this side
+      seed at an interior vertex  -> skip; the walk's own points were ingested as
+                                     edge vertices, so it lies inside the edge and
+                                     explains nothing further
+
+    plus_one component 12 is the third case: its low walk seeded at
+    (1.046, 1.10603), which became interior once the arc was committed, while the
+    edge's start moved out to the arc end at (1.042923, 1.053638).
+    """
+    point = [float(v) for v in list(seed)[:2]]
+    if math.dist(point, [float(v) for v in list(endpoint)[:2]]) <= CATALOG_COINCIDENCE:
+        return False
+    if other_endpoint and (
+        math.dist(point, [float(v) for v in list(other_endpoint)[:2]])
+        <= CATALOG_COINCIDENCE
+    ):
+        return False
+    return any(math.dist(point, v) <= CATALOG_COINCIDENCE for v in vertices)
+
+def catalog_coincidence_node(
+    terminal: dict[str, Any], edges: list[dict[str, Any]]
+) -> tuple[str, str]:
+    """Resolve a catalog-curve terminus to the node its cell is already bound to.
+
+    Returns (node_id, "") on success, or ("", reason) when the coincidence is not
+    tight enough to treat the two samplings as one root.  Fail-closed: an
+    unexplained catalog encounter must keep blocking, because two critical curves
+    genuinely crossing is a real topological feature this graph has no node for,
+    and it must not be silently absorbed into an endpoint binding.
+    """
+    cell = terminal.get("cell_id")
+    if cell is None:
+        return "", "the record names no catalog cell"
+    miss = terminal.get("miss_scaled")
+    if miss is None or abs(float(miss)) > CATALOG_COINCIDENCE:
+        return "", (
+            f"it landed {miss} from cell {cell}, beyond the "
+            f"{CATALOG_COINCIDENCE} coincidence threshold, so they are two "
+            "curves meeting rather than one root localized twice"
+        )
+    cosine = terminal.get("tangent_abs_cosine")
+    if cosine is None or abs(float(cosine)) < CATALOG_TANGENT_ALIGNMENT:
+        return "", (
+            f"the tangents at cell {cell} align only to |cos| = {cosine}, under "
+            f"{CATALOG_TANGENT_ALIGNMENT}; that is a transversal crossing, which "
+            "is a junction this graph cannot yet represent"
+        )
+    bound: list[str] = []
+    for edge in edges:
+        if int(cell) not in [int(x) for x in (edge.get("cell_ids") or [])]:
+            continue
+        for side in ("start", "end"):
+            endpoint = edge["endpoints"][side]
+            if endpoint.get("cell_id") == cell and endpoint.get("node"):
+                bound.append(str(endpoint["node"]))
+    unique = sorted(set(bound))
+    if not unique:
+        return "", f"catalog cell {cell} is not itself bound to any node"
+    if len(unique) > 1:
+        return "", (
+            f"catalog cell {cell} is bound to {unique}; which one this terminus "
+            "inherits is ambiguous"
+        )
+    return unique[0], ""
+
 def endpoint_resolution_bindings(
-    paths: list[Path], edges: list[dict[str, Any]], nodes: list[dict[str, Any]]
+    paths: list[Path],
+    edges: list[dict[str, Any]],
+    nodes: list[dict[str, Any]],
+    roots: list[dict[str, Any]] | None = None,
 ) -> tuple[int, list[str]]:
     """Bind sweep-edge termini that a continuation actually resolved.
 
@@ -1049,6 +1174,7 @@ def endpoint_resolution_bindings(
     """
     applied = 0
     errors: list[str] = []
+    roots = list(roots or [])
     known_nodes = {str(item["id"]) for item in nodes}
     seen_termini: dict[tuple[Any, str], str] = {}
 
@@ -1102,6 +1228,21 @@ def endpoint_resolution_bindings(
                 continue
             terminal = result.get("terminal") or {}
             node_id = str(terminal.get("node_id") or "")
+            if not node_id and str(terminal.get("kind")) == "existing_catalog_critical_curve":
+                # The walk ran into an already-committed catalog cell.  If it
+                # COINCIDES with that cell -- same point, tangents aligned -- the
+                # two are one critical root localized twice, not two curves
+                # meeting, and this terminus inherits whatever node that cell is
+                # already bound to.  No new node is invented, and nothing binds
+                # unless the coincidence is tight enough that two distinct roots
+                # could not be confused.
+                node_id, why = catalog_coincidence_node(terminal, edges)
+                if not node_id:
+                    errors.append(
+                        f"{path.name}: component {component} {side_word} reached a "
+                        f"catalog curve but {why}"
+                    )
+                    continue
             if not node_id:
                 errors.append(f"{path.name}: component {component} resolved with no terminal node_id")
                 continue
@@ -1140,15 +1281,31 @@ def endpoint_resolution_bindings(
             # both is what still refuses the original defect -- a miss_mass
             # measured at the opposite terminus -- because that record's walk
             # does not begin here.
-            organizer = terminal.get("organizer_masses")
             here = endpoint.get("masses")
             seed = result.get("seed_masses")
             final = (terminal.get("final_masses") or result.get("final_masses"))
+            # The target the walk claims to have reached.  For an organizer that
+            # is organizer_masses; for a catalog coincidence it is the cell the
+            # walk landed on, which is a root of this graph, not an organizer.
+            organizer = terminal.get("organizer_masses")
+            if not organizer and str(terminal.get("kind")) == "existing_catalog_critical_curve":
+                organizer = catalog_cell_masses(terminal.get("cell_id"), roots)
             if not organizer or not here:
                 errors.append(
                     f"{path.name}: component {component} {side_word} cannot be "
-                    "checked -- missing organizer_masses or endpoint masses"
+                    "checked -- no target masses or no endpoint masses"
                 )
+                continue
+            # A walk whose seed is an INTERIOR vertex of this edge has been
+            # absorbed into the edge: its points were ingested as vertices, so it
+            # no longer explains a terminus and there is nothing left to bind.
+            # That is not a defect, so it must not be reported as one -- but it is
+            # only safe to skip when the endpoint is explained some other way,
+            # which the unclassified tally checks independently.
+            far = matches[0]["endpoints"]["end" if side == "start" else "start"].get("masses")
+            if seed and _is_interior_vertex(
+                seed, here, far, edge_vertices(matches[0], roots)
+            ):
                 continue
             if not seed or not final:
                 errors.append(
@@ -1425,6 +1582,7 @@ def main() -> None:
         germs,
         mixed_node_ids,
         endpoint_resolutions=[Path(p) for p in args.endpoint_resolution],
+        all_roots=roots + supplemental_roots,
     )
     completeness_report = completeness_verification(
         completeness, root=root, certificate_path=completeness_path

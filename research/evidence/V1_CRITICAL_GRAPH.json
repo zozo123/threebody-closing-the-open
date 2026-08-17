@@ -1371,11 +1371,13 @@
             0.9645756243241325,
             1.0
           ],
-          "node": "mixed_secondary_left",
-          "attachment": "continuation_germ",
-          "distance_to_germ": 0.006837448187195435,
-          "germ_direction": "-",
-          "binding_evidence": "research/evidence/V1_MIXED_GERMS_SECONDARY_LEFT_2026-08-16.json"
+          "node": "secondary_left_birth",
+          "attachment": "continuation_resolved_terminus",
+          "terminal_kind": "existing_catalog_critical_curve",
+          "stopped_reason": "existing_catalog_curve_reached",
+          "miss_mass": 0.002500080680588334,
+          "walk_started_from_terminus": 0.0,
+          "binding_evidence": "research/evidence/V1_ENDPOINT_RESOLUTION_BIGFLOAT_TIPS_2026-08-17.json"
         },
         "end": {
           "cell_id": 10042,
@@ -1679,12 +1681,10 @@
             1.0
           ],
           "node": "mixed_principal_right",
-          "attachment": "continuation_resolved_terminus",
-          "terminal_kind": "mixed_organizer",
-          "stopped_reason": "mixed_organizer_reached",
-          "miss_mass": 0.006526318745269977,
-          "walk_started_from_terminus": 0.0025000187933763326,
-          "binding_evidence": "research/evidence/V1_ENDPOINT_RESOLUTION_BIGFLOAT_TIPS_2026-08-17.json"
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.005816752885323993,
+          "germ_direction": "+",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json"
         },
         "classified": true
       }
@@ -11248,10 +11248,7 @@
       }
     ],
     "endpoint_resolutions_applied": 2,
-    "classification_binding_errors": [
-      "V1_ENDPOINT_RESOLUTION_BIGFLOAT_TIPS_2026-08-17.json: component 1 resolved with no terminal node_id",
-      "V1_ENDPOINT_RESOLUTION_BIGFLOAT_TIPS_2026-08-17.json: component 12 low started 5.2483e-02 from this terminus, beyond 0.008; it did not walk from here"
-    ],
+    "classification_binding_errors": [],
     "edge_topology_complete": false
   },
   "root_residual_margin": {
@@ -11294,13 +11291,13 @@
         "plus_one_u_to_s_2:start"
       ],
       "mixed_secondary_left": [
-        "minus_one_sweep_component_1:start",
         "minus_one_u_to_s_1:end",
         "plus_one_sweep_component_10:end",
         "plus_one_u_to_s_1:start"
       ],
       "secondary_left_birth": [
         "minus_one_s_to_u_0:start",
+        "minus_one_sweep_component_1:start",
         "minus_one_u_to_s_1:start"
       ],
       "secondary_right_death": [
