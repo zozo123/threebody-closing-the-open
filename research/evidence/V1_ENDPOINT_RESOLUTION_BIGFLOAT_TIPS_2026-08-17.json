@@ -1,0 +1,1297 @@
+{
+  "schema": "atlas.v1.sampled-endpoint-resolution/1",
+  "claim": "continuous classification of the finite-lattice endpoints of sweep components [0, 1, 12] in V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_BIGFLOAT_TIPS_2026-08-17.json",
+  "components_resolved": [
+    0,
+    1,
+    12
+  ],
+  "frozen_gates": {
+    "maximum_absolute_event": 2e-08,
+    "maximum_periodic_closure": 1e-07
+  },
+  "results": [
+    {
+      "source_component": 0,
+      "outward_side": "low",
+      "seed_cells": {
+        "current": 10001,
+        "previous": 10003,
+        "direction_only_neighbor": false
+      },
+      "seed_rows": [
+        10003,
+        10001
+      ],
+      "seed_previous": {
+        "masses": [
+          0.898,
+          0.7781370938780275,
+          1.0
+        ],
+        "x1": -0.19159112459402497,
+        "v1": 1.9613409105540887,
+        "v2": 0.4246381393578849,
+        "period": 6.130009660739476,
+        "closure": 7.805629112246798e-10,
+        "event_mode": "minus_one",
+        "event": -4.7435548822249984e-09
+      },
+      "seed_current": {
+        "masses": [
+          0.894,
+          0.7614529865792788,
+          1.0
+        ],
+        "x1": -0.1828553780809901,
+        "v1": 2.022404838462208,
+        "v2": 0.422412898918842,
+        "period": 6.036251876832726,
+        "closure": 9.441871044458401e-10,
+        "event_mode": "minus_one",
+        "event": 1.2038810837111669e-08
+      },
+      "accepted_points": [
+        {
+          "masses": [
+            0.8934187321543331,
+            0.7590214997948108,
+            1.0
+          ],
+          "x1": -0.18160860657713215,
+          "v1": 2.031462044578445,
+          "v2": 0.4219986736788261,
+          "period": 6.021610391046801,
+          "closure": 6.604371160747374e-10,
+          "event_mode": "minus_one",
+          "event": -1.338063526645783e-08,
+          "d_event_dm": [
+            -280.47944924935894,
+            67.07676081626335
+          ],
+          "mass_tangent": [
+            -0.23259154227869444,
+            -0.9725745084364582
+          ],
+          "closure_jacobian_singular_values": [
+            12131.455527468655,
+            33.04890655331628,
+            2.4442287804548695,
+            0.0989835743976127
+          ],
+          "closure_family_relative_residual": 3.0712821599724286e-10,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            0.8931281974333574,
+            0.7578057327035433,
+            1.0
+          ],
+          "x1": -0.18098757143624253,
+          "v1": 2.0360066622872472,
+          "v2": 0.4217814878930379,
+          "period": 6.014178931695218,
+          "closure": 6.385638498046958e-10,
+          "event_mode": "minus_one",
+          "event": -8.457988087684498e-09,
+          "d_event_dm": [
+            -282.50976198850924,
+            67.54121788842235
+          ],
+          "mass_tangent": [
+            -0.23252285387034236,
+            -0.9725909327296813
+          ],
+          "closure_jacobian_singular_values": [
+            12318.988837737807,
+            33.115052727716936,
+            2.4329752548963706,
+            0.098380585118672
+          ],
+          "closure_family_relative_residual": 3.0096872923902426e-10,
+          "mass_step": 0.00125,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            0.8931036892963775,
+            0.7577031509863086,
+            1.0
+          ],
+          "x1": -0.18093524337947037,
+          "v1": 2.0363905991921873,
+          "v2": 0.4217628489523668,
+          "period": 6.013548436991711,
+          "closure": 6.34458818466318e-10,
+          "event_mode": "minus_one",
+          "event": 1.574790964298245e-08,
+          "d_event_dm": [
+            -282.68131834953715,
+            67.58040667336911
+          ],
+          "mass_tangent": [
+            -0.23251691045564507,
+            -0.9725923536364872
+          ],
+          "closure_jacobian_singular_values": [
+            12334.969777465642,
+            33.12049006630626,
+            2.432031121125514,
+            0.09832954414629336
+          ],
+          "closure_family_relative_residual": 3.103672943130918e-10,
+          "mass_step": 0.00010546875000000001,
+          "event_normal_corrector_iterations": 5
+        },
+        {
+          "masses": [
+            0.8930706001683059,
+            0.7575646664196065,
+            1.0
+          ],
+          "x1": -0.18086461645875787,
+          "v1": 2.03690904918451,
+          "v2": 0.4217376034590248,
+          "period": 6.012696370484408,
+          "closure": 6.336894477793015e-10,
+          "event_mode": "minus_one",
+          "event": 8.805589146732018e-09,
+          "d_event_dm": [
+            -282.9135894145197,
+            67.63247352109443
+          ],
+          "mass_tangent": [
+            -0.23250565223139685,
+            -0.9725950450626678
+          ],
+          "closure_jacobian_singular_values": [
+            12356.583404084357,
+            33.1277930367827,
+            2.430757985940809,
+            0.09826058740992298
+          ],
+          "closure_family_relative_residual": 2.9610948035523823e-10,
+          "mass_step": 0.0001423828125,
+          "event_normal_corrector_iterations": 2
+        }
+      ],
+      "projection_turns_crossed": [],
+      "terminal": null,
+      "stopped_reason": "continuation_failure_not_a_scientific_terminus: event-normal corrector missed frozen gate after 5 iterations: event=inf",
+      "scientific_endpoint_resolved": false
+    },
+    {
+      "source_component": 0,
+      "outward_side": "high",
+      "seed_cells": {
+        "current": 10018,
+        "previous": 10017,
+        "direction_only_neighbor": false
+      },
+      "seed_rows": [
+        10017,
+        10018
+      ],
+      "seed_previous": {
+        "masses": [
+          0.926,
+          0.8768089968658216,
+          1.0
+        ],
+        "x1": -0.2521686737079859,
+        "v1": 1.6270939782552754,
+        "v2": 0.4302127586035557,
+        "period": 6.616812417571014,
+        "closure": 3.4503792970037875e-10,
+        "event_mode": "minus_one",
+        "event": -1.239929048324484e-09
+      },
+      "seed_current": {
+        "masses": [
+          0.928,
+          0.8821527119651636,
+          1.0
+        ],
+        "x1": -0.25603737458120934,
+        "v1": 1.6097472746963697,
+        "v2": 0.4306122138087471,
+        "period": 6.645665686940924,
+        "closure": 2.957049921811692e-10,
+        "event_mode": "minus_one",
+        "event": -3.247047075660703e-10
+      },
+      "accepted_points": [
+        {
+          "masses": [
+            0.9288970112221954,
+            0.8844862537804965,
+            1.0
+          ],
+          "x1": -0.2577511540903578,
+          "v1": 1.602182579955373,
+          "v2": 0.43079788666410107,
+          "period": 6.658457537421318,
+          "closure": 3.0832321694577093e-10,
+          "event_mode": "minus_one",
+          "event": 8.032223774989689e-10,
+          "d_event_dm": [
+            -111.45463967357068,
+            43.19422658102894
+          ],
+          "mass_tangent": [
+            0.36136146378528333,
+            0.9324258107168406
+          ],
+          "closure_jacobian_singular_values": [
+            3207.2337801957015,
+            25.07218471893945,
+            3.6660401800122813,
+            0.1332737795755187
+          ],
+          "closure_family_relative_residual": 5.951699787765781e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        }
+      ],
+      "projection_turns_crossed": [],
+      "terminal": {
+        "kind": "mixed_organizer",
+        "node_id": "mixed_principal_left",
+        "miss_mass": 0.0009443808374062197,
+        "organizer_masses": [
+          0.9292391921118185,
+          0.8853664625084905
+        ]
+      },
+      "stopped_reason": "mixed_organizer_reached",
+      "scientific_endpoint_resolved": true
+    },
+    {
+      "source_component": 1,
+      "outward_side": "low",
+      "seed_cells": {
+        "current": 10019,
+        "previous": 10020,
+        "direction_only_neighbor": false
+      },
+      "seed_rows": [
+        10020,
+        10019
+      ],
+      "seed_previous": {
+        "masses": [
+          0.998,
+          0.9476559522589565,
+          1.0
+        ],
+        "x1": -0.3490893499821452,
+        "v1": 1.2695642137281502,
+        "v2": 0.46601958196266086,
+        "period": 7.415736042885398,
+        "closure": 1.834147439522528e-10,
+        "event_mode": "minus_one",
+        "event": -6.670297203470454e-09
+      },
+      "seed_current": {
+        "masses": [
+          0.996,
+          0.9645756243241325,
+          1.0
+        ],
+        "x1": -0.35489887162255546,
+        "v1": 1.2574612863238335,
+        "v2": 0.46019094998319876,
+        "period": 7.438123439075964,
+        "closure": 1.646856966911316e-10,
+        "event_mode": "minus_one",
+        "event": -8.810161489236634e-10
+      },
+      "accepted_points": [
+        {
+          "masses": [
+            0.995866751171719,
+            0.9670721524602889,
+            1.0
+          ],
+          "x1": -0.3558090908364436,
+          "v1": 1.2555085142596254,
+          "v2": 0.4594320282614768,
+          "period": 7.442269886618466,
+          "closure": 1.7427198741360227e-10,
+          "event_mode": "minus_one",
+          "event": 6.991331957806324e-09,
+          "d_event_dm": [
+            36.75517849756625,
+            1.6653930994365282
+          ],
+          "mass_tangent": [
+            -0.045263993802830894,
+            0.998975060181693
+          ],
+          "closure_jacobian_singular_values": [
+            1589.3687705890266,
+            37.26917979146096,
+            3.4706108368006157,
+            0.14635878249038636
+          ],
+          "closure_family_relative_residual": 1.648620743216278e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        }
+      ],
+      "projection_turns_crossed": [],
+      "terminal": {
+        "kind": "existing_catalog_critical_curve",
+        "cell_id": 392,
+        "orientation": "U->S",
+        "miss_scaled": 2.085110870872691e-10,
+        "segment_fraction": 3.963590855909422e-07,
+        "tangent_abs_cosine": 0.9985786625964568,
+        "neighbor_cells_used_for_tangent": [
+          393,
+          342,
+          344,
+          346
+        ]
+      },
+      "stopped_reason": "existing_catalog_curve_reached",
+      "scientific_endpoint_resolved": true
+    },
+    {
+      "source_component": 1,
+      "outward_side": "high",
+      "seed_cells": {
+        "current": 10037,
+        "previous": 10036,
+        "direction_only_neighbor": false
+      },
+      "seed_rows": [
+        10036,
+        10037
+      ],
+      "seed_previous": {
+        "masses": [
+          1.03,
+          0.8733703872432192,
+          1.0
+        ],
+        "x1": -0.32394025341312294,
+        "v1": 1.319856488081349,
+        "v2": 0.5090626684380878,
+        "period": 7.463725269984994,
+        "closure": 1.7424678527643827e-10,
+        "event_mode": "minus_one",
+        "event": 4.559197464004683e-10
+      },
+      "seed_current": {
+        "masses": [
+          1.032,
+          0.8704869464030421,
+          1.0
+        ],
+        "x1": -0.3226849919382635,
+        "v1": 1.3227666075165432,
+        "v2": 0.5115463036797772,
+        "period": 7.474490904474273,
+        "closure": 1.8600221686255183e-10,
+        "event_mode": "minus_one",
+        "event": -6.45149000888523e-09
+      },
+      "accepted_points": [
+        {
+          "masses": [
+            1.0323622957016148,
+            0.8699776642318668,
+            1.0
+          ],
+          "x1": -0.3224611585361243,
+          "v1": 1.3232900893643682,
+          "v2": 0.5119974380665268,
+          "period": 7.47656903494037,
+          "closure": 2.831804510335405e-10,
+          "event_mode": "minus_one",
+          "event": -4.397069375272622e-09,
+          "d_event_dm": [
+            218.4829492972134,
+            156.00457915336875
+          ],
+          "mass_tangent": [
+            0.5811033415612225,
+            -0.8138297773038174
+          ],
+          "closure_jacobian_singular_values": [
+            2190.629757544525,
+            55.23251088073516,
+            4.426672011832164,
+            0.47775378254220874
+          ],
+          "closure_family_relative_residual": 8.912468964722098e-11,
+          "mass_step": 0.000625,
+          "event_normal_corrector_iterations": 4
+        },
+        {
+          "masses": [
+            1.0328543691881211,
+            0.8692922574450257,
+            1.0
+          ],
+          "x1": -0.32215892914999134,
+          "v1": 1.3239991372725093,
+          "v2": 0.5126108660921681,
+          "period": 7.479456240304581,
+          "closure": 2.815431811917123e-10,
+          "event_mode": "minus_one",
+          "event": 1.545347316778134e-08,
+          "d_event_dm": [
+            220.07704976240953,
+            158.8608406069797
+          ],
+          "mass_tangent": [
+            0.5852878830316032,
+            -0.8108255632233017
+          ],
+          "closure_jacobian_singular_values": [
+            2196.3482085856554,
+            55.54308674945617,
+            4.436260426844789,
+            0.4780077024525556
+          ],
+          "closure_family_relative_residual": 9.424232836542985e-11,
+          "mass_step": 0.0008437500000000001,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            1.0329376982029292,
+            0.8691768055475106,
+            1.0
+          ],
+          "x1": -0.32210786618263526,
+          "v1": 1.3241192409600757,
+          "v2": 0.512714862910955,
+          "period": 7.4799523861686765,
+          "closure": 1.980707354127358e-10,
+          "event_mode": "minus_one",
+          "event": -1.5496397054448607e-08,
+          "d_event_dm": [
+            220.342632973821,
+            159.34914083415185
+          ],
+          "mass_tangent": [
+            0.5860047288816697,
+            -0.8103076315377516
+          ],
+          "closure_jacobian_singular_values": [
+            2197.3183962851645,
+            55.59597870298723,
+            4.4378822508055205,
+            0.478036690702183
+          ],
+          "closure_family_relative_residual": 1.0056227293936712e-10,
+          "mass_step": 0.0001423828125,
+          "event_normal_corrector_iterations": 2
+        }
+      ],
+      "projection_turns_crossed": [],
+      "terminal": null,
+      "stopped_reason": "continuation_failure_not_a_scientific_terminus: event-normal corrector missed frozen gate after 5 iterations: event=inf",
+      "scientific_endpoint_resolved": false
+    },
+    {
+      "source_component": 12,
+      "outward_side": "low",
+      "seed_cells": {
+        "current": 10131,
+        "previous": 10132,
+        "direction_only_neighbor": false
+      },
+      "seed_rows": [
+        10132,
+        10131
+      ],
+      "seed_previous": {
+        "masses": [
+          1.048,
+          1.1205842861285262,
+          1.0
+        ],
+        "x1": -0.43962858464107607,
+        "v1": 1.0737748210918996,
+        "v2": 0.44410867469255205,
+        "period": 7.997111417897018,
+        "closure": 1.7463126702538024e-10,
+        "event_mode": "plus_one",
+        "event": 1.274594296774012e-08
+      },
+      "seed_current": {
+        "masses": [
+          1.046,
+          1.106030304351037,
+          1.0
+        ],
+        "x1": -0.43974142058255683,
+        "v1": 1.0724832682239487,
+        "v2": 0.448174822717048,
+        "period": 8.011300348403621,
+        "closure": 2.1463090862362816e-10,
+        "event_mode": "plus_one",
+        "event": -1.303629204585377e-08
+      },
+      "accepted_points": [
+        {
+          "masses": [
+            1.045722505817558,
+            1.103545736690273,
+            1.0
+          ],
+          "x1": -0.4397669788862851,
+          "v1": 1.0722184007689062,
+          "v2": 0.44890140637862763,
+          "period": 8.013814854952916,
+          "closure": 2.2217175961999892e-10,
+          "event_mode": "plus_one",
+          "event": 1.284347561636423e-08,
+          "d_event_dm": [
+            -164.53227029623758,
+            17.78695117568239
+          ],
+          "mass_tangent": [
+            -0.10747992397948815,
+            -0.9942072550235004
+          ],
+          "closure_jacobian_singular_values": [
+            877.7364594995988,
+            40.48748695794506,
+            3.381564201194616,
+            0.2978916433282342
+          ],
+          "closure_family_relative_residual": 4.911796672260981e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            1.0454624651097337,
+            1.1010592824504748,
+            1.0
+          ],
+          "x1": -0.43979237116004044,
+          "v1": 1.0719444848787498,
+          "v2": 0.4496372884313894,
+          "period": 8.016340340397088,
+          "closure": 1.9599762476659206e-10,
+          "event_mode": "plus_one",
+          "event": -5.899806865272694e-09,
+          "d_event_dm": [
+            -163.59884823667448,
+            16.537560898089282
+          ],
+          "mass_tangent": [
+            -0.10057350364634933,
+            -0.9949296308605438
+          ],
+          "closure_jacobian_singular_values": [
+            883.8996147434692,
+            40.73192818184937,
+            3.380007168461292,
+            0.2927465526726837
+          ],
+          "closure_family_relative_residual": 3.8551369159967374e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            1.0452194654564133,
+            1.0985711058029066,
+            1.0
+          ],
+          "x1": -0.4398166847003408,
+          "v1": 1.0716633783655023,
+          "v2": 0.45038210589391037,
+          "period": 8.018868710040689,
+          "closure": 1.0635092776716022e-10,
+          "event_mode": "plus_one",
+          "event": -1.6761610766025115e-08,
+          "d_event_dm": [
+            -162.62511701977678,
+            15.32845853402705
+          ],
+          "mass_tangent": [
+            -0.09384047253656445,
+            -0.995587246661042
+          ],
+          "closure_jacobian_singular_values": [
+            890.137733873719,
+            40.978389689065104,
+            3.3781863768448632,
+            0.2875415791412491
+          ],
+          "closure_family_relative_residual": 5.0718870523984184e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            1.0449930793391469,
+            1.0960813633638655,
+            1.0
+          ],
+          "x1": -0.43983898533522736,
+          "v1": 1.0713769863784792,
+          "v2": 0.4511354872743312,
+          "period": 8.021391712025311,
+          "closure": 1.1882507478844517e-10,
+          "event_mode": "plus_one",
+          "event": 1.2160850104692145e-08,
+          "d_event_dm": [
+            -161.60875293083177,
+            14.162700966449819
+          ],
+          "mass_tangent": [
+            -0.08730113348452885,
+            -0.9961819673595363
+          ],
+          "closure_jacobian_singular_values": [
+            896.4485089506286,
+            41.22663927477959,
+            3.3761160226118703,
+            0.28227908497135895
+          ],
+          "closure_family_relative_residual": 4.6371806183519854e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            1.0447827758376564,
+            1.093590211799938,
+            1.0
+          ],
+          "x1": -0.4398581862946383,
+          "v1": 1.071087534972864,
+          "v2": 0.4518969948411545,
+          "period": 8.02389982920679,
+          "closure": 1.138498934038517e-10,
+          "event_mode": "plus_one",
+          "event": 1.5186095936314814e-08,
+          "d_event_dm": [
+            -160.54731870995693,
+            13.043454158261937
+          ],
+          "mass_tangent": [
+            -0.08097686906738048,
+            -0.9967159809474534
+          ],
+          "closure_jacobian_singular_values": [
+            902.8296369618107,
+            41.476410522094284,
+            3.3738120256489754,
+            0.27696204264726754
+          ],
+          "closure_family_relative_residual": 4.810619961012448e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            1.0445880083062096,
+            1.0910977983315135,
+            1.0
+          ],
+          "x1": -0.43987317761205436,
+          "v1": 1.070797301151923,
+          "v2": 0.45266618214782944,
+          "period": 8.026383380668463,
+          "closure": 2.1634025851243284e-10,
+          "event_mode": "plus_one",
+          "event": -5.919531531617395e-11,
+          "d_event_dm": [
+            -159.4385918737728,
+            11.974031800439548
+          ],
+          "mass_tangent": [
+            -0.07489031302897808,
+            -0.9971917774502664
+          ],
+          "closure_jacobian_singular_values": [
+            909.2786652157016,
+            41.72742993225811,
+            3.371291618181631,
+            0.27159385533617775
+          ],
+          "closure_family_relative_residual": 4.427372717211446e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 4
+        },
+        {
+          "masses": [
+            1.0444081227869504,
+            1.0886042676252023,
+            1.0
+          ],
+          "x1": -0.4398826904417353,
+          "v1": 1.0705088962381084,
+          "v2": 0.45344253429834214,
+          "period": 8.028831375417896,
+          "closure": 1.8895847050856395e-10,
+          "event_mode": "plus_one",
+          "event": 4.251162977197964e-09,
+          "d_event_dm": [
+            -158.28014043251778,
+            10.957837574910513
+          ],
+          "mass_tangent": [
+            -0.06906534038875992,
+            -0.9976121384370706
+          ],
+          "closure_jacobian_singular_values": [
+            915.7932009048069,
+            41.97938864218029,
+            3.368573769903985,
+            0.26617866179194577
+          ],
+          "closure_family_relative_residual": 4.1142833034183814e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 4
+        },
+        {
+          "masses": [
+            1.0442424174332923,
+            1.0861097555724077,
+            1.0
+          ],
+          "x1": -0.4398853844162174,
+          "v1": 1.070225083878319,
+          "v2": 0.4542255068382467,
+          "period": 8.031232258231535,
+          "closure": 1.456556865156612e-10,
+          "event_mode": "plus_one",
+          "event": -1.3642065255226044e-10,
+          "d_event_dm": [
+            -157.0696405191611,
+            9.998418177670374
+          ],
+          "mass_tangent": [
+            -0.06352737741903518,
+            -0.9979800961533547
+          ],
+          "closure_jacobian_singular_values": [
+            922.3708187798718,
+            42.23196081517986,
+            3.365678912925684,
+            0.2607212452907002
+          ],
+          "closure_family_relative_residual": 4.5789134093438324e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            1.044090195343793,
+            1.083614385434799,
+            1.0
+          ],
+          "x1": -0.4398799247191853,
+          "v1": 1.069948619404539,
+          "v2": 0.4550145599587476,
+          "period": 8.033574565848163,
+          "closure": 9.63289555725686e-11,
+          "event_mode": "plus_one",
+          "event": -7.450609018633259e-09,
+          "d_event_dm": [
+            -155.80488235149278,
+            9.099459732981188
+          ],
+          "mass_tangent": [
+            -0.058303568576368384,
+            -0.9982989000751532
+          ],
+          "closure_jacobian_singular_values": [
+            929.0089682108978,
+            42.48481993165427,
+            3.362628717057065,
+            0.2552269710870712
+          ],
+          "closure_family_relative_residual": 3.033689030248586e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            1.043950613980652,
+            1.0811182773971817,
+            1.0
+          ],
+          "x1": -0.43986475998946534,
+          "v1": 1.0696827144053407,
+          "v2": 0.4558090606417685,
+          "period": 8.035845051550389,
+          "closure": 1.493771184539948e-10,
+          "event_mode": "plus_one",
+          "event": 7.55862217260983e-09,
+          "d_event_dm": [
+            -154.48387206145344,
+            8.264820609473958
+          ],
+          "mass_tangent": [
+            -0.05342316986358,
+            -0.9985719628157638
+          ],
+          "closure_jacobian_singular_values": [
+            935.705339836367,
+            42.737592393930036,
+            3.35944674358916,
+            0.24970226432306614
+          ],
+          "closure_family_relative_residual": 3.6067855853860316e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            1.0438227727121046,
+            1.0786215416515028,
+            1.0
+          ],
+          "x1": -0.4398382508059465,
+          "v1": 1.0694307694000795,
+          "v2": 0.4566083393761116,
+          "period": 8.038029778156043,
+          "closure": 1.9513412590917856e-10,
+          "event_mode": "plus_one",
+          "event": 1.3316622471393202e-08,
+          "d_event_dm": [
+            -153.1046508246934,
+            7.498494232720162
+          ],
+          "mass_tangent": [
+            -0.04891763323138084,
+            -0.9988028159547009
+          ],
+          "closure_jacobian_singular_values": [
+            942.4577181534955,
+            42.9898844933377,
+            3.356158047102855,
+            0.24415446714759545
+          ],
+          "closure_family_relative_residual": 3.89882215707828e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            1.0437056929898365,
+            1.0761242792316896,
+            1.0
+          ],
+          "x1": -0.43979864019566056,
+          "v1": 1.0691964367655313,
+          "v2": 0.45741167708594876,
+          "period": 8.040113872885506,
+          "closure": 1.6196525862164084e-10,
+          "event_mode": "plus_one",
+          "event": 1.4650623825218645e-08,
+          "d_event_dm": [
+            -151.6654202274417,
+            6.804646066644665
+          ],
+          "mass_tangent": [
+            -0.044821077835385546,
+            -0.9989950305089982
+          ],
+          "closure_jacobian_singular_values": [
+            949.2640714817574,
+            43.241276374500636,
+            3.352789242349988,
+            0.23859198888957678
+          ],
+          "closure_family_relative_residual": 3.77744535355639e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            1.0435982927657559,
+            1.0736265829168985,
+            1.0
+          ],
+          "x1": -0.43974401590146894,
+          "v1": 1.0689837014485193,
+          "v2": 0.4582182883152907,
+          "period": 8.042081214590791,
+          "closure": 1.2218564429571013e-10,
+          "event_mode": "plus_one",
+          "event": 1.6003937730602047e-08,
+          "d_event_dm": [
+            -150.1646983007763,
+            6.187634106612762
+          ],
+          "mass_tangent": [
+            -0.04117071353654152,
+            -0.9991521267289042
+          ],
+          "closure_jacobian_singular_values": [
+            956.1226690124748,
+            43.49131418240086,
+            3.3493685898818693,
+            0.23302447283695402
+          ],
+          "closure_family_relative_residual": 3.293117486127701e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 4
+        },
+        {
+          "masses": [
+            1.0434994261316788,
+            1.0711285352989632,
+            1.0
+          ],
+          "x1": -0.43967236838457446,
+          "v1": 1.0687967619008694,
+          "v2": 0.45902734641539955,
+          "period": 8.043914928090503,
+          "closure": 1.2216951686172306e-10,
+          "event_mode": "plus_one",
+          "event": 1.9810279638932116e-08,
+          "d_event_dm": [
+            -148.60131419007598,
+            5.652019123665582
+          ],
+          "mass_tangent": [
+            -0.038007303989277146,
+            -0.9992774613907124
+          ],
+          "closure_jacobian_singular_values": [
+            963.0320424917713,
+            43.739522373943316,
+            3.3459258041931377,
+            0.2274628045528275
+          ],
+          "closure_family_relative_residual": 3.777703079142931e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 4
+        },
+        {
+          "masses": [
+            1.0434078209004982,
+            1.0686302118316682,
+            1.0
+          ],
+          "x1": -0.4395814996170332,
+          "v1": 1.0686402238549737,
+          "v2": 0.45983794264338357,
+          "period": 8.04559661844116,
+          "closure": 1.8301244555929246e-10,
+          "event_mode": "plus_one",
+          "event": 8.210427893118322e-10,
+          "d_event_dm": [
+            -146.97442464128744,
+            5.202570187518546
+          ],
+          "mass_tangent": [
+            -0.035375636544775775,
+            -0.9993740862855369
+          ],
+          "closure_jacobian_singular_values": [
+            969.9912083873666,
+            43.985384540864445,
+            3.342492266004377,
+            0.22191938025191732
+          ],
+          "closure_family_relative_residual": 3.2272477014327366e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            1.043322070638073,
+            1.0661316814373456,
+            1.0
+          ],
+          "x1": -0.43946901203694516,
+          "v1": 1.0685191273804113,
+          "v2": 0.46064908024916223,
+          "period": 8.047106282549281,
+          "closure": 1.5482670977137428e-10,
+          "event_mode": "plus_one",
+          "event": -1.314795383677847e-08,
+          "d_event_dm": [
+            -145.2835903596051,
+            4.844295581178017
+          ],
+          "mass_tangent": [
+            -0.033325201143546444,
+            -0.9994445612282566
+          ],
+          "closure_jacobian_singular_values": [
+            976.9997716926963,
+            44.228341117507625,
+            3.339100998811496,
+            0.21640823594844957
+          ],
+          "closure_family_relative_residual": 2.9439601147292885e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            1.0432406755672399,
+            1.0636330060832835,
+            1.0
+          ],
+          "x1": -0.4393323695270157,
+          "v1": 1.0684388240324156,
+          "v2": 0.46145970008459697,
+          "period": 8.048422828454733,
+          "closure": 1.9650436588509858e-10,
+          "event_mode": "plus_one",
+          "event": 4.536438780178287e-09,
+          "d_event_dm": [
+            -143.52892179634307,
+            4.582456163488729
+          ],
+          "mass_tangent": [
+            -0.031910797883709374,
+            -0.9994907208065642
+          ],
+          "closure_jacobian_singular_values": [
+            984.0579019128897,
+            44.46780218147938,
+            3.3357864409336146,
+            0.21094505188249066
+          ],
+          "closure_family_relative_residual": 3.5531833704997135e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            1.0431619466334259,
+            1.0611342458197663,
+            1.0
+          ],
+          "x1": -0.43916875880335715,
+          "v1": 1.068405273398048,
+          "v2": 0.46226861727807866,
+          "period": 8.049522907883718,
+          "closure": 1.906436227323981e-10,
+          "event_mode": "plus_one",
+          "event": 1.1884800699135667e-08,
+          "d_event_dm": [
+            -141.71104875409446,
+            4.422583897106165
+          ],
+          "mass_tangent": [
+            -0.03119327518994229,
+            -0.9995133713877591
+          ],
+          "closure_jacobian_singular_values": [
+            991.1666892547635,
+            44.70311810129618,
+            3.332584721327381,
+            0.2055474775422068
+          ],
+          "closure_family_relative_residual": 3.0308956143258184e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            1.0430840550270097,
+            1.0586354595331775,
+            1.0
+          ],
+          "x1": -0.4389751644409945,
+          "v1": 1.068424893678248,
+          "v2": 0.46307455179675117,
+          "period": 8.050381552159129,
+          "closure": 1.3539015234926563e-10,
+          "event_mode": "plus_one",
+          "event": 1.5422237709117326e-08,
+          "d_event_dm": [
+            -139.83128016242358,
+            4.370502039605043
+          ],
+          "mass_tangent": [
+            -0.031240283337168325,
+            -0.9995119032292779
+          ],
+          "closure_jacobian_singular_values": [
+            998.3281193241443,
+            44.93359520566025,
+            3.329533359436072,
+            0.20023508156422157
+          ],
+          "closure_family_relative_residual": 2.6214026733679664e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            1.0430050355834495,
+            1.0561367084906688,
+            1.0
+          ],
+          "x1": -0.43874837736498135,
+          "v1": 1.0685045530861053,
+          "v2": 0.46387612890462876,
+          "period": 8.050972244124946,
+          "closure": 1.5028746974668264e-10,
+          "event_mode": "plus_one",
+          "event": -7.036209836996932e-09,
+          "d_event_dm": [
+            -137.89181579472051,
+            4.432362226896117
+          ],
+          "mass_tangent": [
+            -0.03212717279759429,
+            -0.9994837891471945
+          ],
+          "closure_jacobian_singular_values": [
+            1005.5451701239831,
+            45.15849731726689,
+            3.3266711278793757,
+            0.1950293845011146
+          ],
+          "closure_family_relative_residual": 2.3001316839710064e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            1.042922651794129,
+            1.0536380654222348,
+            1.0
+          ],
+          "x1": -0.4384848030809053,
+          "v1": 1.0686519848204388,
+          "v2": 0.4646717891267401,
+          "period": 8.051265298057073,
+          "closure": 1.8871918103412886e-10,
+          "event_mode": "plus_one",
+          "event": 9.188372729340699e-09,
+          "d_event_dm": [
+            -135.8956406948605,
+            4.614623164818909
+          ],
+          "mass_tangent": [
+            -0.03393754878993306,
+            -0.9994239554774194
+          ],
+          "closure_jacobian_singular_values": [
+            1012.8223395729788,
+            45.37700462613539,
+            3.3240383303851204,
+            0.18995414968962962
+          ],
+          "closure_family_relative_residual": 2.643695383746874e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        }
+      ],
+      "projection_turns_crossed": [],
+      "terminal": {
+        "kind": "mixed_organizer",
+        "node_id": "secondary_right_death",
+        "miss_mass": 0.0076400048185699,
+        "organizer_masses": [
+          1.0426234457894452,
+          1.0460039217640023
+        ]
+      },
+      "stopped_reason": "mixed_organizer_reached",
+      "scientific_endpoint_resolved": true
+    },
+    {
+      "source_component": 12,
+      "outward_side": "high",
+      "seed_cells": {
+        "current": 10132,
+        "previous": 10131,
+        "direction_only_neighbor": false
+      },
+      "seed_rows": [
+        10131,
+        10132
+      ],
+      "seed_previous": {
+        "masses": [
+          1.046,
+          1.106030304351037,
+          1.0
+        ],
+        "x1": -0.43974142058255683,
+        "v1": 1.0724832682239487,
+        "v2": 0.448174822717048,
+        "period": 8.011300348403621,
+        "closure": 2.1463090862362816e-10,
+        "event_mode": "plus_one",
+        "event": -1.303629204585377e-08
+      },
+      "seed_current": {
+        "masses": [
+          1.048,
+          1.1205842861285262,
+          1.0
+        ],
+        "x1": -0.43962858464107607,
+        "v1": 1.0737748210918996,
+        "v2": 0.44410867469255205,
+        "period": 7.997111417897018,
+        "closure": 1.7463126702538024e-10,
+        "event_mode": "plus_one",
+        "event": 1.274594296774012e-08
+      },
+      "accepted_points": [
+        {
+          "masses": [
+            1.0484051113963102,
+            1.1230512637781644,
+            1.0
+          ],
+          "x1": -0.4396214190599585,
+          "v1": 1.0739381922413707,
+          "v2": 0.44345359426018033,
+          "period": 7.994849031614469,
+          "closure": 1.798812344627901e-10,
+          "event_mode": "plus_one",
+          "event": 7.81245290681909e-09,
+          "d_event_dm": [
+            -170.73103342753961,
+            28.718067621863895
+          ],
+          "mass_tangent": [
+            0.16587625271043976,
+            0.9861465757111072
+          ],
+          "closure_jacobian_singular_values": [
+            832.0282063518531,
+            38.655447806653456,
+            3.3833979415009283,
+            0.3361530347048402
+          ],
+          "closure_family_relative_residual": 8.583725874669169e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        }
+      ],
+      "projection_turns_crossed": [],
+      "terminal": {
+        "kind": "mixed_organizer",
+        "node_id": "mixed_principal_right",
+        "miss_mass": 0.006526318745269977,
+        "organizer_masses": [
+          1.0495531866872656,
+          1.129475807302117
+        ]
+      },
+      "stopped_reason": "mixed_organizer_reached",
+      "scientific_endpoint_resolved": true
+    }
+  ],
+  "all_sampled_endpoints_resolved": false,
+  "claim_status": "unresolved_continuation_required"
+}
