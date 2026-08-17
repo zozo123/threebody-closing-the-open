@@ -168,5 +168,5 @@
   "passed": true,
   "schema": "atlas.graph-isomorphism-mutation-audit.v1",
   "source_graph": "research/evidence/V1_CRITICAL_GRAPH.json",
-  "source_graph_sha256": "50f51a4a57206610149e4cb9daeca566c4dc6e5fbbfd486fd148470ddb2f362d"
+  "source_graph_sha256": "9e9c97bb7654b0c57cb6ffc27b4158d40283f6b7086a9bda689bf16b9d64538f"
 }
