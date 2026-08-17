@@ -1,0 +1,781 @@
+{
+  "schema": "atlas.v1.sign-topology-audit/1",
+  "created_at": "2026-08-17T19:56:07.532077+00:00",
+  "code_revision": null,
+  "run_id": null,
+  "python": "3.13.15",
+  "arithmetic": "float64 screening (scipy DOP853 + variational Newton)",
+  "inputs": {
+    "graph": "research/evidence/V1_CRITICAL_GRAPH.json",
+    "graph_schema": "atlas.v1.critical-graph/3",
+    "graph_release_ready": false,
+    "roots": "research/evidence/V1_COMBINED_CRITICAL_ROOTS_2026-08-17.json",
+    "roots_schema": "atlas.v1.combined-graph-roots/1"
+  },
+  "method": {
+    "state": "S = (sgn G_plus, sgn G_minus, sgn discriminant, n_unstable)",
+    "G_plus": "beta - 6*alpha + 20 = P(+2)",
+    "G_minus": "beta - 2*alpha + 4 = P(-2)",
+    "discriminant": "(alpha-4)^2 - 4*(beta - 4*alpha + 8)",
+    "mechanism_component": {
+      "plus_one": "G_plus",
+      "minus_one": "G_minus",
+      "trace_collision": "discriminant"
+    },
+    "checks": [
+      "missing_critical_curve: a sign flip between consecutive probes on a scan line with no committed edge of the matching mechanism between them",
+      "forbidden_component_flip: crossing one committed edge flips a component that mechanism may not flip",
+      "no_flip_across_edge: a committed edge across which its own component does not change sign",
+      "face_state_mismatch: two probes joined by an axis-aligned path that meets no committed edge, yet with different S",
+      "forbidden_component_flip_on_path: same, for paths meeting exactly one edge"
+    ]
+  },
+  "parameters": {
+    "scan_lines": [
+      0.889
+    ],
+    "standoff": 0.004,
+    "max_gap": 0.02,
+    "probed_m2_range": [
+      0.7,
+      1.2
+    ],
+    "declared_m2_range": [
+      0.7,
+      1.2
+    ],
+    "sign_threshold": 0.001,
+    "min_clearance": 0.002,
+    "max_closure": 1e-07,
+    "refine_steps": 7,
+    "probe_cpu_budget_seconds": 1500.0
+  },
+  "committed_edges": [
+    {
+      "edge_id": "minus_one_u_to_s_0",
+      "mechanism": "minus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        0.9292391921118185,
+        1.0495531866872656
+      ],
+      "vertices": 122,
+      "degenerate": false
+    },
+    {
+      "edge_id": "minus_one_u_to_s_1",
+      "mechanism": "minus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        0.996,
+        0.9967681995217997
+      ],
+      "vertices": 2,
+      "degenerate": false
+    },
+    {
+      "edge_id": "minus_one_s_to_u_0",
+      "mechanism": "minus_one",
+      "orientation": "S->U",
+      "m1_range": [
+        0.996,
+        1.0426234457894452
+      ],
+      "vertices": 48,
+      "degenerate": false
+    },
+    {
+      "edge_id": "plus_one_u_to_s_0",
+      "mechanism": "plus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        0.8,
+        0.9292391921118185
+      ],
+      "vertices": 131,
+      "degenerate": false
+    },
+    {
+      "edge_id": "plus_one_u_to_s_1",
+      "mechanism": "plus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        0.9967681995217997,
+        1.0426234457894452
+      ],
+      "vertices": 48,
+      "degenerate": false
+    },
+    {
+      "edge_id": "plus_one_u_to_s_2",
+      "mechanism": "plus_one",
+      "orientation": "U->S",
+      "m1_range": [
+        1.0495531866872656,
+        1.071
+      ],
+      "vertices": 23,
+      "degenerate": false
+    },
+    {
+      "edge_id": "trace_collision_s_to_u_0",
+      "mechanism": "trace_collision",
+      "orientation": "S->U",
+      "m1_range": [
+        0.8,
+        1.053
+      ],
+      "vertices": 254,
+      "degenerate": false
+    },
+    {
+      "edge_id": "minus_one_sweep_component_0",
+      "mechanism": "minus_one",
+      "orientation": "sweep_component_0",
+      "m1_range": [
+        0.892,
+        0.9292391921118185
+      ],
+      "vertices": 20,
+      "degenerate": false
+    },
+    {
+      "edge_id": "minus_one_sweep_component_1",
+      "mechanism": "minus_one",
+      "orientation": "sweep_component_1",
+      "m1_range": [
+        0.996,
+        1.042
+      ],
+      "vertices": 24,
+      "degenerate": false
+    },
+    {
+      "edge_id": "minus_one_sweep_component_3",
+      "mechanism": "minus_one",
+      "orientation": "sweep_component_3",
+      "m1_range": [
+        1.0426234457894452,
+        1.1
+      ],
+      "vertices": 30,
+      "degenerate": false
+    },
+    {
+      "edge_id": "minus_one_sweep_component_4",
+      "mechanism": "minus_one",
+      "orientation": "sweep_component_4",
+      "m1_range": [
+        1.0495531866872656,
+        1.094
+      ],
+      "vertices": 24,
+      "degenerate": false
+    },
+    {
+      "edge_id": "plus_one_sweep_component_10",
+      "mechanism": "plus_one",
+      "orientation": "sweep_component_10",
+      "m1_range": [
+        0.9292391921118185,
+        0.9967681995217997
+      ],
+      "vertices": 36,
+      "degenerate": false
+    },
+    {
+      "edge_id": "plus_one_sweep_component_12",
+      "mechanism": "plus_one",
+      "orientation": "sweep_component_12",
+      "m1_range": [
+        1.0426234457894452,
+        1.0495531866872656
+      ],
+      "vertices": 26,
+      "degenerate": false
+    }
+  ],
+  "non_graph_edges": [],
+  "probe_summary": {
+    "planned": 27,
+    "evaluated": 27,
+    "converged": 26,
+    "failed": 1,
+    "undecidable_state": 0,
+    "cpu_seconds": 373.9
+  },
+  "violation_counts": {
+    "missing_critical_curve": 1
+  },
+  "violations": [
+    {
+      "kind": "missing_critical_curve",
+      "component": "G_minus",
+      "mechanism": "minus_one",
+      "m1": 0.889,
+      "m2_bracket": [
+        0.7363115308721867,
+        0.75446729630828
+      ],
+      "value_bracket": [
+        -0.30939440103607296,
+        0.9358031917731413
+      ],
+      "n_unstable": [
+        2,
+        1
+      ],
+      "committed_edges_in_bracket": [],
+      "detail": "sgn G_minus flips between m2=0.736312 and m2=0.754467 at m1=0.889000, but the committed graph has no minus_one edge there"
+    }
+  ],
+  "missing_curve_refinements": [
+    {
+      "m1": 0.889,
+      "bracket": [
+        0.7363115308721867,
+        0.75446729630828
+      ],
+      "component": "G_minus",
+      "status": "endpoint_probe_failed"
+    }
+  ],
+  "probes": [
+    {
+      "m1": 0.889,
+      "m2": 0.7181557654360933,
+      "ok": false,
+      "note": "closure 5.353e-01 > 1e-07",
+      "alpha": NaN,
+      "beta": NaN,
+      "G_plus": null,
+      "G_minus": null,
+      "discriminant": null,
+      "n_unstable": null,
+      "closure": 0.5352700928399593,
+      "seconds": 43.287,
+      "chart": null
+    },
+    {
+      "m1": 0.889,
+      "m2": 0.7363115308721867,
+      "ok": true,
+      "note": "",
+      "alpha": 7.342216424310921,
+      "beta": 10.37503844758577,
+      "G_plus": -13.678260098279765,
+      "G_minus": -0.30939440103607296,
+      "discriminant": 55.14571962556534,
+      "n_unstable": 2,
+      "closure": 1.0375748031621027e-09,
+      "seconds": 27.947,
+      "chart": [
+        -0.17067223417388716,
+        2.1142616847892497,
+        0.4176217219235066,
+        5.876261464573029
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 0.75446729630828,
+      "ok": true,
+      "note": "",
+      "alpha": 6.913687551983219,
+      "beta": 10.763178295739579,
+      "G_plus": -10.718947016159731,
+      "G_minus": 0.9358031917731413,
+      "discriminant": 44.05586279935515,
+      "n_unstable": 1,
+      "closure": 1.1022240303685533e-09,
+      "seconds": 22.857,
+      "chart": [
+        -0.17776182960374953,
+        2.0618535991060187,
+        0.4178418714733235,
+        5.965923431652286
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 0.7726230617443733,
+      "ok": true,
+      "note": "",
+      "alpha": 6.421951890882423,
+      "beta": 10.732236548443046,
+      "G_plus": -7.7994747968514915,
+      "G_minus": 1.8883327666782002,
+      "discriminant": 33.68813502209552,
+      "n_unstable": 1,
+      "closure": 1.058407492643295e-09,
+      "seconds": 27.278,
+      "chart": [
+        -0.18492231673696266,
+        2.0118301460641046,
+        0.4168024035818667,
+        6.03955128738856
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 0.7907788271804667,
+      "ok": true,
+      "note": "",
+      "alpha": 5.9012459232777275,
+      "beta": 10.401563975923201,
+      "G_plus": -5.005911563743162,
+      "G_minus": 2.5990721293677463,
+      "discriminant": 24.428414929531012,
+      "n_unstable": 1,
+      "closure": 7.93679265220685e-10,
+      "seconds": 28.675,
+      "chart": [
+        -0.19215277218186788,
+        1.9641171951367233,
+        0.4149562241079901,
+        6.102596775153796
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 0.8089345926165601,
+      "ok": true,
+      "note": "",
+      "alpha": 5.381982275817837,
+      "beta": 9.901770854364809,
+      "G_plus": -2.390122800542212,
+      "G_minus": 3.1378063027291354,
+      "discriminant": 16.4145080063008,
+      "n_unstable": 1,
+      "closure": 5.960216336922172e-10,
+      "seconds": 22.16,
+      "chart": [
+        -0.19941516876217846,
+        1.918854551432923,
+        0.4125822500598823,
+        6.158498182575045
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 0.8230903580526534,
+      "ok": true,
+      "note": "",
+      "alpha": 4.996084308225686,
+      "beta": 9.471691618681012,
+      "G_plus": -0.504814230673098,
+      "G_minus": 3.479523002229641,
+      "discriminant": 11.042766405980364,
+      "n_unstable": 1,
+      "closure": 6.990310418029286e-10,
+      "seconds": 14.484,
+      "chart": [
+        -0.20505845302081174,
+        1.8854204987455365,
+        0.4104797520095013,
+        6.19852099515333
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 0.8310903580526534,
+      "ok": true,
+      "note": "",
+      "alpha": 4.7903257686581,
+      "beta": 9.233518477345909,
+      "G_plus": 0.49156386539731045,
+      "G_minus": 3.6528669400297087,
+      "discriminant": 8.335753209750981,
+      "n_unstable": 0,
+      "closure": 6.250069806529058e-10,
+      "seconds": 18.44,
+      "chart": [
+        -0.20822403347706286,
+        1.8673016752610416,
+        0.4092175346911906,
+        6.220026160137031
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 0.8443078646421596,
+      "ok": true,
+      "note": "",
+      "alpha": 4.475837673039392,
+      "beta": 8.87163899239627,
+      "G_plus": 2.016612954159921,
+      "G_minus": 3.9199636463174876,
+      "discriminant": 4.353268290128725,
+      "n_unstable": 0,
+      "closure": 6.530348047472244e-10,
+      "seconds": 13.332,
+      "chart": [
+        -0.21339071115091196,
+        1.8386751275064428,
+        0.40703629006508046,
+        6.254001110018728
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 0.8575253712316657,
+      "ok": true,
+      "note": "",
+      "alpha": 4.199225539128927,
+      "beta": 8.573491407701667,
+      "G_plus": 3.3781381729281073,
+      "G_minus": 4.175040329443814,
+      "discriminant": 0.9333338106973696,
+      "n_unstable": 0,
+      "closure": 8.431816931148256e-10,
+      "seconds": 7.352,
+      "chart": [
+        -0.21844410893654773,
+        1.811774571845816,
+        0.40475208391319795,
+        6.286143446432439
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 0.8655253712316657,
+      "ok": true,
+      "note": "",
+      "alpha": 4.052713008246766,
+      "beta": 8.434003011652242,
+      "G_plus": 4.117724962171648,
+      "G_minus": 4.328576995158711,
+      "discriminant": -0.8898252534222945,
+      "n_unstable": 2,
+      "closure": 6.915957097592e-10,
+      "seconds": 13.166,
+      "chart": [
+        -0.22143032731634515,
+        1.7963741831264473,
+        0.40332443028764603,
+        6.304709632657945
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 0.881435643512156,
+      "ok": true,
+      "note": "",
+      "alpha": 3.8128364309886,
+      "beta": 8.267938432721472,
+      "G_plus": 5.390919846789874,
+      "G_minus": 4.642265570744272,
+      "discriminant": -4.031340633503206,
+      "n_unstable": 2,
+      "closure": 3.7002461421602547e-10,
+      "seconds": 9.356,
+      "chart": [
+        -0.22716413153063372,
+        1.7678124056174096,
+        0.4003892209689154,
+        6.33953866140526
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 0.9013459157926462,
+      "ok": true,
+      "note": "",
+      "alpha": 3.615938088661965,
+      "beta": 8.30164216146554,
+      "G_plus": 6.606013629493749,
+      "G_minus": 5.06976598414161,
+      "discriminant": -7.204055675530095,
+      "n_unstable": 2,
+      "closure": 4.3243172050217286e-10,
+      "seconds": 9.306,
+      "chart": [
+        -0.23386083896420173,
+        1.7361066043681714,
+        0.3965365887525501,
+        6.378774590276011
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 0.9212561880731365,
+      "ok": true,
+      "note": "",
+      "alpha": 3.5375731689720573,
+      "beta": 8.634265577651872,
+      "G_plus": 7.408826563819529,
+      "G_minus": 5.559119239707758,
+      "discriminant": -9.722053033000027,
+      "n_unstable": 2,
+      "closure": 2.327704193836554e-10,
+      "seconds": 8.431,
+      "chart": [
+        -0.23989870627214363,
+        1.7090551972187193,
+        0.39247456243575135,
+        6.412399765900177
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 0.9411664603536267,
+      "ok": true,
+      "note": "",
+      "alpha": 3.5741763430110796,
+      "beta": 9.277666460294437,
+      "G_plus": 7.832608402227958,
+      "G_minus": 6.129313774272278,
+      "discriminant": -11.742518566149059,
+      "n_unstable": 2,
+      "closure": 3.783630254830299e-10,
+      "seconds": 16.832,
+      "chart": [
+        -0.24515480209990984,
+        1.6867619132534766,
+        0.38818697394135254,
+        6.439488359219098
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 0.961076732634117,
+      "ok": true,
+      "note": "",
+      "alpha": 3.7145961098473737,
+      "beta": 10.220545975623606,
+      "G_plus": 7.932969316539365,
+      "G_minus": 6.791353755928859,
+      "discriminant": -13.367190764422194,
+      "n_unstable": 2,
+      "closure": 3.499616909711245e-10,
+      "seconds": 12.722,
+      "chart": [
+        -0.24952373408167658,
+        1.6692659584195297,
+        0.3836582284133142,
+        6.459135504420517
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 0.9809870049146072,
+      "ok": true,
+      "note": "",
+      "alpha": 3.9412931904969852,
+      "beta": 11.428332400403534,
+      "G_plus": 7.780573257421622,
+      "G_minus": 7.545746019409563,
+      "discriminant": -14.649192064180347,
+      "n_unstable": 2,
+      "closure": 3.7238042099919486e-10,
+      "seconds": 6.929,
+      "chart": [
+        -0.25291967214458916,
+        1.6565613788301972,
+        0.378877743066621,
+        6.470543174852745
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 1.0008972771950975,
+      "ok": true,
+      "note": "",
+      "alpha": 4.232489069144103,
+      "beta": 12.845942222680574,
+      "G_plus": 7.451007807815955,
+      "G_minus": 8.380964084392367,
+      "discriminant": -15.609892617145153,
+      "n_unstable": 2,
+      "closure": 3.4033479414452176e-10,
+      "seconds": 5.418,
+      "chart": [
+        -0.2552769659084276,
+        1.6486158295584086,
+        0.3738428116288126,
+        6.4730745815143464
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 1.0208075494755877,
+      "ok": true,
+      "note": "",
+      "alpha": 4.564894303975516,
+      "beta": 14.403926909347206,
+      "G_plus": 7.014561085494112,
+      "G_minus": 9.274138301396174,
+      "discriminant": -16.25829319911659,
+      "n_unstable": 2,
+      "closure": 3.087093511699013e-10,
+      "seconds": 5.587,
+      "chart": [
+        -0.25655001654611903,
+        1.6453859886331028,
+        0.36856054400231886,
+        6.466285796412006
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 1.040717821756078,
+      "ok": true,
+      "note": "",
+      "alpha": 4.916447087478684,
+      "beta": 16.02708793534535,
+      "G_plus": 6.528405410473248,
+      "G_minus": 10.194193760387982,
+      "discriminant": -16.605323077574297,
+      "n_unstable": 2,
+      "closure": 2.281270815011325e-10,
+      "seconds": 6.143,
+      "chart": [
+        -0.2567126770758388,
+        1.646829322362466,
+        0.3630493377331436,
+        6.449940103038364
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 1.0606280940365682,
+      "ok": true,
+      "note": "",
+      "alpha": 5.2685449380568805,
+      "beta": 17.643680496955184,
+      "G_plus": 6.032410868613901,
+      "G_minus": 11.106590620841423,
+      "discriminant": -16.668796719040916,
+      "n_unstable": 2,
+      "closure": 2.1440135605317116e-10,
+      "seconds": 5.659,
+      "chart": [
+        -0.2557570008522468,
+        1.652913924381332,
+        0.35734020845349357,
+        6.424007005101896
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 1.0805383663170585,
+      "ok": true,
+      "note": "",
+      "alpha": 5.607468336753436,
+      "beta": 19.193277631665588,
+      "G_plus": 5.548467611144972,
+      "G_minus": 11.978340958158716,
+      "discriminant": -16.46966268494252,
+      "n_unstable": 2,
+      "closure": 2.4177304426413196e-10,
+      "seconds": 5.814,
+      "chart": [
+        -0.2536908062743629,
+        1.6636295845566054,
+        0.3514783187592083,
+        6.388645358796426
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 1.1004486385975487,
+      "ok": true,
+      "note": "",
+      "alpha": 5.924977561498574,
+      "beta": 20.632078541983635,
+      "G_plus": 5.082213172992187,
+      "G_minus": 12.782123418986487,
+      "discriminant": -16.02313457168436,
+      "n_unstable": 2,
+      "closure": 3.6319371222016036e-10,
+      "seconds": 5.871,
+      "chart": [
+        -0.2505333117407739,
+        1.6790044556584152,
+        0.34552527838917363,
+        6.344169272599637
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 1.120358910878039,
+      "ok": true,
+      "note": "",
+      "alpha": 6.218335128419255,
+      "beta": 21.935513804744463,
+      "G_plus": 4.625503034228931,
+      "G_minus": 13.498843547905953,
+      "discriminant": -15.327682422290891,
+      "n_unstable": 2,
+      "closure": 3.53022409276359e-10,
+      "seconds": 6.962,
+      "chart": [
+        -0.24630785862544852,
+        1.6991336917305848,
+        0.3395633944648608,
+        6.290995643894103
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 1.1402691831585292,
+      "ok": true,
+      "note": "",
+      "alpha": 6.490112242304677,
+      "beta": 23.099011577217595,
+      "G_plus": 4.158338123389534,
+      "G_minus": 14.118787092608242,
+      "discriminant": -14.35359145271993,
+      "n_unstable": 2,
+      "closure": 3.27977693627852e-10,
+      "seconds": 7.126,
+      "chart": [
+        -0.24103001507795038,
+        1.7242316414774503,
+        0.3337044848235137,
+        6.229571666309005
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 1.1601794554390195,
+      "ok": true,
+      "note": "",
+      "alpha": 6.748386658332725,
+      "beta": 24.138646091612006,
+      "G_plus": 3.6483261416156587,
+      "G_minus": 14.641872774946556,
+      "discriminant": -13.026768609423097,
+      "n_unstable": 2,
+      "closure": 3.4180368997259044e-10,
+      "seconds": 13.101,
+      "chart": [
+        -0.2346868018125616,
+        1.7547348076245466,
+        0.32810975522904723,
+        6.160275883853785
+      ]
+    },
+    {
+      "m1": 0.889,
+      "m2": 1.1800897277195097,
+      "ok": true,
+      "note": "",
+      "alpha": 7.008279966569212,
+      "beta": 25.094750572681193,
+      "G_plus": 3.0450707732659197,
+      "G_minus": 15.078190639542768,
+      "discriminant": -11.196774468355716,
+      "n_unstable": 2,
+      "closure": 3.653796119295124e-10,
+      "seconds": 9.692,
+      "chart": [
+        -0.2271933720819599,
+        1.7915369024207706,
+        0.3230403843975626,
+        6.083267105121914
+      ]
+    }
+  ],
+  "scope": "This audit falsifies completeness where it fires; it cannot certify completeness where it does not.  A critical curve that both begins and ends between two adjacent scan lines, or that never separates two probes, is not sampled."
+}
