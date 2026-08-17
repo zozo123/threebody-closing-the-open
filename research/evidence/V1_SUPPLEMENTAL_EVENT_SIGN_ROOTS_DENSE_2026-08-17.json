@@ -36,7 +36,7 @@
       ],
       "estimator": "float64",
       "source": "full_domain_event_sign_sweep",
-      "sweep_component": 0,
+      "sweep_component": 100,
       "n_unstable_bracket": [
         2,
         1
@@ -63,7 +63,7 @@
       ],
       "estimator": "float64",
       "source": "full_domain_event_sign_sweep",
-      "sweep_component": 1,
+      "sweep_component": 101,
       "n_unstable_bracket": [
         2,
         1
@@ -90,7 +90,7 @@
       ],
       "estimator": "float64",
       "source": "full_domain_event_sign_sweep",
-      "sweep_component": 2,
+      "sweep_component": 102,
       "n_unstable_bracket": [
         2,
         1
@@ -117,7 +117,7 @@
       ],
       "estimator": "float64",
       "source": "full_domain_event_sign_sweep",
-      "sweep_component": 3,
+      "sweep_component": 103,
       "n_unstable_bracket": [
         2,
         1
@@ -144,7 +144,7 @@
       ],
       "estimator": "float64",
       "source": "full_domain_event_sign_sweep",
-      "sweep_component": 6,
+      "sweep_component": 106,
       "n_unstable_bracket": [
         2,
         1
@@ -171,7 +171,7 @@
       ],
       "estimator": "float64",
       "source": "full_domain_event_sign_sweep",
-      "sweep_component": 9,
+      "sweep_component": 109,
       "n_unstable_bracket": [
         2,
         1
@@ -198,7 +198,7 @@
       ],
       "estimator": "float64",
       "source": "full_domain_event_sign_sweep",
-      "sweep_component": 9,
+      "sweep_component": 109,
       "n_unstable_bracket": [
         2,
         1
@@ -225,7 +225,7 @@
       ],
       "estimator": "float64",
       "source": "full_domain_event_sign_sweep",
-      "sweep_component": 29,
+      "sweep_component": 129,
       "n_unstable_bracket": [
         2,
         1
@@ -252,7 +252,7 @@
       ],
       "estimator": "float64",
       "source": "full_domain_event_sign_sweep",
-      "sweep_component": 30,
+      "sweep_component": 130,
       "n_unstable_bracket": [
         2,
         1
@@ -279,7 +279,7 @@
       ],
       "estimator": "float64",
       "source": "full_domain_event_sign_sweep",
-      "sweep_component": 30,
+      "sweep_component": 130,
       "n_unstable_bracket": [
         2,
         1

@@ -30,6 +30,20 @@ def main() -> None:
     parser.add_argument("sweep_census")
     parser.add_argument("output")
     parser.add_argument(
+        "--component-base",
+        type=int,
+        default=0,
+        help=(
+            "offset added to every sweep_component label (default %(default)s).  "
+            "Component labels are PER-ARTIFACT indices, exactly like cell ids: "
+            "loading two supplemental artifacts that both label a component '1' "
+            "makes the assembler group their unrelated roots into a single edge "
+            "spanning the emptiness between them, which the sign-topology audit "
+            "then reports as no_flip_across_edge.  Offset above every committed "
+            "label when adding a second artifact."
+        ),
+    )
+    parser.add_argument(
         "--id-base",
         type=int,
         default=SUPPLEMENTAL_CELL_BASE,
@@ -91,7 +105,7 @@ def main() -> None:
                 "masses": [m1, m2, 1.0],
                 "estimator": "float64",
                 "source": "full_domain_event_sign_sweep",
-                "sweep_component": index,
+                "sweep_component": index + args.component_base,
                 "n_unstable_bracket": n_unstable,
                 "census_would_bracket": vertex.get("census_would_bracket"),
                 "committed_edge_matched": vertex.get("committed_edge_matched"),

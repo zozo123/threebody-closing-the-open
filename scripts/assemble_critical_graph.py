@@ -516,6 +516,7 @@ def supplemental_component_edges(roots: list[dict[str, Any]]) -> list[dict[str, 
             # would inflate the graph without closing a missing-curve finding.
             continue
         mode = str(items[0].get("event_mode") or "unknown")
+        mode = str(items[0].get("event_mode") or "unknown")
         cell_ids = [int(row["cell_id"]) for row in items]
         start_masses = [float(value) for value in (items[0].get("masses") or [])]
         end_masses = [float(value) for value in (items[-1].get("masses") or [])]
