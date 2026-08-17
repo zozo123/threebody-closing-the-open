@@ -2696,11 +2696,11 @@
     },
     "discovery_manifest": {
       "kind": "claim_registry",
-      "sha256": "75912b9b1595bd7f6d234825f1930c3976e7f0058a50e97bc4995f0c116c3967"
+      "sha256": "fb84b6e29f34798f2606e39ec664d8188cf446671c2598fb61d5bb96bdf1fcb0"
     }
   },
   "dimension_count": 14,
-  "matrix_sha256": "1dc780a0f5b17ae3482866e4d1a066d00ea24e359c06fd247011febae920e4f2",
+  "matrix_sha256": "85d30663064816d2bd412ef505cfcebe512b8570c8f93cebfbebaf3de87e4ef2",
   "policy_sha256": "b915bf08610ed97b6b07c505ba0ea456e99c6c5b9cc87c511c6039c7259376f5",
   "release_policy": {
     "numerical_paper_ready": false,
@@ -2714,7 +2714,7 @@
     "theorem_grade_ready": false
   },
   "schema": "atlas.claim-assurance-matrix.v1",
-  "source_manifest_sha256": "75912b9b1595bd7f6d234825f1930c3976e7f0058a50e97bc4995f0c116c3967",
+  "source_manifest_sha256": "fb84b6e29f34798f2606e39ec664d8188cf446671c2598fb61d5bb96bdf1fcb0",
   "status_vocabulary": [
     "fail",
     "infrastructure_blocked",

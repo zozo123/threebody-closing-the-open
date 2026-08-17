@@ -135,6 +135,45 @@
 #                re-derive the AL and neck predicates itself.  Sealing alone
 #                proves nothing.
 #
+#   --sign-topology V1_SIGN_TOPOLOGY_AUDIT_INDEPENDENT_35LINE_2026-08-17.json
+#                V1_SIGN_TOPOLOGY_CROSSING_INDEPENDENT_2026-08-17.json
+#                These SUPERSEDE V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json and
+#                V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json, which are kept only as
+#                history.  Those two were computed against the SEVEN-edge catalog
+#                graph: each lists exactly 7 committed_edges and reads only the 620
+#                root hybrid census.  They cannot even be evaluated against this
+#                graph -- edges_from_graph resolves edge["cell_ids"] against
+#                --roots, and the sweep edges' cell ids 10000-10133 are absent from
+#                that file, so it would raise KeyError.  Their "3 + 4 critical
+#                curves outside the committed edges" ARE the sweep components,
+#                which became edges at dbe5f28; gating this graph on them was a
+#                category error.
+#
+#                The replacements are not merely newer.  Every previously committed
+#                audit probes the SAME seven scan lines
+#                {0.9,0.92,0.94,0.97,1.0,1.04,1.08}, and the sweep-component edges
+#                were added to cover exactly the curves those lines flagged, so
+#                zero violations there is consistent but NOT independent.  The
+#                35-line audit probes m1 0.895..1.100 excluding those seven -- lines
+#                the edge set was never fitted to -- and it EARNED its verdict: on
+#                first run it found one missing_critical_curve, plus_one at m1
+#                1.045 refined to m2 [1.0961009, 1.0963566].  That turned out to be
+#                plus_one component 12's own arc, which its resolved walk traverses
+#                at (1.044993, 1.096081), outside an edge whose m1 span stopped at
+#                1.046.  Ingesting the walk's 21 gate-passing points closed it.
+#                  35 lines, 465 probes, 365 converged, 13 edges, violations none
+#                  crossing: 3 fine lines, 18 probes, 13 edges, violations none
+#                Both read the COMMITTED combined roots file, so both re-derive
+#                from the repository alone -- unlike
+#                V1_SIGN_TOPOLOGY_AUDIT_DENSE_PROBE_2026-08-17.json, whose roots
+#                input is the temp path artifacts/st/roots.json.
+#                REACH LIMIT, stated because it bounds the claim: 100 of 465 probes
+#                fail, every one with a closure norm of order 1 -- no periodic orbit
+#                closes there at all.  They cluster below m2 ~ 0.80 (failed median
+#                m2 0.827 against 1.001 converged), at the family's existence
+#                boundary.  The audit certifies sign topology only where the family
+#                exists.
+#
 # LEFT_BIRTH and COMPLETENESS may be overridden by environment variable.  That
 # exists so scripts/close_v1_gates.py can point this pinned invocation at the
 # classification and certificate it has just produced from live CI artifacts,
@@ -168,8 +207,8 @@ EVIDENCE_ARGS=(
   --germs research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json
   --germs research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json
   --completeness "$COMPLETENESS"
-  --sign-topology research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json
-  --sign-topology research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json
+  --sign-topology research/evidence/V1_SIGN_TOPOLOGY_AUDIT_INDEPENDENT_35LINE_2026-08-17.json
+  --sign-topology research/evidence/V1_SIGN_TOPOLOGY_CROSSING_INDEPENDENT_2026-08-17.json
   --endpoint-resolution research/evidence/V1_ENDPOINT_RESOLUTION_BIGFLOAT_TIPS_2026-08-17.json
 )
 

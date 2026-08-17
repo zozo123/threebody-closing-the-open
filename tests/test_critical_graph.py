@@ -1740,10 +1740,20 @@ def test_published_caveats_match_the_committed_evidence() -> None:
     assert not any(
         node.get("kind") == "interior_lattice_terminus" for node in graph["nodes"]
     )
-    # Unclassified lattice ends and the still-dirty 2026-08-16 sign-topology
-    # audits both hold release_ready false.  Neither may be papered over.
+    # sign_topology_clean is now TRUE, on independent evidence: a 35-scan-line
+    # audit over m1 values the committed edge set was never fitted to, plus the
+    # fine crossing configuration, both against this 13-edge graph and both
+    # reading the committed combined roots file.  It replaced the 2026-08-16
+    # audits, which were computed against the SEVEN-edge graph and cannot be
+    # evaluated against this one at all.  The 35-line audit earned it: on first
+    # run it found a missing_critical_curve at m1 1.045 which turned out to be
+    # component 12's own arc, and ingesting that arc closed it.
+    #
+    # release_ready stays false on the two unclassified lattice ends alone.
+    # Neither may be papered over.
     assert graph["release_ready"] is False
-    assert graph["root_coverage"]["sign_topology_clean"] is False
+    assert graph["root_coverage"]["sign_topology_clean"] is True
+    assert graph["root_coverage"]["edge_topology_complete"] is False
     assert "not the complete critical set" in known
     assert "interior_lattice_terminus" in known
 
