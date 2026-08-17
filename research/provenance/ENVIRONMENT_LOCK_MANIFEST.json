@@ -1635,7 +1635,7 @@
       {
         "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
         "immutable": true,
-        "line": 34,
+        "line": 44,
         "local": false,
         "repository": "actions/checkout",
         "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
@@ -1644,7 +1644,7 @@
       {
         "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "immutable": true,
-        "line": 38,
+        "line": 48,
         "local": false,
         "repository": "astral-sh/setup-uv",
         "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
@@ -1653,7 +1653,7 @@
       {
         "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
         "immutable": true,
-        "line": 80,
+        "line": 90,
         "local": false,
         "repository": "actions/upload-artifact",
         "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
@@ -3300,7 +3300,7 @@
       "sha256": "85145b9e1b5c1034c80efa17ecd07eb679e523a572b9216b97a36b94bc474284"
     }
   ],
-  "manifest_sha256": "909c2f2179cbe9de006f2784097af2f97f959d2668b9041d76f21e04042f34c5",
+  "manifest_sha256": "bc34e6fd78e429cf72506834962e99a46127e9b88dcd773089b4db411fb5e31c",
   "runner_selectors": {
     "[self-hosted, Linux, X64]": 4,
     "ubuntu-latest": 117
