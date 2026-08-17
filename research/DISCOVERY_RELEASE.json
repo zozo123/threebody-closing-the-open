@@ -222,7 +222,8 @@
     "Pulling max |event| down 10x to 2e-9 is impossible in the float64 lane at any integrator tolerance -- the target is 73x below that lane's own evaluation uncertainty -- and requires routing all 620 cells through the BigFloat lane at dps=40 with a 2e-9 stopping tolerance. Measured cost: mean 5.45 secant iterations per cell over 204 recorded BigFloat cells, ~23 min per cell at the CI-measured correction cost, ~179 serial CPU-hours, under 3 wall-hours at the existing 62-way fan-out.",
     "The census root locations are far more robust than the census certificate. With the measured d(event)/d(m2) of 20 to 660 per unit mass, even the full evaluation uncertainty maps to an m2 uncertainty of 1e-10 to 8e-9, well inside the 1e-3 published cells. The topology of the graph is not in question; the numerical certificate attached to it is.",
     "Sign-topology completeness is now supported by an INDEPENDENT audit rather than by the 2026-08-16 audits, which were computed against the seven-edge catalog graph and cannot be evaluated against the current thirteen-edge graph at all (edges_from_graph resolves edge cell_ids against the roots file, and the sweep edges' cell ids 10000-10133 are absent from the 620-root census, so it raises KeyError). The replacement audits probe 35 m1 scan lines excluding the seven that every previously committed audit used -- lines the edge set was never fitted to -- plus the fine crossing configuration: 465 probes, 365 converged, 13 edges, zero violations, both reading research/evidence/V1_COMBINED_CRITICAL_ROOTS_2026-08-17.json so both re-derive from the repository alone. That audit earned its verdict: on first run it reported one missing_critical_curve, plus_one at m1 1.045 refined to m2 [1.0961009, 1.0963566], which proved to be plus_one component 12's own arc lying outside an edge whose m1 span stopped at 1.046; ingesting the arc's 21 gate-passing points closed it. REACH LIMIT: 100 of 465 probes fail, each with a closure norm of order 1, meaning no periodic orbit closes at that mass point; they cluster below m2 ~ 0.80 at the family's existence boundary, so the audit certifies sign topology only where the family exists. release_ready remains false on the two unresolved lattice ends alone.",
-    "Sign-topology completeness is NOT established, and the flag that said otherwise has been withdrawn. sign_topology_clean was true on research/evidence/V1_SIGN_TOPOLOGY_AUDIT_INDEPENDENT_35LINE_2026-08-17.json, which reports zero violations over 35 scan lines. Measured afterwards, that artifact had 100 of its 465 probes FAIL -- 97 of them closure failures with residuals between 3.9e-2 and 3.8e0 against the 1e-7 gate -- and its converged probes covered a mean 47.4% of the declared m2 span, as little as 9.1% on one line, with a widest inter-probe gap of 0.4101 against a 0.001 mass grid. scripts/audit_sign_topology.py drops every probe whose orbit fails to close, so an interval where the shooting solve fails contributes no probes, produces no sign change, and is reported identically to an interval that was measured and found empty. The audit script says so itself in its own scope field -- it falsifies completeness where it fires and cannot certify completeness where it does not -- but nothing machine-checked that disclaimer: sign_topology_report read only violation_counts, so a two-key file containing {\"violation_counts\": {}} and no probes at all passed as clean, as did this project's own test fixture carrying probe_count 0 and the note SYNTHETIC FIXTURE, NOT EVIDENCE. The conjunct now also requires an audit to demonstrate coverage: every gap between adjacent CONVERGED probes must be at most the 0.001 mass grid step, since two critical curves are resolved as distinct objects only when they sit at least one grid step apart. CONSEQUENCE AND OPEN WORK. An earlier version of this limitation claimed the orbit family does not exist below m2 ~ 0.80, inferring a physical boundary from probes that failed with closure norms of order 1. THAT WAS WRONG, and it was an artifact of probe density. A calibration sweep on 2026-08-17 ran the same two scan lines at max-gap 0.070, 0.040, 0.020, 0.010 and 0.005: convergence went 9/10 at 0.070 to 98/98 at 0.005, with ZERO failures at the finest setting and a converged m2 hull of 0.7049..1.1950, i.e. essentially the whole declared span, including 20 converged probes below m2 0.80. Probe failure is a function of probe spacing, not of where the family exists, because each probe is seeded from its neighbours. The same sweep fixes the instrument's detection threshold: a real minus_one curve at m1 0.889 is INVISIBLE at max-gap 0.070 and 0.040 and detected at 0.020, 0.010 and 0.005, with the bracket tightening monotonically 0.736312..0.754467 -> 0.739105..0.748881 -> 0.739105..0.743993. Every committed audit used the 0.070 default, so every one was blind by a factor of two to four. The control line m1 0.900 stayed clean at all five settings, so the detector has no false-positive mode at these resolutions. Full coverage is therefore ACHIEVABLE, and earning sign_topology_clean is a compute problem at a calibrated resolution rather than a blocked scientific one."
+    "Sign-topology completeness is NOT established, and the flag that said otherwise has been withdrawn. sign_topology_clean was true on research/evidence/V1_SIGN_TOPOLOGY_AUDIT_INDEPENDENT_35LINE_2026-08-17.json, which reports zero violations over 35 scan lines. Measured afterwards, that artifact had 100 of its 465 probes FAIL -- 97 of them closure failures with residuals between 3.9e-2 and 3.8e0 against the 1e-7 gate -- and its converged probes covered a mean 47.4% of the declared m2 span, as little as 9.1% on one line, with a widest inter-probe gap of 0.4101 against a 0.001 mass grid. scripts/audit_sign_topology.py drops every probe whose orbit fails to close, so an interval where the shooting solve fails contributes no probes, produces no sign change, and is reported identically to an interval that was measured and found empty. The audit script says so itself in its own scope field -- it falsifies completeness where it fires and cannot certify completeness where it does not -- but nothing machine-checked that disclaimer: sign_topology_report read only violation_counts, so a two-key file containing {\"violation_counts\": {}} and no probes at all passed as clean, as did this project's own test fixture carrying probe_count 0 and the note SYNTHETIC FIXTURE, NOT EVIDENCE. The conjunct now also requires an audit to demonstrate coverage: every gap between adjacent CONVERGED probes must be at most the 0.001 mass grid step, since two critical curves are resolved as distinct objects only when they sit at least one grid step apart. CONSEQUENCE AND OPEN WORK. An earlier version of this limitation claimed the orbit family does not exist below m2 ~ 0.80, inferring a physical boundary from probes that failed with closure norms of order 1. THAT WAS WRONG, and it was an artifact of probe density. A calibration sweep on 2026-08-17 ran the same two scan lines at max-gap 0.070, 0.040, 0.020, 0.010 and 0.005: convergence went 9/10 at 0.070 to 98/98 at 0.005, with ZERO failures at the finest setting and a converged m2 hull of 0.7049..1.1950, i.e. essentially the whole declared span, including 20 converged probes below m2 0.80. Probe failure is a function of probe spacing, not of where the family exists, because each probe is seeded from its neighbours. The same sweep fixes the instrument's detection threshold: a real minus_one curve at m1 0.889 is INVISIBLE at max-gap 0.070 and 0.040 and detected at 0.020, 0.010 and 0.005, with the bracket tightening monotonically 0.736312..0.754467 -> 0.739105..0.748881 -> 0.739105..0.743993. Every committed audit used the 0.070 default, so every one was blind by a factor of two to four. The control line m1 0.900 stayed clean at all five settings, so the detector has no false-positive mode at these resolutions. Full coverage is therefore ACHIEVABLE, and earning sign_topology_clean is a compute problem at a calibrated resolution rather than a blocked scientific one.",
+    "RESOLVED 2026-08-18: Every file the canonical invocation (scripts/assemble_v1_critical_graph.sh) consumes is registered above with an assembler_* role. Before 2026-08-18 the registry and the gate inputs were disjoint except for the graph itself (overlap 1 of 20 registered / 16 consumed -- issue #212 section 2); a registry that does not name what the gate actually reads cannot support an outside audit of the claim."
   ],
   "novelty": {
     "status": "pending",
@@ -458,6 +459,111 @@
       "role": "paper",
       "path": "paper/main.pdf",
       "description": "Manuscript built after injecting the machine-readable discovery status."
+    },
+    {
+      "id": "gate-v1-hybrid-critical-roots-2026-08-15",
+      "kind": "repository_file",
+      "role": "assembler_roots",
+      "path": "research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json",
+      "description": "The 620/620 float64+Julia-BigFloat hybrid census; the canonical --roots input of the critical-graph assembler."
+    },
+    {
+      "id": "gate-v1-supplemental-event-sign-roots-bigfloat-tips-2026-08-17",
+      "kind": "repository_file",
+      "role": "assembler_supplemental_roots",
+      "path": "research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_BIGFLOAT_TIPS_2026-08-17.json",
+      "description": "Label-invisible event-sign roots from the full-domain sweep, with the three unclassified tips re-localized at BigFloat dps=60 (run 32037241295); --supplemental-roots input."
+    },
+    {
+      "id": "gate-v1-plus-one-12-continuation-root-2026-08-17",
+      "kind": "repository_file",
+      "role": "assembler_supplemental_roots",
+      "path": "research/evidence/V1_PLUS_ONE_12_CONTINUATION_ROOT_2026-08-17.json",
+      "description": "One certified variational step on plus_one sweep component 12; --supplemental-roots input."
+    },
+    {
+      "id": "gate-v1-continuation-arc-roots-2026-08-17",
+      "kind": "repository_file",
+      "role": "assembler_supplemental_roots",
+      "path": "research/evidence/V1_CONTINUATION_ARC_ROOTS_2026-08-17.json",
+      "description": "21 gate-passing points of component 12's resolved continuation walks, ingested as edge vertices; produced byte-reproducibly by scripts/build_continuation_arc_roots.py; --supplemental-roots input."
+    },
+    {
+      "id": "gate-v1-left-birth-class-2026-08-16",
+      "kind": "repository_file",
+      "role": "assembler_classification",
+      "path": "research/evidence/V1_LEFT_BIRTH_CLASS_2026-08-16.json",
+      "description": "projection_fold classification of the secondary left birth with edge_endpoint_bindings for cells 392/393; --left-birth input."
+    },
+    {
+      "id": "gate-v1-secondary-right-class-2026-08-16",
+      "kind": "repository_file",
+      "role": "assembler_classification",
+      "path": "research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json",
+      "description": "Independently reproduced physical mixed (+1,-1) organizer with bindings for cells 576/577; --right-death input."
+    },
+    {
+      "id": "gate-v1-daughter-class-2026-08-16",
+      "kind": "repository_file",
+      "role": "assembler_classification",
+      "path": "research/evidence/V1_DAUGHTER_CLASS_2026-08-16.json",
+      "description": "distinct_branch daughter classification, independently reproduced; --daughter input."
+    },
+    {
+      "id": "gate-v1-mixed-germs-principal-left-2026-08-16",
+      "kind": "repository_file",
+      "role": "assembler_germs",
+      "path": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_LEFT_2026-08-16.json",
+      "description": "Four continuation germs of mixed_principal_left; --germs input."
+    },
+    {
+      "id": "gate-v1-mixed-germs-secondary-left-2026-08-16",
+      "kind": "repository_file",
+      "role": "assembler_germs",
+      "path": "research/evidence/V1_MIXED_GERMS_SECONDARY_LEFT_2026-08-16.json",
+      "description": "Four continuation germs of mixed_secondary_left; --germs input."
+    },
+    {
+      "id": "gate-v1-mixed-germs-principal-right-2026-08-16",
+      "kind": "repository_file",
+      "role": "assembler_germs",
+      "path": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json",
+      "description": "Four continuation germs of mixed_principal_right; --germs input."
+    },
+    {
+      "id": "gate-v1-secondary-right-germs-2026-08-16",
+      "kind": "repository_file",
+      "role": "assembler_germs",
+      "path": "research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json",
+      "description": "Four germs owed by the retained secondary_right_death organizer; --germs input."
+    },
+    {
+      "id": "gate-v1-completeness-certificate-2026-08-16",
+      "kind": "repository_file",
+      "role": "assembler_completeness",
+      "path": "research/evidence/V1_COMPLETENESS_CERTIFICATE_2026-08-16.json",
+      "description": "Sealed completeness certificate whose declared sources the assembler re-reads, re-hashes and re-derives; --completeness input."
+    },
+    {
+      "id": "gate-v1-sign-topology-audit-independent-35line-2026-08-17",
+      "kind": "repository_file",
+      "role": "assembler_sign_topology",
+      "path": "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_INDEPENDENT_35LINE_2026-08-17.json",
+      "description": "35-scan-line sign-topology audit on lines the edge set was never fitted to; currently FAILS the coverage guard (mean converged coverage 47.4% at grid-step resolution), which is why sign_topology_clean is false; --sign-topology input."
+    },
+    {
+      "id": "gate-v1-sign-topology-crossing-independent-2026-08-17",
+      "kind": "repository_file",
+      "role": "assembler_sign_topology",
+      "path": "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_INDEPENDENT_2026-08-17.json",
+      "description": "Fine crossing-configuration audit against the 13-edge graph; subject to the same coverage guard; --sign-topology input."
+    },
+    {
+      "id": "gate-v1-endpoint-resolution-bigfloat-tips-2026-08-17",
+      "kind": "repository_file",
+      "role": "assembler_endpoint_resolution",
+      "path": "research/evidence/V1_ENDPOINT_RESOLUTION_BIGFLOAT_TIPS_2026-08-17.json",
+      "description": "Outward continuations of components 0, 1 and 12 from BigFloat-corrected tips, recording each walk's seed and stopping point so the assembler can verify both ends; --endpoint-resolution input."
     }
   ],
   "release": {
