@@ -373,6 +373,17 @@ def trace_endpoint(
             "direction_only_neighbor": bool(direction_only),
         },
         "seed_rows": [int(previous_row["cell_id"]), int(current_row["cell_id"])],
+        # A resolution is a WALK: it starts at the edge terminus being explained
+        # and ends somewhere else.  Both ends must be recorded, because a
+        # consumer has to check two different things -- that the walk began at
+        # the endpoint it claims to resolve, and that it ended within reach of
+        # the node it claims to have reached.  Reporting only the terminal miss
+        # made those indistinguishable, which is how one end's distance came to
+        # be attached to the other end's binding.
+        "seed_masses": [float(v) for v in list(current.masses2)[:2]],
+        "final_masses": (
+            [float(v) for v in (accepted[-1].get("masses") or [])[:2]] if accepted else None
+        ),
         "seed_previous": cont._serialize_localized(previous.localized),
         "seed_current": cont._serialize_localized(current.localized),
         "accepted_points": accepted,

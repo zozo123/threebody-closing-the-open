@@ -37,6 +37,30 @@
 #                face, mixed germ, or classification artifact.  They are never
 #                promoted to interior_lattice_terminus nodes.
 #
+#   --supplemental-roots V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_BIGFLOAT_TIPS_2026-08-17.json
+#                The 2026-08-16 full-domain sweep roots (CI run 31956195570),
+#                with the THREE unclassified sweep-component tips replaced by
+#                their Julia BigFloat dps=60 re-localizations (cells 10000,
+#                10042, 10131; run 32037241295).  Those three float64 records sat
+#                5-8e-7 off the zero set in m2 -- 1.1e-6, 1.1e-6 and 4.3e-8 of
+#                BigFloat event at the stored point, against a 2e-8 gate -- which
+#                is why they failed re-correction and why continuation past them
+#                returned event=inf.  It SUPERSEDES
+#                V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json, kept as history.
+#
+#   --endpoint-resolution V1_ENDPOINT_RESOLUTION_BIGFLOAT_TIPS_2026-08-17.json
+#                Outward continuations of components 0, 1 and 12 from the
+#                BigFloat-corrected roots.  Records each walk's seed_masses and
+#                final_masses, so the assembler can check BOTH ends: that the
+#                walk began at the terminus it explains, and that it stopped
+#                within the organizer reach.  Corrected cell 10131 re-certifies
+#                under float64, so plus_one component 12 finally has two
+#                certifying roots and its two sides no longer collapse onto one
+#                seed; they resolve to DIFFERENT organizers
+#                (secondary_right_death and mixed_principal_right).
+#                Components 0 low and 1 high remain unresolved: their tips are
+#                BigFloat-verified roots that float64 still cannot re-certify.
+#
 #   --supplemental-roots V1_PLUS_ONE_12_CONTINUATION_ROOT_2026-08-17.json
 #                One certified variational step on plus_one sweep component 12
 #                that lands inside GERM_ATTACH_DISTANCE of mixed_principal_right.
@@ -133,8 +157,9 @@ COMPLETENESS="${COMPLETENESS:-research/evidence/V1_COMPLETENESS_CERTIFICATE_2026
 
 EVIDENCE_ARGS=(
   --roots research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json
-  --supplemental-roots research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json
+  --supplemental-roots research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_BIGFLOAT_TIPS_2026-08-17.json
   --supplemental-roots research/evidence/V1_PLUS_ONE_12_CONTINUATION_ROOT_2026-08-17.json
+  --supplemental-roots research/evidence/V1_CONTINUATION_ARC_ROOTS_2026-08-17.json
   --left-birth "$LEFT_BIRTH"
   --right-death research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json
   --daughter research/evidence/V1_DAUGHTER_CLASS_2026-08-16.json
@@ -145,6 +170,7 @@ EVIDENCE_ARGS=(
   --completeness "$COMPLETENESS"
   --sign-topology research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json
   --sign-topology research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json
+  --endpoint-resolution research/evidence/V1_ENDPOINT_RESOLUTION_BIGFLOAT_TIPS_2026-08-17.json
 )
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

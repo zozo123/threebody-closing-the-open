@@ -1284,7 +1284,8 @@
       ],
       "source_cell_count": 19,
       "estimators": [
-        "float64"
+        "float64",
+        "julia_bigfloat_dps60_vern9"
       ],
       "source": "full_domain_event_sign_sweep",
       "uncertainty": {
@@ -1297,7 +1298,7 @@
           "cell_id": 10000,
           "masses": [
             0.892,
-            0.7530804199278561,
+            0.7530796376143668,
             1.0
           ],
           "node": null
@@ -1310,10 +1311,12 @@
             1.0
           ],
           "node": "mixed_principal_left",
-          "attachment": "continuation_germ",
-          "distance_to_germ": 0.003232827691818646,
-          "germ_direction": "+",
-          "binding_evidence": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_LEFT_2026-08-16.json"
+          "attachment": "continuation_resolved_terminus",
+          "terminal_kind": "mixed_organizer",
+          "stopped_reason": "mixed_organizer_reached",
+          "miss_mass": 0.0009443808374062198,
+          "walk_started_from_terminus": 0.0,
+          "binding_evidence": "research/evidence/V1_ENDPOINT_RESOLUTION_BIGFLOAT_TIPS_2026-08-17.json"
         },
         "classified": false
       }
@@ -1351,7 +1354,8 @@
       ],
       "source_cell_count": 24,
       "estimators": [
-        "float64"
+        "float64",
+        "julia_bigfloat_dps60_vern9"
       ],
       "source": "full_domain_event_sign_sweep",
       "uncertainty": {
@@ -1377,7 +1381,7 @@
           "cell_id": 10042,
           "masses": [
             1.042,
-            0.8579757167987885,
+            0.8579752021443232,
             1.0
           ],
           "node": null
@@ -1616,44 +1620,74 @@
       "mechanism": "plus_one",
       "orientation": "sweep_component_12",
       "cell_ids": [
+        20022,
+        20021,
+        20020,
+        20019,
+        20018,
+        20017,
+        20016,
+        20015,
+        20014,
+        20013,
+        20012,
+        20011,
+        20010,
+        20009,
+        20008,
+        20007,
+        20006,
+        20005,
+        20004,
+        20003,
+        20002,
         10131,
         10132,
-        10133
+        10133,
+        20023
       ],
-      "source_cell_count": 3,
+      "source_cell_count": 25,
       "estimators": [
-        "float64"
+        "float64",
+        "float64_variational_continuation",
+        "julia_bigfloat_dps60_vern9"
       ],
       "source": "full_domain_event_sign_sweep",
       "uncertainty": {
-        "max_abs_event": 1.8694588987955285e-08,
-        "max_closure": 2.15454415319918e-10,
+        "max_abs_event": 1.9810279638932116e-08,
+        "max_closure": 2.2217175961999892e-10,
         "max_source_m2_bracket_width": null
       },
       "endpoints": {
         "start": {
-          "cell_id": 10131,
+          "cell_id": 20022,
           "masses": [
-            1.046,
-            1.106030306004638,
+            1.042922651794129,
+            1.0536380654222348,
             1.0
           ],
-          "node": null
+          "node": "secondary_right_death",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.0070262737811980025,
+          "germ_direction": "+",
+          "binding_evidence": "research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json"
         },
         "end": {
-          "cell_id": 10133,
+          "cell_id": 20023,
           "masses": [
             1.0484051113963102,
             1.1230512637781644,
             1.0
           ],
           "node": "mixed_principal_right",
-          "attachment": "continuation_germ",
-          "distance_to_germ": 0.005816752885323993,
-          "germ_direction": "+",
-          "binding_evidence": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json"
+          "attachment": "continuation_resolved_terminus",
+          "terminal_kind": "mixed_organizer",
+          "stopped_reason": "mixed_organizer_reached",
+          "miss_mass": 0.006526318745269977,
+          "walk_started_from_terminus": 0.0025000187933763326,
+          "binding_evidence": "research/evidence/V1_ENDPOINT_RESOLUTION_BIGFLOAT_TIPS_2026-08-17.json"
         },
-        "classified": false
+        "classified": true
       }
     }
   ],
@@ -1998,12 +2032,12 @@
   "root_coverage": {
     "source_transition_cells": 620,
     "localized_roots": 620,
-    "supplemental_roots": 134,
+    "supplemental_roots": 156,
     "required_cells": 620,
     "complete": true,
     "edge_count": 13,
     "cells_on_edges": 620,
-    "all_vertices_on_edges": 752,
+    "all_vertices_on_edges": 774,
     "duplicate_cell_ids": [],
     "missing_mixed_germs": [],
     "newton_failed": 0,
@@ -3597,7 +3631,7 @@
         "side": "start",
         "masses": [
           0.892,
-          0.7530804199278561,
+          0.7530796376143668,
           1.0
         ],
         "reserved_for": null
@@ -3607,52 +3641,45 @@
         "side": "end",
         "masses": [
           1.042,
-          0.8579757167987885,
-          1.0
-        ],
-        "reserved_for": null
-      },
-      {
-        "edge": "plus_one_sweep_component_12",
-        "side": "start",
-        "masses": [
-          1.046,
-          1.106030306004638,
+          0.8579752021443232,
           1.0
         ],
         "reserved_for": null
       }
     ],
-    "endpoint_resolutions_applied": 0,
-    "classification_binding_errors": [],
+    "endpoint_resolutions_applied": 2,
+    "classification_binding_errors": [
+      "V1_ENDPOINT_RESOLUTION_BIGFLOAT_TIPS_2026-08-17.json: component 1 resolved with no terminal node_id",
+      "V1_ENDPOINT_RESOLUTION_BIGFLOAT_TIPS_2026-08-17.json: component 12 low started 5.2483e-02 from this terminus, beyond 0.008; it did not walk from here"
+    ],
     "edge_topology_complete": false
   },
   "root_residual_margin": {
-    "localized_roots": 754,
+    "localized_roots": 776,
     "event_gate": 2e-08,
     "max_abs_event": 1.989798081858396e-08,
     "gate_occupancy_max": 0.994899040929198,
     "headroom_fraction": 0.005100959070801991,
-    "median_abs_event": 4.038601009170861e-09,
-    "p90_abs_event": 1.6113018908026082e-08,
-    "p99_abs_event": 1.9382717546534428e-08,
-    "roots_above_1e_8": 211,
-    "roots_above_half_gate": 211,
-    "roots_above_95_percent_of_gate": 11,
+    "median_abs_event": 4.208692061524744e-09,
+    "p90_abs_event": 1.609309913108703e-08,
+    "p99_abs_event": 1.9520916438864333e-08,
+    "roots_above_1e_8": 222,
+    "roots_above_half_gate": 222,
+    "roots_above_95_percent_of_gate": 12,
     "closure_conditioning": {
       "reported": 0,
-      "missing": 754
+      "missing": 776
     },
     "event_conditioning": {
       "reported": 0,
-      "missing": 754
+      "missing": 776
     },
     "max_reported_m2_uncertainty": null
   },
   "incidence": {
     "node_count": 14,
     "edge_count": 13,
-    "attached_endpoints": 23,
+    "attached_endpoints": 24,
     "nodes_touching_more_than_one_edge": {
       "mixed_principal_left": [
         "minus_one_sweep_component_0:end",
@@ -3679,6 +3706,7 @@
       "secondary_right_death": [
         "minus_one_s_to_u_0:end",
         "minus_one_sweep_component_3:start",
+        "plus_one_sweep_component_12:start",
         "plus_one_u_to_s_1:end"
       ]
     },

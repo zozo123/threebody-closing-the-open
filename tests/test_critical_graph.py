@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import math
 import hashlib
 import os
 from pathlib import Path
@@ -1794,12 +1795,14 @@ def _resolution(tmp_path, name, results):
     return path
 
 
-def _terminus(node_id, organizer, miss):
+def _terminus(node_id, organizer, final):
+    """A terminus: where the walk stopped, and how far that is from the node."""
     return {
         "kind": "mixed_organizer",
         "node_id": node_id,
-        "miss_mass": miss,
+        "miss_mass": math.dist(list(final)[:2], list(organizer)[:2]),
         "organizer_masses": list(organizer),
+        "final_masses": list(final),
     }
 
 
@@ -1812,7 +1815,8 @@ def test_endpoint_resolution_binds_a_terminus_its_continuation_reached(tmp_path)
     edge_endpoint_bindings, and nothing read it.
     """
     roots = _sweep_roots(tmp_path)
-    # Sits 2.0e-3 from the low terminus (1.040, 1.100): inside the 8e-3 reach.
+    # The walk begins AT the low terminus (1.040, 1.100) and stops within the
+    # 8e-3 organizer reach.  Both ends of the walk check out.
     resolution = _resolution(
         tmp_path,
         "res.json",
@@ -1822,7 +1826,10 @@ def test_endpoint_resolution_binds_a_terminus_its_continuation_reached(tmp_path)
                 "outward_side": "low",
                 "scientific_endpoint_resolved": True,
                 "stopped_reason": "mixed_organizer_reached",
-                "terminal": _terminus("mixed_principal_right", (1.042, 1.100), 2.0e-3),
+                "seed_masses": [1.040, 1.100],
+                "terminal": _terminus(
+                    "mixed_principal_right", (1.042, 1.100), (1.040, 1.100)
+                ),
             }
         ],
     )
@@ -1849,13 +1856,14 @@ def test_endpoint_resolution_refuses_a_distance_measured_at_the_other_terminus(
 
     V1_SAMPLED_ENDPOINT_RESOLUTION_2026-08-17.json, as originally produced,
     reported plus_one component 12's `low` terminus with miss_mass 6.5263e-3 --
-    the distance from its `high` terminus.  `low` itself sat 2.3713e-2 away, 2.96x beyond the reach.  The
-    assembler recomputes from the endpoint being bound rather than trusting the
-    number in the artifact.
+    the distance from its `high` terminus.  A resolution is a WALK, so the test
+    that catches this is not "is the endpoint near the organizer" -- a
+    continuation deliberately travels away from its endpoint -- but "did this
+    walk begin at the terminus it claims to explain".
     """
     roots = _sweep_roots(tmp_path)
-    # Organizer is near the HIGH terminus (1.042, 1.110); the reported miss is
-    # that near distance, but the binding targets the far `low` side.
+    # The walk begins at the HIGH terminus (1.042, 1.110) but is filed under the
+    # `low` side, whose terminus is (1.040, 1.100).
     resolution = _resolution(
         tmp_path,
         "res.json",
@@ -1865,7 +1873,10 @@ def test_endpoint_resolution_refuses_a_distance_measured_at_the_other_terminus(
                 "outward_side": "low",
                 "scientific_endpoint_resolved": True,
                 "stopped_reason": "mixed_organizer_reached",
-                "terminal": _terminus("mixed_principal_right", (1.042, 1.110), 2.0e-3),
+                "seed_masses": [1.042, 1.110],
+                "terminal": _terminus(
+                    "mixed_principal_right", (1.042, 1.110), (1.042, 1.110)
+                ),
             }
         ],
     )
@@ -1881,7 +1892,7 @@ def test_endpoint_resolution_refuses_a_distance_measured_at_the_other_terminus(
     assert edge["endpoints"]["start"].get("node") is None
     assert graph["root_coverage"]["endpoint_resolutions_applied"] == 0
     errors = graph["root_coverage"]["classification_binding_errors"]
-    assert any("beyond the" in item or "not measured at this endpoint" in item for item in errors)
+    assert any("did not walk from here" in item for item in errors)
 
 
 def test_endpoint_resolution_refuses_both_sides_of_a_duplicated_record(tmp_path) -> None:
@@ -1891,7 +1902,7 @@ def test_endpoint_resolution_refuses_both_sides_of_a_duplicated_record(tmp_path)
     that might belong to the opposite terminus, and nothing distinguishes them.
     """
     roots = _sweep_roots(tmp_path)
-    terminal = _terminus("mixed_principal_right", (1.042, 1.100), 2.0e-3)
+    terminal = _terminus("mixed_principal_right", (1.042, 1.100), (1.040, 1.100))
     resolution = _resolution(
         tmp_path,
         "res.json",
@@ -1938,7 +1949,10 @@ def test_endpoint_resolution_refuses_a_component_that_matches_no_edge(tmp_path) 
                 "outward_side": "low",
                 "scientific_endpoint_resolved": True,
                 "stopped_reason": "mixed_organizer_reached",
-                "terminal": _terminus("mixed_principal_right", (1.040, 1.100), 0.0),
+                "seed_masses": [1.040, 1.100],
+                "terminal": _terminus(
+                    "mixed_principal_right", (1.040, 1.100), (1.040, 1.100)
+                ),
             }
         ],
     )
