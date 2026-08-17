@@ -8,9 +8,11 @@ continues *away* from the sampled segment using the variational predictor in
 ``trace_label_invisible_continuous.py`` and asks what the zero set actually does.
 
 Accepted scientific stops:
-  * tangent-matched overlap with a committed catalog critical root/arc;
   * declared-domain boundary;
+  * a passed mixed organizer;
   * closed loop (return to an earlier continuation point with tangent match).
+A tangent-matched catalog sample is retained as a proximity candidate only. A
+sampled secant is not a continuation-certified incidence witness.
 A projection turn is recorded but never treated as a stop.  Corrector failure is
 reported as unresolved, never promoted to an endpoint.
 """
@@ -35,6 +37,9 @@ LOOP_MATCH_TOL = 5e-3
 LOOP_MIN_SEPARATION = 12
 ORGANIZER_MATCH_TOL = 8e-3
 GRAPH_PATH = Path(__file__).resolve().parents[1] / "research/evidence/V1_CRITICAL_GRAPH.json"
+SCIENTIFIC_TERMINAL_KINDS = frozenset(
+    {"declared_domain_boundary", "mixed_organizer", "closed_loop"}
+)
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -79,24 +84,46 @@ def strict_supplemental(row: dict[str, Any]) -> cont.StrictPoint:
     )
 
 
-def _direction_only_seed(certified: cont.StrictPoint, neighbor: dict[str, Any]) -> cont.StrictPoint:
-    """Copy a re-certified chart onto a neighbor's masses for the first secant.
+def _direction_only_seed(
+    certified: cont.StrictPoint,
+    outward_reference: np.ndarray,
+) -> cont.StrictPoint:
+    """Create a non-scientific previous point that orients the first predictor.
 
-    The neighbor is not a scientific seed.  Only its mass-plane location orients
-    the variational predictor.  The first accepted step still has to pass the
-    frozen gates on its own.
+    ``_advance_variational`` uses ``current - previous`` only to select one of
+    the two tangent orientations.  Put the dummy previous point opposite the
+    requested outward direction.  This remains correct when the failed lattice
+    sample lies outward of the sole re-certified seed; copying that failed
+    sample directly would reverse the continuation direction.
     """
-    masses = neighbor.get("masses") or []
-    if len(masses) < 2:
-        raise RuntimeError("direction-only neighbor is missing masses")
     point = certified.localized.sample.point
+    current_mass = np.asarray(point.masses[:2], dtype=float)
+    dummy_mass = _direction_only_previous_mass(current_mass, outward_reference)
     dummy_point = replace(
         point,
-        masses=(float(masses[0]), float(masses[1]), float(point.masses[2])),
+        masses=(float(dummy_mass[0]), float(dummy_mass[1]), float(point.masses[2])),
     )
     dummy_sample = replace(certified.localized.sample, point=dummy_point)
     dummy_localized = replace(certified.localized, sample=dummy_sample)
     return replace(certified, localized=dummy_localized)
+
+
+def _direction_only_previous_mass(
+    current_mass: np.ndarray,
+    outward_reference: np.ndarray,
+) -> np.ndarray:
+    current_mass = np.asarray(current_mass, dtype=float)
+    outward_reference = np.asarray(outward_reference, dtype=float)
+    norm = float(np.linalg.norm(outward_reference))
+    if (
+        current_mass.shape != (2,)
+        or not np.isfinite(current_mass).all()
+        or outward_reference.shape != (2,)
+        or not np.isfinite(outward_reference).all()
+        or norm == 0.0
+    ):
+        raise RuntimeError("direction-only seed needs finite two-dimensional masses and a nonzero outward reference")
+    return current_mass - 1e-3 * outward_reference / norm
 
 
 def mixed_organizers(mode: str) -> list[dict[str, Any]]:
@@ -238,6 +265,10 @@ def trace_endpoint(
         ordered = list(reversed(rows))
     else:
         raise ValueError(outward_side)
+    outward_reference = (
+        np.asarray(ordered[0]["masses"][:2], dtype=float)
+        - np.asarray(ordered[-1]["masses"][:2], dtype=float)
+    )
     # A stored lattice sample can fail the frozen event gate on re-correction
     # (float64 evaluation floor).  Walk inward until a point re-certifies, then
     # continue outward.  A second re-certified neighbor is preferred for the
@@ -247,6 +278,7 @@ def trace_endpoint(
     current = None
     previous_row = None
     previous = None
+    previous_is_direction_only = False
     seed_errors: list[str] = []
     for row in ordered:
         try:
@@ -265,13 +297,20 @@ def trace_endpoint(
             f"no lattice seed re-certified; {seed_errors}"
         )
     if previous is None or previous_row is None:
-        neighbor = next((row for row in ordered if row is not current_row), rows[0])
-        previous_row = neighbor
-        previous = _direction_only_seed(current, neighbor)
+        previous_row = next((row for row in ordered if row is not current_row), rows[0])
+        previous = _direction_only_seed(current, outward_reference)
+        previous_is_direction_only = True
+    actual_reference = current.masses2 - previous.masses2
+    if float(np.dot(actual_reference, outward_reference)) <= 0.0:
+        raise RuntimeError(
+            f"component {rows[0].get('sweep_component')} {outward_side}: "
+            "seed secant opposes the requested outward direction"
+        )
     prev, cur = previous.localized, current.localized
-    history = [previous.vector, current.vector]
+    history = [current.vector] if previous_is_direction_only else [previous.vector, current.vector]
     accepted = []
     folds = []
+    catalog_proximity_candidates = []
     step = float(mass_step)
     stop = "max_steps_exhausted"
     terminal = None
@@ -319,16 +358,17 @@ def trace_endpoint(
             if hit is not None and hit["miss_scaled"] <= CATALOG_MATCH_TOL:
                 cosine, neighbor_ids = catalog_neighbor_tangent(hit, catalog)
                 if cosine >= CATALOG_TANGENT_COS:
-                    terminal = {
-                        "kind": "existing_catalog_critical_curve",
-                        "cell_id": hit["cell_id"],
-                        "orientation": hit["orientation"],
-                        "miss_scaled": float(hit["miss_scaled"]),
-                        "segment_fraction": float(hit["fraction"]),
-                        "tangent_abs_cosine": float(cosine),
-                        "neighbor_cells_used_for_tangent": neighbor_ids,
-                    }
-                    stop = "existing_catalog_curve_reached"
+                    catalog_proximity_candidates.append(
+                        {
+                            "kind": "catalog_proximity_candidate_not_a_terminus",
+                            "cell_id": hit["cell_id"],
+                            "orientation": hit["orientation"],
+                            "miss_scaled": float(hit["miss_scaled"]),
+                            "segment_fraction": float(hit["fraction"]),
+                            "tangent_abs_cosine": float(cosine),
+                            "neighbor_cells_used_for_tangent": neighbor_ids,
+                        }
+                    )
 
         if terminal is None:
             hit = nearest_organizer(b, organizers or [])
@@ -354,20 +394,22 @@ def trace_endpoint(
         if terminal is not None:
             break
 
-    passed = terminal is not None and terminal["kind"] in {
-        "declared_domain_boundary",
-        "existing_catalog_critical_curve",
-        "mixed_organizer",
-        "closed_loop",
-    }
+    passed = terminal is not None and terminal["kind"] in SCIENTIFIC_TERMINAL_KINDS
     return {
         "source_component": int(rows[0]["sweep_component"]),
         "outward_side": outward_side,
         "seed_rows": [int(previous_row["cell_id"]), int(current_row["cell_id"])],
+        "seed_previous_role": (
+            "direction_only_not_a_scientific_seed"
+            if previous_is_direction_only
+            else "strictly_recertified_scientific_seed"
+        ),
         "seed_previous": cont._serialize_localized(previous.localized),
+        "seed_current_role": "strictly_recertified_scientific_seed",
         "seed_current": cont._serialize_localized(current.localized),
         "accepted_points": accepted,
         "projection_turns_crossed": folds,
+        "catalog_proximity_candidates": catalog_proximity_candidates,
         "terminal": terminal,
         "stopped_reason": stop,
         "scientific_endpoint_resolved": bool(passed),
@@ -381,6 +423,12 @@ def main() -> None:
     parser.add_argument("output")
     parser.add_argument("--mass-step", type=float, default=0.0025)
     parser.add_argument("--max-steps", type=int, default=100)
+    parser.add_argument(
+        "--job",
+        action="append",
+        choices=("0:low", "1:high", "12:high", "12:low"),
+        help="run only the selected component:side job (repeatable; default: all)",
+    )
     args = parser.parse_args()
 
     cont.require_accelerated_x64()
@@ -398,11 +446,15 @@ def main() -> None:
     if missing:
         raise RuntimeError(f"supplemental components {missing} no longer contain enough roots")
 
-    jobs = (
+    all_jobs = (
         (0, "low", minus_catalog, minus_organizers),
         (1, "high", minus_catalog, minus_organizers),
         (12, "high", plus_catalog, plus_organizers),
         (12, "low", plus_catalog, plus_organizers),
+    )
+    selected = set(args.job or ())
+    jobs = tuple(
+        job for job in all_jobs if not selected or f"{job[0]}:{job[1]}" in selected
     )
     results = [
         trace_endpoint(
@@ -426,6 +478,7 @@ def main() -> None:
             "maximum_absolute_event": cont.EVENT_GATE,
             "maximum_periodic_closure": cont.CLOSURE_GATE,
         },
+        "selected_jobs": [f"{component}:{side}" for component, side, _, _ in jobs],
         "results": results,
         "all_sampled_endpoints_resolved": passed,
         "claim_status": "sampled_endpoints_replaced_by_continuous_scientific_termini" if passed else "unresolved_continuation_required",

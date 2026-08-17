@@ -23,6 +23,9 @@ REAL_ROOTS = ROOT / "research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json"
 # Root sources come from scripts/graph_root_sources.py, which parses the
 # canonical assembly invocation.  See that module for why globbing for the
 # newest supplemental artifact is NOT safe here.
+SUPPLEMENTAL_ROOTS = ROOT / "research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json"
+CONTINUATION_ROOTS = ROOT / "research/evidence/V1_PLUS_ONE_12_CONTINUATION_ROOT_2026-08-17.json"
+NEW_CONTRADICTION_ROOTS = ROOT / "research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-17.json"
 SHIPPED_AUDIT = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json"
 SHIPPED_CROSSING = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json"
 RERUN_AUDIT = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-17.json"
@@ -53,6 +56,42 @@ def _all_roots() -> list[dict]:
         f"scripts/assemble_v1_critical_graph.sh provides (first: {missing[:5]})"
     )
     return roots
+
+
+def test_root_ids_are_campaign_local_and_newest_filename_cannot_win() -> None:
+    old = {
+        int(root["cell_id"]): root
+        for root in json.loads(SUPPLEMENTAL_ROOTS.read_text())["roots"]
+    }
+    new = {
+        int(root["cell_id"]): root
+        for root in json.loads(NEW_CONTRADICTION_ROOTS.read_text())["roots"]
+    }
+    continuation = {
+        int(root["cell_id"]): root
+        for root in json.loads(CONTINUATION_ROOTS.read_text())["roots"]
+    }
+    overlap = sorted(old.keys() & new.keys())
+    assert len(overlap) == 133
+    assert all(old[cell]["masses"] != new[cell]["masses"] for cell in overlap)
+    assert continuation[10133]["masses"] != new[10133]["masses"]
+
+
+def test_committed_edge_endpoints_match_their_exact_root_bundle() -> None:
+    roots = {int(root["cell_id"]): root for root in _all_roots()}
+    assert len(roots) == 754
+    graph = json.loads(REAL_GRAPH.read_text())
+    for edge in graph["edges"]:
+        cells = edge.get("cell_ids") or []
+        if not cells:
+            continue
+        endpoints = edge["endpoints"]
+        assert endpoints["start"]["masses"] == pytest.approx(
+            roots[int(cells[0])]["masses"]
+        )
+        assert endpoints["end"]["masses"] == pytest.approx(
+            roots[int(cells[-1])]["masses"]
+        )
 
 
 def _module():

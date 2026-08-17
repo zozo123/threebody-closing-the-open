@@ -476,7 +476,19 @@ def main() -> None:
 
     graph = json.loads(Path(args.graph).read_text(encoding="utf-8"))
     roots_doc = json.loads(Path(args.roots).read_text(encoding="utf-8"))
-    edges = AST.edges_from_graph(graph, roots_doc["roots"])
+    import runpy as _runpy
+
+    repository_root = Path(__file__).resolve().parents[1]
+    resolver = _runpy.run_path(str(repository_root / "scripts/graph_root_sources.py"))
+    graph_roots = resolver["load_roots"]()
+    graph_root_sources = [
+        {
+            "path": str(path.relative_to(repository_root)),
+            "schema": json.loads(path.read_text(encoding="utf-8")).get("schema"),
+        }
+        for path in resolver["root_source_paths"]()
+    ]
+    edges = AST.edges_from_graph(graph, graph_roots)
     grid, baseline_digests = SWEEP.load_baseline(Path(args.baseline))
     if len(digests) == 1 and next(iter(digests)) != "null":
         recorded = json.loads(next(iter(digests)))
@@ -573,6 +585,7 @@ def main() -> None:
             "graph_release_ready": graph.get("release_ready"),
             "roots": args.roots,
             "roots_schema": roots_doc.get("schema"),
+            "graph_root_sources": graph_root_sources,
             "shards": shard_index,
         },
         "gates": {

@@ -675,6 +675,15 @@ def main() -> None:
 
     _resolver = _runpy.run_path(str(Path(__file__).resolve().parent / "graph_root_sources.py"))
     all_roots = _resolver["load_roots"]()
+    source_paths = _resolver["root_source_paths"]()
+    repository_root = Path(__file__).resolve().parents[1]
+    graph_root_sources = [
+        {
+            "path": str(path.relative_to(repository_root)),
+            "schema": json.loads(path.read_text(encoding="utf-8")).get("schema"),
+        }
+        for path in source_paths
+    ]
     edges = AST.edges_from_graph(graph, all_roots)
     declared = graph["declared_mass_domain"]
     m1_lo = max(m1_lo, float(declared["m1"][0]))
@@ -753,6 +762,7 @@ def main() -> None:
             "graph_release_ready": graph.get("release_ready"),
             "roots": args.roots,
             "roots_schema": roots_doc.get("schema"),
+            "graph_root_sources": graph_root_sources,
         },
         "cost_projection": projection,
         "probes_planned": lattice.probe_count,

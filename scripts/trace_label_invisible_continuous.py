@@ -12,9 +12,10 @@ and returns dG/d(m1,m2).  Therefore
     tau_m = (dG/dm2, -dG/dm1) / ||dG/dm||
 
 is a coordinate-free local tangent of the critical curve in the mass plane.
-Each step predicts along tau_m, corrects the periodic orbit, and Newton-corrects
-only along the event-gradient normal.  This passes through m1- or m2-projection
-folds without treating either mass as a graph coordinate.
+Each step predicts along tau_m, corrects the periodic orbit, and corrects only
+along the event-gradient normal, with a safeguarded scalar sign-bracket fallback
+at the float64 event floor.  This passes through m1- or m2-projection folds
+without treating either mass as a graph coordinate.
 
 At the nine contradiction seeds we independently compare that variational
 mass-plane tangent with the mass projection of the six-dimensional JAX/Diffrax
@@ -33,15 +34,14 @@ import json
 import math
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import numpy as np
 
-from threebody_atlas.boundary import BoundarySample, stability_score
+from threebody_atlas.boundary import BoundarySample
 from threebody_atlas.critical_geometry import continuation_scales, critical_tangent
 from threebody_atlas.critical_manifold import (
     LocalizedCriticalPoint,
-    _flow_for_vector,
     _polish_event_root,
     _precise_evaluate,
     event_value,
@@ -59,6 +59,11 @@ CLOSURE_GATE = 1e-7
 DECLARED_DOMAIN = {"m1": (0.8, 1.1), "m2": (0.7, 1.2)}
 MIN_EVENT_GRADIENT = 1e-5
 MIN_CLOSURE_SINGULAR = 1e-9
+# The independent JAX/Diffrax tangent is evidentiary only when the smallest
+# direction is both a genuine numerical null direction and well separated from
+# the next singular direction. These do not relax the event/closure gates.
+MAX_JAX_RELATIVE_NULL_RESIDUAL = 1e-6
+MIN_JAX_SPECTRAL_GAP = 100.0
 
 
 @dataclass(frozen=True)
@@ -95,11 +100,69 @@ class VariationalPoint:
         return np.asarray(self.localized.sample.point.masses[:2], dtype=float)
 
 
+@dataclass(frozen=True)
+class _NormalEvaluation:
+    lam: float
+    value: float
+    sample: BoundarySample
+
+
+def _tightest_sign_bracket(
+    evaluations: list[_NormalEvaluation],
+) -> tuple[_NormalEvaluation, _NormalEvaluation] | None:
+    """Return the narrowest sampled interval that brackets a scalar zero."""
+    ordered = sorted(evaluations, key=lambda item: item.lam)
+    brackets = [
+        (left, right)
+        for left, right in zip(ordered, ordered[1:], strict=False)
+        if left.value * right.value < 0.0
+    ]
+    if not brackets:
+        return None
+    return min(brackets, key=lambda pair: pair[1].lam - pair[0].lam)
+
+
+def _bracket_trial_lambda(
+    left: _NormalEvaluation,
+    right: _NormalEvaluation,
+) -> float:
+    """Secant trial inside a sign bracket, with bisection as a safe fallback."""
+    width = float(right.lam - left.lam)
+    denominator = float(right.value - left.value)
+    if not math.isfinite(denominator) or denominator == 0.0:
+        return float(left.lam + 0.5 * width)
+    trial = float((left.lam * right.value - right.lam * left.value) / denominator)
+    margin = max(1e-15, 1e-8 * abs(width))
+    if not math.isfinite(trial) or trial <= left.lam + margin or trial >= right.lam - margin:
+        return float(left.lam + 0.5 * width)
+    return trial
+
+
 def _load(path: Path) -> dict[str, Any]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
         raise RuntimeError(f"{path}: JSON root must be an object")
     return payload
+
+
+def _sanitize_json(value: Any) -> Any:
+    if isinstance(value, float) and not math.isfinite(value):
+        return None
+    if isinstance(value, list):
+        return [_sanitize_json(item) for item in value]
+    if isinstance(value, dict):
+        return {key: _sanitize_json(item) for key, item in value.items()}
+    return value
+
+
+def _write_json_atomic(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(
+        json.dumps(_sanitize_json(payload), indent=2, allow_nan=False) + "\n",
+        encoding="utf-8",
+    )
+    temporary.replace(path)
 
 
 def _family_from_record(record: dict[str, Any]) -> FamilyPoint:
@@ -251,6 +314,7 @@ def _advance_variational(
     *,
     requested_step: float,
     max_corrector_iterations: int = 5,
+    max_bracket_iterations: int = 8,
 ) -> VariationalPoint:
     reference_mass = (
         np.asarray(current.sample.point.masses[:2], dtype=float)
@@ -266,9 +330,12 @@ def _advance_variational(
     accepted_sample: BoundarySample | None = None
     accepted_value = float("inf")
     accepted_sens = None
+    evaluations: list[_NormalEvaluation] = []
+    tube_radius = max(2.5 * requested_step, 2e-3)
 
-    for iteration in range(1, max_corrector_iterations + 1):
-        masses2 = predictor + lam * normal
+    def evaluate_normal(candidate_lam: float) -> _NormalEvaluation:
+        nonlocal guess
+        masses2 = predictor + candidate_lam * normal
         masses = (float(masses2[0]), float(masses2[1]), float(pcur.masses[2]))
         corrected = correct_family_point(masses, guess, max_nfev=70)
         if not corrected.success or corrected.residual_norm > CLOSURE_GATE:
@@ -277,24 +344,18 @@ def _advance_variational(
             )
         sample = _precise_evaluate(corrected)
         value = float(event_value(sample.floquet, current.event_mode))
-        if abs(value) <= EVENT_GATE and corrected.residual_norm <= CLOSURE_GATE:
-            accepted_sample = sample
+        guess = (corrected.x1, corrected.v1, corrected.v2, corrected.period)
+        evaluation = _NormalEvaluation(float(candidate_lam), value, sample)
+        evaluations.append(evaluation)
+        return evaluation
+
+    for iteration in range(1, max_corrector_iterations + 1):
+        evaluation = evaluate_normal(lam)
+        value = evaluation.value
+        if abs(value) < abs(accepted_value):
             accepted_value = value
-            # Compute geometry at every accepted point; it is both the next
-            # predictor and a conditioning certificate for this step.
-            accepted_sens = mass_sensitivity(
-                (corrected.x1, corrected.v1, corrected.v2, corrected.period),
-                corrected.masses,
-                rtol=1e-12,
-                atol=1e-14,
-            )
-            accepted_gradient = np.asarray(accepted_sens.d_events_dm[current.event_mode], dtype=float)
-            accepted_norm = float(np.linalg.norm(accepted_gradient))
-            if accepted_norm < MIN_EVENT_GRADIENT:
-                raise RuntimeError(f"accepted event gradient collapsed: {accepted_norm:.3e}")
-            accepted_tangent = np.asarray([accepted_gradient[1], -accepted_gradient[0]], dtype=float) / accepted_norm
-            if float(np.dot(accepted_tangent, tangent)) < 0.0:
-                accepted_tangent *= -1.0
+        if abs(value) <= EVENT_GATE:
+            accepted_sample = evaluation.sample
             break
 
         # Newton correction is only in the predictor-normal direction.  The
@@ -303,8 +364,13 @@ def _advance_variational(
             derivative = float(np.dot(gradient, normal))
         else:
             sens_iter = mass_sensitivity(
-                (corrected.x1, corrected.v1, corrected.v2, corrected.period),
-                corrected.masses,
+                (
+                    evaluation.sample.point.x1,
+                    evaluation.sample.point.v1,
+                    evaluation.sample.point.v2,
+                    evaluation.sample.point.period,
+                ),
+                evaluation.sample.point.masses,
                 rtol=1e-12,
                 atol=1e-14,
             )
@@ -314,16 +380,69 @@ def _advance_variational(
             raise RuntimeError(f"event-normal Newton derivative collapsed: {derivative:.3e}")
         delta = -value / derivative
         lam += float(delta)
-        if abs(lam) > max(2.5 * requested_step, 2e-3):
+        if abs(lam) > tube_radius:
             raise RuntimeError(
                 f"event-normal correction left local tube: lambda={lam:.3e}, step={requested_step:.3e}"
             )
-        guess = (corrected.x1, corrected.v1, corrected.v2, corrected.period)
 
-    if accepted_sample is None or accepted_sens is None:
+    # Near the float64 event floor, Newton may alternate across a perfectly
+    # regular zero without landing below the frozen gate.  Preserve the same
+    # gate and refine the sampled sign bracket with a safeguarded scalar secant.
+    if accepted_sample is None:
+        bracket = _tightest_sign_bracket(evaluations)
+        if bracket is None:
+            probe = min(0.5 * tube_radius, max(0.1 * requested_step, 2e-5))
+            sampled_lambdas = {item.lam for item in evaluations}
+            for probe_lam in (-probe, probe):
+                if all(abs(probe_lam - item) > 1e-15 for item in sampled_lambdas):
+                    evaluation = evaluate_normal(probe_lam)
+                    if abs(evaluation.value) < abs(accepted_value):
+                        accepted_value = evaluation.value
+                    if abs(evaluation.value) <= EVENT_GATE:
+                        accepted_sample = evaluation.sample
+                        break
+            bracket = _tightest_sign_bracket(evaluations)
+
+        for _ in range(max_bracket_iterations):
+            if accepted_sample is not None or bracket is None:
+                break
+            left, right = bracket
+            trial_lam = _bracket_trial_lambda(left, right)
+            evaluation = evaluate_normal(trial_lam)
+            iteration += 1
+            if abs(evaluation.value) < abs(accepted_value):
+                accepted_value = evaluation.value
+            if abs(evaluation.value) <= EVENT_GATE:
+                accepted_sample = evaluation.sample
+                break
+            bracket = _tightest_sign_bracket(evaluations)
+
+    if accepted_sample is None:
         raise RuntimeError(
-            f"event-normal corrector missed frozen gate after {max_corrector_iterations} iterations: event={accepted_value:.3e}"
+            "event-normal corrector missed frozen gate after "
+            f"{len(evaluations)} evaluations: best_event={accepted_value:.3e}"
         )
+    corrected = accepted_sample.point
+    accepted_value = float(event_value(accepted_sample.floquet, current.event_mode))
+    # Compute geometry at every accepted point; it is both the next predictor
+    # and a conditioning certificate for this step.
+    accepted_sens = mass_sensitivity(
+        (corrected.x1, corrected.v1, corrected.v2, corrected.period),
+        corrected.masses,
+        rtol=1e-12,
+        atol=1e-14,
+    )
+    accepted_gradient = np.asarray(
+        accepted_sens.d_events_dm[current.event_mode], dtype=float
+    )
+    accepted_norm = float(np.linalg.norm(accepted_gradient))
+    if accepted_norm < MIN_EVENT_GRADIENT:
+        raise RuntimeError(f"accepted event gradient collapsed: {accepted_norm:.3e}")
+    accepted_tangent = np.asarray(
+        [accepted_gradient[1], -accepted_gradient[0]], dtype=float
+    ) / accepted_norm
+    if float(np.dot(accepted_tangent, tangent)) < 0.0:
+        accepted_tangent *= -1.0
     singular = np.asarray(accepted_sens.closure_jacobian_singular_values, dtype=float)
     if singular.size == 0 or float(singular[-1]) < MIN_CLOSURE_SINGULAR:
         raise RuntimeError(f"accepted closure Jacobian nearly singular: {singular[-1] if singular.size else float('nan'):.3e}")
@@ -344,7 +463,7 @@ def _advance_variational(
         closure_singular_values=singular,
         closure_relative_residual=float(accepted_sens.dp_lstsq_relative_residual),
         step=float(requested_step),
-        corrector_iterations=iteration,
+        corrector_iterations=len(evaluations),
     )
 
 
@@ -374,7 +493,12 @@ def _mass_segment_tangent(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     return d / norm if norm > 0.0 else np.asarray([0.0, 0.0])
 
 
-def _jax_mass_tangent(point: LocalizedCriticalPoint, reference: np.ndarray) -> dict[str, Any]:
+def _jax_mass_tangent(point: LocalizedCriticalPoint, reference_mass: np.ndarray) -> dict[str, Any]:
+    reference_mass = np.asarray(reference_mass, dtype=float)
+    if reference_mass.shape != (2,) or not np.isfinite(reference_mass).all():
+        raise ValueError("reference mass tangent must have two finite components")
+    reference = np.zeros(6, dtype=float)
+    reference[4:6] = reference_mass
     y = np.asarray(point.vector, dtype=float)
     m3 = float(point.sample.point.masses[2])
     _closure, closure_jac = adaptive_closure_and_jacobian(
@@ -392,8 +516,9 @@ def _jax_mass_tangent(point: LocalizedCriticalPoint, reference: np.ndarray) -> d
         atol=5e-12,
         max_steps=1 << 18,
     )
+    jacobian = np.vstack((closure_jac, event_grad[None, :]))
     tangent = critical_tangent(
-        np.vstack((closure_jac, event_grad[None, :])),
+        jacobian,
         scales=continuation_scales(y),
         reference=reference,
     )
@@ -402,12 +527,28 @@ def _jax_mass_tangent(point: LocalizedCriticalPoint, reference: np.ndarray) -> d
     if norm == 0.0:
         raise RuntimeError("JAX six-dimensional null tangent has zero mass projection")
     mass /= norm
+    jacobian_norm = float(np.linalg.norm(jacobian, ord=2))
+    relative_null_residual = float(
+        tangent.null_residual / max(jacobian_norm, np.finfo(float).tiny)
+    )
     return {
         "mass_tangent": mass,
         "null_residual": float(tangent.null_residual),
+        "relative_null_residual": relative_null_residual,
         "spectral_gap": float(tangent.spectral_gap),
         "singular_values": [float(x) for x in tangent.singular_values],
     }
+
+
+def _jax_diagnostics_pass(diagnostics: dict[str, Any]) -> bool:
+    residual = float(diagnostics.get("relative_null_residual", float("inf")))
+    gap = float(diagnostics.get("spectral_gap", 0.0))
+    return bool(
+        math.isfinite(residual)
+        and residual <= MAX_JAX_RELATIVE_NULL_RESIDUAL
+        and math.isfinite(gap)
+        and gap >= MIN_JAX_SPECTRAL_GAP
+    )
 
 
 def _domain_crossing(a: np.ndarray, b: np.ndarray) -> dict[str, Any] | None:
@@ -483,7 +624,7 @@ def _target_state(target: StrictPoint) -> dict[str, Any]:
     if norm < MIN_EVENT_GRADIENT:
         raise RuntimeError(f"{target.source_id}: target event gradient collapsed")
     vt = np.asarray([gradient[1], -gradient[0]], dtype=float) / norm
-    jax = _jax_mass_tangent(target.localized, reference=vt)
+    jax = _jax_mass_tangent(target.localized, reference_mass=vt)
     cosine = abs(float(np.dot(vt, jax["mass_tangent"])))
     return {
         "point": target,
@@ -521,6 +662,7 @@ def _trace_branch(
     endpoint_target: StrictPoint | None,
     requested_step: float,
     max_steps: int,
+    checkpoint: Callable[[dict[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
     if previous.localized.event_mode != current.localized.event_mode:
         raise RuntimeError(f"{branch_id}: germ event modes differ")
@@ -543,6 +685,27 @@ def _trace_branch(
     step = float(requested_step)
     stop_reason = "max_steps_exhausted"
     terminal: dict[str, Any] | None = None
+    retry_history: list[dict[str, Any]] = []
+
+    def emit_checkpoint(status: str) -> None:
+        if checkpoint is None:
+            return
+        checkpoint(
+            {
+                "schema": "atlas.v1.continuation-branch-checkpoint/1",
+                "branch_id": branch_id,
+                "event_mode": mode,
+                "status": status,
+                "requested_mass_step": requested_step,
+                "accepted_points": [_serialize_variational(point) for point in points],
+                "retry_history": retry_history,
+                "last_accepted_point": (
+                    _serialize_variational(points[-1]) if points else None
+                ),
+            }
+        )
+
+    emit_checkpoint("initialized")
 
     for index in range(max_steps):
         accepted: VariationalPoint | None = None
@@ -554,6 +717,15 @@ def _trace_branch(
                 break
             except (RuntimeError, ValueError, FloatingPointError) as exc:
                 last_error = exc
+                retry_history.append(
+                    {
+                        "step_index": index,
+                        "trial_mass_step": float(trial),
+                        "failure_class": type(exc).__name__,
+                        "message": str(exc),
+                    }
+                )
+                emit_checkpoint("retrying_after_numerical_failure")
                 trial *= 0.5
                 if trial < 5e-5:
                     break
@@ -587,6 +759,7 @@ def _trace_branch(
                 stop_reason = "declared_domain_boundary_reached"
 
         points.append(accepted)
+        emit_checkpoint("accepted_step")
         prev, cur = cur, accepted.localized
         step = min(float(requested_step), trial * 1.35)
         if terminal is not None:
@@ -600,6 +773,7 @@ def _trace_branch(
             target["best_segment_miss_scaled"] <= 4e-3
             and target["best_segment_tangent_abs_cosine"] >= 0.95
             and target["variational_vs_jax_mass_tangent_abs_cosine"] >= 0.95
+            and _jax_diagnostics_pass(target["jax"])
         )
         all_targets &= passed
         target_records.append(
@@ -611,7 +785,11 @@ def _trace_branch(
                 "variational_mass_tangent": [float(x) for x in target["variational_mass_tangent"]],
                 "variational_vs_jax_mass_tangent_abs_cosine": float(target["variational_vs_jax_mass_tangent_abs_cosine"]),
                 "jax_null_residual": float(target["jax"]["null_residual"]),
+                "jax_relative_null_residual": float(
+                    target["jax"]["relative_null_residual"]
+                ),
                 "jax_spectral_gap": float(target["jax"]["spectral_gap"]),
+                "jax_diagnostics_passed": _jax_diagnostics_pass(target["jax"]),
                 "best_segment_miss_scaled": float(target["best_segment_miss_scaled"]),
                 "best_segment_tangent_abs_cosine": float(target["best_segment_tangent_abs_cosine"]),
                 "best_segment_index": target["best_segment_index"],
@@ -638,13 +816,14 @@ def _trace_branch(
     return {
         "branch_id": branch_id,
         "event_mode": mode,
-        "method": "variational dG/dm predictor + periodic Newton + event-normal Newton",
+        "method": "variational dG/dm predictor + periodic Newton + safeguarded event-normal correction",
         "start_germs": {
             "previous": {"source_id": previous.source_id, "point": _serialize_localized(previous.localized)},
             "current": {"source_id": current.source_id, "point": _serialize_localized(current.localized)},
         },
         "requested_mass_step": requested_step,
         "accepted_points": [_serialize_variational(p) for p in points],
+        "retry_history": retry_history,
         "issue_seed_witnesses": target_records,
         "sampled_component_overlap": mesh_records,
         "terminal": terminal,
@@ -701,8 +880,8 @@ def main() -> None:
             f"{len(minus_left_targets)}, {len(plus_targets)}, {len(minus_right_targets)}"
         )
 
-    branches = [
-        _trace_branch(
+    branch_specs = [
+        dict(
             branch_id="principal_left_minus_to_domain",
             previous=pleft_minus_prev,
             current=pleft_minus_cur,
@@ -713,7 +892,7 @@ def main() -> None:
             requested_step=args.mass_step,
             max_steps=args.max_steps,
         ),
-        _trace_branch(
+        dict(
             branch_id="principal_left_plus_to_secondary_left",
             previous=pleft_plus_prev,
             current=pleft_plus_cur,
@@ -724,7 +903,7 @@ def main() -> None:
             requested_step=args.mass_step,
             max_steps=args.max_steps,
         ),
-        _trace_branch(
+        dict(
             branch_id="secondary_left_minus_to_domain",
             previous=sleft_minus_prev,
             current=sleft_minus_cur,
@@ -739,7 +918,7 @@ def main() -> None:
             requested_step=args.mass_step,
             max_steps=args.max_steps,
         ),
-        _trace_branch(
+        dict(
             branch_id="secondary_right_plus_to_principal_right",
             previous=sright_plus_prev,
             current=sright_plus_cur,
@@ -751,6 +930,48 @@ def main() -> None:
             max_steps=args.max_steps,
         ),
     ]
+
+    out = Path(args.output)
+    branches: list[dict[str, Any]] = []
+
+    def write_checkpoint(
+        active_branch: dict[str, Any] | None,
+        campaign_error: dict[str, Any] | None = None,
+    ) -> None:
+        _write_json_atomic(
+            out,
+            {
+                "schema": "atlas.v1.label-invisible-continuation-checkpoint/1",
+                "claim_status": "running_or_failed_partial_continuation_evidence",
+                "frozen_gates": {
+                    "maximum_absolute_event": EVENT_GATE,
+                    "maximum_periodic_closure": CLOSURE_GATE,
+                },
+                "completed_branches": branches,
+                "active_branch": active_branch,
+                "campaign_error": campaign_error,
+            },
+        )
+
+    for spec in branch_specs:
+        branch_id = str(spec["branch_id"])
+        try:
+            branch = _trace_branch(
+                **spec,
+                checkpoint=lambda partial: write_checkpoint(partial),
+            )
+        except Exception as exc:
+            write_checkpoint(
+                None,
+                {
+                    "branch_id": branch_id,
+                    "failure_class": type(exc).__name__,
+                    "message": str(exc),
+                },
+            )
+            raise
+        branches.append(branch)
+        write_checkpoint(None)
 
     issue_witnesses = [w for branch in branches for w in branch["issue_seed_witnesses"]]
     all_nine = len(issue_witnesses) == 9 and all(w["continuous_incidence_passed"] for w in issue_witnesses)
@@ -766,10 +987,14 @@ def main() -> None:
             "maximum_periodic_closure": CLOSURE_GATE,
         },
         "method": {
-            "long_range": "integrated variational total dG/dm on corrected periodic family; tangent perpendicular to gradient; event-normal Newton correction",
+            "long_range": "integrated variational total dG/dm on corrected periodic family; tangent perpendicular to gradient; safeguarded event-normal scalar correction",
             "independent_tangent_crosscheck": "JAX x64 + Diffrax derivative of six-dimensional closure+event system; SciPy values remain authoritative",
             "organizer_seed": "opposite canonically bound pseudo-arclength germs straddling independently reproduced mixed organizer",
             "termini": "only canonically bound organizer germ or declared-domain face counts as terminal",
+            "independent_tangent_gates": {
+                "maximum_relative_null_residual": MAX_JAX_RELATIVE_NULL_RESIDUAL,
+                "minimum_spectral_gap": MIN_JAX_SPECTRAL_GAP,
+            },
         },
         "branches": branches,
         "all_nine_seed_continuations_passed": all_nine,
@@ -781,20 +1006,7 @@ def main() -> None:
             else "open_contradiction_continuous_witness_incomplete"
         ),
     }
-    out = Path(args.output)
-    out.parent.mkdir(parents=True, exist_ok=True)
-    # Replace non-finite diagnostics with explicit null so the failure artifact
-    # itself is always serializable and inspectable.
-    def sanitize(value):
-        if isinstance(value, float) and not math.isfinite(value):
-            return None
-        if isinstance(value, list):
-            return [sanitize(v) for v in value]
-        if isinstance(value, dict):
-            return {k: sanitize(v) for k, v in value.items()}
-        return value
-
-    out.write_text(json.dumps(sanitize(result), indent=2, allow_nan=False) + "\n", encoding="utf-8")
+    _write_json_atomic(out, result)
     print(
         json.dumps(
             {

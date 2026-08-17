@@ -9,6 +9,15 @@ on:
       - "scripts/bridge_minus_component1_to_isolated.py"
       - ".github/workflows/resolve-sampled-endpoints.yml"
   workflow_dispatch:
+    inputs:
+      mass_step:
+        description: "Variational mass-plane arclength step"
+        required: true
+        default: "0.0025"
+      max_steps:
+        description: "Maximum accepted steps per endpoint lane"
+        required: true
+        default: "100"
 
 permissions:
   contents: read
@@ -18,7 +27,20 @@ env:
   JAX_ENABLE_X64: "1"
 
 jobs:
-  resolve-minus-endpoints:
+  resolve-endpoint:
+    name: Resolve ${{ matrix.job }} endpoint
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - job: "0:low"
+            artifact: component-0-low
+          - job: "1:high"
+            artifact: component-1-high
+          - job: "12:high"
+            artifact: component-12-high
+          - job: "12:low"
+            artifact: component-12-low
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
@@ -37,56 +59,112 @@ jobs:
             scripts/trace_label_invisible_continuous.py \
             scripts/resolve_sampled_sweep_endpoints.py \
             scripts/bridge_minus_component1_to_isolated.py
-      - name: Bridge component 1 through isolated component 5
+      - name: Continue one finite sweep endpoint
+        id: endpoint
+        continue-on-error: true
+        env:
+          MASS_STEP: ${{ inputs.mass_step || '0.0025' }}
+          MAX_STEPS: ${{ inputs.max_steps || '100' }}
+        run: |
+          mkdir -p artifacts/endpoint-resolution
+          uv run --no-sync python scripts/resolve_sampled_sweep_endpoints.py \
+            research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json \
+            research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json \
+            artifacts/endpoint-resolution/${{ matrix.artifact }}.json \
+            --mass-step "$MASS_STEP" --max-steps "$MAX_STEPS" \
+            --job "${{ matrix.job }}"
+      - name: Upload endpoint certificate
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: sampled-endpoint-${{ matrix.artifact }}-${{ github.sha }}
+          path: artifacts/endpoint-resolution/${{ matrix.artifact }}.json
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Enforce endpoint certificate semantics
+        if: always()
+        env:
+          EXPECTED_JOB: ${{ matrix.job }}
+          ARTIFACT_NAME: ${{ matrix.artifact }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          expected = os.environ["EXPECTED_JOB"]
+          path = Path("artifacts/endpoint-resolution") / f"{os.environ['ARTIFACT_NAME']}.json"
+          payload = json.loads(path.read_text())
+          assert payload.get("selected_jobs") == [expected]
+          assert payload.get("all_sampled_endpoints_resolved") is True
+          assert payload.get("claim_status") == "sampled_endpoints_replaced_by_continuous_scientific_termini"
+          results = payload.get("results") or []
+          assert len(results) == 1
+          result = results[0]
+          terminal = result.get("terminal") or {}
+          assert result.get("scientific_endpoint_resolved") is True
+          assert terminal.get("kind") in {"declared_domain_boundary", "mixed_organizer", "closed_loop"}
+          gates = payload["frozen_gates"]
+          points = result.get("accepted_points") or []
+          assert points
+          assert max(abs(point["event"]) for point in points) <= gates["maximum_absolute_event"]
+          assert max(point["closure"] for point in points) <= gates["maximum_periodic_closure"]
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a") as summary:
+              print(f"{expected}: {terminal}", file=summary)
+          PY
+
+  bridge-component-1-to-5:
+    name: Bridge minus-one components 1 and 5
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked --extra accelerated --group dev
+      - name: Trace through the isolated component-5 root
         id: bridge
         continue-on-error: true
+        env:
+          MASS_STEP: ${{ inputs.mass_step || '0.0025' }}
         run: |
           mkdir -p artifacts/endpoint-resolution
           uv run --no-sync python scripts/bridge_minus_component1_to_isolated.py \
             research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json \
             artifacts/endpoint-resolution/component1-to-component5.json \
-            --mass-step 0.0025 --max-steps 40
-      - name: Continue beyond both finite sweep endpoints
-        id: endpoints
-        continue-on-error: true
-        run: |
-          uv run --no-sync python scripts/resolve_sampled_sweep_endpoints.py \
-            research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json \
-            research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json \
-            artifacts/endpoint-resolution/minus-endpoints.json \
-            --mass-step 0.0025 --max-steps 100
-      - name: Summarize scientific outcomes
-        if: always()
-        run: |
-          echo "component1_bridge_outcome=${{ steps.bridge.outcome }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "endpoint_resolver_outcome=${{ steps.endpoints.outcome }}" >> "$GITHUB_STEP_SUMMARY"
-          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
-          import json
-          from pathlib import Path
-          for path in (
-              Path("artifacts/endpoint-resolution/component1-to-component5.json"),
-              Path("artifacts/endpoint-resolution/minus-endpoints.json"),
-          ):
-              print("\n###", path.name)
-              if not path.exists():
-                  print("no artifact")
-                  continue
-              payload = json.loads(path.read_text())
-              print("claim_status:", payload.get("claim_status"))
-              if "continuous_bridge_passed" in payload:
-                  print("continuous_bridge_passed:", payload["continuous_bridge_passed"])
-              if "all_sampled_endpoints_resolved" in payload:
-                  print("all_sampled_endpoints_resolved:", payload["all_sampled_endpoints_resolved"])
-          PY
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+            --mass-step "$MASS_STEP" --max-steps 40
+      - name: Upload bridge certificate
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
-          name: sampled-endpoint-resolution-${{ github.sha }}
-          path: artifacts/endpoint-resolution/*.json
+          name: component1-to-component5-${{ github.sha }}
+          path: artifacts/endpoint-resolution/component1-to-component5.json
           if-no-files-found: warn
           retention-days: 90
-      - name: Enforce both scientific checks
+      - name: Enforce bridge certificate semantics
         if: always()
         run: |
-          test "${{ steps.bridge.outcome }}" = "success"
-          test "${{ steps.endpoints.outcome }}" = "success"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          path = Path("artifacts/endpoint-resolution/component1-to-component5.json")
+          payload = json.loads(path.read_text())
+          assert payload.get("continuous_bridge_passed") is True
+          assert payload.get("claim_status") == "component1_and_component5_are_one_continuous_minus_one_curve"
+          assert payload.get("accepted_points_after_target", 0) >= 3
+          assert payload.get("target_hit_step") is not None
+          target = payload.get("isolated_target") or {}
+          assert target.get("jax_diagnostics_passed") is True
+          gates = payload["frozen_gates"]
+          points = payload.get("accepted_points") or []
+          assert points
+          assert max(abs(point["event"]) for point in points) <= gates["maximum_absolute_event"]
+          assert max(point["closure"] for point in points) <= gates["maximum_periodic_closure"]
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a") as summary:
+              print(payload["claim_status"], file=summary)
+          PY

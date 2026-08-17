@@ -52,7 +52,9 @@ def serialize_target(state: dict[str, Any]) -> dict[str, Any]:
             state["variational_vs_jax_mass_tangent_abs_cosine"]
         ),
         "jax_null_residual": float(state["jax"]["null_residual"]),
+        "jax_relative_null_residual": float(state["jax"]["relative_null_residual"]),
         "jax_spectral_gap": float(state["jax"]["spectral_gap"]),
+        "jax_diagnostics_passed": cont._jax_diagnostics_pass(state["jax"]),
         "best_segment_miss_scaled": float(state["best_segment_miss_scaled"]),
         "best_segment_tangent_abs_cosine": float(state["best_segment_tangent_abs_cosine"]),
         "best_segment_index": state["best_segment_index"],
@@ -146,6 +148,7 @@ def main() -> None:
             target_state["best_segment_miss_scaled"] <= 4e-3
             and target_state["best_segment_tangent_abs_cosine"] >= 0.95
             and target_state["variational_vs_jax_mass_tangent_abs_cosine"] >= 0.95
+            and cont._jax_diagnostics_pass(target_state["jax"])
         )
         if target_hit and hit_step is None:
             hit_step = index

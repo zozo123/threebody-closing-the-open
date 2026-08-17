@@ -30,6 +30,7 @@ on:
       - "scripts/assemble_critical_graph.py"
       - "research/evidence/V1_CRITICAL_GRAPH.json"
       - "research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json"
+      - "research/evidence/V1_PLUS_ONE_12_CONTINUATION_ROOT_2026-08-17.json"
       - ".github/workflows/sign-topology-audit.yml"
   push:
     paths:
@@ -37,6 +38,7 @@ on:
       - "scripts/combine_graph_roots.py"
       - "research/evidence/V1_CRITICAL_GRAPH.json"
       - "research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json"
+      - "research/evidence/V1_PLUS_ONE_12_CONTINUATION_ROOT_2026-08-17.json"
       - ".github/workflows/sign-topology-audit.yml"
 
 concurrency:

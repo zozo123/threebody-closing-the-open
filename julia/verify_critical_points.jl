@@ -171,7 +171,7 @@ function sample_json(s,mode)
     "}"
 end
 
-function result_json(seed,raw,center,lo,hi,bracket_halfwidth,bracket_attempts,iterations)
+function result_json(seed,raw,center,lo,hi,bracket_halfwidth,bracket_attempts,iterations,event_gate)
     mode = seed.event_mode
     best = abs(critical_event(lo,mode)) <= abs(critical_event(hi,mode)) ? lo : hi
     root_shift = best.masses[2]-seed.m2
@@ -182,6 +182,9 @@ function result_json(seed,raw,center,lo,hi,bracket_halfwidth,bracket_attempts,it
     "\"corrected_center\":" * sample_json(center,mode) * "," *
     "\"initial_bracket_halfwidth\":\"$bracket_halfwidth\",\"bracket_expansions\":$bracket_attempts," *
     "\"root_shift_from_screening_m2\":\"$root_shift\",\"refinement_iterations\":$iterations," *
+    "\"event_gate\":\"$event_gate\",\"representative_passed_event_gate\":" *
+    "$(abs(critical_event(best,mode)) <= event_gate)," *
+    "\"representative\":" * sample_json(best,mode) * "," *
     "\"left\":" * sample_json(lo,mode) * ",\"right\":" * sample_json(hi,mode) *
     "}"
 end
@@ -203,6 +206,7 @@ function main_critical()
         width = parse(BigFloat,"1e-$(width_exp)")
         initial_halfwidth = 2*parse(BigFloat,"1e-$(halfwidth_exp)")
         max_shift = parse(BigFloat,"1e-$(max_shift_exp)")
+        event_gate = parse(BigFloat,"2e-8")
         seeds = parse_critical_seeds(seed_path)
         results = String[]
 
@@ -221,7 +225,9 @@ function main_critical()
             shift <= max_shift || error("BigFloat critical root moved too far for $(seed.name): $shift > $max_shift")
             max(lo.closure,hi.closure) <= target || error("corrected critical closure gate failed for $(seed.name)")
             hi.masses[2]-lo.masses[2] <= width || error("critical bracket width gate failed for $(seed.name)")
-            push!(results,result_json(seed,raw,center,lo,hi,used_halfwidth,attempts,iters))
+            abs(critical_event(best,seed.event_mode)) <= event_gate ||
+                error("independent critical event gate failed for $(seed.name)")
+            push!(results,result_json(seed,raw,center,lo,hi,used_halfwidth,attempts,iters,event_gate))
         end
 
         mkpath(dirname(output))
@@ -229,6 +235,7 @@ function main_critical()
             print(io,"{\"implementation\":\"independent Julia BigFloat + Vern9 + variational QR shooting\",",
                   "\"dps\":",dps,",\"ode_tolerance\":\"1e-",tol_exp,"\",",
                   "\"closure_target\":\"1e-",closure_exp,"\",\"m2_width_target\":\"1e-",width_exp,"\",",
+                  "\"event_target\":\"2e-8\",",
                   "\"results\":[",join(results,","),"],",
                   "\"claim_status\":\"independent BigFloat slice reproduction of screening critical-curve representatives; canonical mechanism and full-manifold release gates remain required\"}\n")
         end
