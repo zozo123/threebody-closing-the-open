@@ -476,7 +476,17 @@ def main() -> None:
 
     graph = json.loads(Path(args.graph).read_text(encoding="utf-8"))
     roots_doc = json.loads(Path(args.roots).read_text(encoding="utf-8"))
-    edges = AST.edges_from_graph(graph, roots_doc["roots"])
+    # Root sources come from the canonical assembly invocation, never from
+    # --roots alone: the graph spans the 620-cell census AND the sweep-derived
+    # supplemental roots (cell ids >= 10000), and supplemental ids are per-run
+    # sequential indices, so reading the wrong artifact silently repoints every
+    # one of them.  See scripts/graph_root_sources.py.
+    import runpy as _runpy
+
+    _resolver = _runpy.run_path(
+        str(Path(__file__).resolve().parent / "graph_root_sources.py")
+    )
+    edges = AST.edges_from_graph(graph, _resolver["load_roots"]())
     grid, baseline_digests = SWEEP.load_baseline(Path(args.baseline))
     if len(digests) == 1 and next(iter(digests)) != "null":
         recorded = json.loads(next(iter(digests)))
