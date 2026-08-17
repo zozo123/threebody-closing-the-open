@@ -470,6 +470,13 @@ def test_every_deciding_script_is_in_the_verified_set():
         "scripts/freeze_completeness_certificate.py",
         "scripts/assemble_v1_critical_graph.sh",
         "scripts/assemble_critical_graph.py",
+        # Added 2026-08-18 (issue #212 section 6): graph_root_sources.py is the
+        # sole producer of the roots file both pinned sign-topology audits name,
+        # so it decides what those audits audit; build_continuation_arc_roots.py
+        # is the producer of a canonical input that previously existed with no
+        # producer in the repository at all.
+        "scripts/graph_root_sources.py",
+        "scripts/build_continuation_arc_roots.py",
     }
     for relative in runner.PRODUCING_SCRIPTS:
         assert (ROOT / relative).is_file(), relative
