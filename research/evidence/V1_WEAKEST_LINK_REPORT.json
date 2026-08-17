@@ -142,7 +142,7 @@
       "weakest_status": "scientifically_unresolved"
     }
   ],
-  "matrix_sha256": "4f8611f22fd1013a6a5611d0b8fe0882da8dd0cd6c432044c086741e5edd1128",
+  "matrix_sha256": "de252125c68748edaadd441dcf998a5770be0fd648c989d8d18a23699042d7e8",
   "note": "No scalar confidence is computed; weakest links preserve dimension and state.",
   "release_policy": {
     "numerical_paper_ready": false,

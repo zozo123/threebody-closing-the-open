@@ -37,6 +37,11 @@
 #                face, mixed germ, or classification artifact.  They are never
 #                promoted to interior_lattice_terminus nodes.
 #
+#   --supplemental-roots V1_PLUS_ONE_12_CONTINUATION_ROOT_2026-08-17.json
+#                One certified variational step on plus_one sweep component 12
+#                that lands inside GERM_ATTACH_DISTANCE of mixed_principal_right.
+#                The other three unclassified lattice ends are NOT in this file.
+#
 #   --left-birth V1_LEFT_BIRTH_CLASS_2026-08-16.json
 #                projection_fold, passed, evidence_level independently_reproduced,
 #                with edge_endpoint_bindings for cells 392 (minus_one U->S) and
@@ -129,6 +134,7 @@ COMPLETENESS="${COMPLETENESS:-research/evidence/V1_COMPLETENESS_CERTIFICATE_2026
 EVIDENCE_ARGS=(
   --roots research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json
   --supplemental-roots research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json
+  --supplemental-roots research/evidence/V1_PLUS_ONE_12_CONTINUATION_ROOT_2026-08-17.json
   --left-birth "$LEFT_BIRTH"
   --right-death research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json
   --daughter research/evidence/V1_DAUGHTER_CLASS_2026-08-16.json
