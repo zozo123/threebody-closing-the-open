@@ -197,9 +197,12 @@ def test_chain_runs_end_to_end_and_is_not_release_ready(evidence_dir, capsys):
     # no_classification_binding_errors cleared once component 1's low terminus
     # was recognized as the SAME root as catalog cell 392 (9.164e-10 apart, two
     # independent localizations of one root) and inherited that cell's node.
-    assert "sign_topology_clean" not in blockers
+    # sign_topology_clean is a blocker AGAIN, and this time correctly.  It was
+    # cleared on a 35-line audit reporting zero violations whose converged probes
+    # covered a mean 47.4% of the declared m2 span; the conjunct now requires an
+    # audit to demonstrate coverage, not merely to raise no complaint.
     assert "no_classification_binding_errors" not in blockers
-    assert "no_unclassified_edge_endpoints" in blockers
+    assert blockers >= {"sign_topology_clean", "no_unclassified_edge_endpoints"}
 
     graph = json.loads((evidence_dir / runner.CRITICAL_GRAPH).read_text())
     assert graph["release_ready"] is False
