@@ -1763,3 +1763,223 @@ def test_germ_attach_distance_window_matches_the_published_number() -> None:
     assert f"[{low:.6f}, {high:.6f})" in prose
     assert f"{record['window_ratio']:.3f}x" in prose
     assert f"{record['effective_organizer_reach']}" in prose
+
+
+def _sweep_roots(tmp_path, component: int = 7):
+    """Two supplemental roots forming one sweep-component edge."""
+    path = tmp_path / "sweep.json"
+    path.write_text(
+        json.dumps(
+            {
+                "roots": [
+                    {
+                        "cell_id": 5000 + index,
+                        "status": "ok",
+                        "event_mode": "plus_one",
+                        "orientation": "U->S",
+                        "sweep_component": component,
+                        "masses": [1.040 + 0.002 * index, 1.100 + 0.010 * index, 1.0],
+                    }
+                    for index in range(2)
+                ]
+            }
+        )
+    )
+    return path
+
+
+def _resolution(tmp_path, name, results):
+    path = tmp_path / name
+    path.write_text(json.dumps({"results": results}))
+    return path
+
+
+def _terminus(node_id, organizer, miss):
+    return {
+        "kind": "mixed_organizer",
+        "node_id": node_id,
+        "miss_mass": miss,
+        "organizer_masses": list(organizer),
+    }
+
+
+def test_endpoint_resolution_binds_a_terminus_its_continuation_reached(tmp_path) -> None:
+    """The interface exists so resolution evidence can reach the graph at all.
+
+    Before --endpoint-resolution, scripts/resolve_sampled_sweep_endpoints.py
+    could confirm a terminus and the graph would still report it unclassified,
+    because the artifact carried `terminal`/`stopped_reason` and no
+    edge_endpoint_bindings, and nothing read it.
+    """
+    roots = _sweep_roots(tmp_path)
+    # Sits 2.0e-3 from the low terminus (1.040, 1.100): inside the 8e-3 reach.
+    resolution = _resolution(
+        tmp_path,
+        "res.json",
+        [
+            {
+                "source_component": 7,
+                "outward_side": "low",
+                "scientific_endpoint_resolved": True,
+                "stopped_reason": "mixed_organizer_reached",
+                "terminal": _terminus("mixed_principal_right", (1.042, 1.100), 2.0e-3),
+            }
+        ],
+    )
+    graph = _run_assembler(
+        tmp_path,
+        [
+            "--roots", str(roots),
+            "--supplemental-roots", str(roots),
+            "--endpoint-resolution", str(resolution),
+        ],
+    )
+    edge = next(e for e in graph["edges"] if e["orientation"] == "sweep_component_7")
+    start = edge["endpoints"]["start"]
+    assert start["node"] == "mixed_principal_right"
+    assert start["attachment"] == "continuation_resolved_terminus"
+    assert graph["root_coverage"]["endpoint_resolutions_applied"] == 1
+    assert graph["root_coverage"]["classification_binding_errors"] == []
+
+
+def test_endpoint_resolution_refuses_a_distance_measured_at_the_other_terminus(
+    tmp_path,
+) -> None:
+    """A resolution may not bind a far endpoint on a near endpoint's evidence.
+
+    V1_SAMPLED_ENDPOINT_RESOLUTION_2026-08-17.json reported plus_one component
+    12's `low` terminus with miss_mass 6.5263e-3 -- the distance from its `high`
+    terminus.  `low` itself sat 2.3713e-2 away, 2.96x beyond the reach.  The
+    assembler recomputes from the endpoint being bound rather than trusting the
+    number in the artifact.
+    """
+    roots = _sweep_roots(tmp_path)
+    # Organizer is near the HIGH terminus (1.042, 1.110); the reported miss is
+    # that near distance, but the binding targets the far `low` side.
+    resolution = _resolution(
+        tmp_path,
+        "res.json",
+        [
+            {
+                "source_component": 7,
+                "outward_side": "low",
+                "scientific_endpoint_resolved": True,
+                "stopped_reason": "mixed_organizer_reached",
+                "terminal": _terminus("mixed_principal_right", (1.042, 1.110), 2.0e-3),
+            }
+        ],
+    )
+    graph = _run_assembler(
+        tmp_path,
+        [
+            "--roots", str(roots),
+            "--supplemental-roots", str(roots),
+            "--endpoint-resolution", str(resolution),
+        ],
+    )
+    edge = next(e for e in graph["edges"] if e["orientation"] == "sweep_component_7")
+    assert edge["endpoints"]["start"].get("node") is None
+    assert graph["root_coverage"]["endpoint_resolutions_applied"] == 0
+    errors = graph["root_coverage"]["classification_binding_errors"]
+    assert any("beyond the" in item or "not measured at this endpoint" in item for item in errors)
+
+
+def test_endpoint_resolution_refuses_both_sides_of_a_duplicated_record(tmp_path) -> None:
+    """Identical terminals on two sides are one computation reported twice.
+
+    Rejecting only the second occurrence would let the first bind on evidence
+    that might belong to the opposite terminus, and nothing distinguishes them.
+    """
+    roots = _sweep_roots(tmp_path)
+    terminal = _terminus("mixed_principal_right", (1.042, 1.100), 2.0e-3)
+    resolution = _resolution(
+        tmp_path,
+        "res.json",
+        [
+            {
+                "source_component": 7,
+                "outward_side": side,
+                "scientific_endpoint_resolved": True,
+                "stopped_reason": "mixed_organizer_reached",
+                "terminal": dict(terminal),
+            }
+            for side in ("low", "high")
+        ],
+    )
+    graph = _run_assembler(
+        tmp_path,
+        [
+            "--roots", str(roots),
+            "--supplemental-roots", str(roots),
+            "--endpoint-resolution", str(resolution),
+        ],
+    )
+    edge = next(e for e in graph["edges"] if e["orientation"] == "sweep_component_7")
+    assert edge["endpoints"]["start"].get("node") is None
+    assert graph["root_coverage"]["endpoint_resolutions_applied"] == 0
+    errors = graph["root_coverage"]["classification_binding_errors"]
+    assert sum("duplicated, not run" in item for item in errors) == 2
+
+
+def test_endpoint_resolution_refuses_a_component_that_matches_no_edge(tmp_path) -> None:
+    """A stale component index must not silently bind nothing and pass.
+
+    V1_DENSE_ENDPOINT_RESOLUTION_2026-08-17.json names component 30, which the
+    --component-base rebase renumbered to 130.  Matching zero edges is an error,
+    never a skip.
+    """
+    roots = _sweep_roots(tmp_path)
+    resolution = _resolution(
+        tmp_path,
+        "res.json",
+        [
+            {
+                "source_component": 999,
+                "outward_side": "low",
+                "scientific_endpoint_resolved": True,
+                "stopped_reason": "mixed_organizer_reached",
+                "terminal": _terminus("mixed_principal_right", (1.040, 1.100), 0.0),
+            }
+        ],
+    )
+    graph = _run_assembler(
+        tmp_path,
+        [
+            "--roots", str(roots),
+            "--supplemental-roots", str(roots),
+            "--endpoint-resolution", str(resolution),
+        ],
+    )
+    errors = graph["root_coverage"]["classification_binding_errors"]
+    assert any("matched 0 edges" in item for item in errors)
+    assert graph["root_coverage"]["endpoint_resolutions_applied"] == 0
+
+
+def test_endpoint_resolution_ignores_an_unresolved_terminus(tmp_path) -> None:
+    """An unresolved terminus must keep blocking, silently and without error."""
+    roots = _sweep_roots(tmp_path)
+    resolution = _resolution(
+        tmp_path,
+        "res.json",
+        [
+            {
+                "source_component": 7,
+                "outward_side": "low",
+                "scientific_endpoint_resolved": False,
+                "stopped_reason": "continuation_failure_not_a_scientific_terminus",
+                "terminal": None,
+            }
+        ],
+    )
+    graph = _run_assembler(
+        tmp_path,
+        [
+            "--roots", str(roots),
+            "--supplemental-roots", str(roots),
+            "--endpoint-resolution", str(resolution),
+        ],
+    )
+    edge = next(e for e in graph["edges"] if e["orientation"] == "sweep_component_7")
+    assert edge["endpoints"]["start"].get("node") is None
+    assert graph["root_coverage"]["endpoint_resolutions_applied"] == 0
+    assert graph["root_coverage"]["classification_binding_errors"] == []

@@ -264,10 +264,12 @@ def trace_endpoint(
             f"component {rows[0].get('sweep_component')} {outward_side}: "
             f"no lattice seed re-certified; {seed_errors}"
         )
+    direction_only = False
     if previous is None or previous_row is None:
         neighbor = next((row for row in ordered if row is not current_row), rows[0])
         previous_row = neighbor
         previous = _direction_only_seed(current, neighbor)
+        direction_only = True
     prev, cur = previous.localized, current.localized
     history = [previous.vector, current.vector]
     accepted = []
@@ -363,6 +365,13 @@ def trace_endpoint(
     return {
         "source_component": int(rows[0]["sweep_component"]),
         "outward_side": outward_side,
+        # The seed pair identifies the COMPUTATION.  main() refuses to report two
+        # sides that share one -- see the degeneracy note there.
+        "seed_cells": {
+            "current": current_row.get("cell_id"),
+            "previous": previous_row.get("cell_id"),
+            "direction_only_neighbor": bool(direction_only),
+        },
         "seed_rows": [int(previous_row["cell_id"]), int(current_row["cell_id"])],
         "seed_previous": cont._serialize_localized(previous.localized),
         "seed_current": cont._serialize_localized(current.localized),
@@ -453,6 +462,43 @@ def main() -> None:
         )
         for component, side, catalog, organizers in jobs
     ]
+    # DEGENERACY REFUSAL.
+    #
+    # A low trace and a high trace are two different computations.  When a
+    # component's requested tip fails the frozen event gate on re-correction,
+    # the walk above starts from a point further in; that is legitimate only
+    # while the two sides still begin from different seeds.  If both sides end
+    # up on the SAME (seed, neighbour) pair they are literally one computation,
+    # so at most one of them resolves its labelled terminus -- and nothing in
+    # the run says which.  Both are therefore unresolved.
+    #
+    # plus_one component 12 is that case.  It has two roots; cell 10131
+    # (m1 1.046) fails re-correction at event 2.919e-08 against the 2e-08 gate,
+    # leaving cell 10132 (m1 1.048) as the only seed.  Both sides collapsed onto
+    # it with the same direction-only neighbour and emitted byte-identical
+    # results -- same node, same miss_mass to 18 digits, final_masses and steps
+    # both null -- whose miss_mass was measured at the HIGH terminus.  Consumed
+    # naively that binds a far endpoint on a near endpoint's evidence.
+    by_seed: dict[tuple[Any, ...], list[dict[str, Any]]] = {}
+    for item in results:
+        seed = item.get("seed_cells") or {}
+        by_seed.setdefault(
+            (item["source_component"], seed.get("current"), seed.get("previous")), []
+        ).append(item)
+    for (component, current_cell, previous_cell), group in by_seed.items():
+        if len(group) < 2:
+            continue
+        sides = sorted(str(item["outward_side"]) for item in group)
+        for item in group:
+            item["scientific_endpoint_resolved"] = False
+            item["stopped_reason"] = (
+                "degenerate_sides_not_a_scientific_terminus: component "
+                f"{component} sides {sides} share seed pair "
+                f"(current={current_cell}, previous={previous_cell}); one "
+                "computation cannot resolve two termini"
+            )
+            item["terminal"] = None
+
     passed = all(item["scientific_endpoint_resolved"] for item in results)
     payload = {
         "schema": "atlas.v1.sampled-endpoint-resolution/1",
