@@ -9,6 +9,13 @@ on:
       - "scripts/bridge_minus_component1_to_isolated.py"
       - ".github/workflows/resolve-sampled-endpoints.yml"
   workflow_dispatch:
+    inputs:
+      supplemental:
+        description: >-
+          Supplemental event-sign roots artifact whose finite termini to
+          continue.  A pinned filename here is how this workflow went stale;
+          pass the artifact you actually want resolved.
+        default: "research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json"
 
 permissions:
   contents: read
@@ -51,7 +58,7 @@ jobs:
         continue-on-error: true
         run: |
           uv run --no-sync python scripts/resolve_sampled_sweep_endpoints.py \
-            research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json \
+            "${{ inputs.supplemental || 'research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json' }}" \
             research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json \
             artifacts/endpoint-resolution/minus-endpoints.json \
             --mass-step 0.0025 --max-steps 100
