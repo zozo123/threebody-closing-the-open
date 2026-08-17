@@ -162,17 +162,28 @@ def test_all_input_problems_are_reported_at_once(evidence_dir, capsys):
 # --------------------------------------------------------------------------
 
 
-def test_chain_runs_end_to_end_and_is_release_ready(evidence_dir, capsys):
-    assert runner.main(_argv(evidence_dir)) == 0
+def test_chain_runs_end_to_end_and_is_not_release_ready(evidence_dir, capsys):
+    assert runner.main(_argv(evidence_dir)) == runner.NOT_RELEASE_READY
     out = capsys.readouterr().out
-    assert "release_ready: True" in out
+    assert "release_ready: False" in out
 
     ledger = json.loads((evidence_dir / runner.CLOSURE_LEDGER).read_text())
-    assert ledger["release_ready"] is True
-    assert ledger["blockers"] == []
+    assert ledger["release_ready"] is False
+    blockers = {entry["conjunct"] for entry in ledger["blockers"]}
+
+    # The two synthetic inputs did their job: the left-birth node is resolved
+    # and the completeness certificate verified, so neither is a blocker.
+    assert "no_unexplained_nodes" not in blockers
+    assert "completeness_certificate_verified" not in blockers
+    # What remains is the genuine open work, reported exactly.  Until 2026-08-16
+    # that was no_missing_mixed_germs; the twelve headline germs were regenerated
+    # with real numbers that day, so the sole remaining blocker is the one the
+    # sign-topology audit found: seven gate-passing critical curves outside the
+    # committed edges.
+    assert "sign_topology_clean" in blockers
 
     graph = json.loads((evidence_dir / runner.CRITICAL_GRAPH).read_text())
-    assert graph["release_ready"] is True
+    assert graph["release_ready"] is False
     left_birth = next(
         item for item in graph["nodes"] if item["id"] == "secondary_left_birth"
     )
@@ -202,11 +213,11 @@ def test_ledger_records_sha256_and_run_id_for_every_input(evidence_dir):
 
 
 def test_chain_is_idempotent_and_byte_reproducible(evidence_dir):
-    assert runner.main(_argv(evidence_dir)) == 0
+    assert runner.main(_argv(evidence_dir)) == runner.NOT_RELEASE_READY
     first = {
         path.name: path.read_bytes() for path in sorted(evidence_dir.iterdir())
     }
-    assert runner.main(_argv(evidence_dir)) == 0
+    assert runner.main(_argv(evidence_dir)) == runner.NOT_RELEASE_READY
     second = {
         path.name: path.read_bytes() for path in sorted(evidence_dir.iterdir())
     }
@@ -365,7 +376,7 @@ def test_a_python_that_agrees_with_sys_executable_is_accepted(
 ):
     """Refusing is about substitution, not about the variable existing."""
     monkeypatch.setenv("PYTHON", sys.executable)
-    assert runner.main(_argv(evidence_dir)) == 0
+    assert runner.main(_argv(evidence_dir)) == runner.NOT_RELEASE_READY
     ledger = json.loads((evidence_dir / runner.CLOSURE_LEDGER).read_text())
     # It is still disclosed: an auditor sees what was set, not just that it was
     # tolerated.
@@ -725,7 +736,7 @@ def test_a_competent_forgery_planted_before_an_honest_run_is_overwritten(
         (FIXTURES / "forged_left_birth_class_release_level.json").read_bytes()
     )
 
-    assert runner.main(_argv(evidence_dir)) == 0
+    assert runner.main(_argv(evidence_dir)) == runner.NOT_RELEASE_READY
     produced = json.loads(target.read_text())
     assert produced["estimator"] != "HAND-WRITTEN-CLAIM"
     assert "SYNTHETIC_FIXTURE_NOT_EVIDENCE" not in produced
@@ -791,33 +802,36 @@ def test_conjunct_names_are_unique_and_documented():
 def test_decide_refuses_when_the_conjuncts_disagree_with_release_ready():
     """A drifted blocker list is a tooling failure, never a quiet mis-report."""
     graph = json.loads(COMMITTED_GRAPH.read_text())
-    graph["release_ready"] = False
+    graph["release_ready"] = True
     with pytest.raises(runner.ToolingFailure) as excinfo:
-        runner.decide(graph, assembler_exit=2)
+        runner.decide(graph, assembler_exit=0)
     assert "re-derived conjunct list disagrees" in str(excinfo.value)
 
 
 def test_decide_refuses_when_the_assembler_exit_disagrees():
     graph = json.loads(COMMITTED_GRAPH.read_text())
-    assert graph["release_ready"] is True
+    assert graph["release_ready"] is False
     with pytest.raises(runner.ToolingFailure) as excinfo:
-        runner.decide(graph, assembler_exit=2)
+        runner.decide(graph, assembler_exit=0)
     assert "disagrees with release_ready" in str(excinfo.value)
 
 
-def test_decide_accepts_the_honest_release_ready_state():
+def test_decide_accepts_the_honest_not_release_ready_state():
     graph = json.loads(COMMITTED_GRAPH.read_text())
-    release_ready, blockers = runner.decide(graph, assembler_exit=0)
-    assert release_ready is True
-    assert blockers == []
+    release_ready, blockers = runner.decide(graph, assembler_exit=2)
+    assert release_ready is False
+    assert blockers
+    assert {entry["conjunct"] for entry in blockers} <= {
+        entry["conjunct"] for entry in runner.release_conjuncts(graph)
+    }
 
 
 def test_release_ready_requires_every_conjunct():
     """Only an all-true conjunct list may be reported as release_ready."""
     graph = json.loads(COMMITTED_GRAPH.read_text())
     conjuncts = runner.release_conjuncts(graph)
-    assert all(entry["satisfied"] for entry in conjuncts)
-    assert graph["release_ready"] is True
+    assert not all(entry["satisfied"] for entry in conjuncts)
+    assert graph["release_ready"] is False
 
 
 # --------------------------------------------------------------------------
