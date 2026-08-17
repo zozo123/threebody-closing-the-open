@@ -20,13 +20,9 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 REAL_GRAPH = ROOT / "research/evidence/V1_CRITICAL_GRAPH.json"
 REAL_ROOTS = ROOT / "research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json"
-# Resolved by glob, not by a pinned date.  A hard-coded date here silently
-# skipped 139 supplemental roots the moment the artifact was re-dated
-# 2026-08-16 -> 2026-08-17, which turned a missing input into
-# "KeyError: edge plus_one_sweep_component_12 references unknown cell 10133"
-# from deep inside the audit.  Glob, and fail loudly if the graph needs
-# supplemental roots that are not on disk.
-SUPPLEMENTAL_GLOB = "V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_*.json"
+# Root sources come from scripts/graph_root_sources.py, which parses the
+# canonical assembly invocation.  See that module for why globbing for the
+# newest supplemental artifact is NOT safe here.
 SHIPPED_AUDIT = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json"
 SHIPPED_CROSSING = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json"
 RERUN_AUDIT = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-17.json"
@@ -34,26 +30,17 @@ RERUN_CROSSING = ROOT / "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-17.
 
 
 def _all_roots() -> list[dict]:
-    """Census roots plus every supplemental sweep-root artifact on disk.
+    """Exactly the roots the assembler saw, resolved from the canonical invocation.
 
-    The committed graph now spans two root sources: the 620-cell census and the
-    sweep-derived supplemental roots (cell ids from 10000).  Any cell an edge
-    names must be resolvable, so a supplemental artifact that exists but is not
-    loaded is a silent corruption rather than a missing feature.
+    Supplemental cell ids (>= 10000) are per-run sequential indices, so reading a
+    different supplemental artifact than the assembler used resolves every id to
+    a different physical point without raising.  Measured on the committed graph,
+    picking the newest artifact instead repoints 132 of 132 supplemental cells.
     """
-    roots = list(json.loads(REAL_ROOTS.read_text())["roots"])
-    # LATEST supplemental artifact only, never a union.  The 2026-08-16 and
-    # 2026-08-17 sets are superset-by-cell-id but assign DIFFERENT masses to all
-    # 133 shared cells, so unioning them is silently last-write-wins and the
-    # answer would depend on sort order.  The newest artifact supersedes.
-    found = sorted((ROOT / "research/evidence").glob(SUPPLEMENTAL_GLOB))
-    if found:
-        roots.extend(json.loads(found[-1].read_text())["roots"])
-    seen: dict[int, int] = {}
-    for index, root in enumerate(roots):
-        cell = int(root["cell_id"])
-        assert cell not in seen, f"duplicate cell_id {cell} across root sources"
-        seen[cell] = index
+    import runpy
+
+    resolver = runpy.run_path(str(ROOT / "scripts/graph_root_sources.py"))
+    roots = resolver["load_roots"]()
     known = {int(r["cell_id"]) for r in roots}
     needed = {
         int(cell)
@@ -62,9 +49,8 @@ def _all_roots() -> list[dict]:
     }
     missing = sorted(needed - known)
     assert not missing, (
-        f"committed graph references {len(missing)} cell id(s) no root artifact "
-        f"provides (first: {missing[:5]}); supplemental artifacts found: "
-        f"{[p.name for p in found[-1:]]}"
+        f"committed graph references {len(missing)} cell id(s) no source named by "
+        f"scripts/assemble_v1_critical_graph.sh provides (first: {missing[:5]})"
     )
     return roots
 

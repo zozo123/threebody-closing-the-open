@@ -667,24 +667,14 @@ def main() -> None:
 
     graph = json.loads(Path(args.graph).read_text(encoding="utf-8"))
     roots_doc = json.loads(Path(args.roots).read_text(encoding="utf-8"))
-    all_roots = list(roots_doc["roots"])
-    # The committed graph spans TWO root sources: the 620-cell census and the
-    # sweep-derived supplemental roots (cell ids from 10000).  Resolve the
-    # supplemental set here rather than making every caller remember to combine,
-    # which is how "KeyError: edge ... references unknown cell 10133" reached CI
-    # three separate times.
-    #
-    # NEWEST artifact only, never a union: the 2026-08-16 and 2026-08-17 sets are
-    # superset-by-cell-id but assign DIFFERENT masses to all 133 shared cells, so
-    # unioning them is silently last-write-wins.
-    supplemental = sorted(
-        Path(args.roots).resolve().parent.glob("V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_*.json")
-    )
-    if supplemental:
-        known = {int(r["cell_id"]) for r in all_roots}
-        for extra in json.loads(supplemental[-1].read_text(encoding="utf-8"))["roots"]:
-            if int(extra["cell_id"]) not in known:
-                all_roots.append(extra)
+    # Root sources come from the canonical assembly invocation, never a glob:
+    # supplemental cell ids (>= 10000) are per-run sequential indices, so reading
+    # a different supplemental artifact than the assembler used silently repoints
+    # every id.  See scripts/graph_root_sources.py.
+    import runpy as _runpy
+
+    _resolver = _runpy.run_path(str(Path(__file__).resolve().parent / "graph_root_sources.py"))
+    all_roots = _resolver["load_roots"]()
     edges = AST.edges_from_graph(graph, all_roots)
     declared = graph["declared_mass_domain"]
     m1_lo = max(m1_lo, float(declared["m1"][0]))

@@ -66,10 +66,11 @@ jobs:
       - name: Combine certified roots
         run: |
           mkdir -p artifacts/sign-topology
-          uv run --no-sync python scripts/combine_graph_roots.py \
-            artifacts/sign-topology/combined-roots.json \
-            research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json \
-            "$(ls -1 research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_*.json | sort | tail -1)"
+          # Sources come from the canonical assembly invocation, never a glob:
+          # supplemental cell ids are per-run sequential indices, so a different
+          # supplemental artifact resolves every id to a different point.
+          uv run --no-sync python scripts/graph_root_sources.py \
+            --emit-combined artifacts/sign-topology/combined-roots.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: combined-roots-${{ github.sha }}
