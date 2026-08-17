@@ -8,6 +8,22 @@ ROOT = Path(__file__).resolve().parents[1]
 GRAPH = ROOT / "research/evidence/V1_CRITICAL_GRAPH.json"
 
 
+def test_assembler_never_emits_interior_lattice_terminus_nodes() -> None:
+    """#204 forbids the synthetic class even in a non-release graph.
+
+    A finite event-sign lattice end may remain unclassified.  It may not be
+    manufactured into a passed node of kind interior_lattice_terminus.
+    """
+    graph = json.loads(GRAPH.read_text(encoding="utf-8"))
+    synthetic = [
+        node
+        for node in graph.get("nodes", [])
+        if node.get("kind") == "interior_lattice_terminus"
+        or node.get("status") == "certified_on_event_sign_lattice"
+    ]
+    assert synthetic == []
+
+
 def test_release_graph_cannot_promote_finite_sweep_ends_to_scientific_termini() -> None:
     """A finite event-sign lattice endpoint is candidate geometry, not a node.
 

@@ -210,7 +210,11 @@
     "undecidable_state": 0,
     "cpu_seconds": 123.4
   },
-  "violation_counts": {},
+  "violation_counts": {
+    "missing_critical_curve": 0,
+    "forbidden_component_flip": 0,
+    "face_state_mismatch": 0
+  },
   "violations": [],
   "missing_curve_refinements": [],
   "probes": [

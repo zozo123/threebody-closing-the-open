@@ -1023,6 +1023,11 @@ def adapt_v1_critical_graph(
         start = endpoint_document.get("start") or {}
         end = endpoint_document.get("end") or {}
         edge_id = str(raw.get("id") or "<missing-id>")
+        if start.get("node") is None or end.get("node") is None:
+            # A finite lattice end is not a scientific node.  The adapter
+            # does not invent one; the edge stays off the incidence graph
+            # until both ends bind to a domain face, organizer, or fold.
+            continue
         artifacts = {
             digest
             for digest in (

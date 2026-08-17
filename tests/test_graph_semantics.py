@@ -120,8 +120,11 @@ def test_generated_schema_and_mutation_audit_are_current():
 def test_shipped_graph_adapter_freezes_sheet_domain_nodes_and_edges():
     graph = shipped_graph()
     assert graph.schema_version == SCHEMA_VERSION
-    assert len(graph.nodes) == 18
-    assert len(graph.edges) == 13
+    assert len(graph.nodes) == 14
+    # Three sweep polylines still have an unclassified lattice end; the
+    # adapter does not invent nodes for those ends, so they are not edges
+    # in the incidence graph.
+    assert len(graph.edges) == 10
     assert graph.coordinate_axes == ("m1", "m2", "m3")
     assert graph.declared_domain == {
         "m1": ("0.8", "1.1"),
@@ -407,4 +410,4 @@ def test_cli_compares_shipped_graph_without_hand_mapping(tmp_path: Path):
     )
     comparison = json.loads(output.read_text(encoding="utf-8"))
     assert comparison["equivalent"] is True
-    assert len(comparison["mapping"]) == 18
+    assert len(comparison["mapping"]) == 14

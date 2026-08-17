@@ -1,10 +1,10 @@
 {
   "baseline_canonical_sha256": {
-    "evidence_equivalent": "03c6806654f29609f609c628de4c0d94b475ba4538dc44f0177d443f03650b4f",
-    "mechanism_labeled": "9370995f6a9c95365fd0be24425b50af74e9b11f0cde82a25a416b24bd94453e",
-    "oriented": "3cf7948f592501c78e8000e391485a32c976287f6b67e22cb5a4d1b4e64d3dd0",
-    "sheet_aware": "876a531e4f9b85e9bd8c6775d78eccbf2f4859dfcabe21cadba6a785057823dd",
-    "topology_only": "a1b12378605c1817933b3ae36bebc9a231e498fc4e148ba0abaa0f678f578bf1"
+    "evidence_equivalent": "b01440b714e60b7ddc6379f7cf812b3fbda8f8c1ef500bd8404a2ea0535d79a8",
+    "mechanism_labeled": "de489b7f6012d878b3031dc44cd87cfd2b46f150be54a06db7a84cdf172b68bf",
+    "oriented": "7f496eb6d1817e1ae721a3b6c8b110d0621acd50540571db96fa26efd1a44ea3",
+    "sheet_aware": "d2743a514e7a6d23c1162cad58f7ab514beabbba20fc656bc6770e588cd7452e",
+    "topology_only": "5521d868d7fe52ba137bc0ddd995375521036c598510e81f847293b9167f3349"
   },
   "canonical_schema_sha256": "c38c516883c2a5ba2132fe815c9a992dc0c3ff75c979382280ff2e095e5e775e",
   "case_count": 12,
@@ -13,27 +13,27 @@
       "levels": {
         "evidence_equivalent": {
           "equivalent": true,
-          "mapping_size": 18,
+          "mapping_size": 14,
           "same_canonical_sha256": true
         },
         "mechanism_labeled": {
           "equivalent": true,
-          "mapping_size": 18,
+          "mapping_size": 14,
           "same_canonical_sha256": true
         },
         "oriented": {
           "equivalent": true,
-          "mapping_size": 18,
+          "mapping_size": 14,
           "same_canonical_sha256": true
         },
         "sheet_aware": {
           "equivalent": true,
-          "mapping_size": 18,
+          "mapping_size": 14,
           "same_canonical_sha256": true
         },
         "topology_only": {
           "equivalent": true,
-          "mapping_size": 18,
+          "mapping_size": 14,
           "same_canonical_sha256": true
         }
       },
@@ -41,11 +41,11 @@
       "passed": true
     },
     {
-      "baseline_sha256": "a1b12378605c1817933b3ae36bebc9a231e498fc4e148ba0abaa0f678f578bf1",
+      "baseline_sha256": "5521d868d7fe52ba137bc0ddd995375521036c598510e81f847293b9167f3349",
       "equivalent": false,
       "expected_difference": "added_edge",
       "level": "topology_only",
-      "mutated_sha256": "94ed06d5e2d26de71531d536b4d75e3a6c00ead90c5ffe859dff1fb28dabc488",
+      "mutated_sha256": "8eddb16bea4a3a4a5f514fb3bf3fc23e14b84faac8e5803e4b36c1b84295425a",
       "name": "parallel-edge-added",
       "observed_differences": [
         "added_edge"
@@ -53,11 +53,11 @@
       "passed": true
     },
     {
-      "baseline_sha256": "a1b12378605c1817933b3ae36bebc9a231e498fc4e148ba0abaa0f678f578bf1",
+      "baseline_sha256": "5521d868d7fe52ba137bc0ddd995375521036c598510e81f847293b9167f3349",
       "equivalent": false,
       "expected_difference": "removed_edge",
       "level": "topology_only",
-      "mutated_sha256": "c8e189460fae037fc6af9ab7977a556e55d4069bed0a5954b533b0118606e977",
+      "mutated_sha256": "a6e73e3d0735d936446792f3ee8ff3ced729c1ae5f523d9f17455a08fb530496",
       "name": "edge-removed",
       "observed_differences": [
         "removed_edge"
@@ -65,11 +65,11 @@
       "passed": true
     },
     {
-      "baseline_sha256": "a1b12378605c1817933b3ae36bebc9a231e498fc4e148ba0abaa0f678f578bf1",
+      "baseline_sha256": "5521d868d7fe52ba137bc0ddd995375521036c598510e81f847293b9167f3349",
       "equivalent": false,
       "expected_difference": "changed_endpoint",
       "level": "topology_only",
-      "mutated_sha256": "d0247d1af9152d7a200ecd1a9226217183889f49b65c7881e37a889469243541",
+      "mutated_sha256": "4d61d16451da01c0a909b252cfd3a23b178203e82a16ad4623a8b9d04c9e8353",
       "name": "endpoint-rewired",
       "observed_differences": [
         "changed_endpoint"
@@ -77,11 +77,11 @@
       "passed": true
     },
     {
-      "baseline_sha256": "9370995f6a9c95365fd0be24425b50af74e9b11f0cde82a25a416b24bd94453e",
+      "baseline_sha256": "de489b7f6012d878b3031dc44cd87cfd2b46f150be54a06db7a84cdf172b68bf",
       "equivalent": false,
       "expected_difference": "changed_mechanism",
       "level": "mechanism_labeled",
-      "mutated_sha256": "475d4ae76427f16ed978261763e42ae30d4c17e6d16b5d8b426ffcdeced6cead",
+      "mutated_sha256": "c427287ecd48f3a5bc8bdbd55c1f19f66db762d13f3f311291df3f5737b384cf",
       "name": "active-mechanism-changed",
       "observed_differences": [
         "changed_mechanism"
@@ -89,11 +89,11 @@
       "passed": true
     },
     {
-      "baseline_sha256": "3cf7948f592501c78e8000e391485a32c976287f6b67e22cb5a4d1b4e64d3dd0",
+      "baseline_sha256": "7f496eb6d1817e1ae721a3b6c8b110d0621acd50540571db96fa26efd1a44ea3",
       "equivalent": false,
       "expected_difference": "orientation_flip",
       "level": "oriented",
-      "mutated_sha256": "6caed523a65cc0212b56f56bf88e82e924018e01cb5d204eeeed88b6d4528924",
+      "mutated_sha256": "f268f7f44179ed87ad6ac5bf6e46bbcec587f40114484fd8a4f1ff779f652d55",
       "name": "orientation-flipped",
       "observed_differences": [
         "orientation_flip"
@@ -101,11 +101,11 @@
       "passed": true
     },
     {
-      "baseline_sha256": "876a531e4f9b85e9bd8c6775d78eccbf2f4859dfcabe21cadba6a785057823dd",
+      "baseline_sha256": "d2743a514e7a6d23c1162cad58f7ab514beabbba20fc656bc6770e588cd7452e",
       "equivalent": false,
       "expected_difference": "sheet_reassignment",
       "level": "sheet_aware",
-      "mutated_sha256": "7b3d3ae9a4428c4c21681106895b1e531e4d74f87f4d39c554a3adb418d6244f",
+      "mutated_sha256": "95a95b98cba195573337141b416a4a642b779e566aafefe9a00e1d29d89155b6",
       "name": "node-sheet-reassigned",
       "observed_differences": [
         "sheet_reassignment"
@@ -113,11 +113,11 @@
       "passed": true
     },
     {
-      "baseline_sha256": "a1b12378605c1817933b3ae36bebc9a231e498fc4e148ba0abaa0f678f578bf1",
+      "baseline_sha256": "5521d868d7fe52ba137bc0ddd995375521036c598510e81f847293b9167f3349",
       "equivalent": false,
       "expected_difference": "node_split",
       "level": "topology_only",
-      "mutated_sha256": "85b015cf7ea51b86037e568a43c58727c2ce5f19979ae36fa0c9c470bd9fd290",
+      "mutated_sha256": "67aff87b427f61223ba68ad189b614b0c1ac29a916186df171ff8bf70e941c38",
       "name": "node-split",
       "observed_differences": [
         "node_split"
@@ -125,11 +125,11 @@
       "passed": true
     },
     {
-      "baseline_sha256": "a1b12378605c1817933b3ae36bebc9a231e498fc4e148ba0abaa0f678f578bf1",
+      "baseline_sha256": "5521d868d7fe52ba137bc0ddd995375521036c598510e81f847293b9167f3349",
       "equivalent": false,
       "expected_difference": "node_merge",
       "level": "topology_only",
-      "mutated_sha256": "f3c0337a151e2b3f6720841971036d4fd1137706d86902c661ea3b1398a0d9b5",
+      "mutated_sha256": "aaa485c5fde5518664806d8d7ff7e1c16623c9ee7ceb75b9a9c536bcfeac8337",
       "name": "nodes-merged",
       "observed_differences": [
         "node_merge"
@@ -137,11 +137,11 @@
       "passed": true
     },
     {
-      "baseline_sha256": "03c6806654f29609f609c628de4c0d94b475ba4538dc44f0177d443f03650b4f",
+      "baseline_sha256": "b01440b714e60b7ddc6379f7cf812b3fbda8f8c1ef500bd8404a2ea0535d79a8",
       "equivalent": false,
       "expected_difference": "evidence_changed",
       "level": "evidence_equivalent",
-      "mutated_sha256": "926d883832845a6eeac2f083f63ecd08c0b7213b0bb1dd0a5a7480528c666feb",
+      "mutated_sha256": "e9e0f837b30def5b8ae7e63284cae75ea64d02eae9f814f74cd6af303676352d",
       "name": "evidence-content-substituted",
       "observed_differences": [
         "evidence_changed"
@@ -168,5 +168,5 @@
   "passed": true,
   "schema": "atlas.graph-isomorphism-mutation-audit.v1",
   "source_graph": "research/evidence/V1_CRITICAL_GRAPH.json",
-  "source_graph_sha256": "4ba86eaea3b42cd57eb343d1c674bfa00cafb7f8da4e9fd48999ab707bee6cf6"
+  "source_graph_sha256": "dc6e101b6b8bdbb66a26142de694cea93eee52c13f4696502206aa17a72e9a21"
 }
