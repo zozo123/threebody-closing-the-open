@@ -1,0 +1,110 @@
+name: Julia unclassified-tip BigFloat verifier
+
+# Gate B's three remaining unclassified edge endpoints are not a topology
+# problem and not a missing interface.  Each one is a sweep-component tip whose
+# stored float64 event sits INSIDE the frozen 2e-8 gate but does not survive
+# re-correction:
+#
+#   cell 10000  minus_one  component 0 low    stored +1.5337e-08  re-corrected 8.666e-08
+#   cell 10042  minus_one  component 1 high   stored -1.0203e-08  re-corrected fails gate
+#   cell 10131  plus_one   component 12 low   stored -3.8244e-10  re-corrected 2.919e-08
+#
+# Cell 10131's stored and re-corrected values differ by 76x for the SAME point.
+# That is the float64 evaluation floor julia/localize_published_cells.jl already
+# documents -- "Python float64 DOP853 cannot push shallow +1 events below ~5e-8;
+# this is the Gate B truth path for those cells" -- reappearing as a topology
+# gate rather than a precision gate.
+#
+# This workflow puts each tip on its own runner and asks the BigFloat path
+# whether the tip is a genuine critical root.  A tip that certifies here can seed
+# scripts/resolve_sampled_sweep_endpoints.py from the tip itself, which is what
+# plus_one component 12 needs: it has only ONE re-certifying root of two, so both
+# of its sides currently collapse onto the same seed and neither resolves.
+#
+# This produces evidence.  It does not set a gate: only
+# scripts/assemble_critical_graph.py may do that, and only from committed
+# artifacts.
+
+on:
+  pull_request:
+    paths:
+      - "julia/verify_critical_points.jl"
+      - "experiments/unclassified_tip_*.tsv"
+      - ".github/workflows/julia-unclassified-tip-verifier.yml"
+  workflow_dispatch:
+    inputs:
+      dps:
+        description: "BigFloat decimal precision"
+        required: true
+        default: "60"
+      tol_exp:
+        description: "Vern9 tolerance exponent"
+        required: true
+        default: "25"
+      closure_exp:
+        description: "Required corrected closure exponent"
+        required: true
+        default: "18"
+      width_exp:
+        description: "Final m2 event-bracket width exponent"
+        required: true
+        default: "8"
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
+        with:
+          version: "1.11.9"
+      - name: Parse independent verifier
+        run: julia -e 'Meta.parseall(read("julia/verify_critical_points.jl", String)); println("syntax OK")'
+
+  verify:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - cell: "10000"
+            note: "minus_one component 0 low tip"
+          - cell: "10042"
+            note: "minus_one component 1 high tip"
+          - cell: "10131"
+            note: "plus_one component 12 low tip; the only unresolvable side"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
+        with:
+          version: "1.11.9"
+      - uses: julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8 # v3.3.0
+      - name: Instantiate locked independent solver stack
+        run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+      - name: BigFloat re-localize cell ${{ matrix.cell }} (${{ matrix.note }})
+        env:
+          DPS: ${{ inputs.dps || '60' }}
+          TOL_EXP: ${{ inputs.tol_exp || '25' }}
+          CLOSURE_EXP: ${{ inputs.closure_exp || '18' }}
+          WIDTH_EXP: ${{ inputs.width_exp || '8' }}
+          CELL: ${{ matrix.cell }}
+        run: |
+          mkdir -p artifacts
+          julia --project=julia julia/verify_critical_points.jl \
+            "experiments/unclassified_tip_cell${CELL}.tsv" \
+            "artifacts/unclassified-tip-cell${CELL}-bigfloat.json" \
+            "$DPS" "$TOL_EXP" "$CLOSURE_EXP" "$WIDTH_EXP" 5 4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: unclassified-tip-cell${{ matrix.cell }}-${{ github.sha }}
+          path: artifacts/unclassified-tip-cell${{ matrix.cell }}-bigfloat.json
+          if-no-files-found: warn
+          retention-days: 90
