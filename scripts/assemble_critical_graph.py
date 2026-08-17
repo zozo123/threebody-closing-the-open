@@ -1071,7 +1071,7 @@ def endpoint_resolution_bindings(
             mark = json.dumps(result.get("terminal") or {}, sort_keys=True)
             fingerprints.setdefault(component, {}).setdefault(mark, set()).add(side_word)
     for component, marks in fingerprints.items():
-        for mark, sides in marks.items():
+        for _mark, sides in marks.items():
             if len(sides) > 1:
                 for side_word in sides:
                     poisoned.add((component, side_word))
