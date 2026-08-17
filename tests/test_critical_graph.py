@@ -1847,9 +1847,9 @@ def test_endpoint_resolution_refuses_a_distance_measured_at_the_other_terminus(
 ) -> None:
     """A resolution may not bind a far endpoint on a near endpoint's evidence.
 
-    V1_SAMPLED_ENDPOINT_RESOLUTION_2026-08-17.json reported plus_one component
-    12's `low` terminus with miss_mass 6.5263e-3 -- the distance from its `high`
-    terminus.  `low` itself sat 2.3713e-2 away, 2.96x beyond the reach.  The
+    V1_SAMPLED_ENDPOINT_RESOLUTION_2026-08-17.json, as originally produced,
+    reported plus_one component 12's `low` terminus with miss_mass 6.5263e-3 --
+    the distance from its `high` terminus.  `low` itself sat 2.3713e-2 away, 2.96x beyond the reach.  The
     assembler recomputes from the endpoint being bound rather than trusting the
     number in the artifact.
     """

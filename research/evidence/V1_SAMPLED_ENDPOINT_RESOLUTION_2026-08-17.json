@@ -1,6 +1,11 @@
 {
   "schema": "atlas.v1.sampled-endpoint-resolution/1",
-  "claim": "continuous classification of the unmatched finite-lattice endpoints on minus-one components 0/1 and plus-one component 12",
+  "claim": "continuous classification of the finite-lattice endpoints of sweep components [0, 1, 12] in V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json",
+  "components_resolved": [
+    0,
+    1,
+    12
+  ],
   "frozen_gates": {
     "maximum_absolute_event": 2e-08,
     "maximum_periodic_closure": 1e-07
@@ -9,6 +14,11 @@
     {
       "source_component": 0,
       "outward_side": "low",
+      "seed_cells": {
+        "current": 10001,
+        "previous": 10003,
+        "direction_only_neighbor": false
+      },
       "seed_rows": [
         10003,
         10001
@@ -173,8 +183,190 @@
       "scientific_endpoint_resolved": false
     },
     {
+      "source_component": 0,
+      "outward_side": "high",
+      "seed_cells": {
+        "current": 10018,
+        "previous": 10017,
+        "direction_only_neighbor": false
+      },
+      "seed_rows": [
+        10017,
+        10018
+      ],
+      "seed_previous": {
+        "masses": [
+          0.926,
+          0.8768089968658216,
+          1.0
+        ],
+        "x1": -0.2521686737079859,
+        "v1": 1.6270939782552754,
+        "v2": 0.4302127586035557,
+        "period": 6.616812417571014,
+        "closure": 3.4503792970037875e-10,
+        "event_mode": "minus_one",
+        "event": -1.239929048324484e-09
+      },
+      "seed_current": {
+        "masses": [
+          0.928,
+          0.8821527119651636,
+          1.0
+        ],
+        "x1": -0.25603737458120934,
+        "v1": 1.6097472746963697,
+        "v2": 0.4306122138087471,
+        "period": 6.645665686940924,
+        "closure": 2.957049921811692e-10,
+        "event_mode": "minus_one",
+        "event": -3.247047075660703e-10
+      },
+      "accepted_points": [
+        {
+          "masses": [
+            0.9288970112221954,
+            0.8844862537804965,
+            1.0
+          ],
+          "x1": -0.2577511540903578,
+          "v1": 1.602182579955373,
+          "v2": 0.43079788666410107,
+          "period": 6.658457537421318,
+          "closure": 3.0832321694577093e-10,
+          "event_mode": "minus_one",
+          "event": 8.032223774989689e-10,
+          "d_event_dm": [
+            -111.45463967357068,
+            43.19422658102894
+          ],
+          "mass_tangent": [
+            0.36136146378528333,
+            0.9324258107168406
+          ],
+          "closure_jacobian_singular_values": [
+            3207.2337801957015,
+            25.07218471893945,
+            3.6660401800122813,
+            0.1332737795755187
+          ],
+          "closure_family_relative_residual": 5.951699787765781e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        }
+      ],
+      "projection_turns_crossed": [],
+      "terminal": {
+        "kind": "mixed_organizer",
+        "node_id": "mixed_principal_left",
+        "miss_mass": 0.0009443808374062197,
+        "organizer_masses": [
+          0.9292391921118185,
+          0.8853664625084905
+        ]
+      },
+      "stopped_reason": "mixed_organizer_reached",
+      "scientific_endpoint_resolved": true
+    },
+    {
+      "source_component": 1,
+      "outward_side": "low",
+      "seed_cells": {
+        "current": 10019,
+        "previous": 10020,
+        "direction_only_neighbor": false
+      },
+      "seed_rows": [
+        10020,
+        10019
+      ],
+      "seed_previous": {
+        "masses": [
+          0.998,
+          0.9476559522589565,
+          1.0
+        ],
+        "x1": -0.3490893499821452,
+        "v1": 1.2695642137281502,
+        "v2": 0.46601958196266086,
+        "period": 7.415736042885398,
+        "closure": 1.834147439522528e-10,
+        "event_mode": "minus_one",
+        "event": -6.670297203470454e-09
+      },
+      "seed_current": {
+        "masses": [
+          0.996,
+          0.9645756243241325,
+          1.0
+        ],
+        "x1": -0.35489887162255546,
+        "v1": 1.2574612863238335,
+        "v2": 0.46019094998319876,
+        "period": 7.438123439075964,
+        "closure": 1.646856966911316e-10,
+        "event_mode": "minus_one",
+        "event": -8.810161489236634e-10
+      },
+      "accepted_points": [
+        {
+          "masses": [
+            0.995866751171719,
+            0.9670721524602889,
+            1.0
+          ],
+          "x1": -0.3558090908364436,
+          "v1": 1.2555085142596254,
+          "v2": 0.4594320282614768,
+          "period": 7.442269886618466,
+          "closure": 1.7427198741360227e-10,
+          "event_mode": "minus_one",
+          "event": 6.991331957806324e-09,
+          "d_event_dm": [
+            36.75517849756625,
+            1.6653930994365282
+          ],
+          "mass_tangent": [
+            -0.045263993802830894,
+            0.998975060181693
+          ],
+          "closure_jacobian_singular_values": [
+            1589.3687705890266,
+            37.26917979146096,
+            3.4706108368006157,
+            0.14635878249038636
+          ],
+          "closure_family_relative_residual": 1.648620743216278e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        }
+      ],
+      "projection_turns_crossed": [],
+      "terminal": {
+        "kind": "existing_catalog_critical_curve",
+        "cell_id": 392,
+        "orientation": "U->S",
+        "miss_scaled": 2.085110870872691e-10,
+        "segment_fraction": 3.963590855909422e-07,
+        "tangent_abs_cosine": 0.9985786625964568,
+        "neighbor_cells_used_for_tangent": [
+          393,
+          342,
+          344,
+          346
+        ]
+      },
+      "stopped_reason": "existing_catalog_curve_reached",
+      "scientific_endpoint_resolved": true
+    },
+    {
       "source_component": 1,
       "outward_side": "high",
+      "seed_cells": {
+        "current": 10037,
+        "previous": 10036,
+        "direction_only_neighbor": false
+      },
       "seed_rows": [
         10036,
         10037
@@ -309,7 +501,12 @@
     },
     {
       "source_component": 12,
-      "outward_side": "high",
+      "outward_side": "low",
+      "seed_cells": {
+        "current": 10132,
+        "previous": 10131,
+        "direction_only_neighbor": true
+      },
       "seed_rows": [
         10131,
         10132
@@ -376,21 +573,18 @@
         }
       ],
       "projection_turns_crossed": [],
-      "terminal": {
-        "kind": "mixed_organizer",
-        "node_id": "mixed_principal_right",
-        "miss_mass": 0.006526318745269977,
-        "organizer_masses": [
-          1.0495531866872656,
-          1.129475807302117
-        ]
-      },
-      "stopped_reason": "mixed_organizer_reached",
-      "scientific_endpoint_resolved": true
+      "terminal": null,
+      "stopped_reason": "degenerate_sides_not_a_scientific_terminus: component 12 sides ['high', 'low'] share seed pair (current=10132, previous=10131); one computation cannot resolve two termini",
+      "scientific_endpoint_resolved": false
     },
     {
       "source_component": 12,
-      "outward_side": "low",
+      "outward_side": "high",
+      "seed_cells": {
+        "current": 10132,
+        "previous": 10131,
+        "direction_only_neighbor": true
+      },
       "seed_rows": [
         10131,
         10132
@@ -457,17 +651,9 @@
         }
       ],
       "projection_turns_crossed": [],
-      "terminal": {
-        "kind": "mixed_organizer",
-        "node_id": "mixed_principal_right",
-        "miss_mass": 0.006526318745269977,
-        "organizer_masses": [
-          1.0495531866872656,
-          1.129475807302117
-        ]
-      },
-      "stopped_reason": "mixed_organizer_reached",
-      "scientific_endpoint_resolved": true
+      "terminal": null,
+      "stopped_reason": "degenerate_sides_not_a_scientific_terminus: component 12 sides ['high', 'low'] share seed pair (current=10132, previous=10131); one computation cannot resolve two termini",
+      "scientific_endpoint_resolved": false
     }
   ],
   "all_sampled_endpoints_resolved": false,
