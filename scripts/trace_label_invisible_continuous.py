@@ -285,11 +285,18 @@ def _germ_point(path: Path, mode: str, direction: str) -> StrictPoint:
     row = rows[0]
     if row.get("status") != "traced" or not row.get("canonical_bound") or not row.get("canonical_bracketed"):
         raise RuntimeError(f"{path}: germ {mode}/{direction} is not canonically bound")
+    # The stored germ is a pseudo-arclength point, not necessarily at the m1 of
+    # its source raster cell.  Reopen a local fixed-m1 interval around the germ
+    # itself when tight Floquet evaluation moves it across the cancellation-
+    # sensitive float64 gate.  Using the source cell's m2 bracket here would
+    # pull the germ back toward the catalog root and erase its signed direction.
+    germ_m2 = float(row["masses"][1])
     return _strict_localize(
         row,
         mode,
         source=str(path),
         source_id=f"{payload.get('mixed_node')}:{mode}:{direction}",
+        m2_bounds=(germ_m2 - 1.25e-3, germ_m2 + 1.25e-3),
     )
 
 
