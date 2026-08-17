@@ -248,6 +248,13 @@ def _strict_localize(
                         seed=sample,
                         event_tolerance=EVENT_GATE,
                         max_closure=CLOSURE_GATE,
+                        # Twelve safeguarded iterations were enough on macOS,
+                        # but Ubuntu's tight-Floquet evaluation moves this
+                        # cancellation-sensitive G- zero by about 1e-10 in m2.
+                        # Keep refining the original signed cell instead of
+                        # treating that platform shift as a failed seed (or,
+                        # worse, relaxing the frozen event gate).
+                        max_steps=32,
                     )
                     if abs(recovered.event_value) < abs(value):
                         sample = recovered.sample

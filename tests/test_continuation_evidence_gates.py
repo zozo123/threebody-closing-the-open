@@ -121,6 +121,7 @@ def test_continuation_reopens_signed_seed_cells_and_checkpoints_initialization()
     )
     assert "_precise_bracket_search(" in source
     assert "m2_bounds=(bounds[0], bounds[1])" in source
+    assert "max_steps=32" in source
     assert "sys.excepthook = checkpoint_unhandled_exception" in source
     assert "failed_initialization_partial_continuation_evidence" in source
     assert "if: always()" in workflow
