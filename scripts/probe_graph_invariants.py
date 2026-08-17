@@ -77,6 +77,14 @@ def fingerprint(graph: dict[str, Any]) -> dict[str, Any]:
         "cell_ids_on_edges": sorted(
             cell for edge in edges for cell in (edge.get("cell_ids") or [])
         ),
+        # Recorded separately so a change in sweep-derived coverage is a caught
+        # regression rather than an invisible one.
+        "supplemental_cell_ids": sorted(
+            cell
+            for edge in edges
+            for cell in (edge.get("cell_ids") or [])
+            if int(cell) >= 10000
+        ),
     }
 
 
@@ -92,11 +100,35 @@ def check(current: dict[str, Any], baseline: dict[str, Any]) -> list[str]:
         problems.append(f"cells_on_edges {current['cells_on_edges']} != 620")
     if current["newton_failed"]:
         problems.append(f"newton_failed {current['newton_failed']} != 0")
-    if current["cell_ids_on_edges"] != list(range(620)):
-        missing = sorted(set(range(620)) - set(current["cell_ids_on_edges"]))
+    # The graph spans TWO cell-id spaces: the 620-cell census (0..619) and the
+    # sweep-derived supplemental roots (>= 10000).  Requiring the edge cell list
+    # to equal range(620) exactly was correct until sweep components were added,
+    # after which it fired on every clean tree with an EMPTY missing list -- the
+    # extras tripped it, nothing was absent -- which made this detector useless
+    # (it can no longer distinguish a mutation from the status quo).
+    #
+    # Stay strict where strictness means something: every census cell exactly
+    # once, no duplicates anywhere.  Pin the supplemental set against the
+    # baseline instead of ignoring it, so a change there is still caught.
+    on_edges = current["cell_ids_on_edges"]
+    census_on_edges = [c for c in on_edges if c < 10000]
+    if sorted(census_on_edges) != list(range(620)):
+        missing = sorted(set(range(620)) - set(census_on_edges))
+        extra = sorted(c for c in census_on_edges if c >= 620)
         problems.append(
-            f"edges no longer carry each cell exactly once (missing {missing[:5]}"
-            f"{'...' if len(missing) > 5 else ''})"
+            f"census cells are no longer carried exactly once "
+            f"(missing {missing[:5]}{'...' if len(missing) > 5 else ''}, "
+            f"unexpected {extra[:5]}{'...' if len(extra) > 5 else ''})"
+        )
+    duplicates = sorted({c for c in on_edges if on_edges.count(c) > 1})
+    if duplicates:
+        problems.append(f"cell ids carried more than once: {duplicates[:5]}")
+    supplemental = sorted(c for c in on_edges if c >= 10000)
+    baseline_supplemental = baseline.get("supplemental_cell_ids")
+    if baseline_supplemental is not None and supplemental != baseline_supplemental:
+        problems.append(
+            f"supplemental cell coverage changed: "
+            f"{len(baseline_supplemental)} -> {len(supplemental)} cells"
         )
     for key in ("edge_count", "edge_shape"):
         if current[key] != baseline[key]:
