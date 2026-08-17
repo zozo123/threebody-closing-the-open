@@ -3235,7 +3235,8 @@
           }
         ],
         "missing_critical_curve": 3,
-        "forbidden_component_flip": 0
+        "forbidden_component_flip": 0,
+        "no_flip_across_edge": 0
       },
       {
         "path": "research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json",
@@ -3583,7 +3584,8 @@
           }
         ],
         "missing_critical_curve": 4,
-        "forbidden_component_flip": 1
+        "forbidden_component_flip": 1,
+        "no_flip_across_edge": 0
       }
     ],
     "completeness_passed": true,

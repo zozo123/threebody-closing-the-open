@@ -1046,6 +1046,7 @@ def sign_topology_report(paths: list[Path]) -> dict[str, Any]:
         "errors": [],
         "missing_critical_curve": None,
         "forbidden_component_flip": None,
+        "no_flip_across_edge": None,
     }
     if not paths:
         report["errors"].append(
@@ -1056,6 +1057,7 @@ def sign_topology_report(paths: list[Path]) -> dict[str, Any]:
 
     missing_total = 0
     forbidden_total = 0
+    no_flip_total = 0
     for path in paths:
         if not path.is_file():
             report["errors"].append(f"sign-topology audit not readable: {path}")
@@ -1067,8 +1069,19 @@ def sign_topology_report(paths: list[Path]) -> dict[str, Any]:
             continue
         missing = int(counts.get("missing_critical_curve", 0))
         forbidden = int(counts.get("forbidden_component_flip", 0))
+        # no_flip_across_edge catches the converse of a missing curve: an edge
+        # CLAIMED where the state does not actually change.  Omitting it left a
+        # real hole -- measured 2026-08-17, minus_one_sweep_component_1 and _3
+        # are each two distant cell clusters joined into one polyline across an
+        # interior m1 gap of 0.112 and 0.155 (112 and 155 grid steps, against a
+        # MASS_JUMP of 25) with no roots inside.  Probing at m1=0.97, inside both
+        # gaps, correctly finds sgn G_minus unchanged: the edge spans a void.
+        # A conjunct that ignores this would pass a graph asserting curves that
+        # are not there, which is the same error as missing the ones that are.
+        no_flip = int(counts.get("no_flip_across_edge", 0))
         missing_total += missing
         forbidden_total += forbidden
+        no_flip_total += no_flip
         report["audits"].append(
             {
                 "path": str(path),
@@ -1076,12 +1089,18 @@ def sign_topology_report(paths: list[Path]) -> dict[str, Any]:
                 "probes": record.get("probe_count") or record.get("probes"),
                 "missing_critical_curve": missing,
                 "forbidden_component_flip": forbidden,
+                "no_flip_across_edge": no_flip,
             }
         )
         if missing:
             report["errors"].append(
                 f"{path}: {missing} critical curve(s) localized outside the committed "
                 "edges; the graph is not the complete critical set"
+            )
+        if no_flip:
+            report["errors"].append(
+                f"{path}: {no_flip} committed edge crossing(s) left the state "
+                "component unchanged; an edge is claimed where no curve crosses"
             )
         if forbidden:
             report["errors"].append(
@@ -1091,6 +1110,7 @@ def sign_topology_report(paths: list[Path]) -> dict[str, Any]:
 
     report["missing_critical_curve"] = missing_total
     report["forbidden_component_flip"] = forbidden_total
+    report["no_flip_across_edge"] = no_flip_total
     report["passed"] = not report["errors"]
     return report
 
