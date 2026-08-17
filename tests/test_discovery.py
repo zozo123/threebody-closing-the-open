@@ -31,7 +31,7 @@ def test_current_open_manifest_is_valid() -> None:
     assert manifest["status"] == "open"
     assert {g["id"]: g["status"] for g in manifest["gates"]} == {
         "A": "pass",
-        "B": "pass",
+        "B": "pending",
         "C": "pass",
         "D": "pending",
     }
@@ -397,9 +397,8 @@ def test_closed_manifest_can_pass_scientific_contract() -> None:
 def test_solved_manifest_requires_assembler_release_ready() -> None:
     manifest = _closed_manifest()
     for item in manifest["evidence"]:
-        if item.get("role") == "critical_graph":
-            # A real JSON file that is not a release-ready graph.
-            item["path"] = "research/DISCOVERY_RELEASE.json"
+        if item.get("id") == "critical-graph-fixture":
+            item["path"] = "research/evidence/V1_CRITICAL_GRAPH.json"
             item.pop("sha256", None)
     with pytest.raises(DiscoveryValidationError, match="release_ready"):
         validate_manifest(manifest, ROOT, today=date(2026, 8, 15))

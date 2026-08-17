@@ -19,20 +19,13 @@
 #
 #   --roots      V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json
 #                The 620/620 float64+Julia-BigFloat hybrid census.  This is the
-#                canonical CATALOG roots file: tests/test_critical_graph.py pins
-#                that those 620 cells still form 7 catalog polylines with
-#                source-cell counts [1, 22, 46, 47, 120, 130, 254].  They are
-#                not the complete critical set -- see --supplemental-roots.
+#                canonical roots file: tests/test_critical_graph.py pins its shape
+#                (620 localized roots, 7 polyline edges, source-cell counts
+#                [1, 22, 46, 47, 120, 130, 254]).
 #                V1_HYBRID_CRITICAL_ROOTS_PARTIAL.json is byte-identical to it (a
 #                leftover rolling name from the same run), and
 #                V1_FLOAT64_CRITICAL_CENSUS_2026-08-15.json only carries the 462
 #                float64-localized cells, so neither can be the graph's input.
-#
-#   --supplemental-roots V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json
-#                Label-invisible / graph-absent event-sign roots harvested from
-#                the full-domain sweep (CI run 31956195570).  Catalog S/U cells
-#                cannot see interior 2→1 / 1→2 curves.  These roots extend the
-#                graph; they do not replace the 620-cell covering count.
 #
 #   --left-birth V1_LEFT_BIRTH_CLASS_2026-08-16.json
 #                projection_fold, passed, evidence_level independently_reproduced,
@@ -103,17 +96,6 @@
 #                re-derive the AL and neck predicates itself.  Sealing alone
 #                proves nothing.
 #
-#   --sign-topology V1_SIGN_TOPOLOGY_AUDIT_2026-08-17.json
-#                   V1_SIGN_TOPOLOGY_CROSSING_2026-08-17.json
-#                Re-runs of the two committed scan suites against the 13-edge
-#                graph (7 catalog + 6 event-sign), after extending polylines
-#                through mixed organizers.  missing_critical_curve = 0 and
-#                forbidden_component_flip = 0 on both.  The 2026-08-16 files
-#                are the 7-edge falsification and stay on disk as history.
-#                After extending through the retained mixed endpoint
-#                (secondary_right_death), both suites report zero missing
-#                curves, zero forbidden flips, and zero face mismatches.
-#
 # LEFT_BIRTH and COMPLETENESS may be overridden by environment variable.  That
 # exists so scripts/close_v1_gates.py can point this pinned invocation at the
 # classification and certificate it has just produced from live CI artifacts,
@@ -136,7 +118,6 @@ COMPLETENESS="${COMPLETENESS:-research/evidence/V1_COMPLETENESS_CERTIFICATE_2026
 
 EVIDENCE_ARGS=(
   --roots research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json
-  --supplemental-roots research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json
   --left-birth "$LEFT_BIRTH"
   --right-death research/evidence/V1_SECONDARY_RIGHT_CLASS_2026-08-16.json
   --daughter research/evidence/V1_DAUGHTER_CLASS_2026-08-16.json
@@ -145,8 +126,8 @@ EVIDENCE_ARGS=(
   --germs research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json
   --germs research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json
   --completeness "$COMPLETENESS"
-  --sign-topology research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-17.json
-  --sign-topology research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-17.json
+  --sign-topology research/evidence/V1_SIGN_TOPOLOGY_AUDIT_2026-08-16.json
+  --sign-topology research/evidence/V1_SIGN_TOPOLOGY_CROSSING_2026-08-16.json
 )
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
