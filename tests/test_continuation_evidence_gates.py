@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import importlib.util
+import re
 import sys
 from pathlib import Path
 
@@ -125,3 +126,15 @@ def test_continuation_reopens_signed_seed_cells_and_checkpoints_initialization()
     assert "sys.excepthook = checkpoint_unhandled_exception" in source
     assert "failed_initialization_partial_continuation_evidence" in source
     assert "if: always()" in workflow
+
+
+def test_continuation_covers_every_multi_point_supplemental_component() -> None:
+    source = (ROOT / "scripts/trace_label_invisible_continuous.py").read_text(
+        encoding="utf-8"
+    )
+    component_sets = set(
+        re.findall(r"_mesh_rows\(\s*supplemental,\s*(\{[^}]+\})", source)
+    )
+    assert {"{0}", "{1}", "{3}", "{4}", "{10}", "{11, 12}"} <= component_sets
+    assert 'branch_id="secondary_right_minus_to_domain"' in source
+    assert 'branch_id="principal_right_minus_to_domain"' in source

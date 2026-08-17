@@ -226,11 +226,16 @@ def mixed_organizer_point(graph: dict[str, Any], node_id: str | None) -> tuple[f
 
 
 def edges_from_graph(graph: dict[str, Any], roots: Sequence[dict[str, Any]]) -> list[PolylineEdge]:
-    """Rebuild each committed edge as a polyline from its ``cell_ids``.
+    """Rebuild each committed edge from continuous vertices or ``cell_ids``.
 
     Classified mixed-organizer endpoints are appended when they extend the
     sample span.  They are already vertices of the graph; omitting them
     made the auditor invent a missing curve in the last grid step.
+
+    Continuous-certificate edges carry explicit mass-plane ``vertices`` and no
+    sweep-local cell ids.  Prefer those vertices so the sign audit examines the
+    topology the continuous solver certified, rather than reconstructing the
+    superseded finite lattice.
     """
     by_cell = {int(r["cell_id"]): r for r in roots}
     out: list[PolylineEdge] = []
@@ -238,12 +243,20 @@ def edges_from_graph(graph: dict[str, Any], roots: Sequence[dict[str, Any]]) -> 
         if edge.get("kind") != "mechanism_polyline":
             continue
         pts: list[tuple[float, float]] = []
-        for cell in edge.get("cell_ids", ()):
-            root = by_cell.get(int(cell))
-            if root is None:
-                raise KeyError(f"edge {edge['id']} references unknown cell {cell}")
-            m1, m2 = float(root["masses"][0]), float(root["masses"][1])
-            pts.append((m1, m2))
+        explicit = edge.get("vertices") or []
+        if explicit:
+            for vertex in explicit:
+                masses = vertex.get("masses") if isinstance(vertex, dict) else vertex
+                if not isinstance(masses, (list, tuple)) or len(masses) < 2:
+                    raise ValueError(f"edge {edge['id']} has an invalid continuous vertex")
+                pts.append((float(masses[0]), float(masses[1])))
+        else:
+            for cell in edge.get("cell_ids", ()):
+                root = by_cell.get(int(cell))
+                if root is None:
+                    raise KeyError(f"edge {edge['id']} references unknown cell {cell}")
+                m1, m2 = float(root["masses"][0]), float(root["masses"][1])
+                pts.append((m1, m2))
         endpoints = edge.get("endpoints") or {}
         start_org = mixed_organizer_point(graph, (endpoints.get("start") or {}).get("node"))
         end_org = mixed_organizer_point(graph, (endpoints.get("end") or {}).get("node"))
@@ -277,8 +290,18 @@ def non_graph_edges(graph: dict[str, Any], roots: Sequence[dict[str, Any]]) -> l
     flagged = []
     for edge in graph.get("edges", ()):
         seen: dict[float, int] = {}
-        for cell in edge.get("cell_ids", ()):
-            m1 = float(by_cell[int(cell)]["masses"][0])
+        explicit = edge.get("vertices") or []
+        if explicit:
+            m1_values = [
+                float((vertex.get("masses") if isinstance(vertex, dict) else vertex)[0])
+                for vertex in explicit
+            ]
+        else:
+            m1_values = [
+                float(by_cell[int(cell)]["masses"][0])
+                for cell in edge.get("cell_ids", ())
+            ]
+        for m1 in m1_values:
             seen[m1] = seen.get(m1, 0) + 1
         repeats = sorted(m1 for m1, n in seen.items() if n > 1)
         if repeats:

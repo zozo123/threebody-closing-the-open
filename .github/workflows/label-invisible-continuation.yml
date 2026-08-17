@@ -50,7 +50,7 @@ jobs:
             tests/test_jax_diffrax.py \
             tests/test_critical_geometry.py \
             tests/test_floquet_rank_events.py
-      - name: Trace four physical branches
+      - name: Trace six physical branches
         env:
           MASS_STEP: ${{ inputs.mass_step || '0.0035' }}
           MAX_STEPS: ${{ inputs.max_steps || '120' }}

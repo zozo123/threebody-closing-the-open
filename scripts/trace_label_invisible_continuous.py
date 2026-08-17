@@ -23,9 +23,11 @@ null tangent of d[closure,G]/d(x1,v1,v2,T,m1,m2).  Residual values and acceptanc
 remain the canonical SciPy path; JAX supplies derivatives only.
 
 Branches are launched from opposite pseudo-arclength germs that already straddle
-independently reproduced mixed organizers.  Legitimate stops are another
-canonically bound germ or a declared-domain face.  Newton failure is never a
-scientific terminus.
+independently reproduced mixed organizers.  The campaign covers every
+multi-point supplemental sweep component (0, 1, 3, 4, 10, and 12), including
+the two branches whose sampled endpoints happened to lie near a domain face.
+Legitimate stops are another canonically bound germ or a declared-domain face.
+Newton failure is never a scientific terminus.
 """
 from __future__ import annotations
 
@@ -959,8 +961,12 @@ def main() -> None:
     sleft_plus_target = _germ_point(sleft, "plus_one", "+")
     sleft_minus_prev = _germ_point(sleft, "minus_one", "-")
     sleft_minus_cur = _germ_point(sleft, "minus_one", "+")
+    sright_minus_prev = _germ_point(sright, "minus_one", "-")
+    sright_minus_cur = _germ_point(sright, "minus_one", "+")
     sright_plus_prev = _germ_point(sright, "plus_one", "-")
     sright_plus_cur = _germ_point(sright, "plus_one", "+")
+    pright_minus_prev = _germ_point(pright, "minus_one", "-")
+    pright_minus_cur = _germ_point(pright, "minus_one", "+")
     pright_plus_target = _germ_point(pright, "plus_one", "+")
 
     minus_left_targets = [
@@ -1029,6 +1035,28 @@ def main() -> None:
             requested_step=args.mass_step,
             max_steps=args.max_steps,
         ),
+        dict(
+            branch_id="secondary_right_minus_to_domain",
+            previous=sright_minus_prev,
+            current=sright_minus_cur,
+            targets=[],
+            mesh_rows=_mesh_rows(supplemental, {3}),
+            endpoint="domain",
+            endpoint_target=None,
+            requested_step=args.mass_step,
+            max_steps=args.max_steps,
+        ),
+        dict(
+            branch_id="principal_right_minus_to_domain",
+            previous=pright_minus_prev,
+            current=pright_minus_cur,
+            targets=[],
+            mesh_rows=_mesh_rows(supplemental, {4}),
+            endpoint="domain",
+            endpoint_target=None,
+            requested_step=args.mass_step,
+            max_steps=args.max_steps,
+        ),
     ]
 
     branches: list[dict[str, Any]] = []
@@ -1080,7 +1108,10 @@ def main() -> None:
 
     result = {
         "schema": "atlas.v1.label-invisible-continuation/2",
-        "claim": "continuous reconciliation of all nine label-invisible roots and the right-hand plus-one wall",
+        "claim": (
+            "continuous reconciliation of all nine label-invisible roots and "
+            "all six multi-point supplemental sweep components"
+        ),
         "frozen_gates": {
             "maximum_absolute_event": EVENT_GATE,
             "maximum_periodic_closure": CLOSURE_GATE,

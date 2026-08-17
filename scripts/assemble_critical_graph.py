@@ -162,6 +162,17 @@ GERM_ATTACH_DISTANCE = 0.008
 DOMAIN_TOLERANCE = 0.0015
 
 DECLARED_DOMAIN = {"m1": (0.8, 1.1), "m2": (0.7, 1.2)}
+CONTINUOUS_RECONCILIATION_SCHEMA = "atlas.v1.continuous-critical-reconciliation/1"
+EXPECTED_CONTINUOUS_BRANCHES = frozenset(
+    {
+        "principal_left_minus_to_domain",
+        "principal_left_plus_to_secondary_left",
+        "secondary_left_minus_to_domain",
+        "secondary_right_plus_to_principal_right",
+        "secondary_right_minus_to_domain",
+        "principal_right_minus_to_domain",
+    }
+)
 
 # Substrings that mark a stopped_reason as a recorded *failure* of the
 # continuation that produced the germ.  A germ whose own artifact records that
@@ -606,6 +617,196 @@ def domain_node(masses: list[Any] | None) -> str | None:
     """Per-exit declared-domain-boundary node id, or None if not a domain exit."""
     hit = domain_face_hit(masses)
     return None if hit is None else domain_exit_node_id(hit)
+
+
+def continuous_reconciliation_edges(
+    path: Path | None, *, root: Path
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    """Validate the 139/139 certificate and return its six physical edges.
+
+    The certificate is an immutable envelope over the raw hosted continuation
+    artifacts.  Every parent digest is re-read here.  Its edges replace the
+    finite-sweep polylines; merely placing an artifact on disk can never affect
+    the graph.
+    """
+    errors: list[str] = []
+    report: dict[str, Any] = {
+        "provided": path is not None,
+        "passed": False,
+        "errors": errors,
+        "source": str(path) if path is not None else None,
+    }
+    if path is None:
+        errors.append("continuous reconciliation certificate is required")
+        return [], [], report
+    try:
+        payload = load(path)
+    except (OSError, ValueError, TypeError) as exc:
+        errors.append(f"cannot read continuous reconciliation certificate: {exc}")
+        return [], [], report
+
+    if payload.get("schema") != CONTINUOUS_RECONCILIATION_SCHEMA:
+        errors.append(f"schema must be {CONTINUOUS_RECONCILIATION_SCHEMA}")
+    if payload.get("physical_sheet") != "one continuation-connected Li-Li-Liao catalog sheet":
+        errors.append("continuous certificate names the wrong physical sheet")
+    gates = payload.get("frozen_gates") or {}
+    if gates.get("maximum_absolute_event") != EVENT_GATE:
+        errors.append("continuous certificate changed the frozen event gate")
+    if gates.get("maximum_periodic_closure") != CLOSURE_GATE:
+        errors.append("continuous certificate changed the frozen closure gate")
+
+    for parent in payload.get("parents") or []:
+        relative = parent.get("path")
+        digest = str(parent.get("sha256") or "")
+        commit = str(parent.get("source_commit") or "")
+        if not isinstance(relative, str) or not relative:
+            errors.append("continuous certificate parent has no path")
+            continue
+        candidate = (root / relative).resolve()
+        try:
+            candidate.relative_to(root.resolve())
+        except ValueError:
+            errors.append(f"continuous parent escapes repository: {relative}")
+            continue
+        if not candidate.is_file():
+            errors.append(f"continuous parent is absent: {relative}")
+            continue
+        actual = hashlib.sha256(candidate.read_bytes()).hexdigest()
+        if actual != digest:
+            errors.append(f"continuous parent digest mismatch: {relative}")
+        if len(commit) != 40 or any(char not in "0123456789abcdef" for char in commit.lower()):
+            errors.append(f"continuous parent has invalid source commit: {relative}")
+
+    accounting = payload.get("off_graph_accounting") or {}
+    ledger = accounting.get("ledger") or []
+    observed = accounting.get("observed_roots")
+    resolved = accounting.get("resolved_roots")
+    unresolved = accounting.get("unresolved_roots") or []
+    if observed != 139 or resolved != 139 or unresolved:
+        errors.append("continuous certificate must account for 139/139 roots with none unresolved")
+    root_ids = [str(item.get("root_id") or "") for item in ledger]
+    if len(ledger) != 139 or len(set(root_ids)) != 139 or any(not item for item in root_ids):
+        errors.append("continuous reconciliation ledger must contain 139 unique root ids")
+
+    raw_edges = payload.get("continuous_edges") or []
+    branch_ids = {str(item.get("branch_id") or "") for item in raw_edges}
+    if branch_ids != EXPECTED_CONTINUOUS_BRANCHES or len(raw_edges) != len(
+        EXPECTED_CONTINUOUS_BRANCHES
+    ):
+        errors.append("continuous certificate does not contain the six required physical branches")
+    if any(str(item.get("physical_object") or "") not in branch_ids for item in ledger):
+        errors.append("a reconciled root is not assigned to a certified physical branch")
+
+    edges: list[dict[str, Any]] = []
+    derived_nodes: dict[str, dict[str, Any]] = {}
+    for item in raw_edges:
+        branch_id = str(item.get("branch_id") or "")
+        mechanism = str(item.get("event_mode") or "")
+        vertices = item.get("vertices") or []
+        if mechanism not in {"plus_one", "minus_one"}:
+            errors.append(f"{branch_id}: invalid event mode")
+        if len(vertices) < 2:
+            errors.append(f"{branch_id}: needs at least two continuous vertices")
+            continue
+        for vertex in vertices:
+            masses = vertex.get("masses") or []
+            event = vertex.get("event")
+            closure = vertex.get("closure")
+            if len(masses) < 2 or event is None or closure is None:
+                errors.append(f"{branch_id}: incomplete continuous vertex")
+                continue
+            if abs(float(event)) > EVENT_GATE or float(closure) > CLOSURE_GATE:
+                errors.append(f"{branch_id}: continuous vertex misses a frozen gate")
+
+        endpoint_records: dict[str, dict[str, Any]] = {}
+        for side in ("start", "end"):
+            declared = item.get(f"{side}_terminal") or {}
+            masses = declared.get("masses") or vertices[0 if side == "start" else -1].get(
+                "masses"
+            )
+            terminal_kind = str(declared.get("kind") or "")
+            node_id = str(declared.get("node_id") or "")
+            if terminal_kind == "declared_domain_boundary":
+                hit = domain_face_hit(masses)
+                if hit is None:
+                    errors.append(f"{branch_id}:{side}: declared boundary is not on a domain face")
+                else:
+                    expected = domain_exit_node_id(hit)
+                    if node_id and node_id != expected:
+                        errors.append(f"{branch_id}:{side}: domain node id disagrees with its masses")
+                    node_id = expected
+                    derived_nodes.setdefault(
+                        node_id,
+                        node(
+                            node_id,
+                            "declared_domain_boundary",
+                            status="frozen_domain",
+                            masses=None,
+                            passed=True,
+                            evidence_level="definition",
+                            domain_face=hit["face"],
+                            exit_coordinate={
+                                "axis": hit["along_axis"],
+                                "grid_value": hit["along_grid"],
+                            },
+                            continuous_evidence=str(path),
+                        ),
+                    )
+            elif terminal_kind != "canonically_bound_continuation_germ" or not node_id:
+                errors.append(f"{branch_id}:{side}: terminal is not a legitimate continuous class")
+            endpoint_records[side] = {
+                "masses": [float(value) for value in masses],
+                "node": node_id or None,
+                "attachment": "continuous_certificate",
+                "binding_evidence": str(path),
+            }
+
+        assigned = sum(
+            1 for entry in ledger if str(entry.get("physical_object") or "") == branch_id
+        )
+        edges.append(
+            {
+                "id": f"continuous_{branch_id}",
+                "kind": "mechanism_polyline",
+                "mechanism": mechanism,
+                "orientation": "continuous_certificate",
+                "cell_ids": [],
+                "source_cell_count": 0,
+                "reconciled_off_graph_roots": assigned,
+                "estimators": ["variational_continuation", "JAX_Diffrax_tangent"],
+                "source": "continuous_critical_reconciliation",
+                "source_artifact": str(path),
+                "vertices": vertices,
+                "uncertainty": {
+                    "max_abs_event": max(abs(float(row["event"])) for row in vertices),
+                    "max_closure": max(float(row["closure"]) for row in vertices),
+                },
+                "endpoints": {
+                    **endpoint_records,
+                    "classified": all(endpoint_records[side]["node"] for side in ("start", "end")),
+                },
+            }
+        )
+
+    report.update(
+        {
+            "schema": payload.get("schema"),
+            "observed_roots": observed,
+            "resolved_roots": resolved,
+            "unresolved_roots": unresolved,
+            "continuous_branch_count": len(raw_edges),
+            "parents_verified": len(payload.get("parents") or []),
+            "partial_sweep_blind_spots_preserved": bool(
+                payload.get("partial_sweep_blind_spots")
+            ),
+        }
+    )
+    if payload.get("passed") is not True:
+        errors.append("continuous reconciliation certificate is not passed")
+    if not report["partial_sweep_blind_spots_preserved"]:
+        errors.append("continuous certificate erased the finite-sweep blind spots")
+    report["passed"] = not errors
+    return (edges if report["passed"] else []), list(derived_nodes.values()), report
 
 
 def apply_classification_bindings(
@@ -1116,6 +1317,13 @@ def main() -> None:
         default=[],
         help="sign-vector face-consistency audit(s); required for release_ready",
     )
+    parser.add_argument(
+        "--continuous-reconciliation",
+        help=(
+            "validated 139/139 continuous certificate; when present, its six "
+            "physical edges replace finite-sweep topology"
+        ),
+    )
     parser.add_argument("--al-screen")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
@@ -1195,8 +1403,17 @@ def main() -> None:
         for item in roots
         if forbidden_class(item.get("status")) or forbidden_class(item.get("error"))
     ]
+    continuous_edges, continuous_nodes, continuous_report = continuous_reconciliation_edges(
+        Path(args.continuous_reconciliation) if args.continuous_reconciliation else None,
+        root=root,
+    )
+    existing_node_ids = {str(item["id"]) for item in nodes}
+    nodes.extend(item for item in continuous_nodes if str(item["id"]) not in existing_node_ids)
     edges = polyline_edges(catalog_roots) if catalog_roots else []
-    edges.extend(supplemental_component_edges(supplemental_roots))
+    if continuous_report["passed"]:
+        edges.extend(continuous_edges)
+    else:
+        edges.extend(supplemental_component_edges(supplemental_roots))
     unclassified_edge_endpoints, classification_binding_errors = attach_edge_endpoints(
         edges, nodes, germs, mixed_node_ids
     )
@@ -1257,15 +1474,21 @@ def main() -> None:
         and not newton_failed
         and not unclassified_edge_endpoints
         and not classification_binding_errors
+        and (not supplemental_roots or continuous_report["passed"])
         and coverage["completeness_passed"]
         and coverage["sign_topology_clean"]
         and all(item.get("passed") for item in nodes if item["id"] in REQUIRED_HEADLINE_IDS)
     )
     graph = {
-        # /3: declared-domain termini are named per exit rather than per face,
-        # and germ validation is uniform (no base-organizer exemption).  Both
-        # change node identity, so the schema version moves with them.
-        "schema": "atlas.v1.critical-graph/3",
+        # /4: the six supplemental finite-sweep polylines have been replaced
+        # by a validated 139/139 continuous certificate carrying explicit
+        # variational-continuation vertices and legitimate termini.  Preserve
+        # /3 for the fail-closed candidate graph while that evidence is absent.
+        "schema": (
+            "atlas.v1.critical-graph/4"
+            if continuous_report["passed"]
+            else "atlas.v1.critical-graph/3"
+        ),
         "claim_status": (
             "release_ready complete mechanism-resolved Floquet critical graph on the connected family sheet"
             if release_ready
@@ -1321,6 +1544,10 @@ def main() -> None:
         "completeness": completeness,
         "completeness_verification": completeness_report,
     }
+    if args.continuous_reconciliation:
+        coverage["continuous_reconciliation_passed"] = bool(continuous_report["passed"])
+        coverage["continuous_reconciliation_errors"] = continuous_report["errors"]
+        graph["continuous_reconciliation"] = continuous_report
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(graph, indent=2) + "\n", encoding="utf-8")

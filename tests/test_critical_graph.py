@@ -29,6 +29,133 @@ def _assembler():
     return module
 
 
+def _continuous_certificate_fixture(tmp_path: Path) -> Path:
+    parent = tmp_path / "raw-continuation.json"
+    parent.write_text('{"passed":true}\n', encoding="utf-8")
+    branch_specs = {
+        "principal_left_minus_to_domain": (
+            "minus_one",
+            {"kind": "canonically_bound_continuation_germ", "node_id": "mixed_principal_left", "masses": [0.929, 0.885, 1.0]},
+            {"kind": "declared_domain_boundary", "masses": [0.88, 0.7, 1.0]},
+        ),
+        "principal_left_plus_to_secondary_left": (
+            "plus_one",
+            {"kind": "canonically_bound_continuation_germ", "node_id": "mixed_principal_left", "masses": [0.929, 0.885, 1.0]},
+            {"kind": "canonically_bound_continuation_germ", "node_id": "mixed_secondary_left", "masses": [0.997, 0.956, 1.0]},
+        ),
+        "secondary_left_minus_to_domain": (
+            "minus_one",
+            {"kind": "canonically_bound_continuation_germ", "node_id": "mixed_secondary_left", "masses": [0.997, 0.956, 1.0]},
+            {"kind": "declared_domain_boundary", "masses": [1.1, 0.84, 1.0]},
+        ),
+        "secondary_right_plus_to_principal_right": (
+            "plus_one",
+            {"kind": "canonically_bound_continuation_germ", "node_id": "secondary_right_death", "masses": [1.043, 1.046, 1.0]},
+            {"kind": "canonically_bound_continuation_germ", "node_id": "mixed_principal_right", "masses": [1.05, 1.13, 1.0]},
+        ),
+        "secondary_right_minus_to_domain": (
+            "minus_one",
+            {"kind": "canonically_bound_continuation_germ", "node_id": "secondary_right_death", "masses": [1.043, 1.046, 1.0]},
+            {"kind": "declared_domain_boundary", "masses": [1.1, 1.09, 1.0]},
+        ),
+        "principal_right_minus_to_domain": (
+            "minus_one",
+            {"kind": "canonically_bound_continuation_germ", "node_id": "mixed_principal_right", "masses": [1.05, 1.13, 1.0]},
+            {"kind": "declared_domain_boundary", "masses": [1.09, 1.2, 1.0]},
+        ),
+    }
+    edges = []
+    for branch_id, (mode, start, end) in branch_specs.items():
+        edges.append(
+            {
+                "branch_id": branch_id,
+                "event_mode": mode,
+                "start_terminal": start,
+                "end_terminal": end,
+                "vertices": [
+                    {"masses": start["masses"], "event": 1e-9, "closure": 1e-10},
+                    {"masses": end["masses"], "event": -1e-9, "closure": 1e-10},
+                ],
+            }
+        )
+    branch_ids = list(branch_specs)
+    payload = {
+        "schema": "atlas.v1.continuous-critical-reconciliation/1",
+        "passed": True,
+        "physical_sheet": "one continuation-connected Li-Li-Liao catalog sheet",
+        "frozen_gates": {
+            "maximum_absolute_event": 2e-8,
+            "maximum_periodic_closure": 1e-7,
+        },
+        "parents": [
+            {
+                "path": str(parent.relative_to(ROOT)) if parent.is_relative_to(ROOT) else parent.name,
+                "sha256": hashlib.sha256(parent.read_bytes()).hexdigest(),
+                "source_commit": "a" * 40,
+            }
+        ],
+        "off_graph_accounting": {
+            "observed_roots": 139,
+            "resolved_roots": 139,
+            "unresolved_roots": [],
+            "ledger": [
+                {
+                    "root_id": f"root-{index:03d}",
+                    "physical_object": branch_ids[index % len(branch_ids)],
+                }
+                for index in range(139)
+            ],
+        },
+        "continuous_edges": edges,
+        "partial_sweep_blind_spots": ["unsampled between adjacent m1 lines"],
+    }
+    # The validator resolves parents relative to the supplied repository root;
+    # keep this whole fixture self-contained in tmp_path.
+    payload["parents"][0]["path"] = parent.name
+    path = tmp_path / "certificate.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    return path
+
+
+def test_continuous_certificate_has_an_executable_positive_path(tmp_path) -> None:
+    assembler = _assembler()
+    path = _continuous_certificate_fixture(tmp_path)
+    edges, nodes, report = assembler.continuous_reconciliation_edges(
+        path, root=tmp_path
+    )
+    assert report["passed"] is True, report["errors"]
+    assert len(edges) == 6
+    assert sum(edge["reconciled_off_graph_roots"] for edge in edges) == 139
+    assert nodes
+
+
+def test_continuous_certificate_fails_closed_when_parent_is_stale(tmp_path) -> None:
+    assembler = _assembler()
+    path = _continuous_certificate_fixture(tmp_path)
+    (tmp_path / "raw-continuation.json").write_text('{"passed":false}\n')
+    edges, _nodes, report = assembler.continuous_reconciliation_edges(
+        path, root=tmp_path
+    )
+    assert edges == []
+    assert report["passed"] is False
+    assert any("digest mismatch" in error for error in report["errors"])
+
+
+def test_continuous_certificate_fails_closed_on_unresolved_root(tmp_path) -> None:
+    assembler = _assembler()
+    path = _continuous_certificate_fixture(tmp_path)
+    payload = json.loads(path.read_text())
+    payload["off_graph_accounting"]["resolved_roots"] = 138
+    payload["off_graph_accounting"]["unresolved_roots"] = ["root-138"]
+    path.write_text(json.dumps(payload))
+    edges, _nodes, report = assembler.continuous_reconciliation_edges(
+        path, root=tmp_path
+    )
+    assert edges == []
+    assert report["passed"] is False
+    assert any("139/139" in error for error in report["errors"])
+
+
 def _real_roots() -> list[dict]:
     payload = json.loads(REAL_ROOTS.read_text())
     return [

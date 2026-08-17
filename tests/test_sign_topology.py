@@ -94,6 +94,29 @@ def test_committed_edge_endpoints_match_their_exact_root_bundle() -> None:
         )
 
 
+def test_sign_auditor_prefers_continuous_vertices_over_campaign_local_ids() -> None:
+    graph = {
+        "nodes": [],
+        "edges": [
+            {
+                "id": "continuous_minus",
+                "kind": "mechanism_polyline",
+                "mechanism": "minus_one",
+                "orientation": "continuous_certificate",
+                "cell_ids": [999999],
+                "vertices": [
+                    {"masses": [0.9, 0.8, 1.0]},
+                    {"masses": [1.0, 0.9, 1.0]},
+                ],
+                "endpoints": {"start": {}, "end": {}},
+            }
+        ],
+    }
+    edges = AST.edges_from_graph(graph, [])
+    assert len(edges) == 1
+    assert edges[0].vertices == ((0.9, 0.8), (1.0, 0.9))
+
+
 def _module():
     spec = importlib.util.spec_from_file_location(
         "audit_sign_topology", ROOT / "scripts/audit_sign_topology.py"
