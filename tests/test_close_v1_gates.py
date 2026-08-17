@@ -175,12 +175,24 @@ def test_chain_runs_end_to_end_and_is_not_release_ready(evidence_dir, capsys):
     # and the completeness certificate verified, so neither is a blocker.
     assert "no_unexplained_nodes" not in blockers
     assert "completeness_certificate_verified" not in blockers
-    # What remains is the genuine open work, reported exactly.  Until 2026-08-16
-    # that was no_missing_mixed_germs; the twelve headline germs were regenerated
-    # with real numbers that day, so the sole remaining blocker is the one the
-    # sign-topology audit found: seven gate-passing critical curves outside the
-    # committed edges.
-    assert "sign_topology_clean" in blockers
+    # What remains is the genuine open work, reported exactly.  The history of
+    # this assertion is the history of the project:
+    #   until 2026-08-16  no_missing_mixed_germs   (germs had no real numbers)
+    #   until 2026-08-17  sign_topology_clean      (audits pinned to the 7-edge
+    #                                               graph; superseded by a 35-line
+    #                                               independent audit)
+    # Two blockers remain, and both are real:
+    #   no_unclassified_edge_endpoints   minus_one_sweep_component_0 start and
+    #     minus_one_sweep_component_1 end.  Both are BigFloat-verified roots
+    #     (|event| 6.7e-10 and 2.3e-9) that float64 cannot re-certify, and
+    #     float64 continuation past them returns event=inf.
+    #   no_classification_binding_errors  minus_one component 1's low walk
+    #     reached an EXISTING CATALOG CURVE -- a legitimate scientific terminus
+    #     that carries node_id null, because the graph has no node kind for one
+    #     edge running into another.  The assembler refuses it rather than
+    #     inventing a junction node.  Representing junctions is open work.
+    assert "sign_topology_clean" not in blockers
+    assert blockers >= {"no_unclassified_edge_endpoints", "no_classification_binding_errors"}
 
     graph = json.loads((evidence_dir / runner.CRITICAL_GRAPH).read_text())
     assert graph["release_ready"] is False
