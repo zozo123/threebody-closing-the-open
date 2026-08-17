@@ -29,6 +29,18 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("sweep_census")
     parser.add_argument("output")
+    parser.add_argument(
+        "--id-base",
+        type=int,
+        default=SUPPLEMENTAL_CELL_BASE,
+        help=(
+            "first supplemental cell id to assign (default %(default)s).  Supply a "
+            "base above every id already committed when adding a SECOND "
+            "supplemental artifact: ids in this space are per-artifact sequential "
+            "indices, so two artifacts both starting at 10000 describe different "
+            "points under the same names and the graph cannot resolve them."
+        ),
+    )
     args = parser.parse_args()
     payload = json.loads(Path(args.sweep_census).read_text(encoding="utf-8"))
     localizations = list(payload.get("localizations") or [])
@@ -44,7 +56,7 @@ def main() -> None:
 
     roots: list[dict[str, Any]] = []
     components_used: list[int] = []
-    next_id = SUPPLEMENTAL_CELL_BASE
+    next_id = args.id_base
     for index, component in enumerate(payload.get("curve_components") or []):
         if component.get("in_committed_graph") and not component.get("partly_in_committed_graph"):
             continue

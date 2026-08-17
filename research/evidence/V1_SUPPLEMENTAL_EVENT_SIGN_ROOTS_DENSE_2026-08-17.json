@@ -1,0 +1,295 @@
+{
+  "schema": "atlas.v1.supplemental-event-sign-roots/1",
+  "claim_status": "label-invisible and graph-absent event-sign roots certified at the frozen 2e-8 / 1e-7 gates; they extend the critical graph beyond the 620 S/U cells",
+  "source_sweep": "research/evidence/V1_FULL_DOMAIN_SIGN_SWEEP_DENSE_2026-08-17.json",
+  "source_run": null,
+  "frozen_gates": {
+    "event": 2e-08,
+    "closure": 1e-07
+  },
+  "components_used": [
+    0,
+    1,
+    2,
+    3,
+    6,
+    9,
+    29,
+    30
+  ],
+  "localized_roots": 10,
+  "max_abs_event": 1.9922570260177963e-08,
+  "max_closure": 1.452173436347435e-09,
+  "roots": [
+    {
+      "cell_id": 10134,
+      "status": "ok",
+      "passed": true,
+      "event_mode": "minus_one",
+      "orientation": "sweep_component_0",
+      "event": -1.9922570260177963e-08,
+      "closure": 1.2299355996914187e-09,
+      "masses": [
+        0.882,
+        0.7079038100460938,
+        1.0
+      ],
+      "estimator": "float64",
+      "source": "full_domain_event_sign_sweep",
+      "sweep_component": 0,
+      "n_unstable_bracket": [
+        2,
+        1
+      ],
+      "census_would_bracket": false,
+      "committed_edge_matched": false,
+      "x1": -0.15661987917636666,
+      "v1": 2.23251947665465,
+      "v2": 0.4033585931570863,
+      "period": 5.601804988616982
+    },
+    {
+      "cell_id": 10135,
+      "status": "ok",
+      "passed": true,
+      "event_mode": "minus_one",
+      "orientation": "sweep_component_1",
+      "event": 1.6570993466302752e-09,
+      "closure": 1.059046726857462e-09,
+      "masses": [
+        0.884,
+        0.7183152769492533,
+        1.0
+      ],
+      "estimator": "float64",
+      "source": "full_domain_event_sign_sweep",
+      "sweep_component": 1,
+      "n_unstable_bracket": [
+        2,
+        1
+      ],
+      "census_would_bracket": false,
+      "committed_edge_matched": false,
+      "x1": -0.16156585229184797,
+      "v1": 2.1898022511032806,
+      "v2": 0.4094425981809469,
+      "period": 5.713540743665326
+    },
+    {
+      "cell_id": 10136,
+      "status": "ok",
+      "passed": true,
+      "event_mode": "minus_one",
+      "orientation": "sweep_component_2",
+      "event": 8.827221620322234e-09,
+      "closure": 1.452173436347435e-09,
+      "masses": [
+        0.886,
+        0.7274771969497555,
+        1.0
+      ],
+      "estimator": "float64",
+      "source": "full_domain_event_sign_sweep",
+      "sweep_component": 2,
+      "n_unstable_bracket": [
+        2,
+        1
+      ],
+      "census_would_bracket": false,
+      "committed_edge_matched": false,
+      "x1": -0.1659585308010732,
+      "v1": 2.1530042492017447,
+      "v2": 0.4134938099186718,
+      "period": 5.796769065503019
+    },
+    {
+      "cell_id": 10137,
+      "status": "ok",
+      "passed": true,
+      "event_mode": "minus_one",
+      "orientation": "sweep_component_3",
+      "event": -1.1222892837281506e-08,
+      "closure": 1.1256212278447732e-09,
+      "masses": [
+        0.889,
+        0.7404416210681463,
+        1.0
+      ],
+      "estimator": "float64",
+      "source": "full_domain_event_sign_sweep",
+      "sweep_component": 3,
+      "n_unstable_bracket": [
+        2,
+        1
+      ],
+      "census_would_bracket": false,
+      "committed_edge_matched": false,
+      "x1": -0.17228050535920114,
+      "v1": 2.1021138444202734,
+      "v2": 0.41781593926338456,
+      "period": 5.898459504694123
+    },
+    {
+      "cell_id": 10138,
+      "status": "ok",
+      "passed": true,
+      "event_mode": "minus_one",
+      "orientation": "sweep_component_6",
+      "event": 8.913758620110457e-10,
+      "closure": 1.5553646910097046e-10,
+      "masses": [
+        0.997,
+        0.9541628771103146,
+        1.0
+      ],
+      "estimator": "float64",
+      "source": "full_domain_event_sign_sweep",
+      "sweep_component": 6,
+      "n_unstable_bracket": [
+        2,
+        1
+      ],
+      "census_would_bracket": false,
+      "committed_edge_matched": false,
+      "x1": -0.3512532298488992,
+      "v1": 1.26513719482926,
+      "v2": 0.46363168460822546,
+      "period": 7.423138668386314
+    },
+    {
+      "cell_id": 10139,
+      "status": "ok",
+      "passed": true,
+      "event_mode": "minus_one",
+      "orientation": "sweep_component_9",
+      "event": 1.951423556079135e-08,
+      "closure": 3.097513033241304e-10,
+      "masses": [
+        1.043,
+        0.8569094830053825,
+        1.0
+      ],
+      "estimator": "float64",
+      "source": "full_domain_event_sign_sweep",
+      "sweep_component": 9,
+      "n_unstable_bracket": [
+        2,
+        1
+      ],
+      "census_would_bracket": false,
+      "committed_edge_matched": false,
+      "x1": -0.3166099976751644,
+      "v1": 1.3374015802715735,
+      "v2": 0.5254341312025996,
+      "period": 7.557774684506166
+    },
+    {
+      "cell_id": 10140,
+      "status": "ok",
+      "passed": true,
+      "event_mode": "minus_one",
+      "orientation": "sweep_component_9",
+      "event": 1.6114739764816477e-08,
+      "closure": 3.700295953822859e-10,
+      "masses": [
+        1.044,
+        0.8558785760619841,
+        1.0
+      ],
+      "estimator": "float64",
+      "source": "full_domain_event_sign_sweep",
+      "sweep_component": 9,
+      "n_unstable_bracket": [
+        2,
+        1
+      ],
+      "census_would_bracket": false,
+      "committed_edge_matched": false,
+      "x1": -0.31615160300805006,
+      "v1": 1.3385365059846108,
+      "v2": 0.5267168692313459,
+      "period": 7.567646598159156
+    },
+    {
+      "cell_id": 10141,
+      "status": "ok",
+      "passed": true,
+      "event_mode": "plus_one",
+      "orientation": "sweep_component_29",
+      "event": 1.8220521980083504e-08,
+      "closure": 1.430893085409819e-10,
+      "masses": [
+        1.043,
+        1.0559802823333513,
+        1.0
+      ],
+      "estimator": "float64",
+      "source": "full_domain_event_sign_sweep",
+      "sweep_component": 29,
+      "n_unstable_bracket": [
+        2,
+        1
+      ],
+      "census_would_bracket": false,
+      "committed_edge_matched": false,
+      "x1": -0.43873299343090116,
+      "v1": 1.0685117138645726,
+      "v2": 0.4639261293292402,
+      "period": 8.050999629837284
+    },
+    {
+      "cell_id": 10142,
+      "status": "ok",
+      "passed": true,
+      "event_mode": "plus_one",
+      "orientation": "sweep_component_30",
+      "event": -6.110042249929393e-09,
+      "closure": 1.1994795917392768e-10,
+      "masses": [
+        1.044,
+        1.08202675192532,
+        1.0
+      ],
+      "estimator": "float64",
+      "source": "full_domain_event_sign_sweep",
+      "sweep_component": 30,
+      "n_unstable_bracket": [
+        2,
+        1
+      ],
+      "census_would_bracket": false,
+      "committed_edge_matched": false,
+      "x1": -0.43987149828784605,
+      "v1": 1.0697780624037747,
+      "v2": 0.4555193305776753,
+      "period": 8.035027897190385
+    },
+    {
+      "cell_id": 10143,
+      "status": "ok",
+      "passed": true,
+      "event_mode": "plus_one",
+      "orientation": "sweep_component_30",
+      "event": 1.6634938759807483e-08,
+      "closure": 1.1986630093595792e-10,
+      "masses": [
+        1.045,
+        1.0961602427526929,
+        1.0
+      ],
+      "estimator": "float64",
+      "source": "full_domain_event_sign_sweep",
+      "sweep_component": 30,
+      "n_unstable_bracket": [
+        2,
+        1
+      ],
+      "census_would_bracket": false,
+      "committed_edge_matched": false,
+      "x1": -0.4398383205433578,
+      "v1": 1.0713861164253815,
+      "v2": 0.4511114985834188,
+      "period": 8.021311977479579
+    }
+  ]
+}
