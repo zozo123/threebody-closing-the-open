@@ -297,7 +297,7 @@ def trace_endpoint(
             f"no lattice seed re-certified; {seed_errors}"
         )
     if previous is None or previous_row is None:
-        previous_row = next((row for row in ordered if row is not current_row), rows[0])
+        previous_row = None
         previous = _direction_only_seed(current, outward_reference)
         previous_is_direction_only = True
     actual_reference = current.masses2 - previous.masses2
@@ -398,13 +398,21 @@ def trace_endpoint(
     return {
         "source_component": int(rows[0]["sweep_component"]),
         "outward_side": outward_side,
-        "seed_rows": [int(previous_row["cell_id"]), int(current_row["cell_id"])],
+        "seed_rows": (
+            [int(current_row["cell_id"])]
+            if previous_row is None
+            else [int(previous_row["cell_id"]), int(current_row["cell_id"])]
+        ),
         "seed_previous_role": (
             "direction_only_not_a_scientific_seed"
             if previous_is_direction_only
             else "strictly_recertified_scientific_seed"
         ),
-        "seed_previous": cont._serialize_localized(previous.localized),
+        "seed_previous": (
+            {"masses": [float(value) for value in previous.localized.sample.point.masses]}
+            if previous_is_direction_only
+            else cont._serialize_localized(previous.localized)
+        ),
         "seed_current_role": "strictly_recertified_scientific_seed",
         "seed_current": cont._serialize_localized(current.localized),
         "accepted_points": accepted,

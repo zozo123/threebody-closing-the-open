@@ -473,7 +473,6 @@ def _advance_variational(
             left, right = bracket
             trial_lam = _bracket_trial_lambda(left, right)
             evaluation = evaluate_normal(trial_lam)
-            iteration += 1
             if abs(evaluation.value) < abs(accepted_value):
                 accepted_value = evaluation.value
             if abs(evaluation.value) <= EVENT_GATE:

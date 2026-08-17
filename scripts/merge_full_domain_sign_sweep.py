@@ -429,7 +429,6 @@ def main() -> None:
     parser.add_argument("--baseline", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--graph", default="research/evidence/V1_CRITICAL_GRAPH.json")
-    parser.add_argument("--roots", default="research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json")
     parser.add_argument("--sign-floor", type=float, default=1e-4)
     parser.add_argument("--match-tolerance", type=float, default=1.5e-3)
     parser.add_argument("--link-threshold", type=float, default=0.02)
@@ -475,7 +474,6 @@ def main() -> None:
         raise SystemExit("shards used different baseline rasters; refusing to merge")
 
     graph = json.loads(Path(args.graph).read_text(encoding="utf-8"))
-    roots_doc = json.loads(Path(args.roots).read_text(encoding="utf-8"))
     import runpy as _runpy
 
     repository_root = Path(__file__).resolve().parents[1]
@@ -583,8 +581,6 @@ def main() -> None:
             "graph": args.graph,
             "graph_schema": graph.get("schema"),
             "graph_release_ready": graph.get("release_ready"),
-            "roots": args.roots,
-            "roots_schema": roots_doc.get("schema"),
             "graph_root_sources": graph_root_sources,
             "shards": shard_index,
         },

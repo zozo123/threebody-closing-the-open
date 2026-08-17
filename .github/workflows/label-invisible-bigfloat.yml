@@ -62,9 +62,12 @@ jobs:
           assert corridor['dps'] == 60
           assert len(marginal['results']) == 1
           assert len(corridor['results']) == 17, len(corridor['results'])
+          assert marginal['event_target'] == '2e-8'
+          assert corridor['event_target'] == '2e-8'
           for result in [*marginal['results'], *corridor['results']]:
               assert result['representative_passed_event_gate'] is True
-              assert abs(Decimal(result['representative']['event_value'])) <= Decimal('2e-8')
+              assert Decimal(result['event_gate']) == Decimal('2e-8')
+              assert abs(Decimal(result['representative']['event_value'])) <= Decimal(result['event_gate'])
           print('independent BigFloat roots verified:', 1 + len(corridor['results']))
           PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

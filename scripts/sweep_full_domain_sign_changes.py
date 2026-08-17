@@ -640,7 +640,6 @@ def main() -> None:
     parser.add_argument("--output", required=True)
     parser.add_argument("--checkpoint", default=None, help="default: <output>.partial")
     parser.add_argument("--graph", default="research/evidence/V1_CRITICAL_GRAPH.json")
-    parser.add_argument("--roots", default="research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json")
     parser.add_argument("--m1-range", default="0.8,1.1")
     parser.add_argument("--m2-range", default="0.7,1.2")
     parser.add_argument("--m1-stride", type=int, default=10, help="keep every Nth published m1 slice")
@@ -666,7 +665,6 @@ def main() -> None:
     m2_lo, m2_hi = (float(x) for x in args.m2_range.split(","))
 
     graph = json.loads(Path(args.graph).read_text(encoding="utf-8"))
-    roots_doc = json.loads(Path(args.roots).read_text(encoding="utf-8"))
     # Root sources come from the canonical assembly invocation, never a glob:
     # supplemental cell ids (>= 10000) are per-run sequential indices, so reading
     # a different supplemental artifact than the assembler used silently repoints
@@ -760,8 +758,6 @@ def main() -> None:
             "graph": args.graph,
             "graph_schema": graph.get("schema"),
             "graph_release_ready": graph.get("release_ready"),
-            "roots": args.roots,
-            "roots_schema": roots_doc.get("schema"),
             "graph_root_sources": graph_root_sources,
         },
         "cost_projection": projection,

@@ -76,6 +76,15 @@ def test_direction_only_seed_orients_current_minus_previous_outward() -> None:
     assert np.linalg.norm(actual_reference) == pytest.approx(1e-3)
 
 
+def test_direction_only_seed_is_not_serialized_as_scientific_evidence() -> None:
+    source = (ROOT / "scripts/resolve_sampled_sweep_endpoints.py").read_text(
+        encoding="utf-8"
+    )
+    assert 'previous_row = None' in source
+    assert '{"masses": [float(value)' in source
+    assert 'if previous_row is None' in source
+
+
 def test_event_bracket_uses_secant_and_falls_back_to_bisection() -> None:
     def evaluation(lam: float, value: float):
         return CONT._NormalEvaluation(lam, value, None)
@@ -108,7 +117,8 @@ def test_julia_lane_explicitly_enforces_the_same_event_gate() -> None:
     workflow = (ROOT / ".github/workflows/label-invisible-bigfloat.yml").read_text(
         encoding="utf-8"
     )
-    assert 'event_gate = parse(BigFloat,"2e-8")' in source
+    assert 'event_gate_text = "2e-8"' in source
+    assert "event_gate = parse(BigFloat,event_gate_text)" in source
     assert "independent critical event gate failed" in source
     assert "representative_passed_event_gate" in workflow
 

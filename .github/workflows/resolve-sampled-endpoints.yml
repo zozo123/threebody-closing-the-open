@@ -168,3 +168,17 @@ jobs:
           with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a") as summary:
               print(payload["claim_status"], file=summary)
           PY
+
+  endpoints-gate:
+    name: All sampled endpoints and bridge resolved
+    needs: [resolve-endpoint, bridge-component-1-to-5]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every scientific lane to pass
+        env:
+          ENDPOINT_RESULT: ${{ needs.resolve-endpoint.result }}
+          BRIDGE_RESULT: ${{ needs.bridge-component-1-to-5.result }}
+        run: |
+          test "$ENDPOINT_RESULT" = "success"
+          test "$BRIDGE_RESULT" = "success"

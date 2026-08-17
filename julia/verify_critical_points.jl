@@ -206,7 +206,8 @@ function main_critical()
         width = parse(BigFloat,"1e-$(width_exp)")
         initial_halfwidth = 2*parse(BigFloat,"1e-$(halfwidth_exp)")
         max_shift = parse(BigFloat,"1e-$(max_shift_exp)")
-        event_gate = parse(BigFloat,"2e-8")
+        event_gate_text = "2e-8"
+        event_gate = parse(BigFloat,event_gate_text)
         seeds = parse_critical_seeds(seed_path)
         results = String[]
 
@@ -235,7 +236,7 @@ function main_critical()
             print(io,"{\"implementation\":\"independent Julia BigFloat + Vern9 + variational QR shooting\",",
                   "\"dps\":",dps,",\"ode_tolerance\":\"1e-",tol_exp,"\",",
                   "\"closure_target\":\"1e-",closure_exp,"\",\"m2_width_target\":\"1e-",width_exp,"\",",
-                  "\"event_target\":\"2e-8\",",
+                  "\"event_target\":\"$event_gate_text\",",
                   "\"results\":[",join(results,","),"],",
                   "\"claim_status\":\"independent BigFloat slice reproduction of screening critical-curve representatives; canonical mechanism and full-manifold release gates remain required\"}\n")
         end
