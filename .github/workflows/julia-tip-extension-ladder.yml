@@ -1,0 +1,99 @@
+name: Julia tip-extension BigFloat ladder
+
+# release_ready now rests on exactly two unclassified lattice ends:
+#   minus_one_sweep_component_0 start  cell 10000 (0.892, 0.7530796)
+#   minus_one_sweep_component_1 end    cell 10042 (1.042, 0.8579752)
+#
+# Both are BigFloat-verified critical roots -- |event| 6.7e-10 and 2.3e-9,
+# closure ~1e-26, run 32037241295 -- that float64 CANNOT re-certify, and past
+# which float64 continuation returns event=inf.  So do not continue in float64.
+# Localize the curve directly in BigFloat at a ladder of m1 values beyond each
+# tip, seeding m2 by linear extrapolation from the two nearest certified roots.
+#
+# This is the move that closed plus_one component 12: certified roots ingested as
+# edge vertices, which resolved its terminus AND closed the missing_critical_curve
+# the independent 35-line audit had found at m1 1.045.
+#
+# One m1 rung per matrix leg, so a rung that fails to localize fails alone and
+# says so, rather than taking the arm down with it.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dps:
+        description: "BigFloat decimal precision"
+        required: true
+        default: "60"
+      rungs:
+        description: "How many 0.001 rungs to attempt beyond each tip"
+        required: true
+        default: "8"
+
+permissions:
+  contents: read
+
+jobs:
+  seeds:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      matrix: ${{ steps.gen.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - run: uv python install 3.13
+      - run: uv sync --locked --group dev
+      - id: gen
+        env:
+          RUNGS: ${{ inputs.rungs || '8' }}
+        run: |
+          uv run --no-sync python scripts/build_tip_extension_seeds.py \
+            --rungs "$RUNGS" --output-dir experiments/tip_ladder \
+            --emit-matrix "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: tip-ladder-seeds-${{ github.sha }}
+          path: experiments/tip_ladder/*.tsv
+          if-no-files-found: error
+          retention-days: 90
+
+  localize:
+    needs: seeds
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        rung: ${{ fromJSON(needs.seeds.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
+        with:
+          version: "1.11.9"
+      - uses: julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8 # v3.3.0
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: tip-ladder-seeds-${{ github.sha }}
+          path: experiments/tip_ladder
+      - run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+      - name: BigFloat localize rung ${{ matrix.rung }}
+        env:
+          DPS: ${{ inputs.dps || '60' }}
+          RUNG: ${{ matrix.rung }}
+        run: |
+          mkdir -p artifacts
+          julia --project=julia julia/verify_critical_points.jl \
+            "experiments/tip_ladder/${RUNG}.tsv" \
+            "artifacts/tip-ladder-${RUNG}.json" \
+            "$DPS" 25 18 8 5 4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: tip-ladder-${{ matrix.rung }}-${{ github.sha }}
+          path: artifacts/tip-ladder-${{ matrix.rung }}.json
+          if-no-files-found: warn
+          retention-days: 90

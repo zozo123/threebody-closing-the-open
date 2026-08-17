@@ -10,7 +10,7 @@
   },
   "github_actions": {
     "all_external_refs_immutable": true,
-    "count": 368,
+    "count": 376,
     "steps": [
       {
         "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
@@ -1523,6 +1523,78 @@
         "repository": "actions/upload-artifact",
         "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
         "workflow": ".github/workflows/julia-secondary-minus-fold-verifier.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 42,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/julia-tip-extension-ladder.yml"
+      },
+      {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 43,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/julia-tip-extension-ladder.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 56,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/julia-tip-extension-ladder.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 73,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/julia-tip-extension-ladder.yml"
+      },
+      {
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
+        "immutable": true,
+        "line": 74,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
+        "workflow": ".github/workflows/julia-tip-extension-ladder.yml"
+      },
+      {
+        "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "immutable": true,
+        "line": 77,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "workflow": ".github/workflows/julia-tip-extension-ladder.yml"
+      },
+      {
+        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "immutable": true,
+        "line": 78,
+        "local": false,
+        "repository": "actions/download-artifact",
+        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "workflow": ".github/workflows/julia-tip-extension-ladder.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 93,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/julia-tip-extension-ladder.yml"
       },
       {
         "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
@@ -3354,10 +3426,10 @@
       "sha256": "85145b9e1b5c1034c80efa17ecd07eb679e523a572b9216b97a36b94bc474284"
     }
   ],
-  "manifest_sha256": "b78109edfa65c4aa960dc4b687e222620876473b3f52f5b4ea2e0e071643ae9f",
+  "manifest_sha256": "740516ca3ac7412a04fba60ee5233204dece8e413a34c8e03da9aee030210141",
   "runner_selectors": {
     "[self-hosted, Linux, X64]": 4,
-    "ubuntu-latest": 119
+    "ubuntu-latest": 121
   },
   "runtimes": {
     "julia_adversarial_latest": {
