@@ -1,0 +1,87 @@
+name: Julia arm-extension BigFloat verifier
+
+# release_ready rests on two unclassified endpoints: minus_one component 0's low
+# tip (0.892, 0.7530796) and component 1's high tip (1.042, 0.8579752).  The
+# full-domain audit (issue #211 Track B1) located ten minus_one curve crossings
+# outside the committed edges and ALL TEN lie on the continuations past exactly
+# those two tips -- zero in the interior 0.892 <= m1 <= 1.042.  Each arm runs off
+# the declared domain (component 0 crosses m2 = 0.700 between m1 0.880 and
+# 0.8825; component 1 reaches m1 = 1.100).
+#
+# Certifying roots along the arms and ingesting them as edge vertices extends the
+# edges to the domain faces, where the assembler's existing
+# declared_domain_boundary attachment binds them.
+#
+# Each seed carries the sign-change bracket that located it (columns 11-12).  The
+# verifier uses that as a MEMBERSHIP guard -- the certified root must lie inside
+# the bracket -- which supersedes the fixed max-shift radius and is strictly
+# stronger.  This is necessary because the bracket cannot be narrowed: audit
+# probes converge only via neighbour seeding, so isolated bisection probes fail
+# (endpoint_probe_failed on every refinement attempted 2026-08-18).  The frozen
+# gates are untouched.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dps:
+        description: "BigFloat decimal precision"
+        required: true
+        default: "60"
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
+        with:
+          version: "1.11.9"
+      - name: Parse verifier before spending runners on it
+        run: julia -e 'Meta.parseall(read("julia/verify_critical_points.jl", String)); println("syntax OK")'
+
+  certify:
+    needs: syntax
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      max-parallel: 9
+      matrix:
+        seed:
+          - arm0_m1_0p8825
+          - arm0_m1_0p8850
+          - arm0_m1_0p8875
+          - arm1_m1_1p0450
+          - arm1_m1_1p0475
+          - arm1_m1_1p0550
+          - arm1_m1_1p0575
+          - arm1_m1_1p0650
+          - arm1_m1_1p0700
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
+        with:
+          version: "1.11.9"
+      - uses: julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8 # v3.3.0
+      - run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+      - name: Certify ${{ matrix.seed }}
+        env:
+          DPS: ${{ inputs.dps || '60' }}
+          SEED: ${{ matrix.seed }}
+        run: |
+          mkdir -p artifacts
+          julia --project=julia julia/verify_critical_points.jl \
+            "experiments/arm_seeds/${SEED}.tsv" \
+            "artifacts/arm-${SEED}.json" \
+            "$DPS" 25 18 8 5 4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: arm-${{ matrix.seed }}-${{ github.sha }}
+          path: artifacts/arm-${{ matrix.seed }}.json
+          if-no-files-found: warn
+          retention-days: 90

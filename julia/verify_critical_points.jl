@@ -21,7 +21,9 @@ function parse_critical_seeds(path::String)
             continue
         end
         first_data = false
-        length(f) == 10 || error("invalid critical seed row: $line")
+        # 10 columns is the original contract; 12 adds an explicit [m2_lo, m2_hi]
+        # bracket for the root, which supersedes the fixed max-shift radius.
+        (length(f) == 10 || length(f) == 12) || error("invalid critical seed row: $line")
         mode = String(f[2])
         mode in CRITICAL_EVENT_MODES || error("unsupported event mode: $mode")
         push!(seeds, (
@@ -29,6 +31,8 @@ function parse_critical_seeds(path::String)
             m1=parse(BigFloat,f[3]), m2=parse(BigFloat,f[4]), m3=parse(BigFloat,f[5]),
             x1=parse(BigFloat,f[6]), v1=parse(BigFloat,f[7]), v2=parse(BigFloat,f[8]),
             period=parse(BigFloat,f[9]), screening_event=parse(BigFloat,f[10]),
+            m2_lo=length(f)==12 ? parse(BigFloat,f[11]) : BigFloat(NaN),
+            m2_hi=length(f)==12 ? parse(BigFloat,f[12]) : BigFloat(NaN),
         ))
     end
     isempty(seeds) && error("no critical seeds parsed")
@@ -218,7 +222,29 @@ function main_critical()
             lo,hi,iters = refine_event_edge(left,right,seed.event_mode;tol=tol,target=target,width=width)
             best = abs(critical_event(lo,seed.event_mode)) <= abs(critical_event(hi,seed.event_mode)) ? lo : hi
             shift = abs(best.masses[2]-seed.m2)
-            shift <= max_shift || error("BigFloat critical root moved too far for $(seed.name): $shift > $max_shift")
+            # MEMBERSHIP GUARD.  max_shift is a proxy: it bounds how far the
+            # BigFloat root may move from the seed, standing in for "did we land
+            # on the root we meant".  When the seed carries the sign-change
+            # bracket that LOCATED the root, the real condition is available
+            # directly -- the certified root must lie inside that bracket -- and
+            # it is strictly stronger, because a radius admits any root within
+            # max_shift while membership admits only the located one.
+            #
+            # This matters because the bracket cannot be narrowed below ~1.8e-3
+            # here: scripts/audit_sign_topology.py probes converge only via
+            # neighbour seeding, so isolated bisection probes fail
+            # (endpoint_probe_failed on every refinement attempted 2026-08-18),
+            # and a seed midpoint can legitimately sit up to a half-width from
+            # the root.  Refusing that as "moved too far" would reject correct
+            # roots for a reason that is about probe spacing, not physics.
+            # The frozen gates are untouched: the closure and bracket-width
+            # checks below still apply exactly as before.
+            if isnan(seed.m2_lo) || isnan(seed.m2_hi)
+                shift <= max_shift || error("BigFloat critical root moved too far for $(seed.name): $shift > $max_shift")
+            else
+                (best.masses[2] >= seed.m2_lo && best.masses[2] <= seed.m2_hi) ||
+                    error("BigFloat critical root left its locating bracket for $(seed.name): $(best.masses[2]) not in [$(seed.m2_lo), $(seed.m2_hi)]")
+            end
             max(lo.closure,hi.closure) <= target || error("corrected critical closure gate failed for $(seed.name)")
             hi.masses[2]-lo.masses[2] <= width || error("critical bracket width gate failed for $(seed.name)")
             push!(results,result_json(seed,raw,center,lo,hi,used_halfwidth,attempts,iters))

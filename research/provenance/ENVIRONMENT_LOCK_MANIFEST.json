@@ -10,7 +10,7 @@
   },
   "github_actions": {
     "all_external_refs_immutable": true,
-    "count": 317,
+    "count": 323,
     "steps": [
       {
         "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
@@ -1118,6 +1118,60 @@
         "repository": "actions/upload-artifact",
         "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
         "workflow": ".github/workflows/jax-diffrax-audit.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 39,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/julia-arm-extension-verifier.yml"
+      },
+      {
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
+        "immutable": true,
+        "line": 40,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
+        "workflow": ".github/workflows/julia-arm-extension-verifier.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 65,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/julia-arm-extension-verifier.yml"
+      },
+      {
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
+        "immutable": true,
+        "line": 66,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
+        "workflow": ".github/workflows/julia-arm-extension-verifier.yml"
+      },
+      {
+        "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "immutable": true,
+        "line": 69,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "workflow": ".github/workflows/julia-arm-extension-verifier.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 81,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/julia-arm-extension-verifier.yml"
       },
       {
         "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
@@ -2895,9 +2949,9 @@
       "sha256": "85145b9e1b5c1034c80efa17ecd07eb679e523a572b9216b97a36b94bc474284"
     }
   ],
-  "manifest_sha256": "87b413c3d14b02fb7e1f86def3c3c6ff0fb02eca7d848ffe8bc626f0321d058f",
+  "manifest_sha256": "4687cf0784721aedce91f1febcff09f47f97094b26d9dd07818d079a6900464b",
   "runner_selectors": {
-    "ubuntu-latest": 106
+    "ubuntu-latest": 108
   },
   "runtimes": {
     "julia_adversarial_latest": {
