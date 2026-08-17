@@ -477,6 +477,73 @@ def polyline_edges(
     return edges
 
 
+def supplemental_component_edges(roots: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """One polyline per already-clustered sweep component.
+
+    Supplemental roots are spaced on the event-sign lattice (typically 0.002 in
+    m1), which is wider than M1_SLICE_GAP.  Re-clustering them with the catalog
+    linker would emit one degenerate edge per sample.  The sweep merger already
+    decided which samples belong to which curve.
+
+    A finite lattice end is not a scientific terminus.  These edges carry the
+    certified vertices; attach_edge_endpoints may bind an end to a domain face,
+    mixed germ, or classification artifact, and must otherwise leave it
+    unclassified.
+    """
+    grouped: dict[int, list[dict[str, Any]]] = defaultdict(list)
+    for root in roots:
+        grouped[int(root["sweep_component"])].append(root)
+    edges: list[dict[str, Any]] = []
+    for component, items in sorted(grouped.items()):
+        items.sort(
+            key=lambda item: (
+                float((item.get("masses") or [0.0, 0.0])[0]),
+                float((item.get("masses") or [0.0, 0.0])[1]),
+                int(item["cell_id"]),
+            )
+        )
+        distinct = {
+            (
+                round(float((item.get("masses") or [0.0, 0.0])[0]), 9),
+                round(float((item.get("masses") or [0.0, 0.0])[1]), 9),
+            )
+            for item in items
+        }
+        if len(distinct) < 2:
+            # A single lattice hit is a certified vertex, not a curve.  The
+            # sign-topology auditor treats one-point polylines as degenerate
+            # and they cannot separate faces, so promoting them to edges
+            # would inflate the graph without closing a missing-curve finding.
+            continue
+        mode = str(items[0].get("event_mode") or "unknown")
+        cell_ids = [int(row["cell_id"]) for row in items]
+        start_masses = [float(value) for value in (items[0].get("masses") or [])]
+        end_masses = [float(value) for value in (items[-1].get("masses") or [])]
+        edges.append(
+            {
+                "id": f"{mode}_sweep_component_{component}",
+                "kind": "mechanism_polyline",
+                "mechanism": mode,
+                "orientation": f"sweep_component_{component}",
+                "cell_ids": cell_ids,
+                "source_cell_count": len(cell_ids),
+                "estimators": sorted({str(row.get("estimator") or "float64") for row in items}),
+                "source": "full_domain_event_sign_sweep",
+                "uncertainty": {
+                    "max_abs_event": max(abs(float(row.get("event") or 0.0)) for row in items),
+                    "max_closure": max(float(row.get("closure") or 0.0) for row in items),
+                    "max_source_m2_bracket_width": None,
+                },
+                "endpoints": {
+                    "start": {"cell_id": cell_ids[0], "masses": start_masses, "node": None},
+                    "end": {"cell_id": cell_ids[-1], "masses": end_masses, "node": None},
+                    "classified": False,
+                },
+            }
+        )
+    return edges
+
+
 def mass_distance(left: list[Any] | None, right: list[Any] | None) -> float:
     if not left or not right or len(left) < 2 or len(right) < 2:
         return float("inf")
@@ -676,9 +743,17 @@ def attach_edge_endpoints(
     used_endpoints: set[tuple[str, str]] = set()
     used_germs: set[int] = set()
     edge_by_id = {str(edge["id"]): edge for edge in edges}
-    for distance, edge_id, side, germ_index, node_id in sorted(candidates):
+    for distance, edge_id, side, germ_index, node_id in sorted(
+        candidates,
+        key=lambda row: (row[0], "sweep" in row[1], row[1], row[2]),
+    ):
         endpoint_key = (edge_id, side)
-        if endpoint_key in used_endpoints or germ_index in used_germs:
+        if endpoint_key in used_endpoints:
+            continue
+        # Catalog edges win a germ at equal distance (sort key above).  A
+        # sweep polyline may take the unused opposite-direction germ at the
+        # same organizer; it may not steal a germ the catalog already used.
+        if germ_index in used_germs and "sweep" in edge_id:
             continue
         endpoint = edge_by_id[edge_id]["endpoints"][side]
         endpoint["node"] = node_id
@@ -1024,6 +1099,12 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", default="research/evidence/V1_CRITICAL_GRAPH.json")
     parser.add_argument("--roots")
+    parser.add_argument(
+        "--supplemental-roots",
+        action="append",
+        default=[],
+        help="event-sign roots absent from the 620 S/U census (cell ids >= 10000)",
+    )
     parser.add_argument("--left-birth")
     parser.add_argument("--right-death")
     parser.add_argument("--daughter")
@@ -1079,6 +1160,14 @@ def main() -> None:
     if args.roots:
         payload = load(Path(args.roots))
         roots = [row for row in payload.get("roots", []) if row.get("status") == "ok" or row.get("passed") is True]
+    catalog_roots = list(roots)
+    supplemental_roots: list[dict[str, Any]] = []
+    for path in args.supplemental_roots:
+        extra = load(Path(path))
+        for row in extra.get("roots") or []:
+            if row.get("status") == "ok" or row.get("passed") is True:
+                supplemental_roots.append(row)
+    roots = catalog_roots + supplemental_roots
 
     germs = collect_germs([Path(path) for path in args.germs])
     mixed_node_ids = retained_mixed_nodes(nodes)
@@ -1106,7 +1195,8 @@ def main() -> None:
         for item in roots
         if forbidden_class(item.get("status")) or forbidden_class(item.get("error"))
     ]
-    edges = polyline_edges(roots) if roots else []
+    edges = polyline_edges(catalog_roots) if catalog_roots else []
+    edges.extend(supplemental_component_edges(supplemental_roots))
     unclassified_edge_endpoints, classification_binding_errors = attach_edge_endpoints(
         edges, nodes, germs, mixed_node_ids
     )
@@ -1115,15 +1205,19 @@ def main() -> None:
     )
     sign_report = sign_topology_report([Path(p) for p in args.sign_topology])
     cell_ids = [int(root["cell_id"]) for root in roots]
+    catalog_ids = [cell for cell in cell_ids if 0 <= cell < 620]
     assigned = [cell for edge in edges for cell in edge["cell_ids"]]
+    catalog_on_edges = [cell for cell in assigned if 0 <= cell < 620]
     duplicates = sorted({cell for cell in assigned if assigned.count(cell) > 1})
     coverage = {
         "source_transition_cells": 620,
-        "localized_roots": len(roots),
+        "localized_roots": len(catalog_roots),
+        "supplemental_roots": len(supplemental_roots),
         "required_cells": 620,
-        "complete": len(roots) == 620 and set(cell_ids) == set(range(620)),
+        "complete": set(catalog_ids) == set(range(620)),
         "edge_count": len(edges),
-        "cells_on_edges": len(assigned),
+        "cells_on_edges": len(catalog_on_edges),
+        "all_vertices_on_edges": len(assigned),
         "duplicate_cell_ids": duplicates,
         "missing_mixed_germs": missing_germs,
         "newton_failed": len(newton_failed),
@@ -1194,7 +1288,7 @@ def main() -> None:
             "maximum_periodic_closure": 1e-7,
         },
         "source_transition_cells": 620,
-        "localized_roots": len(roots),
+        "localized_roots": len(catalog_roots),
         "nodes": nodes,
         "edges": edges,
         "mixed_germs": [

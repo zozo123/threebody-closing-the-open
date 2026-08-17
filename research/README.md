@@ -25,5 +25,5 @@
 - `CLAIM_ASSURANCE.md` documents the generated 14-dimensional per-claim assurance matrix, weakest-link report, and fail-closed numerical/theorem readiness policies.
 - `provenance/` contains the deterministic environment lock manifest and scientific SBOM; CI rebuilds them and rejects moving third-party Action refs or dependency drift.
 
-Gates: A pass, B pass (`release_ready` true on the 13-edge graph), C pass, D pending (human-signed same-day novelty + `--require-solved`).
+Gates: A pass, B pending (13-edge graph assembled; four finite-lattice sweep ends unclassified; no `interior_lattice_terminus` nodes; `release_ready` false), C pass, D pending (human-signed same-day novelty + `--require-solved`).
 The repository must not label the frozen v1 problem `SOLVED` until `--require-solved` passes on a tagged commit.

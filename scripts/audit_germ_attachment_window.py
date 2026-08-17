@@ -209,11 +209,22 @@ def window(inputs: list[str] | None = None) -> dict[str, Any]:
             f"({nearest_rejected['edge']}:{nearest_rejected['side']} <-> "
             f"{nearest_rejected['organizer']}), a window "
             f"{nearest_rejected['distance'] / lower:.4f}x wide. The default {default} sits inside "
-            f"it. The assembled graph does not actually change until {assembly_change!r} "
-            f"({assembly_change / lower:.4f}x), because the nearest rejected candidate's endpoint "
-            f"is already bound by its own classification artifact. Because the constant also caps "
-            f"how far a germ may sit from its organizer, the effective organizer-to-endpoint reach "
-            f"is up to {2.0 * default}."
+            f"it. "
+            + (
+                f"The assembled graph does not actually change until {assembly_change!r} "
+                f"({assembly_change / lower:.4f}x), because the nearest rejected candidate's "
+                f"endpoint is already bound by its own classification artifact. "
+                if assembly_change > nearest_rejected["distance"]
+                else (
+                    f"Raising the threshold to {nearest_rejected['distance']!r} would attach "
+                    f"{nearest_rejected['edge']}:{nearest_rejected['side']}; that end is not "
+                    f"already bound by a classification artifact. "
+                )
+            )
+            + (
+                f"Because the constant also caps how far a germ may sit from its organizer, "
+                f"the effective organizer-to-endpoint reach is up to {2.0 * default}."
+            )
         ),
     }
 

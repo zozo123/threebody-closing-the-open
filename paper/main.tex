@@ -38,9 +38,10 @@ ladder, one rung below the two bracketed events.
 \textbf{Not earned.}
 The connected critical graph is unfinished.
 All $620$ published S/U cells are now localized once and assigned to seven
-mechanism polylines, but two edge ends remain unclassified, so the assembled
-edge incidence is still three components rather than one, and the
-secondary-lobe birth remains unexplained.
+catalog polylines plus six certified label-invisible event-sign polylines,
+but four finite-lattice sweep ends remain unclassified, the collision curve
+is still its own component, and the catalogue is not the complete critical
+set.
 Completeness is frozen only in the bounded sense quantified below.
 Scientific status remains OPEN.
 This is not a solution of the general three-body problem, and ``stable'' here
@@ -230,25 +231,26 @@ number quoted here drifts from it.
 Continuation-connectedness of the family sheet (Gate~C) and connectedness of
 the critical graph are different statements, and the second does not follow from
 the first.  In the committed
-\texttt{research/evidence/V1\_CRITICAL\_GRAPH.json}, two edge ends are still
-unclassified, so the edge incidence splits into three components ---
-$\{$domain-$m_1$-min-$m_2$-$0.756$, mixed-L, mixed-R,
-domain-$m_2$-max-$m_1$-$1.071\}$,
-$\{$mixed-S, secondary-right-death$\}$ and
-$\{$domain-$m_1$-min-$m_2$-$0.761$, domain-$m_2$-max-$m_1$-$1.053\}$ ---
-while three further declared nodes carry no edge at all, and
-\texttt{secondary\_left\_birth} is the one unexplained node.
+\texttt{research/evidence/V1\_CRITICAL\_GRAPH.json}, six certified
+label-invisible event-sign polylines sit beside the seven catalog edges, and
+four finite-lattice sweep ends are left unclassified rather than promoted to
+scientific termini.  Classified incident nodes therefore split into two
+components --- the collision curve
+$\{$domain-$m_1$-min-$m_2$-$0.761$, domain-$m_2$-max-$m_1$-$1.053\}$ and
+the remaining organizers and domain exits --- while
+\texttt{plus\_one\_sweep\_component\_12} currently contributes no incident
+node and three further declared nodes carry no edge at all.
 Attachment of an edge end to an organizer is also threshold-dependent, and the
 threshold does double duty: \texttt{GERM\_ATTACH\_DISTANCE}$=0.008$ caps both
 how far a germ may sit from its organizer and how far an edge end may sit from
 that germ, so the effective organizer-to-endpoint reach is $0.016$.
-Auditing the release configuration shows the present six-attachment assembly
+Auditing the release configuration shows the present twelve-attachment assembly
 keeps every attachment it has only on the half-open window
-$[0.006837,0.009431)$, $1.379\times$ wide: the largest accepted attachment is
-$0.006837449$ and the nearest rejected mode-matching candidate is $0.009430577$.
-The assembled graph does not visibly change until $0.010349059$
-($1.514\times$), because that rejected candidate's endpoint is already bound by
-its own classification artifact.
+$[0.006837,0.008317)$, $1.216\times$ wide: the largest accepted attachment is
+$0.006837449$ and the nearest rejected mode-matching candidate is $0.008316625$
+(\texttt{plus\_one\_sweep\_component\_12} end against mixed-principal-right).
+Raising the threshold to that distance would attach that still-unclassified
+sweep end; it is not already bound by a classification artifact.
 One germ trace was tuned to reach an endpoint: the secondary-left germs used
 \texttt{--step}~$0.003$ rather than the $7.5\times10^{-4}$ default so the
 $-1$ germ would carry far enough to bring cell $392$'s endpoint
@@ -335,12 +337,13 @@ without its conditioning is not a measurement.
 \section{What remains, and why the status is OPEN}
 
 \begin{enumerate}
-\item Classify the two unclassified edge ends so the graph's edge incidence is
-one connected object rather than three components plus four unattached nodes.
-\item Classify the secondary-left $G_-$ birth (fold candidate near
-$(0.9957,0.9743)$) and the secondary-right death between $m_1=1.042$ and
-$1.043$.
-\item Attach event arcs through the three mixed roots.
+\item Replace the four unclassified finite-lattice sweep ends with continuous
+physical witnesses (domain face, mixed organizer, verified fold, or closed
+loop).  A sampled raster end is not a terminus.
+\item Ingest the remaining 2026-08-17 sweep components that are still absent
+from the 13-edge graph, then re-run the sign-topology suites against that
+graph.
+\item Do not promote any interior lattice end to a scientific node.
 \item Classify the physical-soft $+1$ daughter, or falsify it.
 \item Flip \texttt{release\_ready} only with
 \texttt{scripts/assemble\_critical\_graph.py}.

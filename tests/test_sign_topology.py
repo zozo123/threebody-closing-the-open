@@ -351,7 +351,12 @@ def test_committed_edges_are_graphs_over_m1():
 
 @pytest.mark.skipif(not RERUN_AUDIT.exists() or not RERUN_CROSSING.exists(), reason="13-edge re-audit not present")
 def test_thirteen_edge_reaudit_clears_the_release_conjuncts() -> None:
-    """The 2026-08-17 re-audits are what the assembler now reads."""
+    """The 2026-08-17 re-audits cleared the 13-edge probe set.
+
+    The assembler still reads the 2026-08-16 audits so sign_topology_clean
+    stays fail-closed until those suites are re-run against the current
+    graph.  These files remain the last clean 13-edge probe record.
+    """
     for path in (RERUN_AUDIT, RERUN_CROSSING):
         audit = json.loads(path.read_text())
         assert audit["schema"] == AST.SCHEMA
