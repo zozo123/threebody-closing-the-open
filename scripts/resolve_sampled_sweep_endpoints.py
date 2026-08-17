@@ -19,6 +19,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
@@ -76,6 +77,26 @@ def strict_supplemental(row: dict[str, Any]) -> cont.StrictPoint:
         source="research/evidence/V1_SUPPLEMENTAL_EVENT_SIGN_ROOTS_2026-08-16.json",
         source_id=f"supplemental-cell-{int(row['cell_id'])}",
     )
+
+
+def _direction_only_seed(certified: cont.StrictPoint, neighbor: dict[str, Any]) -> cont.StrictPoint:
+    """Copy a re-certified chart onto a neighbor's masses for the first secant.
+
+    The neighbor is not a scientific seed.  Only its mass-plane location orients
+    the variational predictor.  The first accepted step still has to pass the
+    frozen gates on its own.
+    """
+    masses = neighbor.get("masses") or []
+    if len(masses) < 2:
+        raise RuntimeError("direction-only neighbor is missing masses")
+    point = certified.localized.sample.point
+    dummy_point = replace(
+        point,
+        masses=(float(masses[0]), float(masses[1]), float(point.masses[2])),
+    )
+    dummy_sample = replace(certified.localized.sample, point=dummy_point)
+    dummy_localized = replace(certified.localized, sample=dummy_sample)
+    return replace(certified, localized=dummy_localized)
 
 
 def mixed_organizers(mode: str) -> list[dict[str, Any]]:
@@ -212,13 +233,41 @@ def trace_endpoint(
 ) -> dict[str, Any]:
     rows = sorted(rows, key=lambda row: (float(row["masses"][0]), float(row["masses"][1])))
     if outward_side == "low":
-        previous_row, current_row = rows[1], rows[0]
+        ordered = list(rows)
     elif outward_side == "high":
-        previous_row, current_row = rows[-2], rows[-1]
+        ordered = list(reversed(rows))
     else:
         raise ValueError(outward_side)
-    previous = strict_supplemental(previous_row)
-    current = strict_supplemental(current_row)
+    # A stored lattice sample can fail the frozen event gate on re-correction
+    # (float64 evaluation floor).  Walk inward until a point re-certifies, then
+    # continue outward.  A second re-certified neighbor is preferred for the
+    # predictor direction; otherwise the unused lattice neighbor supplies only
+    # a mass-plane secant (its chart is not treated as a seed).
+    current_row = None
+    current = None
+    previous_row = None
+    previous = None
+    seed_errors: list[str] = []
+    for index, row in enumerate(ordered):
+        try:
+            point = strict_supplemental(row)
+        except (RuntimeError, ValueError, FloatingPointError) as exc:
+            seed_errors.append(f"cell {row.get('cell_id')}: {exc}")
+            continue
+        if current is None:
+            current_row, current = row, point
+            continue
+        previous_row, previous = row, point
+        break
+    if current is None or current_row is None:
+        raise RuntimeError(
+            f"component {rows[0].get('sweep_component')} {outward_side}: "
+            f"no lattice seed re-certified; {seed_errors}"
+        )
+    if previous is None or previous_row is None:
+        neighbor = next((row for row in ordered if row is not current_row), rows[0])
+        previous_row = neighbor
+        previous = _direction_only_seed(current, neighbor)
     prev, cur = previous.localized, current.localized
     history = [previous.vector, current.vector]
     accepted = []
