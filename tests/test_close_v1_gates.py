@@ -186,13 +186,20 @@ def test_chain_runs_end_to_end_and_is_not_release_ready(evidence_dir, capsys):
     #     minus_one_sweep_component_1 end.  Both are BigFloat-verified roots
     #     (|event| 6.7e-10 and 2.3e-9) that float64 cannot re-certify, and
     #     float64 continuation past them returns event=inf.
-    #   no_classification_binding_errors  minus_one component 1's low walk
-    #     reached an EXISTING CATALOG CURVE -- a legitimate scientific terminus
-    #     that carries node_id null, because the graph has no node kind for one
-    #     edge running into another.  The assembler refuses it rather than
-    #     inventing a junction node.  Representing junctions is open work.
+    # ONE blocker remains, and it is two mass points:
+    #   no_unclassified_edge_endpoints   minus_one_sweep_component_0 start
+    #     (cell 10000) and minus_one_sweep_component_1 end (cell 10042).  Both are
+    #     BigFloat-verified roots -- |event| 6.7e-10 and 2.3e-9, closure ~1e-26 --
+    #     that float64 cannot re-certify, and float64 continuation past either
+    #     returns event=inf, so it is not a step-size problem: the event cannot be
+    #     evaluated there at all.
+    #
+    # no_classification_binding_errors cleared once component 1's low terminus
+    # was recognized as the SAME root as catalog cell 392 (9.164e-10 apart, two
+    # independent localizations of one root) and inherited that cell's node.
     assert "sign_topology_clean" not in blockers
-    assert blockers >= {"no_unclassified_edge_endpoints", "no_classification_binding_errors"}
+    assert "no_classification_binding_errors" not in blockers
+    assert "no_unclassified_edge_endpoints" in blockers
 
     graph = json.loads((evidence_dir / runner.CRITICAL_GRAPH).read_text())
     assert graph["release_ready"] is False
