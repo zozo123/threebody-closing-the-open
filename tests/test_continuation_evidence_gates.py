@@ -110,3 +110,17 @@ def test_julia_lane_explicitly_enforces_the_same_event_gate() -> None:
     assert 'event_gate = parse(BigFloat,"2e-8")' in source
     assert "independent critical event gate failed" in source
     assert "representative_passed_event_gate" in workflow
+
+
+def test_continuation_reopens_signed_seed_cells_and_checkpoints_initialization() -> None:
+    source = (ROOT / "scripts/trace_label_invisible_continuous.py").read_text(
+        encoding="utf-8"
+    )
+    workflow = (ROOT / ".github/workflows/label-invisible-continuation.yml").read_text(
+        encoding="utf-8"
+    )
+    assert "_precise_bracket_search(" in source
+    assert "m2_bounds=(bounds[0], bounds[1])" in source
+    assert "sys.excepthook = checkpoint_unhandled_exception" in source
+    assert "failed_initialization_partial_continuation_evidence" in source
+    assert "if: always()" in workflow

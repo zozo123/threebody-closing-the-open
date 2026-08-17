@@ -32,6 +32,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
@@ -43,6 +44,7 @@ from threebody_atlas.critical_geometry import continuation_scales, critical_tang
 from threebody_atlas.critical_manifold import (
     LocalizedCriticalPoint,
     _polish_event_root,
+    _precise_bracket_search,
     _precise_evaluate,
     event_value,
 )
@@ -180,7 +182,14 @@ def _family_from_record(record: dict[str, Any]) -> FamilyPoint:
     )
 
 
-def _strict_localize(record: dict[str, Any], mode: str, *, source: str, source_id: str) -> StrictPoint:
+def _strict_localize(
+    record: dict[str, Any],
+    mode: str,
+    *,
+    source: str,
+    source_id: str,
+    m2_bounds: tuple[float, float] | None = None,
+) -> StrictPoint:
     seed = _family_from_record(record)
     guess = (seed.x1, seed.v1, seed.v2, seed.period)
     corrected = correct_family_point(seed.masses, guess, max_nfev=90)
@@ -192,17 +201,57 @@ def _strict_localize(record: dict[str, Any], mode: str, *, source: str, source_i
     value = float(event_value(sample.floquet, mode))
     if abs(value) > EVENT_GATE:
         m2 = float(corrected.masses[1])
+        bounds = m2_bounds or (m2 - 1.25e-3, m2 + 1.25e-3)
         polished = _polish_event_root(
             sample,
             mode,
             event_tolerance=EVENT_GATE,
             max_closure=CLOSURE_GATE,
             max_steps=8,
-            m2_bounds=(m2 - 1.25e-3, m2 + 1.25e-3),
+            m2_bounds=bounds,
             precise=True,
         )
         sample = polished.sample
         value = float(polished.event_value)
+        # A point seed near the float64 event floor can move by a few 1e-8
+        # across platforms.  When the evidence supplies the original signed
+        # cell, reopen that cell with tight evaluations rather than rejecting a
+        # regular zero or relaxing the frozen gate.
+        if abs(value) > EVENT_GATE and m2_bounds is not None:
+            lo, hi = sorted(float(bound) for bound in m2_bounds)
+            guess = (corrected.x1, corrected.v1, corrected.v2, corrected.period)
+            left_point = correct_family_point(
+                (float(corrected.masses[0]), lo, float(corrected.masses[2])),
+                guess,
+                max_nfev=90,
+            )
+            right_point = correct_family_point(
+                (float(corrected.masses[0]), hi, float(corrected.masses[2])),
+                guess,
+                max_nfev=90,
+            )
+            if (
+                left_point.success
+                and right_point.success
+                and left_point.residual_norm <= CLOSURE_GATE
+                and right_point.residual_norm <= CLOSURE_GATE
+            ):
+                left = _precise_evaluate(left_point)
+                right = _precise_evaluate(right_point)
+                left_value = float(event_value(left.floquet, mode))
+                right_value = float(event_value(right.floquet, mode))
+                if left_value * right_value <= 0.0:
+                    recovered = _precise_bracket_search(
+                        left,
+                        right,
+                        mode,
+                        seed=sample,
+                        event_tolerance=EVENT_GATE,
+                        max_closure=CLOSURE_GATE,
+                    )
+                    if abs(recovered.event_value) < abs(value):
+                        sample = recovered.sample
+                        value = float(recovered.event_value)
     if sample.point.residual_norm > CLOSURE_GATE or abs(value) > EVENT_GATE:
         raise RuntimeError(
             f"{source_id}: strict frozen gates failed after re-correction: "
@@ -235,7 +284,12 @@ def _germ_point(path: Path, mode: str, direction: str) -> StrictPoint:
     )
 
 
-def _strict_from_certification(cert: dict[str, Any], *, source_id: str) -> StrictPoint:
+def _strict_from_certification(
+    cert: dict[str, Any],
+    *,
+    source_id: str,
+    m2_bounds: tuple[float, float] | None = None,
+) -> StrictPoint:
     record = {
         "masses": cert["masses"],
         "x1": cert["x1"],
@@ -249,6 +303,7 @@ def _strict_from_certification(cert: dict[str, Any], *, source_id: str) -> Stric
         str(cert["event_mode"]),
         source="research/evidence/V1_BRACKET_CRITERION_COMPARISON_2026-08-16.json",
         source_id=source_id,
+        m2_bounds=m2_bounds,
     )
 
 
@@ -592,7 +647,16 @@ def _comparison_targets(path: Path) -> list[StrictPoint]:
             if not isinstance(cert, dict) or cert.get("status") != "passed":
                 raise RuntimeError("label-invisible bracket lacks passed certification")
             source_id = f"m1={float(cert['masses'][0]):.3f}:{cert['event_mode']}"
-            out.append(_strict_from_certification(cert, source_id=source_id))
+            bounds = tuple(float(value) for value in bracket.get("m2_bracket", ()))
+            if len(bounds) != 2:
+                raise RuntimeError(f"{source_id}: label-invisible seed lacks its signed m2 bracket")
+            out.append(
+                _strict_from_certification(
+                    cert,
+                    source_id=source_id,
+                    m2_bounds=(bounds[0], bounds[1]),
+                )
+            )
     if len(out) != 9:
         raise RuntimeError(f"expected nine label-invisible certified seeds, got {len(out)}")
     return out
@@ -841,11 +905,40 @@ def main() -> None:
     parser.add_argument("--max-steps", type=int, default=120)
     args = parser.parse_args()
 
+    out = Path(args.output)
+    initialization_stage = "accelerated_runtime"
+    original_excepthook = sys.excepthook
+
+    def checkpoint_unhandled_exception(exc_type, exc, traceback) -> None:
+        if not out.exists():
+            _write_json_atomic(
+                out,
+                {
+                    "schema": "atlas.v1.label-invisible-continuation-checkpoint/1",
+                    "claim_status": "failed_initialization_partial_continuation_evidence",
+                    "frozen_gates": {
+                        "maximum_absolute_event": EVENT_GATE,
+                        "maximum_periodic_closure": CLOSURE_GATE,
+                    },
+                    "completed_branches": [],
+                    "active_branch": None,
+                    "campaign_error": {
+                        "stage": initialization_stage,
+                        "failure_class": exc_type.__name__,
+                        "message": str(exc),
+                    },
+                },
+            )
+        original_excepthook(exc_type, exc, traceback)
+
+    sys.excepthook = checkpoint_unhandled_exception
     require_accelerated_x64()
+    initialization_stage = "comparison_seed_recertification"
     comparison = Path(args.comparison)
     supplemental = _load(Path(args.supplemental_roots))
     issue_targets = _comparison_targets(comparison)
 
+    initialization_stage = "canonical_germ_recertification"
     root = Path("research/evidence")
     pleft = root / "V1_MIXED_GERMS_PRINCIPAL_LEFT_2026-08-16.json"
     sleft = root / "V1_MIXED_GERMS_SECONDARY_LEFT_2026-08-16.json"
@@ -931,7 +1024,6 @@ def main() -> None:
         ),
     ]
 
-    out = Path(args.output)
     branches: list[dict[str, Any]] = []
 
     def write_checkpoint(
