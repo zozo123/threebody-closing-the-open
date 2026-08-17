@@ -248,7 +248,7 @@ def trace_endpoint(
     previous_row = None
     previous = None
     seed_errors: list[str] = []
-    for index, row in enumerate(ordered):
+    for row in ordered:
         try:
             point = strict_supplemental(row)
         except (RuntimeError, ValueError, FloatingPointError) as exc:
