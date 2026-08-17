@@ -1369,7 +1369,7 @@ def test_m1_slice_gap_is_currently_redundant() -> None:
 
 
 def test_germ_attach_distance_window_is_pinned() -> None:
-    """The admissible window for GERM_ATTACH_DISTANCE is only 1.303x wide.
+    """The admissible window for GERM_ATTACH_DISTANCE is only 1.140x wide.
 
     Measured on the COMMITTED graph, i.e. the release configuration in
     scripts/assemble_v1_critical_graph.sh -- not on the synthetic germ fixtures
@@ -1432,11 +1432,23 @@ def test_germ_attach_distance_window_is_pinned() -> None:
         ("minus_one_u_to_s_1", "start", "mixed_secondary_left"),
         ("minus_one_u_to_s_1", "end", "mixed_secondary_left"),
     }
-    assert round(nearest_rejected[0], 6) == 0.009431
-    assert nearest_rejected[1:] == ("plus_one_u_to_s_1", "end", "secondary_right_death")
+    # 0.008251, not 0.009431: ingesting plus_one component 12's continuation arc
+    # moved that edge's start terminus to the arc end, which sits 8.2508e-3 from
+    # a second germ of secondary_right_death.  The admissible window narrowed
+    # 1.303x -> 1.174x and 0.008 now sits 3.0% under the nearest rejected
+    # candidate.  Benign here only because that candidate belongs to the SAME
+    # organizer the endpoint is already bound to, so admitting it would change no
+    # node; this assertion exists so a future narrowing on a DIFFERENT organizer
+    # is not absorbed silently.
+    assert round(nearest_rejected[0], 6) == 0.008251
+    assert nearest_rejected[1:] == (
+        "plus_one_sweep_component_12",
+        "start",
+        "secondary_right_death",
+    )
 
     assert largest_accepted[0] < module.GERM_ATTACH_DISTANCE < nearest_rejected[0]
-    assert round(nearest_rejected[0] / largest_accepted[0], 3) == 1.303
+    assert round(nearest_rejected[0] / largest_accepted[0], 3) == 1.140
 
     # The secondary_left_birth blocker is far outside even the composed reach,
     # so this constant is not what leaves it unresolved.
@@ -1717,11 +1729,12 @@ def test_published_caveats_match_the_committed_evidence() -> None:
     assert "two components" in known
     assert "three further declared nodes" in known
     unclassified = graph["root_coverage"]["unclassified_edge_endpoints"]
-    assert len(unclassified) == 3
+    # Two, not three: plus_one_sweep_component_12's start closed once its tip was
+    # re-localized at BigFloat.  Tripwire intact for the remaining two.
+    assert len(unclassified) == 2
     assert { (row["edge"], row["side"]) for row in unclassified } == {
         ("minus_one_sweep_component_0", "start"),
         ("minus_one_sweep_component_1", "end"),
-        ("plus_one_sweep_component_12", "start"),
     }
     assert graph["unexplained_nodes"] == []
     assert not any(
@@ -1754,7 +1767,12 @@ def test_germ_attach_distance_window_matches_the_published_number() -> None:
     assert record["effective_organizer_reach"] == 0.016
     # The audit must be reading the release germs, not the superseded file.
     assert "research/evidence/V1_MIXED_GERMS_2026-08-15.json" not in record["inputs"]
-    assert record["attachments_at_default"] == 13
+    # 12, not 13, since plus_one component 12's arc was ingested: that edge's
+    # start terminus moved from the lattice cell 10131 down to the arc end at
+    # (1.042923, 1.053638), and its end terminus is now explained by the
+    # resolved continuation rather than by germ proximity.  Resolution evidence
+    # outranks a geometric germ guess, so one attachment changed hands.
+    assert record["attachments_at_default"] == 12
     manifest = json.loads((ROOT / "research/DISCOVERY_RELEASE.json").read_text())
     prose = " ".join(manifest["known_limitations"]) + " ".join(
         limitation

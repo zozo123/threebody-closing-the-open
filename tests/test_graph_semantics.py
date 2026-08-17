@@ -121,10 +121,15 @@ def test_shipped_graph_adapter_freezes_sheet_domain_nodes_and_edges():
     graph = shipped_graph()
     assert graph.schema_version == SCHEMA_VERSION
     assert len(graph.nodes) == 14
-    # Three sweep polylines still have an unclassified lattice end; the
-    # adapter does not invent nodes for those ends, so they are not edges
-    # in the incidence graph.
-    assert len(graph.edges) == 10
+    # TWO sweep polylines still have an unclassified lattice end; the adapter
+    # does not invent nodes for those ends, so they are not edges in the
+    # incidence graph.  It was three until plus_one component 12's tip was
+    # re-localized at BigFloat: cell 10131 then re-certified under float64, the
+    # component gained a second certifying root, its two sides stopped sharing a
+    # seed, and both its termini resolved -- so that polyline joined the sheet
+    # and the edge count went 10 -> 11.  This number tracks
+    # unclassified_edge_endpoints and should fall again as those two close.
+    assert len(graph.edges) == 11
     assert graph.coordinate_axes == ("m1", "m2", "m3")
     assert graph.declared_domain == {
         "m1": ("0.8", "1.1"),

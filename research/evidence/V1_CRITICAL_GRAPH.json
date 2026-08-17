@@ -1643,10 +1643,9 @@
         20002,
         10131,
         10132,
-        10133,
-        20023
+        10133
       ],
-      "source_cell_count": 25,
+      "source_cell_count": 24,
       "estimators": [
         "float64",
         "float64_variational_continuation",
@@ -1673,7 +1672,7 @@
           "binding_evidence": "research/evidence/V1_SECONDARY_RIGHT_GERMS_2026-08-16.json"
         },
         "end": {
-          "cell_id": 20023,
+          "cell_id": 10133,
           "masses": [
             1.0484051113963102,
             1.1230512637781644,
@@ -2032,12 +2031,12 @@
   "root_coverage": {
     "source_transition_cells": 620,
     "localized_roots": 620,
-    "supplemental_roots": 156,
+    "supplemental_roots": 155,
     "required_cells": 620,
     "complete": true,
     "edge_count": 13,
     "cells_on_edges": 620,
-    "all_vertices_on_edges": 774,
+    "all_vertices_on_edges": 773,
     "duplicate_cell_ids": [],
     "missing_mixed_germs": [],
     "newton_failed": 0,
@@ -3655,24 +3654,24 @@
     "edge_topology_complete": false
   },
   "root_residual_margin": {
-    "localized_roots": 776,
+    "localized_roots": 775,
     "event_gate": 2e-08,
     "max_abs_event": 1.989798081858396e-08,
     "gate_occupancy_max": 0.994899040929198,
     "headroom_fraction": 0.005100959070801991,
-    "median_abs_event": 4.208692061524744e-09,
-    "p90_abs_event": 1.609309913108703e-08,
-    "p99_abs_event": 1.9520916438864333e-08,
+    "median_abs_event": 4.1722856281012355e-09,
+    "p90_abs_event": 1.6103059019556556e-08,
+    "p99_abs_event": 1.9521906438058068e-08,
     "roots_above_1e_8": 222,
     "roots_above_half_gate": 222,
     "roots_above_95_percent_of_gate": 12,
     "closure_conditioning": {
       "reported": 0,
-      "missing": 776
+      "missing": 775
     },
     "event_conditioning": {
       "reported": 0,
-      "missing": 776
+      "missing": 775
     },
     "max_reported_m2_uncertainty": null
   },

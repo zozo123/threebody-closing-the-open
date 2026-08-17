@@ -1,5 +1,5 @@
 {
-  "claim": "gate-passing roots along the resolved plus_one component 12 outward continuations, so that edge carries the arc its walks traversed rather than only its three lattice samples. Components 0 and 1 contribute a single accepted point each, which would extend those edges without resolving the new terminus, so they are excluded.",
+  "claim": "gate-passing roots along the resolved plus_one component 12 outward continuations, so that edge carries the arc its walks traversed rather than only its three lattice samples. Components 0 and 1 contribute a single accepted point each, which would extend those edges without resolving the new terminus, so they are excluded. Points coinciding with an already-committed root are dropped, so no m1 slice carries a repeated vertex.",
   "frozen_gates": {
     "maximum_absolute_event": 2e-08,
     "maximum_periodic_closure": 1e-07
@@ -466,28 +466,6 @@
       "v1": 1.0686519848204388,
       "v2": 0.4646717891267401,
       "x1": -0.4384848030809053
-    },
-    {
-      "cell_id": 20023,
-      "closure": 1.798812344627901e-10,
-      "estimator": "float64_variational_continuation",
-      "event": 7.81245290681909e-09,
-      "event_mode": "plus_one",
-      "masses": [
-        1.0484051113963102,
-        1.1230512637781644,
-        1.0
-      ],
-      "orientation": "sweep_component_12",
-      "passed": true,
-      "period": 7.994849031614469,
-      "provenance_walk": "component_12_high",
-      "source": "endpoint_resolution_accepted_point",
-      "status": "ok",
-      "sweep_component": 12,
-      "v1": 1.0739381922413707,
-      "v2": 0.44345359426018033,
-      "x1": -0.4396214190599585
     }
   ],
   "schema": "atlas.v1.continuation-arc-roots/1",

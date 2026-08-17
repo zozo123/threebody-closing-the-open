@@ -2636,7 +2636,7 @@
     },
     "claim:three-mixed-organizers": {
       "kind": "claim",
-      "sha256": "3756fb1184dced5a2980a9ae155799257aaf0e7e43db6cc5b2b7badebe63bb23"
+      "sha256": "f8b7c6e6136ad94f418cc3161a86caf7b1c21ea867451851fee03f92c3efd3d5"
     },
     "dimension:blind_n_version": {
       "kind": "assurance_policy_dimension",
@@ -2696,11 +2696,11 @@
     },
     "discovery_manifest": {
       "kind": "claim_registry",
-      "sha256": "e44362550463805ded27dc904f936560f2ee30a7bbaa2e5cfa6cf9f743a1e55a"
+      "sha256": "75912b9b1595bd7f6d234825f1930c3976e7f0058a50e97bc4995f0c116c3967"
     }
   },
   "dimension_count": 14,
-  "matrix_sha256": "de252125c68748edaadd441dcf998a5770be0fd648c989d8d18a23699042d7e8",
+  "matrix_sha256": "1dc780a0f5b17ae3482866e4d1a066d00ea24e359c06fd247011febae920e4f2",
   "policy_sha256": "b915bf08610ed97b6b07c505ba0ea456e99c6c5b9cc87c511c6039c7259376f5",
   "release_policy": {
     "numerical_paper_ready": false,
@@ -2714,7 +2714,7 @@
     "theorem_grade_ready": false
   },
   "schema": "atlas.claim-assurance-matrix.v1",
-  "source_manifest_sha256": "e44362550463805ded27dc904f936560f2ee30a7bbaa2e5cfa6cf9f743a1e55a",
+  "source_manifest_sha256": "75912b9b1595bd7f6d234825f1930c3976e7f0058a50e97bc4995f0c116c3967",
   "status_vocabulary": [
     "fail",
     "infrastructure_blocked",

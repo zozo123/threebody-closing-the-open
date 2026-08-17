@@ -1,9 +1,9 @@
 {
   "baseline_canonical_sha256": {
-    "evidence_equivalent": "71b34682f71a21dfbf2a83ee1bf53470990b111e1e587f31aca3a6472e49c118",
+    "evidence_equivalent": "7c556fd32eb8208d4ec36b8fa8ef2cb64bd48a7cb6c19ba330d108d96cd2819a",
     "mechanism_labeled": "736201813d71f84e6bce011238e667b46ab07ec8c96da3acf758eb80bb14d8c9",
     "oriented": "388fbe48d8b34d730dff3c00b928ef4778954c74fcbab498fcfd8548445293aa",
-    "sheet_aware": "9ab2a95ede46b5eb5e9be8f756d795cf636631a923efb9d38a51317bd60b6ad3",
+    "sheet_aware": "b8690be0f7f8b6035fa6be6de581dd81722c1baf7d909f2bc89556f4459f55fe",
     "topology_only": "101c91a1b81d58c314b4e28d51b97fc4e15d8034ae3a0eaabbdf6ada6e5f400d"
   },
   "canonical_schema_sha256": "c38c516883c2a5ba2132fe815c9a992dc0c3ff75c979382280ff2e095e5e775e",
@@ -101,11 +101,11 @@
       "passed": true
     },
     {
-      "baseline_sha256": "9ab2a95ede46b5eb5e9be8f756d795cf636631a923efb9d38a51317bd60b6ad3",
+      "baseline_sha256": "b8690be0f7f8b6035fa6be6de581dd81722c1baf7d909f2bc89556f4459f55fe",
       "equivalent": false,
       "expected_difference": "sheet_reassignment",
       "level": "sheet_aware",
-      "mutated_sha256": "8092786e5aad6e2d03141d95273bcb826087c803d9a94a10e3a52db1c1386d26",
+      "mutated_sha256": "e6f4a389b0f7e588b5dcb59f5a295cd92f673a70a9a6fb03a52a3cd33cd64520",
       "name": "node-sheet-reassigned",
       "observed_differences": [
         "sheet_reassignment"
@@ -137,11 +137,11 @@
       "passed": true
     },
     {
-      "baseline_sha256": "71b34682f71a21dfbf2a83ee1bf53470990b111e1e587f31aca3a6472e49c118",
+      "baseline_sha256": "7c556fd32eb8208d4ec36b8fa8ef2cb64bd48a7cb6c19ba330d108d96cd2819a",
       "equivalent": false,
       "expected_difference": "evidence_changed",
       "level": "evidence_equivalent",
-      "mutated_sha256": "d66a51571c681fca45bf2b248c7c18a804e31b5f98cee399c806d64f085f5b9a",
+      "mutated_sha256": "b75ad7638352267dfb20a8285748c8185045d27fdf87281c57244a586a347027",
       "name": "evidence-content-substituted",
       "observed_differences": [
         "evidence_changed"
@@ -168,5 +168,5 @@
   "passed": true,
   "schema": "atlas.graph-isomorphism-mutation-audit.v1",
   "source_graph": "research/evidence/V1_CRITICAL_GRAPH.json",
-  "source_graph_sha256": "fde72f230ab90ee4adaa1dceb34548ef1054d484a3e0ab935765e10fe44c2a2a"
+  "source_graph_sha256": "b1ac1965e52a7bfca4a1757fda6e811dd4faa08bfb565fcb13eef1d2a4c9fd73"
 }
