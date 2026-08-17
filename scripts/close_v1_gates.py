@@ -208,6 +208,18 @@ PRODUCING_SCRIPTS = (
     FREEZE_COMPLETENESS,
     ASSEMBLE_GRAPH,
     "scripts/assemble_critical_graph.py",
+    # graph_root_sources.py is the sole producer of the combined roots file that
+    # BOTH pinned --sign-topology audits name as their inputs.roots, and the only
+    # correct resolver of supplemental cell ids >= 10000 (they are per-run
+    # sequential, so a glob-newest resolution silently repoints them).  It was
+    # absent from this pin while already deciding what the audits audited --
+    # found by the 2026-08-17 consolidation audit, issue #212 section 6.
+    "scripts/graph_root_sources.py",
+    # build_continuation_arc_roots.py is the producer of the arc-roots evidence
+    # the canonical invocation consumes.  The artifact existed with no producer
+    # in the repository at all (it had been generated inline); the script now
+    # regenerates it byte-for-byte and carries a --check mode.
+    "scripts/build_continuation_arc_roots.py",
 )
 
 REFUSED = 64
