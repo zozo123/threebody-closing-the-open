@@ -1,0 +1,35 @@
+{
+  "schema": "atlas.v1.supplemental-event-sign-roots/1",
+  "claim_status": "one certified variational step from plus_one sweep component 12 toward mixed_principal_right; not a freeze of the other three lattice ends",
+  "source": "scripts/resolve_sampled_sweep_endpoints.py",
+  "source_campaign": "artifacts/endpoint-resolution/unclassified-ends.json",
+  "frozen_gates": {
+    "event": 2e-8,
+    "closure": 1e-7
+  },
+  "components_used": [12],
+  "localized_roots": 1,
+  "max_abs_event": 7.81245290681909e-09,
+  "max_closure": 1.798812344627901e-10,
+  "roots": [
+    {
+      "cell_id": 10133,
+      "status": "ok",
+      "passed": true,
+      "event_mode": "plus_one",
+      "orientation": "sweep_component_12",
+      "event": 7.81245290681909e-09,
+      "closure": 1.798812344627901e-10,
+      "masses": [1.0484051113963102, 1.1230512637781644, 1.0],
+      "x1": -0.4396214190599585,
+      "v1": 1.0739381922413707,
+      "v2": 0.44345359426018033,
+      "period": 7.994849031614469,
+      "estimator": "float64",
+      "source": "continuous_variational_step",
+      "sweep_component": 12,
+      "witness": "mixed_principal_right",
+      "miss_mass_to_organizer": 0.006526318745269977
+    }
+  ]
+}

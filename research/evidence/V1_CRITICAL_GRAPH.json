@@ -1617,9 +1617,10 @@
       "orientation": "sweep_component_12",
       "cell_ids": [
         10131,
-        10132
+        10132,
+        10133
       ],
-      "source_cell_count": 2,
+      "source_cell_count": 3,
       "estimators": [
         "float64"
       ],
@@ -1640,13 +1641,17 @@
           "node": null
         },
         "end": {
-          "cell_id": 10132,
+          "cell_id": 10133,
           "masses": [
-            1.048,
-            1.1205842861285262,
+            1.0484051113963102,
+            1.1230512637781644,
             1.0
           ],
-          "node": null
+          "node": "mixed_principal_right",
+          "attachment": "continuation_germ",
+          "distance_to_germ": 0.005816752885323993,
+          "germ_direction": "+",
+          "binding_evidence": "research/evidence/V1_MIXED_GERMS_PRINCIPAL_RIGHT_2026-08-16.json"
         },
         "classified": false
       }
@@ -1993,12 +1998,12 @@
   "root_coverage": {
     "source_transition_cells": 620,
     "localized_roots": 620,
-    "supplemental_roots": 133,
+    "supplemental_roots": 134,
     "required_cells": 620,
     "complete": true,
     "edge_count": 13,
     "cells_on_edges": 620,
-    "all_vertices_on_edges": 751,
+    "all_vertices_on_edges": 752,
     "duplicate_cell_ids": [],
     "missing_mixed_germs": [],
     "newton_failed": 0,
@@ -3614,47 +3619,37 @@
           1.0
         ],
         "reserved_for": null
-      },
-      {
-        "edge": "plus_one_sweep_component_12",
-        "side": "end",
-        "masses": [
-          1.048,
-          1.1205842861285262,
-          1.0
-        ],
-        "reserved_for": null
       }
     ],
     "classification_binding_errors": [],
     "edge_topology_complete": false
   },
   "root_residual_margin": {
-    "localized_roots": 753,
+    "localized_roots": 754,
     "event_gate": 2e-08,
     "max_abs_event": 1.989798081858396e-08,
     "gate_occupancy_max": 0.994899040929198,
     "headroom_fraction": 0.005100959070801991,
-    "median_abs_event": 4.038113843307656e-09,
-    "p90_abs_event": 1.6122978796495608e-08,
-    "p99_abs_event": 1.938485809205304e-08,
+    "median_abs_event": 4.038601009170861e-09,
+    "p90_abs_event": 1.6113018908026082e-08,
+    "p99_abs_event": 1.9382717546534428e-08,
     "roots_above_1e_8": 211,
     "roots_above_half_gate": 211,
     "roots_above_95_percent_of_gate": 11,
     "closure_conditioning": {
       "reported": 0,
-      "missing": 753
+      "missing": 754
     },
     "event_conditioning": {
       "reported": 0,
-      "missing": 753
+      "missing": 754
     },
     "max_reported_m2_uncertainty": null
   },
   "incidence": {
     "node_count": 14,
     "edge_count": 13,
-    "attached_endpoints": 22,
+    "attached_endpoints": 23,
     "nodes_touching_more_than_one_edge": {
       "mixed_principal_left": [
         "minus_one_sweep_component_0:end",
@@ -3665,6 +3660,7 @@
       "mixed_principal_right": [
         "minus_one_sweep_component_4:start",
         "minus_one_u_to_s_0:end",
+        "plus_one_sweep_component_12:end",
         "plus_one_u_to_s_2:start"
       ],
       "mixed_secondary_left": [
@@ -3683,7 +3679,7 @@
         "plus_one_u_to_s_1:end"
       ]
     },
-    "edge_component_count": 3,
+    "edge_component_count": 2,
     "edge_components": [
       [
         "minus_one_s_to_u_0",
@@ -3694,12 +3690,10 @@
         "minus_one_u_to_s_0",
         "minus_one_u_to_s_1",
         "plus_one_sweep_component_10",
+        "plus_one_sweep_component_12",
         "plus_one_u_to_s_0",
         "plus_one_u_to_s_1",
         "plus_one_u_to_s_2"
-      ],
-      [
-        "plus_one_sweep_component_12"
       ],
       [
         "trace_collision_s_to_u_0"

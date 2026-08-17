@@ -1,0 +1,475 @@
+{
+  "schema": "atlas.v1.sampled-endpoint-resolution/1",
+  "claim": "continuous classification of the unmatched finite-lattice endpoints on minus-one components 0/1 and plus-one component 12",
+  "frozen_gates": {
+    "maximum_absolute_event": 2e-08,
+    "maximum_periodic_closure": 1e-07
+  },
+  "results": [
+    {
+      "source_component": 0,
+      "outward_side": "low",
+      "seed_rows": [
+        10003,
+        10001
+      ],
+      "seed_previous": {
+        "masses": [
+          0.898,
+          0.7781370938780275,
+          1.0
+        ],
+        "x1": -0.19159112459402497,
+        "v1": 1.9613409105540887,
+        "v2": 0.4246381393578849,
+        "period": 6.130009660739476,
+        "closure": 7.805629112246798e-10,
+        "event_mode": "minus_one",
+        "event": -4.7435548822249984e-09
+      },
+      "seed_current": {
+        "masses": [
+          0.894,
+          0.7614529865792788,
+          1.0
+        ],
+        "x1": -0.1828553780809901,
+        "v1": 2.022404838462208,
+        "v2": 0.422412898918842,
+        "period": 6.036251876832726,
+        "closure": 9.441871044458401e-10,
+        "event_mode": "minus_one",
+        "event": 1.2038810837111669e-08
+      },
+      "accepted_points": [
+        {
+          "masses": [
+            0.8934187321543331,
+            0.7590214997948108,
+            1.0
+          ],
+          "x1": -0.18160860657713215,
+          "v1": 2.031462044578445,
+          "v2": 0.4219986736788261,
+          "period": 6.021610391046801,
+          "closure": 6.604371160747374e-10,
+          "event_mode": "minus_one",
+          "event": -1.338063526645783e-08,
+          "d_event_dm": [
+            -280.47944924935894,
+            67.07676081626335
+          ],
+          "mass_tangent": [
+            -0.23259154227869444,
+            -0.9725745084364582
+          ],
+          "closure_jacobian_singular_values": [
+            12131.455527468655,
+            33.04890655331628,
+            2.4442287804548695,
+            0.0989835743976127
+          ],
+          "closure_family_relative_residual": 3.0712821599724286e-10,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            0.8931281974333574,
+            0.7578057327035433,
+            1.0
+          ],
+          "x1": -0.18098757143624253,
+          "v1": 2.0360066622872472,
+          "v2": 0.4217814878930379,
+          "period": 6.014178931695218,
+          "closure": 6.385638498046958e-10,
+          "event_mode": "minus_one",
+          "event": -8.457988087684498e-09,
+          "d_event_dm": [
+            -282.50976198850924,
+            67.54121788842235
+          ],
+          "mass_tangent": [
+            -0.23252285387034236,
+            -0.9725909327296813
+          ],
+          "closure_jacobian_singular_values": [
+            12318.988837737807,
+            33.115052727716936,
+            2.4329752548963706,
+            0.098380585118672
+          ],
+          "closure_family_relative_residual": 3.0096872923902426e-10,
+          "mass_step": 0.00125,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            0.8931036892963775,
+            0.7577031509863086,
+            1.0
+          ],
+          "x1": -0.18093524337947037,
+          "v1": 2.0363905991921873,
+          "v2": 0.4217628489523668,
+          "period": 6.013548436991711,
+          "closure": 6.34458818466318e-10,
+          "event_mode": "minus_one",
+          "event": 1.574790964298245e-08,
+          "d_event_dm": [
+            -282.68131834953715,
+            67.58040667336911
+          ],
+          "mass_tangent": [
+            -0.23251691045564507,
+            -0.9725923536364872
+          ],
+          "closure_jacobian_singular_values": [
+            12334.969777465642,
+            33.12049006630626,
+            2.432031121125514,
+            0.09832954414629336
+          ],
+          "closure_family_relative_residual": 3.103672943130918e-10,
+          "mass_step": 0.00010546875000000001,
+          "event_normal_corrector_iterations": 5
+        },
+        {
+          "masses": [
+            0.8930706001683059,
+            0.7575646664196065,
+            1.0
+          ],
+          "x1": -0.18086461645875787,
+          "v1": 2.03690904918451,
+          "v2": 0.4217376034590248,
+          "period": 6.012696370484408,
+          "closure": 6.336894477793015e-10,
+          "event_mode": "minus_one",
+          "event": 8.805589146732018e-09,
+          "d_event_dm": [
+            -282.9135894145197,
+            67.63247352109443
+          ],
+          "mass_tangent": [
+            -0.23250565223139685,
+            -0.9725950450626678
+          ],
+          "closure_jacobian_singular_values": [
+            12356.583404084357,
+            33.1277930367827,
+            2.430757985940809,
+            0.09826058740992298
+          ],
+          "closure_family_relative_residual": 2.9610948035523823e-10,
+          "mass_step": 0.0001423828125,
+          "event_normal_corrector_iterations": 2
+        }
+      ],
+      "projection_turns_crossed": [],
+      "terminal": null,
+      "stopped_reason": "continuation_failure_not_a_scientific_terminus: event-normal corrector missed frozen gate after 5 iterations: event=inf",
+      "scientific_endpoint_resolved": false
+    },
+    {
+      "source_component": 1,
+      "outward_side": "high",
+      "seed_rows": [
+        10036,
+        10037
+      ],
+      "seed_previous": {
+        "masses": [
+          1.03,
+          0.8733703872432192,
+          1.0
+        ],
+        "x1": -0.32394025341312294,
+        "v1": 1.319856488081349,
+        "v2": 0.5090626684380878,
+        "period": 7.463725269984994,
+        "closure": 1.7424678527643827e-10,
+        "event_mode": "minus_one",
+        "event": 4.559197464004683e-10
+      },
+      "seed_current": {
+        "masses": [
+          1.032,
+          0.8704869464030421,
+          1.0
+        ],
+        "x1": -0.3226849919382635,
+        "v1": 1.3227666075165432,
+        "v2": 0.5115463036797772,
+        "period": 7.474490904474273,
+        "closure": 1.8600221686255183e-10,
+        "event_mode": "minus_one",
+        "event": -6.45149000888523e-09
+      },
+      "accepted_points": [
+        {
+          "masses": [
+            1.0323622957016148,
+            0.8699776642318668,
+            1.0
+          ],
+          "x1": -0.3224611585361243,
+          "v1": 1.3232900893643682,
+          "v2": 0.5119974380665268,
+          "period": 7.47656903494037,
+          "closure": 2.831804510335405e-10,
+          "event_mode": "minus_one",
+          "event": -4.397069375272622e-09,
+          "d_event_dm": [
+            218.4829492972134,
+            156.00457915336875
+          ],
+          "mass_tangent": [
+            0.5811033415612225,
+            -0.8138297773038174
+          ],
+          "closure_jacobian_singular_values": [
+            2190.629757544525,
+            55.23251088073516,
+            4.426672011832164,
+            0.47775378254220874
+          ],
+          "closure_family_relative_residual": 8.912468964722098e-11,
+          "mass_step": 0.000625,
+          "event_normal_corrector_iterations": 4
+        },
+        {
+          "masses": [
+            1.0328543691881211,
+            0.8692922574450257,
+            1.0
+          ],
+          "x1": -0.32215892914999134,
+          "v1": 1.3239991372725093,
+          "v2": 0.5126108660921681,
+          "period": 7.479456240304581,
+          "closure": 2.815431811917123e-10,
+          "event_mode": "minus_one",
+          "event": 1.545347316778134e-08,
+          "d_event_dm": [
+            220.07704976240953,
+            158.8608406069797
+          ],
+          "mass_tangent": [
+            0.5852878830316032,
+            -0.8108255632233017
+          ],
+          "closure_jacobian_singular_values": [
+            2196.3482085856554,
+            55.54308674945617,
+            4.436260426844789,
+            0.4780077024525556
+          ],
+          "closure_family_relative_residual": 9.424232836542985e-11,
+          "mass_step": 0.0008437500000000001,
+          "event_normal_corrector_iterations": 3
+        },
+        {
+          "masses": [
+            1.0329376982029292,
+            0.8691768055475106,
+            1.0
+          ],
+          "x1": -0.32210786618263526,
+          "v1": 1.3241192409600757,
+          "v2": 0.512714862910955,
+          "period": 7.4799523861686765,
+          "closure": 1.980707354127358e-10,
+          "event_mode": "minus_one",
+          "event": -1.5496397054448607e-08,
+          "d_event_dm": [
+            220.342632973821,
+            159.34914083415185
+          ],
+          "mass_tangent": [
+            0.5860047288816697,
+            -0.8103076315377516
+          ],
+          "closure_jacobian_singular_values": [
+            2197.3183962851645,
+            55.59597870298723,
+            4.4378822508055205,
+            0.478036690702183
+          ],
+          "closure_family_relative_residual": 1.0056227293936712e-10,
+          "mass_step": 0.0001423828125,
+          "event_normal_corrector_iterations": 2
+        }
+      ],
+      "projection_turns_crossed": [],
+      "terminal": null,
+      "stopped_reason": "continuation_failure_not_a_scientific_terminus: event-normal corrector missed frozen gate after 5 iterations: event=inf",
+      "scientific_endpoint_resolved": false
+    },
+    {
+      "source_component": 12,
+      "outward_side": "high",
+      "seed_rows": [
+        10131,
+        10132
+      ],
+      "seed_previous": {
+        "masses": [
+          1.046,
+          1.106030306004638,
+          1.0
+        ],
+        "x1": -0.43962858464107607,
+        "v1": 1.0737748210918996,
+        "v2": 0.44410867469255205,
+        "period": 7.997111417897018,
+        "closure": 1.7463126702538024e-10,
+        "event_mode": "plus_one",
+        "event": 1.274594296774012e-08
+      },
+      "seed_current": {
+        "masses": [
+          1.048,
+          1.1205842861285262,
+          1.0
+        ],
+        "x1": -0.43962858464107607,
+        "v1": 1.0737748210918996,
+        "v2": 0.44410867469255205,
+        "period": 7.997111417897018,
+        "closure": 1.7463126702538024e-10,
+        "event_mode": "plus_one",
+        "event": 1.274594296774012e-08
+      },
+      "accepted_points": [
+        {
+          "masses": [
+            1.0484051113963102,
+            1.1230512637781644,
+            1.0
+          ],
+          "x1": -0.4396214190599585,
+          "v1": 1.0739381922413707,
+          "v2": 0.44345359426018033,
+          "period": 7.994849031614469,
+          "closure": 1.798812344627901e-10,
+          "event_mode": "plus_one",
+          "event": 7.81245290681909e-09,
+          "d_event_dm": [
+            -170.73103342753961,
+            28.718067621863895
+          ],
+          "mass_tangent": [
+            0.16587625271043976,
+            0.9861465757111072
+          ],
+          "closure_jacobian_singular_values": [
+            832.0282063518531,
+            38.655447806653456,
+            3.3833979415009283,
+            0.3361530347048402
+          ],
+          "closure_family_relative_residual": 8.583725874669169e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        }
+      ],
+      "projection_turns_crossed": [],
+      "terminal": {
+        "kind": "mixed_organizer",
+        "node_id": "mixed_principal_right",
+        "miss_mass": 0.006526318745269977,
+        "organizer_masses": [
+          1.0495531866872656,
+          1.129475807302117
+        ]
+      },
+      "stopped_reason": "mixed_organizer_reached",
+      "scientific_endpoint_resolved": true
+    },
+    {
+      "source_component": 12,
+      "outward_side": "low",
+      "seed_rows": [
+        10131,
+        10132
+      ],
+      "seed_previous": {
+        "masses": [
+          1.046,
+          1.106030306004638,
+          1.0
+        ],
+        "x1": -0.43962858464107607,
+        "v1": 1.0737748210918996,
+        "v2": 0.44410867469255205,
+        "period": 7.997111417897018,
+        "closure": 1.7463126702538024e-10,
+        "event_mode": "plus_one",
+        "event": 1.274594296774012e-08
+      },
+      "seed_current": {
+        "masses": [
+          1.048,
+          1.1205842861285262,
+          1.0
+        ],
+        "x1": -0.43962858464107607,
+        "v1": 1.0737748210918996,
+        "v2": 0.44410867469255205,
+        "period": 7.997111417897018,
+        "closure": 1.7463126702538024e-10,
+        "event_mode": "plus_one",
+        "event": 1.274594296774012e-08
+      },
+      "accepted_points": [
+        {
+          "masses": [
+            1.0484051113963102,
+            1.1230512637781644,
+            1.0
+          ],
+          "x1": -0.4396214190599585,
+          "v1": 1.0739381922413707,
+          "v2": 0.44345359426018033,
+          "period": 7.994849031614469,
+          "closure": 1.798812344627901e-10,
+          "event_mode": "plus_one",
+          "event": 7.81245290681909e-09,
+          "d_event_dm": [
+            -170.73103342753961,
+            28.718067621863895
+          ],
+          "mass_tangent": [
+            0.16587625271043976,
+            0.9861465757111072
+          ],
+          "closure_jacobian_singular_values": [
+            832.0282063518531,
+            38.655447806653456,
+            3.3833979415009283,
+            0.3361530347048402
+          ],
+          "closure_family_relative_residual": 8.583725874669169e-11,
+          "mass_step": 0.0025,
+          "event_normal_corrector_iterations": 3
+        }
+      ],
+      "projection_turns_crossed": [],
+      "terminal": {
+        "kind": "mixed_organizer",
+        "node_id": "mixed_principal_right",
+        "miss_mass": 0.006526318745269977,
+        "organizer_masses": [
+          1.0495531866872656,
+          1.129475807302117
+        ]
+      },
+      "stopped_reason": "mixed_organizer_reached",
+      "scientific_endpoint_resolved": true
+    }
+  ],
+  "all_sampled_endpoints_resolved": false,
+  "claim_status": "unresolved_continuation_required"
+}

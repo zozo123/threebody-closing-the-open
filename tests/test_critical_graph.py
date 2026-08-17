@@ -1368,7 +1368,7 @@ def test_m1_slice_gap_is_currently_redundant() -> None:
 
 
 def test_germ_attach_distance_window_is_pinned() -> None:
-    """The admissible window for GERM_ATTACH_DISTANCE is only 1.216x wide.
+    """The admissible window for GERM_ATTACH_DISTANCE is only 1.303x wide.
 
     Measured on the COMMITTED graph, i.e. the release configuration in
     scripts/assemble_v1_critical_graph.sh -- not on the synthetic germ fixtures
@@ -1420,25 +1420,22 @@ def test_germ_attach_distance_window_is_pinned() -> None:
 
     largest_accepted = accepted[-1]
     nearest_rejected = rejected[0]
-    assert round(largest_accepted[0], 6) == 0.006837
-    # minus_one_u_to_s_1 carries a single cell, so both of its termini sit at
-    # this same distance from the mixed_secondary_left germ.
-    assert largest_accepted[1] == "minus_one_u_to_s_1"
-    assert largest_accepted[3] == "mixed_secondary_left"
+    assert round(largest_accepted[0], 6) == 0.007237
+    assert largest_accepted[1:] == (
+        "plus_one_sweep_component_12",
+        "end",
+        "mixed_principal_right",
+    )
     assert {row[1:] for row in accepted if round(row[0], 6) == 0.006837} == {
         ("minus_one_sweep_component_1", "start", "mixed_secondary_left"),
         ("minus_one_u_to_s_1", "start", "mixed_secondary_left"),
         ("minus_one_u_to_s_1", "end", "mixed_secondary_left"),
     }
-    assert round(nearest_rejected[0], 6) == 0.008317
-    assert nearest_rejected[1:] == (
-        "plus_one_sweep_component_12",
-        "end",
-        "mixed_principal_right",
-    )
+    assert round(nearest_rejected[0], 6) == 0.009431
+    assert nearest_rejected[1:] == ("plus_one_u_to_s_1", "end", "secondary_right_death")
 
     assert largest_accepted[0] < module.GERM_ATTACH_DISTANCE < nearest_rejected[0]
-    assert round(nearest_rejected[0] / largest_accepted[0], 3) == 1.216
+    assert round(nearest_rejected[0] / largest_accepted[0], 3) == 1.303
 
     # The secondary_left_birth blocker is far outside even the composed reach,
     # so this constant is not what leaves it unresolved.
@@ -1719,12 +1716,11 @@ def test_published_caveats_match_the_committed_evidence() -> None:
     assert "two components" in known
     assert "three further declared nodes" in known
     unclassified = graph["root_coverage"]["unclassified_edge_endpoints"]
-    assert len(unclassified) == 4
+    assert len(unclassified) == 3
     assert { (row["edge"], row["side"]) for row in unclassified } == {
         ("minus_one_sweep_component_0", "start"),
         ("minus_one_sweep_component_1", "end"),
         ("plus_one_sweep_component_12", "start"),
-        ("plus_one_sweep_component_12", "end"),
     }
     assert graph["unexplained_nodes"] == []
     assert not any(
@@ -1757,7 +1753,7 @@ def test_germ_attach_distance_window_matches_the_published_number() -> None:
     assert record["effective_organizer_reach"] == 0.016
     # The audit must be reading the release germs, not the superseded file.
     assert "research/evidence/V1_MIXED_GERMS_2026-08-15.json" not in record["inputs"]
-    assert record["attachments_at_default"] == 12
+    assert record["attachments_at_default"] == 13
     manifest = json.loads((ROOT / "research/DISCOVERY_RELEASE.json").read_text())
     prose = " ".join(manifest["known_limitations"]) + " ".join(
         limitation
