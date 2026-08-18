@@ -1,0 +1,259 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,hyperref}
+
+\title{One continuation-connected family and two bracketed Floquet events\\
+in the Li--Li--Liao unequal-mass catalog\\
+\large (claim-gated letter; scientific status OPEN)}
+\author{Yossi Eliaz}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Li, Li and Liao report $135{,}445$ unequal-mass non-hierarchical planar periodic orbits of the
+free-group word $bABabaBAba$ on a $0.001$ mass grid over $m_1\in[0.8,1.1]$, $m_2\in[0.7,1.2]$ at
+$m_3=1$, with $13{,}315$ linearly stable samples and $620$ adjacent stable/unstable cells
+\cite{li2021stable}; a 2023 analysis of the same table reads it as two independent sets in a
+corrected scale-invariant period/angular-momentum projection \cite{stancevic2023moth}. Neither the
+catalog nor its stability labels is a result of this work. We treat family identity as
+branch-preserving continuation connectivity rather than as the appearance of a projection, and the
+linear-stability boundary as the preimage, under the sheet map $\Phi:(m_1,m_2)\mapsto(\alpha,\beta)$,
+of the boundary of the universal spectral domain of the reduced trace polynomial --- the walls
+$G_+=0$, $G_-=0$, $\Delta=0$ and the exact vertices $(0,-4)$, $(4,4)$, $(8,28)$ --- rather than as a
+rectangular S/U mask. That algebra is classical; only its preimage on this catalog sheet is computed
+here. At the rungs the artifacts themselves declare: the sampled set is \emph{supported as} one
+continuation-connected component, on $26$ adversarially chosen links crossed bidirectionally without
+loosening a gate, with chart independence shown on exactly one of the $26$; the corrected
+$(T_{si},L_{si})$ projection on this sheet is folded and non-injective, which defeats the inference
+from two visible branches to two dynamical families without disproving the 2023 analysis on its own
+terms. Two events are \emph{independently reproduced} as bracketed physical mechanisms in a second
+arbitrary-precision program: a generic physical $+1$ crossing bracketed in $m_2$ to width
+$1.578\times10^{-9}$, and an opposite-Krein Hamiltonian--Hopf collision bracketed to
+$6.268\times10^{-9}$. One rung below, three mixed roots of $G_+=G_-=0$ --- preimages of the $(4,4)$
+vertex --- are \emph{high-precision supported} only: localized by Newton residual, not by a sign
+change and not by interval arithmetic. All $620$ transition cells are localized once each and
+assigned to one of seven mechanism polylines. Not earned: no theorem of connectivity, no
+interval-arithmetic existence proof, no transversality or nondegeneracy certificate, no complete
+critical set and no complete critical graph. No fourth organizer, no fold and no daughter
+classification is claimed. The release flag is \texttt{false} and the scientific status is OPEN.
+Throughout, ``stable'' means planar linear Floquet stability only --- not nonlinear, not KAM, not
+spatial --- and no priority claim is made.
+\end{abstract}
+
+\section{The question, and what it is not}
+
+The question is finite and it is posed inside somebody else's table. Fix the word $bABabaBAba$, fix
+$m_3=1$, and fix the mass rectangle $m_1\in[0.8,1.1]$, $m_2\in[0.7,1.2]$ of area $0.15$ on which
+Li, Li and Liao sampled $135{,}445$ orbits at grid step $0.001$, labelling $13{,}315$ linearly
+stable and leaving $620$ adjacent cells across which that label flips \cite{li2021stable}. Two
+questions about that frozen object are then answerable rather than philosophical. First: is the
+sampled set one family or several, where \emph{family} means branch-preserving continuation of the
+periodic orbit inside the rectangle and not the appearance of a projection --- the distinction that
+separates this reading from the two-set reading of the same table \cite{stancevic2023moth}. Second:
+what is the stability boundary inside the rectangle, resolved by mechanism, once one stops treating
+stability as a binary mask and computes instead the preimage under $\Phi$ of the boundary of the
+universal spectral domain of the reduced monodromy.
+
+\paragraph{What this is not.} It is not the general three-body problem and settles nothing about it.
+It is not a new catalog: the orbits, the stable labels and the broad stable region belong to
+\cite{li2021stable} and enter here as fixed input, pinned by the content digest of the published
+supplementary table. It is not a theorem: connectivity is asserted only as a bounded numerical
+continuation statement inside the declared rectangle and normalization, and a chart singularity is
+not a moduli-space disconnection. It is not a completeness result for the critical set; a finite
+search at step $0.001$ cannot see two roots inside one cell, an even number of crossings, or a
+tangency. And it is not a statement about the stability dynamicists usually mean: ``stable'' here
+denotes spectral stability of the linearised return map for planar motion --- not nonlinear or
+Lyapunov stability, not KAM, not stability against non-planar perturbation. A spectrally stable
+Hamiltonian orbit can be nonlinearly unstable through resonance, and nothing below bears on that.
+
+\paragraph{Rungs.} Every statement carries the rung of the artifact that produced it, and the rungs
+are not interchangeable. \textbf{Screening} is IEEE binary64 shooting, Newton correction and event
+localization at two frozen gates --- maximum absolute event $2\times10^{-8}$, maximum periodic
+closure $10^{-7}$ --- never loosened anywhere in this work; a float64 point is a proposal.
+\textbf{High-precision supported} means recomputed at $60$ digits in an independent Julia BigFloat
+program with canonical Jacobi monodromy and the physical $E^{\omega}/E$ symplectic quotient, but
+localized by Newton residual rather than by a bracket. \textbf{Independently reproduced} means the
+event is localized by a sign change of the event function in a program sharing no dynamics, shooting
+or Floquet implementation with the screening stack, with closure, symplectic-defect,
+reciprocal-pairing, leakage and Krein diagnostics recorded on both flanks. One rung of separation
+between the bracketed events and the mixed roots is not a stylistic hedge: it is the difference
+between a sign change and a residual.
+
+\section{The universal spectral frame}
+
+For the centre-of-mass-reduced planar problem the reduced monodromy is symplectic on the physical
+$E^{\omega}/E$ quotient, and its characteristic polynomial is determined by two invariants
+$(\alpha,\beta)$. Spectral stability of the reduced return map is then a region in the
+$(\alpha,\beta)$ plane bounded by three curves: the walls $G_+=0$ and $G_-=0$ where an eigenvalue
+reaches $+1$ or $-1$, and the discriminant parabola $\Delta=0$ where two unit-circle pairs collide.
+The three curves meet at the exact vertices $(0,-4)$, $(4,4)$ and $(8,28)$. This algebra is
+classical symplectic Floquet and Krein theory \cite{yakubovich1975,frauenfelder2023symplectic} and
+is not a contribution of this work. What is computed here is the preimage
+$\Phi^{-1}(\partial\mathcal{D})$ on one catalog sheet, where $\Phi:(m_1,m_2)\mapsto(\alpha,\beta)$.
+The gain is that a stability transition acquires a mechanism: a $G_+$ crossing, a $G_-$ crossing, or
+a $\Delta$ collision, with the $(4,4)$ vertex as the organizing preimage where a $G_+$ and a $G_-$
+wall meet. The free-group word is carried as catalog metadata only; the artifact records that
+topology is not used as family identity.
+
+\section{One continuation-connected component}
+
+Within the frozen catalog and the declared normalization the sampled set is \emph{supported as} one
+continuation-connected component. The evidence is adversarial rather than exhaustive. A spanning tree
+on the $135{,}444$ mass-adjacent edges was built, and $26$ links were chosen to be as hostile to
+connectivity as the frozen data permits: five macroscopic bottleneck cuts of that tree, the twenty
+globally worst chart jumps, and one deliberately pathological invariant-near-duplicate bridge whose
+endpoints lie $0.0617$ apart in mass --- sixty-one grid steps --- and which is therefore not a tree
+edge at all. Each of the $26$ was crossed bidirectionally without loosening a gate. Chart
+independence was demonstrated on exactly one of the $26$, the pathological bridge, by re-crossing it
+in a generic strict-periodic chart.
+
+The two-set reading is addressed on the mechanism, not on the labels. On this sheet the corrected
+scale-invariant $(T_{si},L_{si})$ projection is folded and non-injective: $590$ mass-adjacent edges
+carry a determinant sign change and assemble into one fold locus, and $86$ far-separated mass pairs
+agree to standardized invariant distance below $10^{-4}$. A folded non-injective projection can show
+two visible branches for one connected sheet, so the inference from two branches to two dynamical
+families does not follow. This does not disprove the 2023 analysis on its own $(T,L)$ terms
+\cite{stancevic2023moth}, and no claim is made that it does.
+
+Three caveats travel with this result and are not negotiable. The certificate covers $26$ links, not
+$135{,}444$. Chart independence rests on one of them. And separation below the published $0.001$ mass
+grid cannot be excluded by any of it.
+
+\section{Two bracketed events and three mixed roots}
+
+Two critical events are independently reproduced as bracketed physical mechanisms. On the slice
+$m_1=0.8023446113666945$ the lower transition is a generic physical $+1$ crossing of the reduced
+return map, bracketed in $m_2$ to width $1.5776460402494633\times10^{-9}$. On
+$m_1=0.8022889780964406$ the upper transition is an opposite-Krein Hamiltonian--Hopf collision,
+bracketed to width $6.2677772144967\times10^{-9}$, with two upper-half unit modes of opposite Krein
+sign on the stable flank and none on the unstable flank --- the Krein signature, not merely the
+eigenvalue positions, is what identifies the mechanism.
+
+One rung below, three mixed roots of $G_+=G_-=0$, the preimages of the $(4,4)$ vertex, sit at
+$(0.9292391921,0.8853664625)$, $(0.9967681995,0.9560193602)$ and $(1.0495531867,1.1294758073)$. Each
+is recomputed at $60$ digits in the independent program, with relative event norm of order
+$10^{-14}$, but each is localized by Newton residual rather than by a sign-change bracket. Their own
+artifacts declare this rung, and the graph's node labels are more generous than the artifacts
+warrant; the artifacts govern. Two independent BigFloat programs agree on all five objects to
+between $8.9\times10^{-27}$ and $5.7\times10^{-25}$ in mass.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{llll}
+\toprule
+Object & Location & Localization & Rung \\
+\midrule
+Lower $+1$ crossing & $m_1=0.80234461$ & $m_2$ bracket $1.578\times10^{-9}$ & independently reproduced \\
+Upper H--Hopf collision & $m_1=0.80228898$ & $m_2$ bracket $6.268\times10^{-9}$ & independently reproduced \\
+Mixed root, principal left & $(0.92923919,0.88536646)$ & Newton residual $\sim10^{-14}$ & high-precision supported \\
+Mixed root, secondary left & $(0.99676820,0.95601936)$ & Newton residual $\sim10^{-14}$ & high-precision supported \\
+Mixed root, principal right & $(1.04955319,1.12947581)$ & Newton residual $\sim10^{-14}$ & high-precision supported \\
+\bottomrule
+\end{tabular}
+\caption{The five objects, each at the rung its own artifact declares. A $60$-digit bracket is a
+bracket, not an interval-arithmetic existence proof; a Newton residual is weaker still.}
+\end{table}
+
+\section{The 620-cell decomposition, and what it rests on}
+
+All $620$ published transition cells are localized once each --- no cell is localized twice and none
+is left as a Newton failure --- and each is assigned to exactly one of seven mechanism polylines:
+$198$ cells on $G_+$ crossings, $168$ on $G_-$ crossings and $254$ on $\Delta$ collisions. Six
+further label-invisible event-sign polylines from the full-domain sweep carry $153$ cells in
+components of $19$, $24$, $29$, $23$, $34$ and $24$, giving the thirteen-edge assembly at HEAD.
+
+The honest reading of that assembly is a mixture, not a certification. The artifact never uses the
+word ``certified'' for an edge. By the edges' own \texttt{estimators} fields, seven of the thirteen
+polylines rest on float64 screening alone and six carry independent BigFloat corroboration; of the
+$620$ localized cells, $462$ are float64 and $158$ BigFloat. Under this project's own ladder,
+float64 output stops at screening, so more than half the assembled decomposition is a proposal
+rather than a verified object. The artifact describes itself as a partial graph with
+\texttt{release\_ready: false}.
+
+\section{What is not earned}
+
+\paragraph{The critical graph is not finished.} Of the $26$ edge endpoints, $24$ are attached: two
+finite-lattice sweep ends remain unclassified, at $(0.892,0.7530796376143668)$ and
+$(1.042,0.8579752021443232)$. The edge incidence splits into two components --- the trace-collision
+curve is still its own component --- and three declared nodes carry no edge incidence at all. The
+assembler's incidence summary is diagnostic and feeds no release gate, so graph connectivity is
+reported here as an open structural fact rather than as a gate that has been failed.
+
+\paragraph{The event gate is finer than the reproducibility of the quantity it gates.} Across the
+$775$ localized roots in the residual-margin audit the worst absolute event is
+$1.989798081858396\times10^{-8}$ against the frozen gate of $2\times10^{-8}$: $99.4899\%$ of the
+budget, cleared by $0.5101\%$, with $222$ roots above $10^{-8}$ and $12$ above $95\%$ of the gate.
+That figure is a property of one chart, one tolerance and one machine rather than of the roots.
+Re-deriving the same monodromy through a rotation at identical tolerance moves the event past the
+gate on $345$ of the $620$ cells and past ten times the gate on $144$, concentrated in $G_+$
+($126/198$) and $\Delta$ ($217/254$); $G_-$ ($2/168$) is the only mechanism whose gate compliance
+survives that re-derivation. Conditioning is recorded for none of the $775$ roots. The closure
+certificates are also optimistic: they are written from the corrector's screening integration at
+relative tolerance $2\times10^{-10}$ while the event is evaluated at $5\times10^{-13}$, and on a
+seeded sample of $160$ roots the recorded closure is optimistic by a median factor $48.6$, with four
+of the $160$ exceeding the frozen $10^{-7}$ closure gate on re-measurement, the worst at
+$1.543\times10^{-7}$. Mechanism labels are not immune either: BigFloat escalation of sixteen
+float64-failed canary cells returned four of them as $\Delta$ collisions where float64 had recorded
+$G_+$.
+
+\paragraph{Three classifications are explicitly not claimed.} The secondary-left birth is not a
+certified nondegenerate fold: transversality is real, with $\partial G/\partial m_1 =
+28.045563274511$ converging under refinement, but the second-derivative stationarity test does not
+converge to zero --- it converges to $-30$ --- so the fold normal form is not established. The
+secondary-right terminus carries physical evidence only and is typed as an endpoint, not an
+organizer; no fourth mixed organizer is claimed anywhere in this letter. The lower $+1$ daughter is
+not classified: the classifier can emit only one outcome by construction, so its recorded class is
+an assertion of the script rather than a discrimination among the alternatives, and reconnection is
+excluded only over an $m_2$ window of $5.60\times10^{-5}$.
+
+\paragraph{Sign-topology coverage is withdrawn.} The coverage flag was withdrawn after it was found
+true only on unmeasured territory, and it remains withdrawn. The densest full-domain audit at HEAD
+probes $121$ scan lines at $m_1$ step $0.0025$ across the declared $m_2$ range with an allowed gap of
+$0.0009$: of $273$ planned probes, $229$ converged and $44$ failed, and $25$ curve endpoints remain
+unrefined. The deficiency is probe convergence near the mass-domain faces, not sampling density
+alone. The BigFloat verifier compounds this by not enforcing the frozen event gate on arm
+extensions: two recorded successes carry absolute events of $1.15\times10^{-7}$ and
+$2.27\times10^{-7}$, an order of magnitude past the gate.
+
+\section{Completeness, in the bounded sense}
+
+Completeness is frozen, and bounded, and the bound is small. Searched as a two-dimensional region,
+the frozen neck raster covers $m_1\in[0.997,0.999]\times m_2\in[0.993,1.012]$ at step $10^{-4}$ with
+$4011$ samples, all $21$ lines separated and a minimum resolved unstable gap of $3.0\times10^{-4}$:
+$0.0253\%$ of the declared area. The only other completeness input is a twelve-proposal off-grid
+active-learning screen in one pocket, $m_1\in[0.80005,0.80276]\times m_2\in[0.75266,0.75407]$,
+$0.002539\%$ of the area, and its own artifact describes it as ``AI proposals plus float64 screening
+only; not scientific discovery evidence''. The two together are $0.0279\%$ of the declared domain.
+Everything else is probed on a measure-zero union of one-dimensional scan lines.
+
+So ``completeness'' here can honestly mean only this: no additional critical object was detected by
+a finite sign-change sampling at those resolutions. The scope registry records that even-order root
+pairs and tangencies are explicitly not excluded, and sub-resolution loops and curves lying between
+scan lines are not excluded either. Under this project's own invalidation rule the later full-domain
+sweep does not invalidate the frozen certificate --- neither certificate source changed bytes --- but
+neither does the certificate lend any support to completeness of the critical \emph{set}: the sweep
+reports gate-passing roots that match no committed edge, and components absent from the thirteen-edge
+graph. Whether the interior is clean is therefore recorded here as unresolved.
+
+\section{Reproducibility, and status}
+
+The upstream supplementary table is downloaded at run time and rejected unless its Git blob is
+exactly \texttt{79b2963df43e62201c35690bfc22bec166132427}. Python and Julia environments are pinned
+by lockfile and manifest. The release bit is not writable by hand: only the assembler may set
+\texttt{release\_ready}, the manuscript's generated sections are emitted from frozen claim records,
+and a release build refuses unless the status is \texttt{solved}. Re-running the assembler at HEAD
+reproduces the committed critical-graph artifact byte for byte and exits nonzero, which is the
+intended behaviour while the problem is open.
+
+Two of the assembler's fourteen release conjuncts are false at HEAD: no unclassified edge endpoints,
+and sign-topology coverage. The novelty freeze is separately pending. Accordingly
+\texttt{release\_ready} is \texttt{false}, the scientific status is OPEN, and this letter reports
+what is earned rather than a solution. No priority claim is made.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
