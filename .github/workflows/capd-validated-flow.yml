@@ -37,6 +37,22 @@ jobs:
             seed_file: experiments/mixed_vertex_secondary_lower_switch.tsv
           - label: principal-lower-right
             seed_file: experiments/mixed_vertex_principal_lower_right.tsv
+          # The three seeds above are mixed (4,4) vertices, i.e. exactly the points
+          # where the discriminant vanishes.  An interval enclosure of Delta there
+          # necessarily straddles zero, so the radical route cannot close: run
+          # 32146934943 failed on every mixed vertex with
+          #   "CAPD validated-flow failure: Interval error: sqrt(x): Interval x must be nonnegative."
+          # That is the geometry of a codimension-two vertex, not a CAPD defect, and
+          # it means the repository's only interval-arithmetic path was aimed solely
+          # at the three points where interval arithmetic provably cannot work.
+          # The two bracketed headline events sit at Delta != 0, where the enclosure
+          # has a chance.  validated/capd/validated_flow.cpp resolves columns by
+          # header name (req("m1") etc.), so the wider critical-curve seed layout
+          # is read correctly and the extra columns are ignored.
+          - label: headline-lower-plus-one
+            seed_file: experiments/critical_curve_lower_plus_one.tsv
+          - label: headline-upper-collision
+            seed_file: experiments/critical_curve_upper_collision.tsv
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Install CAPD build prerequisites
