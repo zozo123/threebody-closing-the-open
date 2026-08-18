@@ -1745,6 +1745,20 @@ def test_published_caveats_match_the_committed_evidence() -> None:
     unclassified = graph["root_coverage"]["unclassified_edge_endpoints"]
     # Two, not three: plus_one_sweep_component_12's start closed once its tip was
     # re-localized at BigFloat.  Tripwire intact for the remaining two.
+    #
+    # STILL TWO AFTER THE FOURTH STOP CLASS.  existence_boundary_terminus now
+    # exists (see threebody_atlas.existence_boundary), and it does not close these
+    # two -- not because the class is unreachable, but because the committed
+    # artifacts say the family is still there.  CI run 32146630216 has both walks
+    # failing about 2e-3 DOWNWARD in m2 of their seeds, at (0.891661, 0.751659)
+    # and (1.044088, 0.855789).  The full-domain audit, read per scan line rather
+    # than by the 0.820 failed-probe MEDIAN that the reach-limit prose quotes,
+    # closes eleven and twelve periodic orbits within 0.02 in m2 OUTWARD of both
+    # points, the nearest at m2 0.74744 and 0.85383.  Its own lower frontier on
+    # those lines sits at m2 ~ 0.730 and ~ 0.795, which is 0.022 and 0.061 further
+    # out.  So those two walks did not run out of family; they ran out of
+    # corrector, and the audit-corroboration condition refuses them.
+    # tests/test_existence_boundary.py pins those numbers.
     assert len(unclassified) == 2
     assert { (row["edge"], row["side"]) for row in unclassified } == {
         ("minus_one_sweep_component_0", "start"),
@@ -1753,6 +1767,12 @@ def test_published_caveats_match_the_committed_evidence() -> None:
     assert graph["unexplained_nodes"] == []
     assert not any(
         node.get("kind") == "interior_lattice_terminus" for node in graph["nodes"]
+    )
+    # And nothing has been quietly promoted into the new class either.  A node of
+    # this kind may only appear when a resolution artifact carries measurements
+    # that re-derive to a pass; the committed graph has none.
+    assert not any(
+        node.get("kind") == "existence_boundary_terminus" for node in graph["nodes"]
     )
     # sign_topology_clean is now TRUE, on independent evidence: a 35-scan-line
     # audit over m1 values the committed edge set was never fitted to, plus the
@@ -2047,3 +2067,390 @@ def test_endpoint_resolution_ignores_an_unresolved_terminus(tmp_path) -> None:
     assert edge["endpoints"]["start"].get("node") is None
     assert graph["root_coverage"]["endpoint_resolutions_applied"] == 0
     assert graph["root_coverage"]["classification_binding_errors"] == []
+
+
+# ---------------------------------------------------------------------------
+# The fourth continuation stop class: existence_boundary_terminus.
+#
+# The predicate itself is tested in tests/test_existence_boundary.py, which owns
+# the condition-by-condition refusals.  What is tested here is the INGESTION: the
+# assembler must accept a frontier a continuation actually measured, must name
+# the node itself rather than take the producer's word for it, and must refuse
+# every record whose own numbers do not earn the class -- a marginal residual, a
+# step-rescued failure, a frontier outside the region the committed audits say is
+# empty -- leaving those termini exactly as unresolved as they are today.
+#
+# The records below are FIXTURES, never evidence.  They carry synthetic probe
+# statistics under a real audit path, because the assembler additionally requires
+# that whatever is credited with corroborating a frontier be a file this
+# repository contains.
+# ---------------------------------------------------------------------------
+
+EXISTENCE_AUDIT_PATH = (
+    "research/evidence/V1_SIGN_TOPOLOGY_AUDIT_FULLDOMAIN_2026-08-18.json"
+)
+
+
+def _existence_boundary_module():
+    import importlib
+
+    return importlib.import_module("threebody_atlas.existence_boundary")
+
+
+def _existence_probe_line(m1: float, frontier_m2: float) -> list[dict]:
+    """A synthetic scan line: nothing closes below frontier_m2, everything above."""
+    probes = []
+    value = frontier_m2 - 0.0198
+    while value < frontier_m2 + 0.0198:
+        if value < frontier_m2:
+            probes.append(
+                {
+                    "m1": m1,
+                    "m2": value,
+                    "ok": False,
+                    "closure": 1.85,
+                    "note": "closure 1.850e+00 > 1e-07",
+                }
+            )
+        else:
+            probes.append({"m1": m1, "m2": value, "ok": True, "closure": 3.1e-12})
+        value += 0.0018
+    return probes
+
+
+def _existence_conditions(frontier, *, closure=1.85, rescued=False, audit_frontier=None):
+    """Measured conditions for a frontier at ``frontier`` = (m1, m2)."""
+    eb = _existence_boundary_module()
+    m1, m2 = float(frontier[0]), float(frontier[1])
+    audits = [
+        {
+            "path": EXISTENCE_AUDIT_PATH,
+            "schema": "atlas.v1.sign-topology-audit/1",
+            "probes": _existence_probe_line(
+                m1, m2 if audit_frontier is None else audit_frontier
+            ),
+        }
+    ]
+    corroboration = eb.corroboration_measurement(audits, m1, m2)
+    corroboration["outward_sign"] = -1
+    ladder = []
+    step = 2.5e-3
+    for index in range(8):
+        if rescued and index == 3:
+            ladder.append({"requested_step": step, "closed": True, "closure": 5e-12})
+            break
+        ladder.append(
+            {"requested_step": step, "closed": False, "error": "missed frozen gate"}
+        )
+        step *= 0.5
+    return {
+        "certified_departure": {
+            "accepted_points": 3,
+            "last_accepted_closure": 4.2e-11,
+            "last_accepted_event": 8.1e-9,
+            "last_accepted_masses": [m1, m2 + 0.0025, 1.0],
+        },
+        "inside_declared_domain": {"frontier_masses": [m1, m2]},
+        "outward_direction": {
+            "axis": "m2",
+            "outward_sign": -1,
+            "outward_travel": 3.5e-3,
+            "monotone_outward": True,
+            "walk_m2": [m2 + 0.006, m2 + 0.004, m2 + 0.0025],
+            "per_step_outward": [2.0e-3, 1.5e-3],
+            "tangent_m2": -0.981,
+        },
+        "divergence": {
+            "closure": closure,
+            "event": None,
+            "solver_success": False,
+            "distance_outward": 1.95e-5,
+            "note": "",
+        },
+        "step_refinement_invariance": {"ladder": ladder},
+        "precision_invariance": {
+            "tightened_float64": {
+                "available": True,
+                "closed": False,
+                "closure": 1.84,
+                "note": "",
+            },
+            "accelerated": {
+                "available": True,
+                "closed": False,
+                "closure": 1.86,
+                "iterations": 12,
+                "note": "no descent after 6 backtracks",
+            },
+        },
+        "outward_persistence": {
+            "probes": [
+                {"distance_outward": 2.5e-3, "closed": False, "closure": 1.9, "note": ""},
+                {"distance_outward": 5.0e-3, "closed": False, "closure": 2.1, "note": ""},
+            ]
+        },
+        "audit_corroboration": corroboration,
+    }
+
+
+def _existence_result(
+    component=7,
+    side="low",
+    *,
+    seed=(1.040, 1.100),
+    frontier=(1.0396, 1.0940),
+    final=(1.0397, 1.0965),
+    mechanism="plus_one",
+    **kwargs,
+):
+    """One resolver result reporting an existence-boundary terminus."""
+    eb = _existence_boundary_module()
+    conditions = _existence_conditions(frontier, **kwargs)
+    verdict = eb.evaluate(conditions)
+    return {
+        "source_component": component,
+        "outward_side": side,
+        "scientific_endpoint_resolved": bool(verdict["awarded"]),
+        "stopped_reason": (
+            "existence_boundary_reached"
+            if verdict["awarded"]
+            else "continuation_failure_not_a_scientific_terminus"
+        ),
+        "seed_masses": [float(seed[0]), float(seed[1])],
+        "final_masses": [float(final[0]), float(final[1])],
+        "terminal": {
+            "kind": eb.TERMINUS_KIND,
+            "event_mode": mechanism,
+            "frontier_masses": [float(frontier[0]), float(frontier[1])],
+            "final_masses": [float(final[0]), float(final[1])],
+            "miss_mass": math.dist(list(final)[:2], list(frontier)[:2]),
+            "outward_axis": "m2",
+            "outward_sign": -1,
+            "frontier_closure": conditions["divergence"]["closure"],
+        },
+        "existence_boundary": verdict,
+    }
+
+
+def _existence_graph(tmp_path, result):
+    roots = _sweep_roots(tmp_path)
+    resolution = _resolution(tmp_path, "existence.json", [result])
+    return _run_assembler(
+        tmp_path,
+        [
+            "--roots",
+            str(roots),
+            "--supplemental-roots",
+            str(roots),
+            "--endpoint-resolution",
+            str(resolution),
+        ],
+    )
+
+
+def test_existence_boundary_terminus_binds_and_the_assembler_names_the_node(
+    tmp_path,
+) -> None:
+    """A measured frontier is a terminus, and the graph gets a node for it.
+
+    The producer never names it: the id is derived here from the grid cell the
+    frontier sits in and the mechanism of the curve, so two curves that run out of
+    family in different places cannot be lumped onto one node -- the same
+    discipline domain_exit_node_id enforces for the declared faces.
+    """
+    result = _existence_result()
+    assert result["existence_boundary"]["awarded"] is True
+    graph = _existence_graph(tmp_path, result)
+    edge = next(e for e in graph["edges"] if e["orientation"] == "sweep_component_7")
+    start = edge["endpoints"]["start"]
+    assert start["attachment"] == "continuation_resolved_terminus"
+    assert start["terminal_kind"] == "existence_boundary_terminus"
+    assert start["node"] == "existence_boundary_plus_one_m1_1p040_m2_1p094"
+    assert graph["root_coverage"]["endpoint_resolutions_applied"] == 1
+    assert graph["root_coverage"]["classification_binding_errors"] == []
+    node = next(item for item in graph["nodes"] if item["id"] == start["node"])
+    assert node["kind"] == "existence_boundary_terminus"
+    assert node["status"] == "measured_family_existence_boundary"
+    assert node["evidence_level"] == "continuation"
+    assert node["passed"] is True
+    assert node["masses"] is None
+    assert node["frontier_coordinate"] == {"m1": 1.04, "m2": 1.094}
+    assert node["observed_frontiers"][0]["edge"] == "plus_one_sweep_component_7"
+    # A frontier node is not an organizer, so it must not acquire germ
+    # obligations of its own.  (The three headline organizers owe theirs in this
+    # fixture graph because no --germs were supplied; what matters here is that
+    # the new node is not among the debtors.)
+    assert not any(
+        item.startswith(start["node"])
+        for item in graph["root_coverage"]["missing_mixed_germs"]
+    )
+    assert start["node"] not in graph["unexplained_nodes"]
+
+
+def test_existence_boundary_refuses_a_marginal_residual(tmp_path) -> None:
+    """A residual at 3e-7 is a corrector miss; the terminus stays unresolved."""
+    result = _existence_result(closure=3e-7)
+    assert result["existence_boundary"]["awarded"] is False
+    # A producer that reported it anyway must still be refused, which is the case
+    # the assembler is actually defending against.
+    result["scientific_endpoint_resolved"] = True
+    result["stopped_reason"] = "existence_boundary_reached"
+    graph = _existence_graph(tmp_path, result)
+    edge = next(e for e in graph["edges"] if e["orientation"] == "sweep_component_7")
+    assert edge["endpoints"]["start"].get("node") is None
+    assert graph["root_coverage"]["endpoint_resolutions_applied"] == 0
+    errors = graph["root_coverage"]["classification_binding_errors"]
+    assert any("marginal corrector miss" in item for item in errors)
+    assert not any(
+        item["kind"] == "existence_boundary_terminus" for item in graph["nodes"]
+    )
+
+
+def test_existence_boundary_refuses_a_step_rescued_failure(tmp_path) -> None:
+    """A shorter step that closed means step control, not the family, stopped it."""
+    result = _existence_result(rescued=True)
+    result["scientific_endpoint_resolved"] = True
+    result["stopped_reason"] = "existence_boundary_reached"
+    graph = _existence_graph(tmp_path, result)
+    edge = next(e for e in graph["edges"] if e["orientation"] == "sweep_component_7")
+    assert edge["endpoints"]["start"].get("node") is None
+    assert graph["root_coverage"]["endpoint_resolutions_applied"] == 0
+    errors = graph["root_coverage"]["classification_binding_errors"]
+    assert any("step control, not existence" in item for item in errors)
+
+
+def test_existence_boundary_refuses_a_frontier_the_audits_contradict(tmp_path) -> None:
+    """The out-of-region case, which is what the two real blockers look like.
+
+    The audit line here closes orbits from 0.0198 below the claimed frontier
+    upward, so the region the walk was heading into demonstrably contains
+    periodic orbits.
+    """
+    result = _existence_result(audit_frontier=1.0700)
+    assert result["existence_boundary"]["awarded"] is False
+    result["scientific_endpoint_resolved"] = True
+    result["stopped_reason"] = "existence_boundary_reached"
+    graph = _existence_graph(tmp_path, result)
+    edge = next(e for e in graph["edges"] if e["orientation"] == "sweep_component_7")
+    assert edge["endpoints"]["start"].get("node") is None
+    assert graph["root_coverage"]["endpoint_resolutions_applied"] == 0
+    errors = graph["root_coverage"]["classification_binding_errors"]
+    assert any("CLOSED a periodic orbit" in item for item in errors)
+
+
+def test_existence_boundary_refuses_a_hand_edited_verdict(tmp_path) -> None:
+    """The assembler re-derives; it never binds on the producer's own boolean."""
+    result = _existence_result(closure=3e-7)
+    verdict = result["existence_boundary"]
+    verdict["awarded"] = True
+    verdict["refused_conditions"] = []
+    verdict["refusal_reason"] = ""
+    verdict["conditions"]["divergence"]["passed"] = True
+    result["scientific_endpoint_resolved"] = True
+    graph = _existence_graph(tmp_path, result)
+    edge = next(e for e in graph["edges"] if e["orientation"] == "sweep_component_7")
+    assert edge["endpoints"]["start"].get("node") is None
+    errors = graph["root_coverage"]["classification_binding_errors"]
+    assert any("marginal corrector miss" in item for item in errors)
+
+
+def test_existence_boundary_refuses_a_corroborating_audit_outside_the_repository(
+    tmp_path,
+) -> None:
+    """A frontier cannot be corroborated by a temp path nobody can re-read."""
+    result = _existence_result()
+    sides = result["existence_boundary"]["conditions"]["audit_corroboration"][
+        "measured"
+    ]["sides"]
+    for side in sides.values():
+        side["corroborating_audits"] = [
+            "artifacts/st/probes.json" for _item in side["corroborating_audits"]
+        ]
+        for entry in side["audits"]:
+            entry["path"] = "artifacts/st/probes.json"
+    graph = _existence_graph(tmp_path, result)
+    edge = next(e for e in graph["edges"] if e["orientation"] == "sweep_component_7")
+    assert edge["endpoints"]["start"].get("node") is None
+    errors = graph["root_coverage"]["classification_binding_errors"]
+    assert any("not in the repository" in item for item in errors)
+
+
+def test_existence_boundary_refuses_a_terminal_that_moved_the_frontier(tmp_path) -> None:
+    """The two halves of the record must describe the same point."""
+    result = _existence_result()
+    result["terminal"]["frontier_masses"] = [1.0396, 1.0900]
+    result["terminal"]["miss_mass"] = math.dist(
+        result["terminal"]["final_masses"], result["terminal"]["frontier_masses"]
+    )
+    graph = _existence_graph(tmp_path, result)
+    edge = next(e for e in graph["edges"] if e["orientation"] == "sweep_component_7")
+    assert edge["endpoints"]["start"].get("node") is None
+    errors = graph["root_coverage"]["classification_binding_errors"]
+    assert any("describe different points" in item for item in errors)
+
+
+def test_existence_boundary_refuses_a_frontier_on_a_declared_face(tmp_path) -> None:
+    """A domain exit is a different, better-established class."""
+    result = _existence_result(
+        seed=(1.040, 1.100), frontier=(1.0396, 1.19995), final=(1.0397, 1.1975)
+    )
+    result["scientific_endpoint_resolved"] = True
+    result["stopped_reason"] = "existence_boundary_reached"
+    graph = _existence_graph(tmp_path, result)
+    edge = next(e for e in graph["edges"] if e["orientation"] == "sweep_component_7")
+    assert edge["endpoints"]["start"].get("node") is None
+    errors = graph["root_coverage"]["classification_binding_errors"]
+    assert any("declared domain exit" in item for item in errors)
+
+
+def test_existence_boundary_refuses_a_mechanism_that_is_not_the_edges(tmp_path) -> None:
+    """The node is named after a mechanism, so it must be the edge's mechanism."""
+    result = _existence_result(mechanism="minus_one")
+    graph = _existence_graph(tmp_path, result)
+    edge = next(e for e in graph["edges"] if e["orientation"] == "sweep_component_7")
+    assert edge["endpoints"]["start"].get("node") is None
+    errors = graph["root_coverage"]["classification_binding_errors"]
+    assert any("while plus_one_sweep_component_7 is" in item for item in errors)
+
+
+def test_existence_boundary_refuses_a_walk_that_started_elsewhere(tmp_path) -> None:
+    """The both-ends walk check applies to a frontier exactly as to an organizer."""
+    result = _existence_result(seed=(1.060, 1.100))
+    graph = _existence_graph(tmp_path, result)
+    edge = next(e for e in graph["edges"] if e["orientation"] == "sweep_component_7")
+    assert edge["endpoints"]["start"].get("node") is None
+    errors = graph["root_coverage"]["classification_binding_errors"]
+    assert any("did not walk from here" in item for item in errors)
+
+
+def test_existence_boundary_refuses_a_walk_that_stopped_far_from_its_frontier(
+    tmp_path,
+) -> None:
+    result = _existence_result(final=(1.0397, 1.1100))
+    graph = _existence_graph(tmp_path, result)
+    edge = next(e for e in graph["edges"] if e["orientation"] == "sweep_component_7")
+    assert edge["endpoints"]["start"].get("node") is None
+    errors = graph["root_coverage"]["classification_binding_errors"]
+    assert any("organizer-attachment reach" in item for item in errors)
+
+
+def test_an_unresolved_existence_probe_stays_silently_unresolved(tmp_path) -> None:
+    """The refusal path a real run takes: recorded, blocking, and not an error.
+
+    A resolver run that measured the conditions and refused reports
+    scientific_endpoint_resolved=false, and the assembler must leave that terminus
+    unclassified without inventing a binding error -- exactly what happens today
+    for the two endpoints that block the release.
+    """
+    result = _existence_result(closure=3e-7)
+    assert result["scientific_endpoint_resolved"] is False
+    graph = _existence_graph(tmp_path, result)
+    edge = next(e for e in graph["edges"] if e["orientation"] == "sweep_component_7")
+    assert edge["endpoints"]["start"].get("node") is None
+    assert graph["root_coverage"]["endpoint_resolutions_applied"] == 0
+    assert graph["root_coverage"]["classification_binding_errors"] == []
+    unclassified = {
+        (row["edge"], row["side"])
+        for row in graph["root_coverage"]["unclassified_edge_endpoints"]
+    }
+    assert ("plus_one_sweep_component_7", "start") in unclassified
