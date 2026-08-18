@@ -20,12 +20,16 @@ from typing import Any
 
 
 try:  # pragma: no cover - exercised implicitly by both install layouts
+    from threebody_atlas import existence_boundary
     from threebody_atlas.completeness import verification_report
     from threebody_atlas.conditioning import summarize_conditioning
 except ModuleNotFoundError:  # running from a source checkout without an install
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+    from threebody_atlas import existence_boundary
     from threebody_atlas.completeness import verification_report
     from threebody_atlas.conditioning import summarize_conditioning
+
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_HEADLINE_IDS = (
     "mixed_principal_left",
@@ -1149,6 +1153,139 @@ def catalog_coincidence_node(
         )
     return unique[0], ""
 
+
+def audit_inside_repository(item: str) -> bool:
+    """Is this recorded audit path a file the repository itself contains?
+
+    The concern is the one the release configuration already names: an audit whose
+    input is a temp path (artifacts/st/roots.json) cannot be re-derived by anyone
+    reading the repository, so it cannot be the evidence for a claim.  An absolute
+    path that happens to exist on the machine that ran the producer is the same
+    problem wearing shoes, so containment is checked, not just existence.
+    """
+    candidate = Path(item)
+    resolved = (
+        candidate if candidate.is_absolute() else REPOSITORY_ROOT / candidate
+    ).resolve()
+    try:
+        resolved.relative_to(REPOSITORY_ROOT.resolve())
+    except ValueError:
+        return False
+    return resolved.is_file()
+
+
+def existence_boundary_node_id(masses: list[Any], mechanism: str) -> str:
+    """Name an existence-boundary terminus by its mechanism AND its grid cell.
+
+    Same discipline as domain_exit_node_id, for the same reason: two curves that
+    both run out of family at different places are two different termini, and
+    collapsing them onto one bare "the family ends" node would manufacture
+    incidence between curves that never meet.  The frontier coordinates are
+    snapped to the sampling grid, the finest distinction the data supports, and
+    the mechanism is included so a plus_one and a minus_one curve reaching the
+    same frontier cell stay distinct -- the conservative choice, since merging
+    them would be an unearned topological claim.
+    """
+    return (
+        f"existence_boundary_{mechanism}_m1_{grid_label(float(masses[0]))}"
+        f"_m2_{grid_label(float(masses[1]))}"
+    )
+
+
+def existence_boundary_terminus(
+    terminal: dict[str, Any], result: dict[str, Any], evidence: str
+) -> tuple[str, dict[str, Any] | None, str]:
+    """Re-derive an existence-boundary terminus, and name the node it binds to.
+
+    Returns ``(node_id, node_payload, reason)``: the payload is a node this graph
+    does not have yet and must create, exactly as the declared-domain fallback
+    creates a face node for an exit it recognises.  ``("", None, reason)`` means
+    refused, and the terminus keeps blocking.
+
+    Fail-closed, and specifically NOT on the producer's word.  The resolver's own
+    ``awarded`` flag is ignored: ``existence_boundary.recheck`` replays every
+    condition against the library's constants using the numbers the artifact
+    records, so a hand-edited verdict, a missing condition, a relaxed threshold,
+    or a producer that recorded ``passed`` next to failing numbers are all
+    objections here.  On top of that the two halves of the artifact must agree --
+    the terminal's frontier masses must be the point the conditions were measured
+    at -- and every audit credited with corroborating must be a file this
+    repository actually contains, so a frontier cannot be corroborated by a
+    temp-path artifact nobody can re-read.
+    """
+    record = result.get("existence_boundary")
+    objections = existence_boundary.recheck(record)
+    if objections:
+        return "", None, "; ".join(objections)
+    masses = terminal.get("frontier_masses") or []
+    if len(masses) < 2:
+        return "", None, "the terminal records no frontier_masses"
+    try:
+        point = [float(masses[0]), float(masses[1])]
+    except (TypeError, ValueError):
+        return "", None, f"the terminal's frontier_masses {masses!r} are not numbers"
+    if not all(math.isfinite(value) for value in point):
+        return "", None, f"the terminal's frontier_masses {masses!r} are not finite"
+    conditions = record["conditions"]
+    measured_at = (
+        (conditions.get("inside_declared_domain") or {}).get("measured") or {}
+    ).get("frontier_masses") or []
+    if len(measured_at) < 2 or math.dist(point, [float(v) for v in measured_at[:2]]) > 0.0:
+        return "", None, (
+            f"the terminal claims a frontier at {point} but the conditions were "
+            f"measured at {list(measured_at)[:2]}; the two halves of the record "
+            "describe different points"
+        )
+    hit = domain_face_hit(point)
+    if hit is not None:
+        return "", None, (
+            f"the frontier at {point} sits {hit['distance_to_face']:.3e} from "
+            f"{hit['face']}, inside the {DOMAIN_TOLERANCE} domain tolerance; that "
+            "terminus is a declared domain exit, which is a different class"
+        )
+    corroborating: list[str] = []
+    for side in ((conditions.get("audit_corroboration") or {}).get("measured") or {}).get(
+        "sides", {}
+    ).values():
+        if isinstance(side, dict):
+            corroborating.extend(str(item) for item in (side.get("corroborating_audits") or []))
+    absent = [
+        item for item in sorted(set(corroborating)) if not audit_inside_repository(item)
+    ]
+    if absent:
+        return "", None, (
+            f"the audits credited with corroborating this frontier are not in the "
+            f"repository: {absent}"
+        )
+    mechanism = str(terminal.get("event_mode") or "")
+    if not mechanism:
+        return "", None, "the terminal records no event_mode to name the node by"
+    node_id = existence_boundary_node_id(point, mechanism)
+    payload = node(
+        node_id,
+        "existence_boundary_terminus",
+        status="measured_family_existence_boundary",
+        masses=None,
+        mechanism=mechanism,
+        passed=True,
+        # A continuation measured this, corroborated by committed audits.  It is
+        # not a definition (the declared box is), and not an independent
+        # reproduction (one campaign measured it).
+        evidence_level="continuation",
+        evidence=evidence,
+        frontier_coordinate={
+            "m1": snap_to_grid(point[0]),
+            "m2": snap_to_grid(point[1]),
+        },
+        outward_axis=str(terminal.get("outward_axis") or ""),
+        outward_sign=terminal.get("outward_sign"),
+        frontier_closure=terminal.get("frontier_closure"),
+        conditions_rechecked=list(existence_boundary.CONDITION_ORDER),
+        observed_frontiers=[],
+    )
+    return node_id, payload, ""
+
+
 def endpoint_resolution_bindings(
     paths: list[Path],
     edges: list[dict[str, Any]],
@@ -1228,6 +1365,26 @@ def endpoint_resolution_bindings(
                 continue
             terminal = result.get("terminal") or {}
             node_id = str(terminal.get("node_id") or "")
+            # A node this graph must CREATE if -- and only if -- the binding below
+            # survives every remaining check.  Nothing is appended to ``nodes``
+            # while any check can still refuse, so a rejected resolution cannot
+            # leave a passed node behind for something else to attach to.
+            pending_node: dict[str, Any] | None = None
+            if not node_id and str(terminal.get("kind")) == existence_boundary.TERMINUS_KIND:
+                # The walk ran out of periodic family rather than out of
+                # corrector.  The producer does NOT get to name the node: the
+                # terminus is named here, from the frontier it measured, after
+                # every fail-closed condition is re-derived from the artifact's
+                # own numbers.
+                node_id, pending_node, why = existence_boundary_terminus(
+                    terminal, result, str(path)
+                )
+                if not node_id:
+                    errors.append(
+                        f"{path.name}: component {component} {side_word} reported an "
+                        f"existence boundary but {why}"
+                    )
+                    continue
             if not node_id and str(terminal.get("kind")) == "existing_catalog_critical_curve":
                 # The walk ran into an already-committed catalog cell.  If it
                 # COINCIDES with that cell -- same point, tangents aligned -- the
@@ -1246,9 +1403,25 @@ def endpoint_resolution_bindings(
             if not node_id:
                 errors.append(f"{path.name}: component {component} resolved with no terminal node_id")
                 continue
-            if node_id not in known_nodes:
+            if node_id not in known_nodes and pending_node is None:
                 errors.append(f"{path.name}: terminal node {node_id!r} is not a node of this graph")
                 continue
+            if pending_node is not None and node_id in known_nodes:
+                # Two termini may legitimately land in the same frontier grid cell
+                # with the same mechanism, in which case the node already exists
+                # and this one joins it.  A collision with a node of any OTHER kind
+                # is a name clash, and binding through it would attach a curve to
+                # something unrelated.
+                existing = next(
+                    (item for item in nodes if str(item.get("id")) == node_id), None
+                )
+                if (existing or {}).get("kind") != "existence_boundary_terminus":
+                    errors.append(
+                        f"{path.name}: existence-boundary node {node_id!r} collides "
+                        f"with an existing {(existing or {}).get('kind')!r} node"
+                    )
+                    continue
+                pending_node = None
             side = {"low": "start", "high": "end"}.get(side_word)
             if side is None:
                 errors.append(f"{path.name}: outward_side must be low or high, got {side_word!r}")
@@ -1263,6 +1436,19 @@ def endpoint_resolution_bindings(
             if len(matches) != 1:
                 errors.append(
                     f"{path.name}: component {component} matched {len(matches)} edges"
+                )
+                continue
+            if pending_node is not None and str(pending_node.get("mechanism")) != str(
+                matches[0].get("mechanism")
+            ):
+                # The frontier node is named from the mechanism the RESOLVER
+                # recorded; the edge carries the mechanism the ROOTS recorded.  If
+                # they disagree, the artifact is describing a different curve than
+                # the one being bound, and the node name would be wrong too.
+                errors.append(
+                    f"{path.name}: component {component} {side_word} reports "
+                    f"mechanism {pending_node.get('mechanism')!r} while "
+                    f"{matches[0]['id']} is {matches[0].get('mechanism')!r}"
                 )
                 continue
             endpoint = matches[0]["endpoints"][side]
@@ -1290,6 +1476,12 @@ def endpoint_resolution_bindings(
             organizer = terminal.get("organizer_masses")
             if not organizer and str(terminal.get("kind")) == "existing_catalog_critical_curve":
                 organizer = catalog_cell_masses(terminal.get("cell_id"), roots)
+            if not organizer and str(terminal.get("kind")) == existence_boundary.TERMINUS_KIND:
+                # For a frontier the target is the frontier itself -- the probed
+                # point where no orbit closes -- so the same both-ends check
+                # applies unchanged: the walk must start at this terminus and stop
+                # within organizer reach of the point it claims to have reached.
+                organizer = terminal.get("frontier_masses")
             if not organizer or not here:
                 errors.append(
                     f"{path.name}: component {component} {side_word} cannot be "
@@ -1352,6 +1544,26 @@ def endpoint_resolution_bindings(
                     f"{endpoint['node']}"
                 )
                 continue
+            if pending_node is not None:
+                # Every check has passed, so the frontier this walk measured is a
+                # node of the graph now.  Created here and nowhere earlier, so a
+                # refusal above leaves no trace.
+                nodes.append(pending_node)
+                known_nodes.add(node_id)
+            existing = next((item for item in nodes if str(item.get("id")) == node_id), None)
+            if existing is not None and existing.get("kind") == "existence_boundary_terminus":
+                # Same bookkeeping the declared-domain nodes carry: which edge ends
+                # ran out of family here, so two termini sharing a frontier cell
+                # stay individually readable.
+                existing.setdefault("observed_frontiers", []).append(
+                    {
+                        "edge": matches[0]["id"],
+                        "side": side,
+                        "frontier_masses": [float(v) for v in list(organizer)[:2]],
+                        "frontier_closure": terminal.get("frontier_closure"),
+                        "evidence": str(path),
+                    }
+                )
             endpoint["node"] = node_id
             endpoint["attachment"] = "continuation_resolved_terminus"
             endpoint["terminal_kind"] = str(terminal.get("kind") or "")

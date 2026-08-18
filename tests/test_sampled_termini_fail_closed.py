@@ -67,3 +67,41 @@ def test_sampled_terminus_attachment_name_is_never_release_evidence() -> None:
             "release_ready=true with sampled-lattice endpoint attachments: "
             + ", ".join(bad)
         )
+
+
+def test_an_existence_boundary_node_must_carry_its_measured_frontier() -> None:
+    """The fourth stop class may not become the third way to fake a terminus.
+
+    ``existence_boundary_terminus`` is the one node kind the assembler CREATES
+    while ingesting a resolution, so it is the one most easily faked by editing
+    the committed graph: a node with the right name and no numbers behind it would
+    read exactly like an earned one.  Anything of that kind must therefore name
+    the artifact it came from, carry the grid cell of the frontier that was
+    measured, and be reachable from an edge endpoint that says how it bound.
+
+    The committed graph has none, and that is the current truth: the two
+    unclassified minus_one termini sit where the full-domain audit still closes
+    periodic orbits, so the class refuses them.
+    """
+    graph = json.loads(GRAPH.read_text(encoding="utf-8"))
+    frontier_nodes = [
+        node
+        for node in graph.get("nodes", [])
+        if node.get("kind") == "existence_boundary_terminus"
+    ]
+    bound = {
+        endpoint.get("node")
+        for edge in graph.get("edges", [])
+        for endpoint in (edge.get("endpoints") or {}).values()
+        if isinstance(endpoint, dict)
+        and endpoint.get("terminal_kind") == "existence_boundary_terminus"
+    }
+    for node in frontier_nodes:
+        assert node.get("evidence"), f"{node.get('id')} names no resolution artifact"
+        assert node.get("frontier_coordinate"), f"{node.get('id')} records no frontier"
+        assert node.get("evidence_level") == "continuation", node.get("id")
+        assert node.get("observed_frontiers"), f"{node.get('id')} lists no edge ends"
+        assert node.get("id") in bound, (
+            f"{node.get('id')} is not bound by any edge endpoint that reports "
+            "terminal_kind=existence_boundary_terminus"
+        )
