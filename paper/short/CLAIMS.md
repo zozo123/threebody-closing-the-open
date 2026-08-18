@@ -46,9 +46,7 @@ is OPEN.
 
 ## Known prose drift elsewhere in the repository
 
-`README.md`, `research/README.md:28` and `paper/main.tex` say **three** unclassified sweep ends;
-`research/evidence/V1_CLAIM_ASSURANCE_MATRIX.json` and the graph's own incidence say **two**
-(24 of 26 endpoints attached). This letter says two. The same files carry the sentence "the
-plus_one component-12 high end is bound to `mixed_principal_right` by a certified variational
-step", which the graph's `attachment` field does not record as certified; this letter does not
-reproduce that claim.
+`paper/main.tex` and `research/README.md` are kept aligned with this letter: two unclassified
+ends, $24$ of $26$ endpoints attached, `plus_one_sweep_component_12` bound at both ends.
+The graph attachment field for those ends is `continuation_germ`, not a certified
+classification artifact; this letter still does not call that attachment certified.
