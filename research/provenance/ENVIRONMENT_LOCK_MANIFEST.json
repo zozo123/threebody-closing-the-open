@@ -10,7 +10,7 @@
   },
   "github_actions": {
     "all_external_refs_immutable": true,
-    "count": 323,
+    "count": 327,
     "steps": [
       {
         "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
@@ -1118,6 +1118,42 @@
         "repository": "actions/upload-artifact",
         "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
         "workflow": ".github/workflows/jax-diffrax-audit.yml"
+      },
+      {
+        "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "immutable": true,
+        "line": 38,
+        "local": false,
+        "repository": "actions/checkout",
+        "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "workflow": ".github/workflows/julia-arm-chain-verifier.yml"
+      },
+      {
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
+        "immutable": true,
+        "line": 39,
+        "local": false,
+        "repository": "julia-actions/setup-julia",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
+        "workflow": ".github/workflows/julia-arm-chain-verifier.yml"
+      },
+      {
+        "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "immutable": true,
+        "line": 42,
+        "local": false,
+        "repository": "julia-actions/cache",
+        "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
+        "workflow": ".github/workflows/julia-arm-chain-verifier.yml"
+      },
+      {
+        "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "immutable": true,
+        "line": 54,
+        "local": false,
+        "repository": "actions/upload-artifact",
+        "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "workflow": ".github/workflows/julia-arm-chain-verifier.yml"
       },
       {
         "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
@@ -2949,9 +2985,9 @@
       "sha256": "85145b9e1b5c1034c80efa17ecd07eb679e523a572b9216b97a36b94bc474284"
     }
   ],
-  "manifest_sha256": "4687cf0784721aedce91f1febcff09f47f97094b26d9dd07818d079a6900464b",
+  "manifest_sha256": "79b7ecbdfc301a6aae9aa1887a061faa23903220bd9381a4983b9a4332924abc",
   "runner_selectors": {
-    "ubuntu-latest": 108
+    "ubuntu-latest": 109
   },
   "runtimes": {
     "julia_adversarial_latest": {

@@ -1,0 +1,60 @@
+name: Julia arm-chain BigFloat verifier
+
+# Chained certification down component 0's arm toward the m2 = 0.700 domain face.
+#
+# The first attempt seeded each rung from the AUDIT's float64 chart (closure
+# ~1e-9) and both seeds nearer the face failed with "shooting produced
+# non-positive period", while the rung further from it certified.  These seeds
+# instead carry the BigFloat-certified chart from arm0_m1_0p8875 (|event|
+# 2.20e-09, closure 1.76e-26) -- a chart 17 orders of magnitude better
+# conditioned as a shooting start.  Whether that is enough is the experiment.
+#
+# Binding requires a root with m2 <= 0.7015 (DOMAIN_TOLERANCE of the 0.700 face);
+# the best certified root so far sits at m2 = 0.7340, 23x too far.
+#
+# Each seed carries its locating bracket (columns 11-12), so the membership guard
+# in julia/verify_critical_points.jl applies.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dps:
+        description: "BigFloat decimal precision"
+        required: true
+        default: "60"
+
+permissions:
+  contents: read
+
+jobs:
+  chain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      matrix:
+        seed: [chain0_m1_0p8850, chain0_m1_0p8825]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
+        with:
+          version: "1.11.9"
+      - uses: julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8 # v3.3.0
+      - run: julia --project=julia -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+      - name: Certify ${{ matrix.seed }} from the BigFloat chart
+        env:
+          DPS: ${{ inputs.dps || '60' }}
+          SEED: ${{ matrix.seed }}
+        run: |
+          mkdir -p artifacts
+          julia --project=julia julia/verify_critical_points.jl \
+            "experiments/arm_seeds/${SEED}.tsv" \
+            "artifacts/chain-${SEED}.json" \
+            "$DPS" 25 18 8 5 4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: chain-${{ matrix.seed }}-${{ github.sha }}
+          path: artifacts/chain-${{ matrix.seed }}.json
+          if-no-files-found: warn
+          retention-days: 90
