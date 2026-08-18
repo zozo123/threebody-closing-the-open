@@ -37,11 +37,15 @@ ladder, one rung below the two bracketed events.
 
 \textbf{Not earned.}
 The connected critical graph is unfinished.
-All $620$ published S/U cells are now localized once and assigned to seven
-catalog polylines plus six certified label-invisible event-sign polylines,
-but three finite-lattice sweep ends remain unclassified, the collision curve
-is still its own component, and the catalogue is not the complete critical
-set.
+All $620$ published S/U cells are localized once and assigned to seven catalog
+polylines plus six label-invisible event-sign polylines ($24$ of $26$
+endpoints attached).
+Exactly two finite-lattice ends remain unclassified:
+$(0.892,0.7530796376143668)$ on $\texttt{minus\_one\_sweep\_component\_0}$
+and $(1.042,0.8579752021443232)$ on $\texttt{minus\_one\_sweep\_component\_1}$.
+The collision curve is still its own component.
+Sign-topology coverage is withdrawn: the densest full-domain audit leaves
+unmeasured $m_2$ gaps, so silence is not cleanliness.
 Completeness is frozen only in the bounded sense quantified below.
 Scientific status remains OPEN.
 This is not a solution of the general three-body problem, and ``stable'' here
@@ -231,34 +235,38 @@ number quoted here drifts from it.
 Continuation-connectedness of the family sheet (Gate~C) and connectedness of
 the critical graph are different statements, and the second does not follow from
 the first.  In the committed
-\texttt{research/evidence/V1\_CRITICAL\_GRAPH.json}, six certified
-label-invisible event-sign polylines sit beside the seven catalog edges, and
-three finite-lattice sweep ends are left unclassified rather than promoted to
-scientific termini, and the plus-one component-12 high end is bound to
-mixed-principal-right by a certified variational step.  Classified incident nodes therefore split into two
-components --- the collision curve
-$\{$domain-$m_1$-min-$m_2$-$0.761$, domain-$m_2$-max-$m_1$-$1.053\}$ and
-the remaining organizers and domain exits --- while
-\texttt{plus\_one\_sweep\_component\_12} currently contributes no incident
-node and three further declared nodes carry no edge at all.
-Attachment of an edge end to an organizer is also threshold-dependent, and the
-threshold does double duty: \texttt{GERM\_ATTACH\_DISTANCE}$=0.008$ caps both
-how far a germ may sit from its organizer and how far an edge end may sit from
-that germ, so the effective organizer-to-endpoint reach is $0.016$.
-Auditing the release configuration shows the present twelve-attachment assembly
-keeps every attachment it has only on the half-open window
-$[0.006837,0.008317)$, $1.216\times$ wide: the largest accepted attachment is
-$0.006837449$ and the nearest rejected mode-matching candidate is $0.008316625$
-(\texttt{plus\_one\_sweep\_component\_12} end against mixed-principal-right).
-Raising the threshold to that distance would attach that still-unclassified
-sweep end; it is not already bound by a classification artifact.
-One germ trace was tuned to reach an endpoint: the secondary-left germs used
-\texttt{--step}~$0.003$ rather than the $7.5\times10^{-4}$ default so the
-$-1$ germ would carry far enough to bring cell $392$'s endpoint
-($8.59\times10^{-3}$ from the organizer) inside the radius.  It did not also
-sweep up the blocked endpoint --- \texttt{minus\_one\_s\_to\_u\_0}'s start is
-$2.81\times10^{-2}$ from the organizer, past even the composed $0.016$ reach ---
-which is what keeps that disclosure honest rather than convenient.
+\texttt{research/evidence/V1\_CRITICAL\_GRAPH.json} there are $13$ edges
+(seven catalog plus six event-sign sweep polylines) and $14$ nodes.
+Of $26$ edge ends, $24$ are attached.
+The two that are not sit at
+$(0.892,0.7530796376143668)$
+(\texttt{minus\_one\_sweep\_component\_0} start) and
+$(1.042,0.8579752021443232)$
+(\texttt{minus\_one\_sweep\_component\_1} end).
+Those two are BigFloat-verified roots that float64 cannot re-certify;
+outward continuation past them returns $\mathrm{event}=\infty$.
+They are not scientific termini.
+\texttt{plus\_one\_sweep\_component\_12} is now bound at both ends
+(\texttt{secondary\_right\_death} and \texttt{mixed\_principal\_right})
+after its low tip was re-localized at $60$ digits.
+Classified incident nodes split into two components --- the collision curve
+$\{\texttt{domain\_m1\_min\_m2\_0p761},\texttt{domain\_m2\_max\_m1\_1p053}\}$
+and the remaining organizers and domain exits --- and three further declared
+nodes (both headline event representatives and the daughter) carry no edge.
+\texttt{GERM\_ATTACH\_DISTANCE}$=0.008$ still does double duty, so the
+effective organizer-to-endpoint reach is $0.016$.
+The release configuration now keeps its twelve germ attachments only on the
+half-open window $[0.007026,0.008251)$, $1.174\times$ wide: the largest
+accepted attachment is $0.007236997$
+(\texttt{plus\_one\_sweep\_component\_12} end against mixed-principal-right)
+and the nearest rejected mode-matching candidate is $0.008250801$
+(the same edge's start against a second germ of
+\texttt{secondary\_right\_death}, the organizer that start is already bound
+to).  Re-derive with \texttt{scripts/audit\_germ\_attachment\_window.py}.
+The secondary-left germs were still traced at \texttt{--step}~$0.003$ so
+cell~$392$ would attach; they still do not reach
+\texttt{minus\_one\_s\_to\_u\_0}'s start, $2.81\times10^{-2}$ from that
+organizer.
 \section{The event gate has almost no margin, and less resolution than margin}
 \label{sec:margin}
 
@@ -338,14 +346,18 @@ without its conditioning is not a measurement.
 \section{What remains, and why the status is OPEN}
 
 \begin{enumerate}
-\item Replace the three remaining unclassified finite-lattice sweep ends with
-continuous physical witnesses (domain face, mixed organizer, verified fold, or
-closed loop).  A sampled raster end is not a terminus.
-\item Ingest the remaining 2026-08-17 sweep components that are still absent
-from the 13-edge graph, then re-run the sign-topology suites against that
-graph.
+\item Replace the two remaining unclassified lattice ends ---
+$(0.892,0.7530796376143668)$ and $(1.042,0.8579752021443232)$ --- with
+continuous physical witnesses (domain face, mixed organizer, verified fold,
+closed loop, or a later \emph{independently measured} existence-boundary
+class).  A raster tip, and a float64 walk that returns
+$\mathrm{event}=\infty$, is not by itself a terminus.
+\item Keep sign-topology coverage withdrawn until an audit both converges
+across the declared $m_2$ span and shows its coverage.  An unmeasured gap
+is not a clean interval.
 \item Do not promote any interior lattice end to a scientific node.
-\item Classify the physical-soft $+1$ daughter, or falsify it.
+\item Classify the physical-soft $+1$ daughter, or falsify it.  Do not call
+the secondary-left birth a fold: stationarity converges to $-30$, not $0$.
 \item Flip \texttt{release\_ready} only with
 \texttt{scripts/assemble\_critical\_graph.py}.
 \item Rerun the novelty search on the freeze day and run
