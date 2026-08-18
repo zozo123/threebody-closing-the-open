@@ -1,0 +1,189 @@
+\documentclass[aps,prl,reprint,amsmath,amssymb]{revtex4-2}
+\usepackage{booktabs}
+
+\begin{document}
+
+\title{One continuation-connected family and two bracketed Floquet events\\
+in the Li--Li--Liao unequal-mass catalog}
+
+\author{Yossi Eliaz}
+\affiliation{Incredibuild, incredibuild.com}
+\affiliation{islo.dev}
+\affiliation{Department of Computer Science, Holon Institute of Technology (HIT), Holon, Israel}
+
+\date{\today}
+
+\begin{abstract}
+The Li--Li--Liao catalog reports $135{,}445$ unequal-mass non-hierarchical planar periodic orbits of
+syzygy word $bABabaBAba$ on a $0.001$ mass grid; a later analysis of the same table reads it as two
+families. Treating family identity as continuation connectivity, and the stability boundary as the
+preimage of a universal spectral domain rather than a stable/unstable mask, we find the sampled set
+supported as one continuation-connected component on $26$ adversarially chosen links, and the
+scale-invariant period/angular-momentum projection on this sheet folded and non-injective---so two
+visible branches do not imply two families. Two transitions are independently reproduced in a second
+arbitrary-precision program as bracketed mechanisms, a physical $+1$ crossing and an opposite-Krein
+Hamiltonian--Hopf collision, to $m_2$ widths $1.578\times10^{-9}$ and $6.268\times10^{-9}$; three
+mixed roots organizing the $+1/-1$ switches are supported at $60$ digits but localized by residual,
+one rung lower. We further report a limit of the method: the frozen $2\times10^{-8}$ event gate is
+finer than the reproducibility of the quantity it gates, a rotation re-derivation at identical
+tolerance moving $345$ of $620$ transition cells past it. The critical graph is consequently not
+closed and the status is open. ``Stable'' means planar linear Floquet stability only.
+\end{abstract}
+
+\maketitle
+
+\emph{Introduction.}---The general three-body problem is not solved here, and nothing below bears on
+it. The object is finite: one frozen catalog and its stability geometry. Li, Li and Liao sampled
+$135{,}445$ unequal-mass non-hierarchical planar periodic orbits on a $0.001$ grid over
+$m_1\in[0.8,1.1]$, $m_2\in[0.7,1.2]$ at $m_3=1$, labelled $13{,}315$ linearly stable, and left $620$
+adjacent cells across which that label flips~\cite{li2021stable}. The orbits share the syzygy word
+$bABabaBAba$: removing the three binary-collision points from the shape sphere leaves a space whose
+fundamental group is free on two generators, each syzygy---each collinear configuration---contributes
+one letter, an inverse letter records the opposite sense, and this orbit passes through ten syzygies
+per period. The word is a cyclic-word invariant, canonically $ABabaBAbab$; it is already freely and
+cyclically reduced. It is a topological label, not a dynamical one, and we never use it as family
+identity: distinct branches may share a free-group conjugacy class.
+
+Two questions about that frozen object are answerable rather than philosophical. Is the sampled set
+one family, where \emph{family} means branch-preserving continuation inside the box rather than the
+appearance of a projection---the distinction that separates this reading from the two-set reading of
+the same table~\cite{stancevic2023moth}? And what is the stability boundary, resolved by mechanism,
+once one stops treating stability as a binary mask?
+
+\emph{Spectral frame.}---For the centre-of-mass-reduced planar problem the reduced monodromy is
+symplectic on the physical $E^{\omega}/E$ quotient and its spectrum is fixed by two invariants
+$(\alpha,\beta)$. Spectral stability is then a region $\mathcal{D}$ in that plane bounded by the
+walls $G_+=0$ and $G_-=0$, where an eigenvalue reaches $+1$ or $-1$, and by the discriminant
+parabola $\Delta=0$, where two unit-circle pairs collide; the three curves meet at the exact vertices
+$(0,-4)$, $(4,4)$ and $(8,28)$. This algebra is classical symplectic Floquet and Krein
+theory~\cite{yakubovich1975,frauenfelder2023symplectic} and is not a result of this work. What is
+computed is the preimage $\Phi^{-1}(\partial\mathcal{D})$ on one catalog sheet, under
+$\Phi:(m_1,m_2)\mapsto(\alpha,\beta)$. The gain is that a transition acquires a mechanism---a $G_+$
+crossing, a $G_-$ crossing, or a $\Delta$ collision---with the $(4,4)$ vertex as the organizing
+preimage where a $G_+$ and a $G_-$ wall meet.
+
+Claims below carry the rung of the artifact that produced them. \emph{Screening} is binary64
+shooting and event localization at two gates never loosened in this work, maximum absolute event
+$2\times10^{-8}$ and maximum periodic closure $10^{-7}$; a binary64 point is a proposal.
+\emph{Supported} means recomputed at $60$ digits in an independent program with canonical Jacobi
+monodromy and the physical symplectic quotient, but localized by Newton residual. \emph{Independently
+reproduced} means localized by a sign change of the event function in a program sharing no dynamics,
+shooting or Floquet implementation with the screening stack. The separation between a sign change and
+a residual is not stylistic, and we keep it visible.
+
+\emph{One component.}---Within the frozen catalog and the declared normalization the sampled set is
+supported as one continuation-connected component. The evidence is adversarial rather than
+exhaustive. On a spanning tree over the $135{,}444$ mass-adjacent edges we selected $26$ links to be
+as hostile to connectivity as the data permits: five macroscopic bottleneck cuts, the twenty
+globally worst chart jumps, and one deliberately pathological invariant-near-duplicate bridge whose
+endpoints lie $0.0617$ apart in mass---sixty-one grid steps---and which is therefore not a tree edge
+at all. Each was crossed bidirectionally without loosening a gate. Chart independence was
+demonstrated on exactly one of the $26$, the pathological bridge, by re-crossing it in a generic
+strict-periodic chart.
+
+The two-family reading is addressed on the mechanism rather than on the labels. On this sheet the
+corrected scale-invariant $(T_{si},L_{si})$ projection is folded and non-injective: $590$
+mass-adjacent edges carry a determinant sign change and assemble into one fold locus, and $86$
+far-separated mass pairs agree to standardized invariant distance below $10^{-4}$. A folded
+non-injective projection can show two visible branches for one connected sheet, so the inference
+from two branches to two dynamical families does not follow. This does not disprove the earlier
+analysis on its own terms~\cite{stancevic2023moth}. Three caveats are not negotiable: the
+certificate covers $26$ links and not $135{,}444$, chart independence rests on one of them, and
+separation below the published $0.001$ grid is not excluded.
+
+\emph{Two bracketed events, three mixed roots.}---On the slice $m_1=0.8023446113666945$ the lower
+transition is a generic physical $+1$ crossing of the reduced return map, bracketed in $m_2$ to width
+$1.5776460402494633\times10^{-9}$. On $m_1=0.8022889780964406$ the upper transition is an
+opposite-Krein Hamiltonian--Hopf collision, bracketed to $6.2677772144967\times10^{-9}$, with two
+upper-half unit modes of opposite Krein sign on the stable flank and none on the unstable flank; the
+Krein signature, not merely the eigenvalue positions, identifies the mechanism. One rung below, the
+three mixed roots of $G_+=G_-=0$---preimages of the $(4,4)$ vertex---are recomputed at $60$ digits
+with relative event norm of order $10^{-14}$, but each is localized by Newton residual rather than by
+a sign-change bracket. Two independent arbitrary-precision programs agree on all five objects to
+between $8.9\times10^{-27}$ and $5.7\times10^{-25}$ in mass. A $60$-digit bracket is a bracket, not
+an interval-arithmetic existence proof; a residual is weaker still.
+
+\begin{table}[t]
+\caption{\label{tab:objects}The five objects, each at the rung its own artifact declares.}
+\begin{ruledtabular}
+\begin{tabular}{lll}
+Object & Location & Rung \\
+\hline
+$+1$ crossing & $m_1=0.80234461$, $\delta m_2=1.578\times10^{-9}$ & reproduced \\
+H--Hopf collision & $m_1=0.80228898$, $\delta m_2=6.268\times10^{-9}$ & reproduced \\
+Mixed root I & $(0.92923919,0.88536646)$ & supported \\
+Mixed root II & $(0.99676820,0.95601936)$ & supported \\
+Mixed root III & $(1.04955319,1.12947581)$ & supported \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+\emph{The 620 cells.}---All $620$ published transition cells are localized once each, none left as a
+Newton failure, and each is assigned to exactly one of seven mechanism polylines: $198$ on $G_+$
+crossings, $168$ on $G_-$, and $254$ on $\Delta$ collisions. Six further label-invisible event-sign
+polylines from a full-domain sweep carry $153$ cells, giving a thirteen-edge assembly. That assembly
+is a mixture and not a certification: by the edges' own estimator records, seven of the thirteen
+polylines rest on binary64 screening alone and six carry independent arbitrary-precision
+corroboration, and of the $620$ cells $462$ are binary64 and $158$ arbitrary-precision. Under the
+ladder above, more than half the decomposition is a proposal.
+
+\emph{A limit of the method.}---The frozen event gate is finer than the reproducibility of the
+quantity it gates, and we report this rather than the headline alone. Across the $775$ localized
+roots the worst absolute event is $1.989798081858396\times10^{-8}$ against the $2\times10^{-8}$
+gate---$99.49\%$ of the budget, cleared by $0.51\%$, with $222$ roots above $10^{-8}$. That number is
+a property of one chart, one tolerance and one machine rather than of the roots: re-deriving the same
+monodromy through a rotation at identical tolerance moves the event past the gate on $345$ of the
+$620$ cells and past ten times the gate on $144$, concentrated in $G_+$ ($126/198$) and $\Delta$
+($217/254$), with $G_-$ ($2/168$) the only mechanism whose compliance survives. Conditioning is
+recorded for none of the $775$ roots. Closure certificates are optimistic for a related reason: they
+are written from the corrector's screening integration at relative tolerance $2\times10^{-10}$ while
+the event is evaluated at $5\times10^{-13}$, and on a seeded sample of $160$ roots the recorded
+closure is optimistic by a median factor $48.6$, four exceeding the $10^{-7}$ closure gate on
+re-measurement. Mechanism labels are not immune: arbitrary-precision escalation of sixteen
+binary64-failed cells returned four as $\Delta$ collisions where binary64 had recorded $G_+$.
+
+\emph{What is not established.}---The critical graph is not closed. Of $26$ edge endpoints $24$ are
+attached; two finite-lattice sweep ends remain unclassified, at $(0.892,0.75308)$ and
+$(1.042,0.85798)$. The incidence splits into two components---the collision curve is still its
+own---and three declared nodes carry no incidence. Three classifications are explicitly not claimed.
+The secondary-left birth is not a certified nondegenerate fold: transversality is real, with
+$\partial G/\partial m_1=28.0456$ convergent under refinement, but the second-derivative
+stationarity test converges to $-30$ rather than to zero. The secondary-right terminus carries
+physical evidence only and is typed an endpoint, so no fourth organizer is claimed. The lower $+1$
+daughter is not classified, since the classifier emits a single outcome by construction and its
+recorded class is therefore an assertion rather than a discrimination. A sign-topology coverage flag
+was withdrawn after it was found true only on unmeasured territory and remains withdrawn; the densest
+full-domain audit converges $229$ of $273$ probes and leaves $25$ curve endpoints unrefined, a
+probe-convergence deficiency near the mass-domain faces rather than a sampling-density one.
+
+\emph{Completeness, bounded.}---Completeness is frozen and bounded, and the bound is small. As a
+two-dimensional region the frozen neck raster covers $m_1\in[0.997,0.999]\times m_2\in[0.993,1.012]$
+at step $10^{-4}$ with $4011$ samples, all $21$ lines separated: $0.0253\%$ of the declared area. The
+only other input is a twelve-proposal off-grid screen in one pocket, $0.002539\%$, whose own record
+describes it as machine-proposed candidates with binary64 screening and not discovery evidence. The
+two together are $0.0279\%$ of the box; everything else is probed on a measure-zero union of scan
+lines. So completeness here means only that no additional critical object was detected by a finite
+sign-change sampling at those resolutions. Even-order root pairs and tangencies are explicitly not
+excluded, nor are sub-resolution loops or curves between scan lines. Whether the interior is clean is
+unresolved: the full-domain sweep reports gate-passing roots matching no committed edge.
+
+\emph{Status.}---Two release conditions are false: no unclassified edge endpoints, and sign-topology
+coverage. The upstream table is rejected unless its content digest matches, environments are pinned,
+and the release bit is writable only by the assembler, which reproduces the committed critical-graph
+artifact byte for byte and exits nonzero while the problem is open. The scientific status is
+therefore open, this Letter reports what is earned rather than a solution, and no priority claim is
+made. Throughout, ``stable'' denotes spectral stability of the linearized return map for planar
+motion---not nonlinear or Lyapunov stability, not KAM, and not stability against non-planar
+perturbation. A spectrally stable Hamiltonian orbit can be nonlinearly unstable through resonance.
+
+\begin{acknowledgments}
+The analysis pipeline, the claim-gating machinery and this manuscript were produced by AI coding
+agents operating in islo.dev sandboxes under the author's direction. No agent output is admitted as
+evidence above the \emph{candidate} rung: every numerical claim reported here was re-derived by the
+independent verification stack described above, and the machine-proposed screen is labelled as such
+in the record. Numerical verification ran in GitHub Actions and in ephemeral cloud instances.
+\end{acknowledgments}
+
+\bibliography{references}
+
+\end{document}
