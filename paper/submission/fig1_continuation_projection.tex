@@ -2,72 +2,76 @@
 \begin{figure*}[t]
 \centering
 \begin{tikzpicture}[x=1cm,y=1cm,line cap=round,line join=round,
-  >=Stealth,
-  every node/.style={font=\footnotesize}]
-  % ---- (a) invariant projection ----
+  >=Stealth,every node/.style={font=\footnotesize}]
+  % ---- (a) schematic invariant projection ----
   \begin{scope}
-    \node[font=\small,anchor=north west] at (-0.1,4.35) {(a)};
-    \draw[line width=0.8pt,->] (0,0) -- (7.3,0)
+    \node[font=\small,anchor=north west] at (-0.10,4.35) {(a)};
+    \draw[line width=0.8pt,->] (0,0) -- (7.30,0)
       node[below left,font=\small] {$T_{\rm si}$};
     \draw[line width=0.8pt,->] (0,0) -- (0,4.15)
       node[above left,font=\small] {$L_{\rm si}$};
-    % upper projected branch
-    \fill[black!14]
-      (0.50,3.05) .. controls (2.2,3.55) and (4.1,3.35) .. (6.35,2.55)
-      -- (6.35,2.15)
-      .. controls (4.1,2.95) and (2.2,3.15) .. (0.50,2.65) -- cycle;
-    \draw[line width=1.05pt,black!75]
-      (0.50,2.85) .. controls (2.2,3.35) and (4.1,3.15) .. (6.35,2.35);
-    % lower projected branch
+    \node[font=\scriptsize,anchor=north east] at (7.05,4.02)
+      {schematic};
+
+    \fill[black!12]
+      (0.45,3.35) .. controls (2.25,3.65) and (4.45,3.10) .. (6.55,2.18)
+      -- (6.55,1.94)
+      .. controls (4.45,2.86) and (2.25,3.41) .. (0.45,3.11) -- cycle;
+    \draw[line width=1.05pt,black!70]
+      (0.45,3.23) .. controls (2.25,3.53) and (4.45,2.98) .. (6.55,2.06);
+
     \fill[black!28]
-      (0.50,1.55) .. controls (2.3,0.95) and (4.3,1.15) .. (6.50,1.85)
-      -- (6.50,2.25)
-      .. controls (4.3,1.55) and (2.3,1.35) .. (0.50,1.95) -- cycle;
+      (0.45,1.05) .. controls (2.20,0.78) and (4.35,1.26) .. (6.55,1.88)
+      -- (6.55,2.12)
+      .. controls (4.35,1.50) and (2.20,1.02) .. (0.45,1.29) -- cycle;
     \draw[line width=1.05pt,black]
-      (0.50,1.75) .. controls (2.3,1.15) and (4.3,1.35) .. (6.50,2.05);
-    % A on upper branch, B on lower; nearby in T_si to show near-coincidence
-    \fill[black] (3.55,3.18) circle (2.7pt);
-    \node[anchor=south] at (3.55,3.38) {A};
+      (0.45,1.17) .. controls (2.20,0.90) and (4.35,1.38) .. (6.55,2.00);
+
+    % A and B represent the documented near-coincident invariant pair.
+    \fill[black] (5.83,2.29) circle (2.7pt);
+    \node[anchor=south east] at (5.73,2.47) {A};
     \draw[line width=0.9pt,black,fill=white]
-      (3.82,1.52) rectangle ++(0.30,0.30);
-    \node[anchor=north] at (3.97,1.46) {B};
-    \draw[line width=0.6pt,black!50,dashed] (3.55,3.18) -- (3.97,1.82);
-    \node[font=\scriptsize,anchor=west] at (0.45,3.55) {projected branch};
-    \node[font=\scriptsize,anchor=west] at (0.45,0.85) {projected branch};
+      (5.88,1.88) rectangle ++(0.28,0.28);
+    \node[anchor=north west] at (6.20,1.91) {B};
+    \draw[line width=0.65pt,black!55,dashed] (5.83,2.29) -- (6.02,2.02);
+
+    \node[font=\scriptsize,anchor=west] at (0.55,3.72) {projected branch};
+    \node[font=\scriptsize,anchor=west] at (0.55,0.62) {projected branch};
   \end{scope}
 
-  % ---- (b) zoomed mass plane of the documented path ----
+  % ---- (b) straight mass segment used in the documented continuation ----
   \begin{scope}[shift={(8.35,0.05)}]
     \node[font=\small,anchor=north west] at (-0.15,4.30) {(b)};
     % window m1 in [1.05,1.115], m2 in [1.04,1.145]
-    % x = (m1-1.05)/0.065 * 6.3 , y = (m2-1.04)/0.105 * 3.85
-    \draw[line width=0.8pt] (0,0) rectangle (6.3,3.85);
-    \foreach \x/\lab in {0.000/1.05, 2.423/1.075, 4.846/1.100}
-      \draw[line width=0.6pt] (\x,-0.08) -- (\x,0) node[below=1.5pt] {$\lab$};
-    \foreach \y/\lab in {0.000/1.04, 1.283/1.075, 2.567/1.110, 3.850/1.145}
-      \draw[line width=0.6pt] (-0.08,\y) -- (0,\y) node[left=1.5pt] {$\lab$};
+    \draw[line width=0.8pt] (0,0) rectangle (6.30,3.85);
+    \foreach \x/\lab in {0.000/1.05,2.423/1.075,4.846/1.100}
+      \draw[line width=0.6pt] (\x,-0.08) -- (\x,0)
+        node[below=1.5pt] {$\lab$};
+    \foreach \y/\lab in {0.000/1.04,1.283/1.075,2.567/1.110,3.850/1.145}
+      \draw[line width=0.6pt] (-0.08,\y) -- (0,\y)
+        node[left=1.5pt] {$\lab$};
     \node[below=9pt,font=\small] at (3.15,0) {$m_1$};
     \node[rotate=90,anchor=south,font=\small] at (-0.95,1.92) {$m_2$};
-    % A: (1.072, 1.066) -> x=2.132, y=0.953
-    % B: (1.100, 1.121) -> x=4.846, y=2.970
+
+    % A=(1.072,1.066), B=(1.100,1.121)
     \coordinate (A) at (2.132,0.953);
     \coordinate (B) at (4.846,2.970);
-    \draw[line width=1.45pt,black] (A) -- (B);
+    \draw[line width=1.45pt,black,-{Stealth[length=5pt]}] (A) -- (B);
     \fill[black] (A) circle (2.8pt);
     \draw[line width=0.95pt,black,fill=white]
       ($(B)+(-0.14,-0.14)$) rectangle ++(0.28,0.28);
     \node[anchor=east] at ($(A)+(-0.16,0.02)$) {A};
     \node[anchor=west] at ($(B)+(0.18,0.02)$) {B};
     \node[font=\scriptsize,align=left,anchor=north west] at (0.20,3.70)
-      {continuation path};
+      {continued mass segment};
   \end{scope}
 \end{tikzpicture}
 \caption{\label{fig:projection}Continuation connectivity and invariant projection.
-(a)~Two visually separated branches of the corrected scale-invariant
-period--angular-momentum representation. Representative points A and B lie on
-those branches; a dashed guide marks their near-coincident invariant images.
-(b)~Zoom of the $(m_1,m_2)$ plane on the documented continuation path joining
-the same pair (mass distance $0.062$).
-The projected branch separation occurs within one continuation-connected
-sampled solution set.}
+(a)~Schematic of the two branches visible in the corrected scale-invariant
+period--angular-momentum representation. A and B denote the documented pair
+of distant mass points with nearly coincident invariant images; the panel is
+not drawn to numerical scale. (b)~The straight segment in the $(m_1,m_2)$
+plane followed by bidirectional continuation between the same endpoints,
+whose mass separation is $0.062$. The connection shows that the projected
+branch separation occurs within one sampled continuation component.}
 \end{figure*}
