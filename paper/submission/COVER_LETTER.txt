@@ -1,15 +1,15 @@
 Dear Editors,
 
-We submit the enclosed Letter, “Continuation Geometry Resolves Apparent Branch Splitting in Unequal-Mass Three-Body Orbits,” for consideration in Physical Review Letters.
+We submit the enclosed Letter, "Continuation Geometry Resolves Apparent Branch Splitting in Unequal-Mass Three-Body Orbits," for consideration in Physical Review Letters.
 
-Periodic-orbit families are routinely classified from low-dimensional invariant diagrams. Those diagrams are projections, and their visible branches need not preserve the connectivity of the underlying solution manifold. We examine this distinction in the 135,445 unequal-mass planar three-body periodic orbits of Li, Li, and Liao. Direct continuation connects the two branches of the corrected scale-invariant period-angular-momentum representation within one sampled component. A numerically identified singular locus of that projection accounts for their apparent separation. Along the same component, high-precision Floquet calculations isolate a +1 transition at one representative stability boundary and an opposite-Krein Hamiltonian-Hopf transition at another.
+Periodic-orbit families are routinely classified through low-dimensional invariant diagrams. Those diagrams are projections, and their visible branches need not preserve the connectivity of the underlying solution manifold. We examine this distinction in the 135,445 unequal-mass planar three-body periodic orbits of Li, Li, and Liao. Direct continuation connects the two branches of the corrected scale-invariant period-angular-momentum representation within one sampled component. A numerically identified singular locus of the projection accounts for their apparent separation. Along the same component, high-precision Floquet calculations isolate a +1 transition at one representative stability boundary and an opposite-Krein Hamiltonian-Hopf transition at another.
 
-The Letter is written for a general physics reader. The connectivity/projection result and the two Floquet mechanisms form the core argument. Specialist continuation and monodromy details are collected in the End Matter, while the Supplemental Material records the full numerical diagnostics. The distinction between projected branches and continuation components, together with the explicit symplectic mechanisms, is relevant across Hamiltonian dynamics.
+The Letter is written for a broad physics audience. The connectivity/projection result and the two Floquet mechanisms form the core argument. Specialist continuation and monodromy details are collected in the End Matter, and broader survey diagnostics are placed in the Supplemental Material. The distinction between projected branches and continuation components, together with the explicit symplectic mechanisms, is relevant across Hamiltonian dynamics.
 
-The numerical records and software are available in the public repository cited in the manuscript. The upstream Li-Li-Liao catalog is cited and is not redistributed. This is an original submission.
+The numerical records and source code are publicly available in the repository cited in the manuscript. The upstream Li-Li-Liao catalog is cited and is not redistributed. This is an original submission.
 
 Sincerely,
 
 Ori Chamo
-Yossi Eliaz
-Corresponding author: eliazy@hit.ac.il
+Yossi Eliaz, corresponding author
+eliazy@hit.ac.il
