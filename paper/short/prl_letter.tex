@@ -27,7 +27,7 @@ Hamiltonian--Hopf collision, to $m_2$ widths $1.578\times10^{-9}$ and $6.268\tim
 mixed roots organizing the $+1/-1$ switches are supported at $60$ digits but localized by residual,
 one rung lower. We further report a limit of the method: the frozen $2\times10^{-8}$ event gate is
 finer than the reproducibility of the quantity it gates, a rotation re-derivation at identical
-tolerance moving $345$ of $620$ transition cells past it. The critical graph is consequently not
+tolerance moving the event on $345$ of $620$ transition cells by more than the gate itself. The critical graph is consequently not
 closed and the status is open. ``Stable'' means planar linear Floquet stability only.
 \end{abstract}
 
@@ -78,10 +78,10 @@ a residual is not stylistic, and we keep it visible.
 
 \emph{One component.}---Within the frozen catalog and the declared normalization the sampled set is
 supported as one continuation-connected component. The evidence is adversarial rather than
-exhaustive. On a spanning tree over the $135{,}444$ mass-adjacent edges we selected $26$ links to be
+exhaustive. On a $135{,}444$-edge spanning tree of the $270{,}087$ mass-adjacent links we selected $26$ links to be
 as hostile to connectivity as the data permits: five macroscopic bottleneck cuts, the twenty
 globally worst chart jumps, and one deliberately pathological invariant-near-duplicate bridge whose
-endpoints lie $0.0617$ apart in mass---sixty-one grid steps---and which is therefore not a tree edge
+endpoints lie $0.0617$ apart in mass---nearly sixty-two grid steps---and which is therefore not a tree edge
 at all. Each was crossed bidirectionally without loosening a gate. Chart independence was
 demonstrated on exactly one of the $26$, the pathological bridge, by re-crossing it in a generic
 strict-periodic chart.
@@ -103,9 +103,11 @@ opposite-Krein Hamiltonian--Hopf collision, bracketed to $6.2677772144967\times1
 upper-half unit modes of opposite Krein sign on the stable flank and none on the unstable flank; the
 Krein signature, not merely the eigenvalue positions, identifies the mechanism. One rung below, the
 three mixed roots of $G_+=G_-=0$---preimages of the $(4,4)$ vertex---are recomputed at $60$ digits
-with relative event norm of order $10^{-14}$, but each is localized by Newton residual rather than by
-a sign-change bracket. Two independent arbitrary-precision programs agree on all five objects to
-between $8.9\times10^{-27}$ and $5.7\times10^{-25}$ in mass. A $60$-digit bracket is a bracket, not
+with relative event norms from $1.2\times10^{-14}$ to $1.5\times10^{-13}$, but each is localized by Newton residual rather than by
+a sign-change bracket. The same five objects, relocalized at $50$ and
+$60$ digits and re-derived through a canonical-Jacobi and physical-quotient layer, agree in mass to
+between $8.9\times10^{-27}$ and $5.7\times10^{-25}$; those two arbitrary-precision paths share their
+bracket-localization code, so this is precision invariance and not a second program. A $60$-digit bracket is a bracket, not
 an interval-arithmetic existence proof; a residual is weaker still.
 
 \begin{table}[t]
@@ -137,8 +139,8 @@ quantity it gates, and we report this rather than the headline alone. Across the
 roots the worst absolute event is $1.989798081858396\times10^{-8}$ against the $2\times10^{-8}$
 gate---$99.49\%$ of the budget, cleared by $0.51\%$, with $222$ roots above $10^{-8}$. That number is
 a property of one chart, one tolerance and one machine rather than of the roots: re-deriving the same
-monodromy through a rotation at identical tolerance moves the event past the gate on $345$ of the
-$620$ cells and past ten times the gate on $144$, concentrated in $G_+$ ($126/198$) and $\Delta$
+monodromy through a rotation at identical tolerance moves the event by more than the gate on $345$ of
+the $620$ cells and by more than ten times the gate on $144$, concentrated in $G_+$ ($126/198$) and $\Delta$
 ($217/254$), with $G_-$ ($2/168$) the only mechanism whose compliance survives. Conditioning is
 recorded for none of the $775$ roots. Closure certificates are optimistic for a related reason: they
 are written from the corrector's screening integration at relative tolerance $2\times10^{-10}$ while
@@ -150,9 +152,11 @@ binary64-failed cells returned four as $\Delta$ collisions where binary64 had re
 \emph{What is not established.}---The critical graph is not closed. Of $26$ edge endpoints $24$ are
 attached; two finite-lattice sweep ends remain unclassified, at $(0.892,0.75308)$ and
 $(1.042,0.85798)$. The incidence splits into two components---the collision curve is still its
-own---and three declared nodes carry no incidence. Both unclassified ends lie inside the
-non-existence region characterized below, and continuing outward from either drives the event
-functional to a non-finite value within $2\times10^{-3}$ in mass. Neither is therefore a catalog
+own---and three declared nodes carry no incidence. Both unclassified ends sit above their local
+non-existence frontier, not inside it: orbits still close at the ends themselves, with re-corrected
+closures $6.6\times10^{-8}$ and $3.9\times10^{-8}$ inside the $10^{-7}$ gate. What defeats them is
+that continuing outward drives the event functional non-finite after travelling only
+$1.4\times10^{-3}$ and $2.2\times10^{-3}$ in $m_2$. Neither is therefore a catalog
 overlap, a declared-domain face, nor a closed loop, which are the only stops the continuation
 resolver admits; we have implemented a fourth, an existence-boundary terminus, whose award requires
 divergence rather than a marginal miss, invariance of the failure under step refinement and under two
@@ -160,8 +164,11 @@ independent higher-precision paths, independent audit corroboration, and outward
 those conditions can only refuse, and on the present evidence the class is awarded to neither end, so
 the two remain unclassified here. Three further classifications are explicitly not claimed.
 The secondary-left birth is not a certified nondegenerate fold: transversality is real, with
-$\partial G/\partial m_1=28.0456$ convergent under refinement, but the second-derivative
-stationarity test converges to $-30$ rather than to zero. The secondary-right terminus carries
+$\partial G/\partial m_1=28.0456$ convergent under refinement, and stationarity is met,
+$\partial G/\partial m_2$ falling to $-6.1\times10^{-14}$; what is missing is the curvature, since
+$\partial^2G/\partial m_2^2$ does not converge under stencil refinement but grows as $h^{-2}$, from
+$-3.9\times10^{8}$ at $h=8\times10^{-5}$ to $-2.5\times10^{10}$ at $h=10^{-5}$, so the quadratic
+normal form is not established. The secondary-right terminus carries
 physical evidence only and is typed an endpoint, so no fourth organizer is claimed. The lower $+1$
 daughter is not classified, since the classifier emits a single outcome by construction and its
 recorded class is therefore an assertion rather than a discrimination.
@@ -179,7 +186,8 @@ $2{,}660$ of $2{,}785$ at $m_2<0.9$, failed median $m_2$ $0.739$ against $0.969$
 A condition demanding converged coverage of the full declared rectangle therefore ranges over a
 region in which the object to be covered does not exist, and no additional computation can satisfy
 it. The honest form of the statement is scoped to the existence support of the family, and the
-frontier itself --- monotone in $m_1$ and smooth across more than thirty scan lines --- is a
+frontier itself --- traced on more than thirty scan lines, and rising monotonically in $m_1$ only
+above $m_1\approx0.995$ --- is a
 first-class object this work has located but not yet certified.
 
 \emph{Completeness, bounded.}---Completeness is frozen and bounded, and the bound is small. As a
@@ -204,10 +212,12 @@ perturbation. A spectrally stable Hamiltonian orbit can be nonlinearly unstable 
 
 \begin{acknowledgments}
 The analysis pipeline, the claim-gating machinery and this manuscript were produced by AI coding
-agents operating in islo.dev sandboxes under the author's direction. No agent output is admitted as
-evidence above the \emph{candidate} rung: every numerical claim reported here was re-derived by the
-independent verification stack described above, and the machine-proposed screen is labelled as such
-in the record. Numerical verification ran in GitHub Actions and in ephemeral cloud instances.
+agents operating in islo.dev sandboxes under the authors' direction. No agent output is admitted as
+evidence above the \emph{candidate} rung, and no claim is stated above the rung its own artifact
+declares: the two bracketed events and the three mixed roots were relocalized by the
+arbitrary-precision stack described above, while what rests on binary64 screening alone---$462$ of
+the $620$ cells, seven of the thirteen polylines, and the audits of the preceding section---is
+labelled as such in the record. Numerical verification ran in GitHub Actions and in ephemeral cloud instances.
 \end{acknowledgments}
 
 \bibliography{references}
