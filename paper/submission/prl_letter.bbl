@@ -1,0 +1,149 @@
+\begin{thebibliography}{12}%
+\makeatletter
+\providecommand \@ifxundefined [1]{%
+ \@ifx{#1\undefined}
+}%
+\providecommand \@ifnum [1]{%
+ \ifnum #1\expandafter \@firstoftwo
+ \else \expandafter \@secondoftwo
+ \fi
+}%
+\providecommand \@ifx [1]{%
+ \ifx #1\expandafter \@firstoftwo
+ \else \expandafter \@secondoftwo
+ \fi
+}%
+\providecommand \natexlab [1]{#1}%
+\providecommand \enquote  [1]{``#1''}%
+\providecommand \bibnamefont  [1]{#1}%
+\providecommand \bibfnamefont [1]{#1}%
+\providecommand \citenamefont [1]{#1}%
+\providecommand \href@noop [0]{\@secondoftwo}%
+\providecommand \href [0]{\begingroup \@sanitize@url \@href}%
+\providecommand \@href[1]{\@@startlink{#1}\@@href}%
+\providecommand \@@href[1]{\endgroup#1\@@endlink}%
+\providecommand \@sanitize@url [0]{\catcode `\\12\catcode `\$12\catcode
+  `\&12\catcode `\#12\catcode `\^12\catcode `\_12\catcode `\%12\relax}%
+\providecommand \@@startlink[1]{}%
+\providecommand \@@endlink[0]{}%
+\providecommand \url  [0]{\begingroup\@sanitize@url \@url }%
+\providecommand \@url [1]{\endgroup\@href {#1}{\urlprefix }}%
+\providecommand \urlprefix  [0]{URL }%
+\providecommand \Eprint [0]{\href }%
+\providecommand \doibase [0]{https://doi.org/}%
+\providecommand \selectlanguage [0]{\@gobble}%
+\providecommand \bibinfo  [0]{\@secondoftwo}%
+\providecommand \bibfield  [0]{\@secondoftwo}%
+\providecommand \translation [1]{[#1]}%
+\providecommand \BibitemOpen [0]{}%
+\providecommand \bibitemStop [0]{}%
+\providecommand \bibitemNoStop [0]{.}%
+\providecommand \EOS [0]{\spacefactor3000\relax}%
+\providecommand \BibitemShut  [1]{\csname bibitem#1\endcsname}%
+\let\auto@bib@innerbib\@empty
+%</preamble>
+\bibitem [{\citenamefont {Chenciner}\ and\ \citenamefont
+  {Montgomery}(2000)}]{chenciner2000figureeight}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Chenciner}}\ and\ \bibinfo {author} {\bibfnamefont {R.}~\bibnamefont
+  {Montgomery}},\ }\bibfield  {title} {\bibinfo {title} {A remarkable periodic
+  solution of the three-body problem in the case of equal masses},\ }\href@noop
+  {} {\bibfield  {journal} {\bibinfo  {journal} {Annals of Mathematics}\
+  }\textbf {\bibinfo {volume} {152}},\ \bibinfo {pages} {881} (\bibinfo {year}
+  {2000})},\ \Eprint {https://arxiv.org/abs/math/0011268} {arXiv:math/0011268}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Gal{\'a}n}\ \emph {et~al.}(2002)\citenamefont
+  {Gal{\'a}n}, \citenamefont {Mu{\~n}oz-Almaraz}, \citenamefont {Freire},
+  \citenamefont {Doedel},\ and\ \citenamefont
+  {Vanderbauwhede}}]{galan2002figureeight}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Gal{\'a}n}}, \bibinfo {author} {\bibfnamefont {F.~J.}~\bibnamefont
+  {Mu{\~n}oz-Almaraz}}, \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
+  {Freire}}, \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont {Doedel}},\
+  and\ \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Vanderbauwhede}},\
+  }\bibfield  {title} {\bibinfo {title} {Stability and bifurcations of the
+  figure-8 solution of the three-body problem},\ }\href
+  {https://doi.org/10.1103/PhysRevLett.88.241101} {\bibfield  {journal}
+  {\bibinfo  {journal} {Physical Review Letters}\ }\textbf {\bibinfo {volume}
+  {88}},\ \bibinfo {pages} {241101} (\bibinfo {year} {2002})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Li}\ and\ \citenamefont
+  {Liao}(2025)}]{li2025review}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {X.}~\bibnamefont
+  {Li}}\ and\ \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Liao}},\
+  }\bibfield  {title} {\bibinfo {title} {A review on periodic orbits of the
+  general planar three-body problem},\ }\href
+  {https://doi.org/10.1007/s11433-024-2686-6} {\bibfield  {journal} {\bibinfo
+  {journal} {Science China Physics, Mechanics \& Astronomy}\ }\textbf
+  {\bibinfo {volume} {68}},\ \bibinfo {pages} {289501} (\bibinfo {year}
+  {2025})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Li}, \citenamefont {Li},\ and\ \citenamefont
+  {Liao}(2021)}]{li2021stable}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {X.}~\bibnamefont
+  {Li}}, \bibinfo {author} {\bibfnamefont {X.}~\bibnamefont {Li}},\ and\
+  \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Liao}},\ }\bibfield
+  {title} {\bibinfo {title} {One family of 13315 stable periodic orbits of the
+  non-hierarchical unequal-mass triple system},\ }\href
+  {https://doi.org/10.1007/s11433-020-1624-7} {\bibfield  {journal} {\bibinfo
+  {journal} {Science China Physics, Mechanics \& Astronomy}\ }\textbf
+  {\bibinfo {volume} {64}},\ \bibinfo {pages} {219511} (\bibinfo {year}
+  {2021})},\ \Eprint {https://arxiv.org/abs/2007.10184} {arXiv:2007.10184}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Stan{\v c}evi{\'c}}, \citenamefont
+  {Vasiljevi{\'c}},\ and\ \citenamefont
+  {Dmitra{\v s}inovi{\'c}}(2023)}]{stancevic2023moth}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.}~\bibnamefont
+  {Stan{\v c}evi{\'c}}}, \bibinfo {author} {\bibfnamefont {V.}~\bibnamefont
+  {Vasiljevi{\'c}}},\ and\ \bibinfo {author} {\bibfnamefont {V.}~\bibnamefont
+  {Dmitra{\v s}inovi{\'c}}},\ }\bibfield  {title} {\bibinfo {title} {The mass-,
+  period- and angular momentum dependences of the ``moth-i'' family of 3-body
+  orbits},\ }\href {https://doi.org/10.2139/ssrn.4603360} {\  (\bibinfo {year}
+  {2023})},\ \bibinfo {note} {SSRN preprint}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Yakubovich}\ and\ \citenamefont
+  {Starzhinskii}(1975)}]{yakubovich1975}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {V.~A.}~\bibnamefont
+  {Yakubovich}}\ and\ \bibinfo {author} {\bibfnamefont {V.~M.}~\bibnamefont
+  {Starzhinskii}},\ }\href@noop {} {\emph {\bibinfo {title} {Linear
+  Differential Equations with Periodic Coefficients}}}\ (\bibinfo  {publisher}
+  {Wiley},\ \bibinfo {address} {New York},\ \bibinfo {year} {1975})\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Howard}\ and\ \citenamefont
+  {MacKay}(1987)}]{howard1987linear}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.~E.}~\bibnamefont
+  {Howard}}\ and\ \bibinfo {author} {\bibfnamefont {R.~S.}~\bibnamefont
+  {MacKay}},\ }\bibfield  {title} {\bibinfo {title} {Linear stability of
+  symplectic maps},\ }\href {https://doi.org/10.1063/1.527544} {\bibfield
+  {journal} {\bibinfo  {journal} {Journal of Mathematical Physics}\ }\textbf
+  {\bibinfo {volume} {28}},\ \bibinfo {pages} {1036} (\bibinfo {year}
+  {1987})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Frauenfelder}, \citenamefont {Koh},\ and\
+  \citenamefont {Moreno}(2023)}]{frauenfelder2023symplectic}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {U.}~\bibnamefont
+  {Frauenfelder}}, \bibinfo {author} {\bibfnamefont {D.}~\bibnamefont {Koh}},\
+  and\ \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Moreno}},\
+  }\bibfield  {title} {\bibinfo {title} {Symplectic methods in the numerical
+  search of orbits in real-life planetary systems},\ }\href
+  {https://doi.org/10.1137/22M1500459} {\bibfield  {journal} {\bibinfo  {journal}
+  {SIAM Journal on Applied Dynamical Systems}\ }\textbf {\bibinfo {volume}
+  {22}},\ \bibinfo {pages} {3284} (\bibinfo {year} {2023})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Chamo}\ and\ \citenamefont
+  {Eliaz}(2026)}]{eliaz2026archive}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {O.}~\bibnamefont
+  {Chamo}}\ and\ \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont {Eliaz}},\
+  }\bibfield  {title} {\bibinfo {title} {Continuation geometry of unequal-mass
+  three-body periodic orbits: numerical data and software},\ }\href
+  {https://github.com/zozo123/threebody-closing-the-open} {\  (\bibinfo {year}
+  {2026})},\ \bibinfo {note} {Source repository and submission snapshot;
+  upstream catalog accepted only at Git blob
+  79b2963df43e62201c35690bfc22bec166132427}\BibitemShut {NoStop}%
+\end{thebibliography}%
