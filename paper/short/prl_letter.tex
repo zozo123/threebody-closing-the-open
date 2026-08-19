@@ -168,7 +168,10 @@ are written from the corrector's screening integration at relative tolerance $2\
 the event is evaluated at $5\times10^{-13}$, and on a seeded sample of $160$ roots the recorded
 closure is optimistic by a median factor $48.6$, four exceeding the $10^{-7}$ closure gate on
 re-measurement. Mechanism labels are not immune: arbitrary-precision escalation of sixteen
-binary64-failed cells returned four as $\Delta$ collisions where binary64 had recorded $G_+$. The
+binary64-failed cells returned four as $\Delta$ collisions where binary64 had recorded $G_+$. A
+further caveat is structural: the independent verifier brackets an event and refines it to a
+requested width, but nowhere compares the resulting event against the frozen gate, so a root it
+reports as located is not thereby certified to satisfy the gate this work quotes. The
 same gap appears as displacement, not as chart dependence. At the three tip masses binary64
 screening returned events $+1.53\times10^{-8}$, $-1.02\times10^{-8}$ and $-3.82\times10^{-10}$, all
 inside the gate; re-evaluated at $60$ digits at those same masses the events are
