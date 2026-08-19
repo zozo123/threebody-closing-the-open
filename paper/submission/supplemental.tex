@@ -1,19 +1,8 @@
 \documentclass[aps,prl,onecolumn,amsmath,amssymb]{revtex4-2}
-\usepackage{tikz}
 \usepackage{booktabs}
-\usepackage{subcaption}
 \usepackage{microtype}
 \usepackage{xurl}
 \usepackage[hidelinks]{hyperref}
-\tikzset{
-  gplus/.style ={circle,fill=blue!70!black,inner sep=0.45pt},
-  gminus/.style={circle,fill=red!70!black,inner sep=0.45pt},
-  delta/.style ={circle,fill=teal!75!black,inner sep=0.45pt},
-  unattached/.style={circle,draw=black,thick,inner sep=1.5pt},
-  sheet/.style ={circle,fill=gray!45,inner sep=0.28pt},
-  wall/.style  ={black,thick},
-  vertex/.style={rectangle,fill=black,inner sep=1.1pt}
-}
 \hyphenpenalty=750
 \tolerance=1200
 \emergencystretch=1.5em
@@ -34,9 +23,9 @@ Continuation Geometry Resolves Apparent Branch Splitting in Unequal-Mass Three-B
 \begin{abstract}
 This Supplemental Material records the catalog conventions, continuation and
 projection-audit details, physical Floquet diagnostics, mixed-intersection
-coordinates, and the full-domain critical survey underlying the Letter. The
-Letter is self-contained; the material below provides specialist detail and
-reproduction information. No new orbit integrations are introduced here.
+coordinates, and full-domain survey underlying the Letter. The Letter is
+self-contained; the material below provides specialist detail and reproduction
+information. No new orbit integrations are introduced here.
 \end{abstract}
 
 \maketitle
@@ -69,10 +58,11 @@ Sec.~\ref{sec:floquet}.
 Every catalog member is published with the syzygy word $bABabaBAba$. Removing
 the three binary-collision points from the shape sphere leaves a space whose
 fundamental group is free on two generators; a collisionless periodic orbit
-therefore determines a conjugacy class in $F_2$ \cite{montgomery1995geometricphase,moeckel2012regularization}.
-The published word is already freely and cyclically reduced and rotates to
-$ABabaBAbab$. The word is catalog metadata. Component identity in the Letter is
-determined by continuation of periodic solutions.
+therefore determines a conjugacy class in $F_2$
+\cite{montgomery1995geometricphase,moeckel2012regularization}. The published
+word is already freely and cyclically reduced and rotates to $ABabaBAbab$. The
+word is catalog metadata. Component identity in the Letter is determined by
+continuation of periodic solutions.
 
 \section{Continuation algorithm and branch matching}
 
@@ -140,7 +130,8 @@ the sampled projection; they are a discrete audit of the published grid.
 The variational equation is integrated in canonical Jacobi coordinates and
 reduced to the physical quotient $E^{\omega}/E$, with
 $E=\mathrm{span}\{X_H,X_L\}$. The result is a $4\times4$ symplectic return map
-$M_{\rm ph}$ \cite{yakubovich1975,howard1987linear,frauenfelder2023symplectic,galan2002figureeight}.
+$M_{\rm ph}$
+\cite{yakubovich1975,howard1987linear,frauenfelder2023symplectic,galan2002figureeight}.
 Define
 \begin{equation}
 a=\operatorname{tr}M_{\rm ph},\qquad
@@ -164,8 +155,8 @@ G_+=b-2a+2,\qquad G_-=b+2a+2,\qquad
 Their exact vertices are $(-4,6)$ (double $-1$), $(0,-2)$ (mixed $+1/-1$),
 and $(4,6)$ (double $+1$).
 
-The committed full-domain survey and Supplemental Fig.~S1 use the equivalent
-shifted eight-dimensional trace convention
+The committed full-domain survey artifacts use the equivalent shifted
+trace convention
 \begin{equation}
 \alpha=a+4,\qquad \beta=b+4a+6.
 \end{equation}
@@ -174,7 +165,7 @@ In those coordinates
 P(t)=t^2-(\alpha-4)t+\beta-4\alpha+8,
 \end{equation}
 and the same vertices are $(0,-4)$, $(4,4)$, and $(8,28)$. The labels
-$G_+$, $G_-$, and $\Delta$ therefore identify the same physical events in both
+$G_+$, $G_-$, and $\Delta$ identify the same physical events in both
 coordinate conventions.
 
 \section{High-precision $+1$ transition}
@@ -237,8 +228,6 @@ samples, giving a thirteen-edge assembly in mass space. Of the $620$ published
 transition cells, $462$ rest on binary64 localization and $158$ on
 arbitrary-precision corroboration. The assembly is a survey of sampled event
 preimages, not an exhaustive topology of every critical curve.
-
-\input{figS1_critical_graph}
 
 Two finite-lattice ends of the survey remain unclassified, at
 $(0.892,0.75308)$ and $(1.042,0.85798)$. Orbits still close at those endpoints,
