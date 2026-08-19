@@ -1,305 +1,219 @@
 \documentclass[aps,prl,reprint,amsmath,amssymb]{revtex4-2}
 \usepackage{tikz}
-\usepackage{microtype}
 \usetikzlibrary{arrows.meta,calc}
+\usepackage{microtype}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
 \hyphenpenalty=750
 \tolerance=1200
 \emergencystretch=1.5em
 
 \begin{document}
 
-\title{Continuation Geometry Resolves Apparent Family Splitting in Unequal-Mass Three-Body Orbits}
+\title{Continuation Geometry Resolves Apparent Branch Splitting in Unequal-Mass Three-Body Orbits}
+
+\author{Ori Chamo}
+\affiliation{Incredibuild, Tel Aviv, Israel}
 
 \author{Yossi Eliaz}
+\email{eliazy@hit.ac.il}
 \affiliation{Incredibuild, Tel Aviv, Israel}
 \affiliation{Department of Computer Science, Holon Institute of Technology, Holon, Israel}
 
-\author{Ori Chemo}
-\affiliation{Incredibuild, Tel Aviv, Israel}
-
 \begin{abstract}
 Periodic-orbit families are often represented through low-dimensional invariant
-coordinates, whose projected branch structure need not preserve the connectivity
-of the underlying solution manifold. We use numerical continuation to examine
-the $135{,}445$ unequal-mass planar three-body periodic orbits reported by Li,
-Li, and Liao, whose corrected scale-invariant period--angular-momentum
+coordinates, although projected branches need not preserve the connectivity of
+the underlying solution manifold. We use numerical continuation to examine the
+$135{,}445$ unequal-mass planar three-body periodic orbits reported by Li, Li,
+and Liao, whose corrected scale-invariant period--angular-momentum
 representation was subsequently interpreted as two independent sets. The two
-projected branches belong to a single continuation-connected component, while
-the invariant projection develops a singular locus associated with their
-apparent separation. High-precision Floquet calculations identify a $(+1)$
-transition at one representative stability boundary and an opposite-Krein
-Hamiltonian--Hopf transition at another. The results show how projection
-geometry can obscure periodic-orbit connectivity while the reduced symplectic
-spectrum resolves the mechanisms governing stability changes.
+projected branches belong to one continuation-connected component, and a
+singular locus of the invariant projection accounts for their apparent
+separation. High-precision Floquet calculations identify a $+1$ transition at
+one representative stability boundary and an opposite-Krein
+Hamiltonian--Hopf transition at another. Projection geometry and symplectic
+spectral geometry therefore provide complementary descriptions of the same
+periodic-orbit manifold.
 \end{abstract}
 
 \maketitle
 
-Periodic orbits organize the dynamics of Hamiltonian systems.
-As parameters vary, periodic solutions trace continuation manifolds whose
-geometry and stability changes encode the surrounding dynamics.
-Such families are commonly displayed through a small number of scalar
-observables, including periods, actions, conserved quantities, or
-scale-invariant combinations~\cite{chenciner2000figureeight,galan2002figureeight,li2025review}.
-These diagrams are projections of the full solution set, so visible branch
-structure can differ from continuation connectivity.
-Distinguishing projected branches from connected components therefore requires
-continuation in the underlying orbit space.
+Periodic orbits organize the dynamics of Hamiltonian systems. As parameters
+vary, periodic solutions trace continuation manifolds whose geometry and
+stability changes encode the surrounding dynamics. Such families are commonly
+displayed through a few scalar observables, including periods, actions,
+conserved quantities, or scale-invariant combinations
+\cite{chenciner2000figureeight,galan2002figureeight,li2025review}. These diagrams
+are projections of the full solution set, so their visible branch structure can
+differ from continuation connectivity.
 
 Li, Li, and Liao constructed $135{,}445$ unequal-mass non-hierarchical planar
-periodic orbits on a mass grid with $m_3=1$, including $13{,}315$ samples
-reported as linearly stable~\cite{li2021stable}.
-They described the collection as one family.
-Stan{\v c}evi{\'c}, Vasiljevi{\'c}, and Dmitra{\v s}inovi{\'c} identified two
-distinct projected branches in the corrected scale-invariant
-period--angular-momentum coordinates and interpreted them as independent
-sets~\cite{stancevic2023moth}.
-This raises a dynamical question: do those projected branches belong to
-distinct continuation components of the periodic-orbit solution set?
-All catalog members carry the same reported topological word; component
-identity in this work is determined by continuation of periodic solutions.
+periodic orbits on a mass grid at $m_3=1$, including $13{,}315$ samples reported
+as linearly stable \cite{li2021stable}. They described the collection as one
+family. Stan{\v c}evi{\'c}, Vasiljevi{\'c}, and Dmitra{\v s}inovi{\'c} later
+identified two branches in corrected scale-invariant period--angular-momentum
+coordinates and interpreted them as independent sets
+\cite{stancevic2023moth}. The resulting dynamical question is whether those
+projected branches belong to distinct continuation components of the
+periodic-orbit solution set.
 
-We address this question by continuing periodic solutions directly through
-mass and orbit space.
-We then compute the reduced physical Floquet spectrum and represent its
-stability boundaries through two symplectic trace
-invariants~\cite{yakubovich1975,howard1987linear,frauenfelder2023symplectic}.
-We study planar periodic orbits in the sampled Li--Li--Liao (LLL) continuation
-with $m_3=1$; stability refers throughout to the nontrivial planar Floquet
-spectrum of the reduced return map.
-We use \emph{continuation component} for a connected set of periodic solutions
-joined by the continuation procedure described below; when the historical term
-\emph{family} is used, it refers to such a component unless explicitly
-attributed to prior work.
+We answer this question by continuing periodic solutions directly through mass
+and orbit space. We then compute the physical Floquet spectrum after removal of
+the neutral symmetry directions. Throughout, \emph{continuation component}
+denotes a connected set of periodic solutions joined by this continuation
+procedure; stability denotes the nontrivial planar Floquet spectrum of the
+reduced return map.
 
 The sampled solutions form one continuation-connected component, and a
-continuation path joins the two branches visible in the scale-invariant
-diagram.
-The invariant projection contains a singular locus associated with their
-apparent separation.
-Along the same component, the physical Floquet spectrum exhibits a $(+1)$
-transition and an opposite-Krein Hamiltonian--Hopf transition.
-Three additional points satisfy the simultaneous $(+1)$ and $(-1)$ critical
-conditions.
-Together these results separate continuation connectivity from projected
-branch structure and identify the distinct symplectic mechanisms underlying
-representative stability changes.
-
-\emph{Continuation geometry.}---We continue the periodic solutions in the mass
-parameters $(m_1,m_2)$ at fixed $m_3=1$.
-A periodic solution at one mass point supplies the predictor for a neighboring
-point, followed by correction of the orbit and period to restore periodicity.
-Repeating this procedure traces connected branches through the sampled orbit
-set.
-
-The mass-adjacency graph of the $135{,}445$ sampled solutions is connected.
-It contains $270{,}087$ mass-adjacent links and admits a spanning tree with
-$135{,}444$ edges.
-We selected $26$ connections that maximize indicators of possible branch
-separation: five macroscopic graph bottlenecks, the twenty largest chart
-discontinuities along the spanning tree, and one long-range cross-branch
-connection associated with nearly coincident invariant coordinates.
-Bidirectional continuation succeeds across all $26$ selected connections.
-The long-range cross-branch connection was also reproduced in a
-translation-reduced strict-periodic formulation.
-
-A path through the sampled continuation component connects representative
-solutions on the two branches of the $(T_{\rm si},L_{\rm si})$ diagram
-[Fig.~\ref{fig:projection}].
-The visible branch separation therefore occurs inside one continuation-connected
-sampled solution set.
-
-The corrected scale-invariant period and angular momentum define the invariant
-projection
-\begin{equation}
-\Psi(m_1,m_2)=\bigl(T_{\rm si},L_{\rm si}\bigr).
-\end{equation}
-Finite-difference estimates of $D\Psi$ identify adjacent mass cells across
-which $\det D\Psi$ changes sign.
-These sign changes assemble into a singular locus in the sampled mass plane.
-The audit also finds far-separated mass points whose scale-invariant
-coordinates are nearly coincident.
-The discrete audit contains $590$ determinant-sign-change edges and $86$
-long-range near coincidences under the stated thresholds.
-Together these observations identify projection geometry as the origin of the
-apparent separation between the two visible branches.
+continuation connection joins the two branches visible in the scale-invariant
+diagram. The invariant projection contains a singular locus associated with
+their apparent separation. Along the same component, the reduced Floquet
+spectrum exhibits a $+1$ transition and an opposite-Krein Hamiltonian--Hopf
+transition. Three additional mass points satisfy the simultaneous $+1$ and
+$-1$ spectral conditions.
 
 \input{fig1_continuation_projection}
 
-\emph{Floquet stability.}---After removal of the neutral symmetry directions,
-each periodic orbit has four nontrivial Floquet multipliers forming two
-reciprocal pairs.
-The corresponding $4\times 4$ symplectic return map can be represented by two
-trace invariants $(\alpha,\beta)$.
-With $t=\lambda+\lambda^{-1}$, the spectral polynomial is
-\begin{equation}
-P(t)=t^2-(\alpha-4)t+\beta-4\alpha+8,
-\end{equation}
-and the three spectral boundaries are
-\begin{align}
-G_+&=\beta-6\alpha+20,\\
-G_-&=\beta-2\alpha+4,\\
-\Delta&=\alpha^2+8\alpha-16-4\beta.
-\end{align}
-The conditions $G_+=0$ and $G_-=0$ correspond to multipliers at $+1$ and $-1$,
-respectively, while $\Delta=0$ marks a collision of the two reciprocal mode
-traces.
-The critical curves in mass space are preimages of these spectral boundaries
-under
-\begin{equation}
-\Phi(m_1,m_2)=(\alpha,\beta).
-\end{equation}
-We use this standard symplectic trace representation to distinguish the
-mechanisms of the observed stability
-transitions~\cite{yakubovich1975,howard1987linear}.
+\emph{Continuation geometry.}---We continue the periodic solutions in the mass
+parameters $(m_1,m_2)$ at fixed $m_3=1$. A periodic solution at one mass point
+supplies the predictor for a neighboring point, followed by correction of the
+orbit and period to restore periodicity. Repeating this procedure traces
+connected branches through the sampled orbit set.
 
-Symplecticity pairs each nontrivial multiplier $\lambda$ with $\lambda^{-1}$.
-For an elliptic multiplier on the unit circle, the Krein signature gives the
-sign of the associated symplectic quadratic form.
+The mass-adjacency graph of the $135{,}445$ sampled solutions is connected. It
+contains $270{,}087$ mass-adjacent links and a spanning tree with $135{,}444$
+edges. We selected $26$ connections that maximize indicators of possible
+branch separation: five macroscopic graph bottlenecks, the twenty largest chart
+discontinuities along the spanning tree, and one long-range connection between
+nearly coincident invariant images. Bidirectional continuation succeeds across
+all $26$ selected connections. The long-range connection was also reproduced
+in a translation-reduced strict-periodic formulation.
+
+The documented long-range connection joins representative solutions on the
+two branches of the $(T_{\rm si},L_{\rm si})$ diagram
+[Fig.~\ref{fig:projection}]. The visible branch separation therefore occurs
+within one sampled continuation component.
+
+The corrected scale-invariant period and angular momentum define
+\begin{equation}
+\Psi(m_1,m_2)=(T_{\rm si},L_{\rm si}),
+\end{equation}
+where
+$T_{\rm si}=T\lvert E\rvert^{3/2}M^{-5/2}$ and
+$L_{\rm si}=L\lvert E\rvert^{1/2}M^{-13/6}$, with
+$M=m_1+m_2+m_3$. Centered finite-difference estimates of $D\Psi$ identify a
+connected locus of adjacent mass cells across which $\det D\Psi$ changes sign.
+The same audit finds far-separated mass points with nearly coincident invariant
+coordinates. The discrete record contains $590$ determinant-sign-change edges
+and $86$ long-range near coincidences under the stated thresholds. These
+features identify projection geometry as the source of the apparent branch
+separation.
+
+\emph{Floquet stability.}---After the neutral symmetry directions are removed,
+each periodic orbit has four nontrivial Floquet multipliers forming two
+reciprocal pairs. Let $M_{\rm ph}$ be the corresponding $4\times4$ symplectic
+return map and define
+\begin{equation}
+a=\operatorname{tr}M_{\rm ph},\qquad
+b=\frac{(\operatorname{tr}M_{\rm ph})^2-
+\operatorname{tr}(M_{\rm ph}^2)}{2}.
+\end{equation}
+Its characteristic polynomial is
+\begin{equation}
+\chi(\lambda)=\lambda^4-a\lambda^3+b\lambda^2-a\lambda+1.
+\end{equation}
+With $t=\lambda+\lambda^{-1}$, the two reciprocal pairs are determined by
+\begin{equation}
+P(t)=t^2-at+b-2.
+\end{equation}
+Spectral stability requires both roots of $P$ to lie in $[-2,2]$. The three
+boundaries are
+\begin{align}
+G_+&=P(2)=b-2a+2,\\
+G_-&=P(-2)=b+2a+2,\\
+\Delta&=a^2-4b+8.
+\end{align}
+The conditions $G_+=0$ and $G_-=0$ place a multiplier at $+1$ and $-1$,
+respectively; $\Delta=0$ marks a collision of the two reciprocal mode traces.
+The critical curves in mass space are preimages of these boundaries under
+$\Phi(m_1,m_2)=(a,b)$
+\cite{yakubovich1975,howard1987linear,frauenfelder2023symplectic}.
+
+Symplecticity pairs each nontrivial multiplier $\lambda$ with
+$\lambda^{-1}$. For an elliptic multiplier on the unit circle, the Krein
+signature is the sign of its associated symplectic quadratic form.
 
 \input{fig2_floquet_transitions}
 
 \emph{Stability transitions.}---Along $m_1=0.8023446$, the lower representative
-stability boundary occurs near $m_2=0.75401872$.
-On the unstable side, the relevant Floquet modes form a real reciprocal pair.
-Approaching the boundary, the pair reaches $+1$; beyond the boundary it lies on
-the unit circle [Fig.~\ref{fig:floquet}(b)].
-An independent $60$-digit implementation reproduces the transition within an
-$m_2$ bracket of width $1.6\times10^{-9}$.
+stability boundary occurs near $m_2=0.75401872$. On the unstable side, the
+relevant Floquet modes form a real reciprocal pair. Approaching the boundary,
+the pair reaches $+1$; beyond the boundary it lies on the unit circle
+[Fig.~\ref{fig:floquet}(b)]. An independent $60$-digit implementation
+reproduces the transition within an $m_2$ bracket of width
+$1.6\times10^{-9}$.
 
 Along $m_1=0.8022890$, two elliptic Floquet modes approach one another on the
-unit circle at the upper representative stability boundary.
-Their Krein signatures have opposite signs on the stable side.
-At the boundary the modes collide, and beyond it the spectrum forms a
-reciprocal complex quartet off the unit circle [Fig.~\ref{fig:floquet}(c)].
-The transition is therefore an opposite-Krein Hamiltonian--Hopf instability.
-The independent $60$-digit calculation reproduces the critical location within
-an $m_2$ bracket of width $6.3\times10^{-9}$.
+unit circle at the upper representative stability boundary. Their Krein
+signatures have opposite signs on the stable side. At the boundary the modes
+collide, and beyond it the spectrum forms a reciprocal complex quartet off the
+unit circle [Fig.~\ref{fig:floquet}(c)]. This is an opposite-Krein
+Hamiltonian--Hopf transition. The independent $60$-digit calculation
+reproduces the critical location within an $m_2$ bracket of width
+$6.3\times10^{-9}$.
 
-The $+1$ and $-1$ spectral boundaries meet at $(\alpha,\beta)=(4,4)$.
-Solving the simultaneous conditions $G_+=G_-=0$ yields three mixed spectral
-intersections in the sampled mass domain.
-The intersections occur near $(m_1,m_2)=(0.929239,0.885366)$,
-$(0.996768,0.956019)$, and $(1.049553,1.129476)$.
-All three were recomputed at $60$-digit precision with small shooting and
-spectral residuals.
+The $+1$ and $-1$ boundaries meet at the physical spectral vertex
+$(a,b)=(0,-2)$. Solving $G_+=G_-=0$ yields three mixed spectral intersections
+in the sampled mass domain. Their coordinates and residuals are listed in the
+Supplemental Material. All three were recomputed at $60$-digit precision.
 
-Direct continuation connects the two branches of the corrected scale-invariant
-period--angular-momentum representation within one sampled component of the LLL
-periodic-orbit manifold.
-A singular locus of the invariant projection provides the geometric origin of
-their apparent separation.
-The physical Floquet spectrum distinguishes a $+1$ transition from an
-opposite-Krein Hamiltonian--Hopf transition along the same continuation
-component.
-Three additional mass points map to the mixed $+1/-1$ spectral vertex.
-The example shows that projected branch structure and continuation
-connectivity encode different information about a periodic-orbit family.
-Continuation resolves the organization of the periodic solutions, while the
-symplectic spectrum identifies the mechanisms through which their stability
-changes.
-The same distinction is relevant whenever a multidimensional periodic-orbit
-family is classified through a small number of projected invariants.
+Direct continuation thus connects the two projected branches within one
+sampled component of the LLL periodic-orbit manifold. A singular locus of the
+invariant projection accounts for their apparent separation. The reduced
+Floquet spectrum distinguishes a $+1$ transition from an opposite-Krein
+Hamiltonian--Hopf transition along that component, while three additional mass
+points map to the mixed $+1/-1$ spectral vertex. Projected branch structure and
+continuation connectivity therefore encode different information. The same
+distinction applies whenever a multidimensional periodic-orbit family is
+classified through a small number of projected invariants.
+
+\section*{End Matter}
+
+\paragraph{Numerical continuation.}
+Planar Newtonian motion is integrated with $G=1$ at fixed $m_3=1$. The
+published collinear shooting chart has unknowns $(x_1,v_1,v_2,T)$, with total
+momentum removed. A neighboring sample supplies the predictor and a Newton
+corrector restores periodicity in center-of-mass-reduced coordinates. The
+long-range connection joins $(m_1,m_2)=(1.072,1.066)$ and $(1.100,1.121)$.
+Bidirectional continuation gives shooting residual below
+$2.3\times10^{-10}$ and terminal chart mismatch below $6\times10^{-13}$.
+
+\paragraph{Physical Floquet calculation.}
+The variational equation is integrated in canonical Jacobi coordinates. The
+Hamiltonian and angular-momentum symmetry directions are removed through the
+physical quotient $E^{\omega}/E$, leaving $M_{\rm ph}$. The eight-dimensional
+trace convention used in parts of the numerical archive is related by
+$\alpha=a+4$ and $\beta=b+4a+6$; hence the physical mixed vertex $(0,-2)$ is
+$(4,4)$ in that convention.
+
+\paragraph{High-precision verification.}
+An independent implementation uses $60$-digit arithmetic, a ninth-order
+Verner integrator, canonical Jacobi variational equations, and the physical
+quotient. The two transitions have sign-changing brackets in $m_2$, closure
+norms of order $10^{-21}$--$10^{-22}$, and symplectic defects of order
+$10^{-19}$--$10^{-20}$. The mixed-root event residuals range from $10^{-14}$ to
+$10^{-13}$.
 
 \begin{acknowledgments}
-xAI Grok (version 4.6) was used to assist with manuscript organization and
-revision of scientific exposition.
-AI coding agents operating in islo.dev sandboxes assisted, under the authors'
-direction, with development of the analysis software that generated the
-committed numerical records.
-All calculations reported here were executed by the deterministic numerical
-programs described in the End Matter; the authors reviewed the AI-assisted
-text and software against those records, the source data, and the cited
-literature, and take responsibility for the final scientific statements and
-conclusions.
+OpenAI ChatGPT (GPT-5.6 Pro), xAI Grok 4.6, and Anthropic Claude Opus 5
+assisted with manuscript editing, figure layout, and software review. The
+authors checked the resulting changes against the source code and numerical
+records and take responsibility for the manuscript and conclusions.
 \end{acknowledgments}
 
-\section*{Data Availability}
-
-The numerical data and software supporting the analyses reported here are
-publicly available in Ref.~\cite{eliaz2026archive}.
-The upstream orbit catalog is available from Ref.~\cite{li2021stable} and is
-not redistributed with the archive.
-
-\appendix
-
-\section{\label{app:continuation}Numerical continuation}
-
-Planar Newtonian motion with $G=1$ is
-\begin{equation}
-\ddot{\mathbf r}_i=\sum_{j\neq i}m_j\frac{\mathbf r_j-\mathbf r_i}{\lVert\mathbf r_j-\mathbf r_i\rVert^3}.
-\end{equation}
-The LLL catalog is continued at fixed $m_3=1$ over the published mass window
-$m_1\in[0.8,1.1]$, $m_2\in[0.7,1.2]$.
-Published samples occupy the collinear shooting chart
-\begin{equation}
-\begin{aligned}
-\mathbf r_1&=(x_1,0),\quad \mathbf r_2=(1,0),\quad \mathbf r_3=(0,0),\\
-\mathbf v_1&=(0,v_1),\quad \mathbf v_2=(0,v_2),
-\end{aligned}
-\end{equation}
-with $\mathbf v_3$ fixed by vanishing total momentum.
-The shooting unknowns at fixed masses are $(x_1,v_1,v_2,T)$.
-A neighboring catalog point supplies the predictor; a Newton corrector restores
-periodicity in the eight-dimensional center-of-mass-reduced coordinates.
-The closure residual is the reduced return defect after one period.
-A connection is recorded when bidirectional continuation between two mass
-points converges and the terminal shooting charts match.
-
-The long-range cross-branch connection joins the catalog samples at
-$(m_1,m_2)=(1.072,1.066)$ and $(1.100,1.121)$, a Euclidean mass distance of
-$0.0617$.
-Eighty continuation steps in each direction close with shooting residual below
-$2.3\times10^{-10}$ and terminal chart mismatch below $6\times10^{-13}$.
-The same pair was recomputed in a translation-reduced strict-periodic
-formulation outside the collinear-velocity ansatz.
-
-\section{\label{app:floquet}Physical Floquet calculation}
-
-After center-of-mass reduction the variational equation is integrated in
-canonical Jacobi coordinates
-$(\boldsymbol\rho,\boldsymbol\lambda,\mathbf p_{\rho},\mathbf p_{\lambda})$,
-with
-\begin{equation}
-\boldsymbol\rho=\mathbf r_2-\mathbf r_1,\qquad
-\boldsymbol\lambda=\mathbf r_3-\frac{m_1\mathbf r_1+m_2\mathbf r_2}{m_1+m_2}.
-\end{equation}
-The resulting eight-dimensional monodromy is symplectic.
-The two-dimensional subspace
-$E=\mathrm{span}\{X_H,X_L\}$ generated by the Hamiltonian and angular-momentum
-vector fields is removed by passing to the physical quotient $E^{\omega}/E$.
-The reduced return map is a $4\times 4$ symplectic matrix $M$ whose spectrum
-comprises the four nontrivial Floquet multipliers.
-The trace invariants are
-\begin{equation}
-\alpha=\mathrm{tr}\,M,\qquad
-\beta=\bigl((\mathrm{tr}\,M)^2-\mathrm{tr}(M^2)\bigr)/2,
-\end{equation}
-and they determine $P(t)$ as in the main text.
-On a unit-circle eigenmode the Krein signature is the sign of the associated
-symplectic quadratic form.
-Closure and symplectic defects quoted below are the reduced periodic-return
-norm and the departure of $M$ from $\mathrm{Sp}(4)$, respectively.
-
-\section{\label{app:precision}High-precision verification}
-
-The two representative transitions were recomputed in an independent
-implementation using $60$-digit arithmetic and a ninth-order Verner integrator
-in the Jacobi chart, followed by the physical quotient.
-Each transition is enclosed by a sign-changing numerical bracket of the event
-function in $m_2$.
-On the lower $(+1)$ flanks the reduced closure is of order $10^{-21}$ and the
-physical symplectic defect is of order $10^{-19}$.
-On the Hamiltonian--Hopf flanks the corresponding figures are $10^{-22}$ and
-$10^{-20}$.
-The three mixed intersections were obtained by a simultaneous Newton solve of
-$G_+=G_-=0$ in the same $60$-digit implementation; relative event residuals lie
-between $10^{-14}$ and $10^{-13}$.
-
-The connectivity statement concerns the sampled LLL continuation under the
-chart and corrector above.
-The numerical Jacobian estimate of $\Psi$ is a centered finite-difference
-audit of the published mass grid.
+\paragraph{Data availability.}
+Data and code are available in Ref.~\cite{chamoeliaz2026data}; the source orbit
+catalog is Ref.~\cite{li2021stable}.
 
 \bibliography{references}
 
