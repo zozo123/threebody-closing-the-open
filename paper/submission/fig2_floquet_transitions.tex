@@ -5,121 +5,125 @@
   >=Stealth,
   every node/.style={font=\footnotesize}]
   % ============================================================
-  % (a) symplectic trace plane
-  % x = 0.58 α,  y = 0.10 (β+6)
+  % (a) physical Sp(4) trace plane (a,b)
   % ============================================================
-  \begin{scope}
-    \node[font=\small,anchor=north west] at (-0.35,4.35) {(a)};
-    \draw[line width=0.75pt,->] (-0.25,0.60) -- (5.20,0.60)
-      node[below left,font=\small] {$\alpha$};
-    \draw[line width=0.75pt,->] (0,-0.15) -- (0,4.20)
-      node[above left,font=\small] {$\beta$};
-    \foreach \a/\lab in {0.00/0, 2.32/4, 4.64/8}
-      \draw[line width=0.55pt] (\a,0.52) -- (\a,0.60)
+  \begin{scope}[x=0.58cm,y=0.435cm]
+    \node[font=\small,anchor=north west] at (-4.85,7.05) {(a)};
+    \draw[line width=0.75pt] (-4.5,-2.5) rectangle (4.5,6.7);
+    \foreach \x/\lab in {-4/-4,0/0,4/4}
+      \draw[line width=0.55pt] (\x,-2.68) -- (\x,-2.5)
         node[below=1pt] {$\lab$};
-    \foreach \b/\lab in {0.20/-4, 1.00/4, 1.80/12, 2.60/20, 3.40/28}
-      \draw[line width=0.55pt] (-0.08,\b) -- (0,\b)
+    \foreach \y/\lab in {-2/-2,2/2,6/6}
+      \draw[line width=0.55pt] (-4.64,\y) -- (-4.5,\y)
         node[left=1pt] {$\lab$};
-    % Δ=0 through (0,-4), (4,4), (8,28)
-    % y=0.10(β+6): (0,-4)->0.20; (4,4)->1.00; (8,28)->3.40
+    \node[below=10pt,font=\small] at (0,-2.5) {$a$};
+    \node[rotate=90,anchor=south,font=\small] at (-5.18,2.1) {$b$};
+
+    % Spectrally stable domain bounded by G_-, G_+, and Delta.
+    \path[fill=black!7]
+      (-4,6)
+      plot[domain=-4:4,samples=80] (\x,{0.25*\x*\x+2})
+      -- (0,-2) -- cycle;
     \draw[line width=1.0pt,dash dot]
-      plot[smooth] coordinates {
-        (0.00,0.20) (0.58,0.29) (1.16,0.46) (1.74,0.70)
-        (2.32,1.00) (2.90,1.37) (3.48,1.81) (4.06,2.32) (4.64,3.40)
-      };
-    % G-: β=2α-4,  y=0.10(2α+2)=0.20α+0.20, x=0.58α ⇒ y=0.345x+0.20
-    \draw[line width=1.0pt,dashed] (-0.20,0.131) -- (3.20,1.304);
-    % G+: β=6α-20, y=0.10(6α-14)=0.60α-1.40, x=0.58α ⇒ y=1.034x-1.40
-    \draw[line width=1.15pt] (1.50,0.152) -- (5.00,3.772);
-    \node[font=\scriptsize,anchor=west] at (3.70,3.55) {$G_+=0$};
-    \node[font=\scriptsize,anchor=west] at (0.12,1.22) {$G_-=0$};
-    \node[font=\scriptsize,anchor=east] at (4.55,2.05) {$\Delta=0$};
-    % (4,4): x=2.32, y=1.00
-    \fill[black] (2.32,1.00) circle (1.8pt);
-    \node[font=\scriptsize,anchor=north west] at (2.42,0.92) {$(4,4)$};
-    % +1 event α=5.706, β=14.24 → x=3.309, y=2.024
-    \fill[black] (3.309,2.024) circle (2.4pt);
-    \node[font=\scriptsize,anchor=east] at (3.18,2.28) {$+1$};
-    % HH α=5.701, β=15.53 → x=3.307, y=2.153
-    \fill[black] (3.42,2.153) -- ++(0.00,0.16) -- ++(0.12,-0.24) -- ++(-0.24,0) -- cycle;
-    \node[font=\scriptsize,anchor=west] at (3.58,2.30) {HH};
+      plot[domain=-4:4,samples=80] (\x,{0.25*\x*\x+2});
+    \draw[line width=1.0pt,dashed] (-4,6) -- (0,-2);
+    \draw[line width=1.15pt] (0,-2) -- (4,6);
+    \node[font=\scriptsize,anchor=west] at (2.55,3.45) {$G_+=0$};
+    \node[font=\scriptsize,anchor=east] at (-2.35,3.45) {$G_-=0$};
+    \node[font=\scriptsize,anchor=south] at (-2.45,3.60) {$\Delta=0$};
+    \node[font=\scriptsize] at (-0.85,0.05) {stable};
+
+    % Mixed (+1,-1) vertex in physical coordinates.
+    \fill[black] (0,-2) circle (1.8pt);
+    \node[font=\scriptsize,anchor=south west] at (0.12,-1.82) {$(0,-2)$};
+
+    % Headline events from the physical 4x4 quotient.
+    \fill[black] (1.7065,1.4130) circle (2.4pt);
+    \node[font=\scriptsize,anchor=east] at (1.52,1.15) {$+1$};
+    \fill[black] (1.7008,2.7231) -- ++(0.00,0.30)
+      -- ++(0.20,-0.46) -- ++(-0.40,0) -- cycle;
+    \node[font=\scriptsize,anchor=west] at (1.98,2.96) {HH};
   \end{scope}
 
   % ============================================================
-  % (b) true zoom near +1
-  % window Re λ ∈ [0.94,1.08], Im λ ∈ [-0.06,0.06]
-  % x = (Re-0.94)/0.14 * 3.35 , y = (Im+0.06)/0.12 * 3.35
+  % (b) zoom near +1
+  % window Re lambda in [0.94,1.08], Im lambda in [-0.06,0.06]
   % ============================================================
   \begin{scope}[shift={(6.15,0.15)}]
     \node[font=\small,anchor=north west] at (-0.20,4.20) {(b)};
     \draw[line width=0.75pt] (0,0) rectangle (3.35,3.35);
-    \foreach \x/\lab in {0.000/0.94, 1.436/1.00, 2.871/1.06}
-      \draw[line width=0.55pt] (\x,-0.08) -- (\x,0) node[below=1pt,font=\scriptsize] {$\lab$};
-    \foreach \y/\lab in {0.000/-0.06, 1.675/0, 3.350/0.06}
-      \draw[line width=0.55pt] (-0.08,\y) -- (0,\y) node[left=1pt,font=\scriptsize] {$\lab$};
+    \foreach \x/\lab in {0.000/0.94,1.436/1.00,2.871/1.06}
+      \draw[line width=0.55pt] (\x,-0.08) -- (\x,0)
+        node[below=1pt,font=\scriptsize] {$\lab$};
+    \foreach \y/\lab in {0.000/-0.06,1.675/0,3.350/0.06}
+      \draw[line width=0.55pt] (-0.08,\y) -- (0,\y)
+        node[left=1pt,font=\scriptsize] {$\lab$};
     \node[below=8pt,font=\scriptsize] at (1.67,0) {$\mathrm{Re}\,\lambda$};
-    \node[rotate=90,anchor=south,font=\scriptsize] at (-0.72,1.67) {$\mathrm{Im}\,\lambda$};
-    % unit circle x^2+y^2=1, in plot coords
-    % Re=cos θ, Im=sin θ for |λ|=1
+    \node[rotate=90,anchor=south,font=\scriptsize] at (-0.72,1.67)
+      {$\mathrm{Im}\,\lambda$};
     \draw[line width=1.0pt]
       plot[domain=-3.5:3.5,samples=60]
         ({(cos(\x)-0.94)/0.14*3.35},{(sin(\x)+0.06)/0.12*3.35});
-    % +1 at (1,0) -> x=1.436, y=1.675
     \draw[line width=0.8pt] (1.436,1.675) circle (2.1pt);
     \fill[white] (1.436,1.675) circle (1.2pt);
     \node[font=\scriptsize,anchor=south] at (1.436,1.92) {$+1$};
-    % unstable real pair 0.9748, 1.0258
-    \fill[black] (0.833,1.675) circle (2.4pt);
-    \draw[line width=0.8pt] (0.833,1.675) ++(-0.11,-0.11) rectangle ++(0.22,0.22);
-    \fill[black] (2.053,1.675) circle (2.4pt);
-    \draw[line width=0.8pt] (2.053,1.675) ++(-0.11,-0.11) rectangle ++(0.22,0.22);
-    \node[font=\scriptsize,anchor=north] at (0.85,1.48) {unstable};
-    % stable 0.99968 ± 0.02547 i -> y = (0.02547+0.06)/0.12*3.35 = 2.386
+
+    % Smaller-m2 flank: real reciprocal pair.
+    \draw[line width=0.85pt,black,fill=white]
+      (0.833,1.675) ++(-0.11,-0.11) rectangle ++(0.22,0.22);
+    \draw[line width=0.85pt,black,fill=white]
+      (2.053,1.675) ++(-0.11,-0.11) rectangle ++(0.22,0.22);
+    \node[font=\scriptsize,anchor=north] at (0.85,1.48) {real pair};
+
+    % Larger-m2 flank: pair on the unit circle.
     \fill[black] (1.428,2.386) circle (2.4pt);
     \fill[black] (1.428,0.964) circle (2.4pt);
-    \node[font=\scriptsize,anchor=west] at (1.62,2.55) {stable};
+    \node[font=\scriptsize,anchor=west] at (1.62,2.55) {unit pair};
   \end{scope}
 
   % ============================================================
-  % (c) true zoom of opposite-Krein collision
-  % window Re ∈ [0.38,0.46], Im ∈ [0.86,0.94]
-  % x = (Re-0.38)/0.08 * 3.35 , y = (Im-0.86)/0.08 * 3.35
+  % (c) zoom of opposite-Krein collision
+  % window Re in [0.38,0.46], Im in [0.86,0.94]
   % ============================================================
   \begin{scope}[shift={(10.55,0.15)}]
     \node[font=\small,anchor=north west] at (-0.20,4.20) {(c)};
     \draw[line width=0.75pt] (0,0) rectangle (3.35,3.35);
-    \foreach \x/\lab in {0.000/0.38, 1.675/0.42, 3.350/0.46}
-      \draw[line width=0.55pt] (\x,-0.08) -- (\x,0) node[below=1pt,font=\scriptsize] {$\lab$};
-    \foreach \y/\lab in {0.000/0.86, 1.675/0.90, 3.350/0.94}
-      \draw[line width=0.55pt] (-0.08,\y) -- (0,\y) node[left=1pt,font=\scriptsize] {$\lab$};
+    \foreach \x/\lab in {0.000/0.38,1.675/0.42,3.350/0.46}
+      \draw[line width=0.55pt] (\x,-0.08) -- (\x,0)
+        node[below=1pt,font=\scriptsize] {$\lab$};
+    \foreach \y/\lab in {0.000/0.86,1.675/0.90,3.350/0.94}
+      \draw[line width=0.55pt] (-0.08,\y) -- (0,\y)
+        node[left=1pt,font=\scriptsize] {$\lab$};
     \node[below=8pt,font=\scriptsize] at (1.67,0) {$\mathrm{Re}\,\lambda$};
-    \node[rotate=90,anchor=south,font=\scriptsize] at (-0.72,1.67) {$\mathrm{Im}\,\lambda$};
-    % unit circle arc
+    \node[rotate=90,anchor=south,font=\scriptsize] at (-0.72,1.67)
+      {$\mathrm{Im}\,\lambda$};
     \draw[line width=1.0pt]
       plot[domain=61:68,samples=40]
         ({(cos(\x)-0.38)/0.08*3.35},{(sin(\x)-0.86)/0.08*3.35});
-    % Krein+  (0.40876, 0.91264) -> x=1.204, y=2.204
+
+    % Stable flank: two unit-circle modes with opposite Krein signs.
     \fill[black] (1.204,2.204) circle (2.6pt);
     \node[font=\scriptsize,anchor=east] at (1.02,2.35) {$+$};
-    % Krein-  (0.44163, 0.89720) -> x=2.580, y=1.558
     \draw[line width=0.95pt,black,fill=white] (2.580,1.558) circle (2.4pt);
     \node[font=\scriptsize,anchor=west] at (2.78,1.70) {$-$};
-    % inner r=0.982 at 64.8° : (0.419,0.888) -> x=1.633, y=1.172
+
+    % Unstable flank: upper-half members of the reciprocal complex quartet.
     \draw[line width=0.9pt,black,fill=white]
-      (1.633,1.172) ++(-0.11,-0.11) rectangle ++(0.22,0.22);
-    % outer r=1.018 at 64.8° : (0.435,0.921) -> x=2.303, y=2.554
-    \fill[black] (2.303,2.554) -- ++(0.00,0.14) -- ++(0.12,-0.22) -- ++(-0.24,0) -- cycle;
-    \node[font=\scriptsize,anchor=south] at (2.30,2.78) {quartet};
-    \node[font=\scriptsize,anchor=north] at (1.63,0.95) {quartet};
+      (1.570,1.208) ++(-0.11,-0.11) rectangle ++(0.22,0.22);
+    \fill[black] (2.216,2.583) -- ++(0.00,0.14)
+      -- ++(0.12,-0.22) -- ++(-0.24,0) -- cycle;
+    \node[font=\scriptsize,anchor=south] at (2.22,2.80) {quartet};
+    \node[font=\scriptsize,anchor=north] at (1.57,0.98) {quartet};
   \end{scope}
 \end{tikzpicture}
 \caption{\label{fig:floquet}Distinct Floquet mechanisms on the continuation component.
-(a)~Stability geometry in the symplectic trace plane. Boundaries $G_+=0$ (solid),
-$G_-=0$ (dashed), and $\Delta=0$ (dot-dashed) correspond to $+1$, $-1$, and
-mode-collision conditions. Filled circle: lower $(+1)$ transition. Filled
-triangle: upper Hamiltonian--Hopf transition. The mixed vertex is $(4,4)$.
-(b)~Zoom of the multiplier plane near $+1$. A real reciprocal pair (squares)
-reaches $+1$ and enters the unit circle (filled circles).
-(c)~Zoom of the collision. Two unit-circle modes of opposite Krein signature
-(filled $+$, open $-$) leave the unit circle as a reciprocal complex quartet.}
+(a)~Stability geometry in the physical $4\times4$ symplectic trace plane.
+Boundaries $G_+=0$ (solid), $G_-=0$ (dashed), and $\Delta=0$ (dot-dashed)
+correspond to $+1$, $-1$, and mode-collision conditions. Filled circle: lower
+$+1$ transition. Filled triangle: upper Hamiltonian--Hopf transition. The mixed
+vertex is $(a,b)=(0,-2)$.
+(b)~A real reciprocal pair (open squares) reaches $+1$ and enters the unit
+circle (filled circles).
+(c)~Two unit-circle modes of opposite Krein signature (filled $+$, open $-$)
+leave the unit circle as a reciprocal complex quartet.}
 \end{figure*}
