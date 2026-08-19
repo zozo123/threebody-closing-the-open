@@ -1,8 +1,10 @@
-\documentclass[aps,prl,reprint,amsmath,amssymb,onecolumn]{revtex4-2}
+\documentclass[aps,prl,onecolumn,amsmath,amssymb]{revtex4-2}
 \usepackage{tikz}
 \usepackage{booktabs}
 \usepackage{subcaption}
 \usepackage{microtype}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
 \tikzset{
   gplus/.style ={circle,fill=blue!70!black,inner sep=0.45pt},
   gminus/.style={circle,fill=red!70!black,inner sep=0.45pt},
@@ -10,7 +12,7 @@
   unattached/.style={circle,draw=black,thick,inner sep=1.5pt},
   sheet/.style ={circle,fill=gray!45,inner sep=0.28pt},
   wall/.style  ={black,thick},
-  vertex/.style={rectangle,fill=black,inner sep=1.1pt},
+  vertex/.style={rectangle,fill=black,inner sep=1.1pt}
 }
 \hyphenpenalty=750
 \tolerance=1200
@@ -19,22 +21,22 @@
 \begin{document}
 
 \title{Supplemental Material:\\
-Continuation Geometry Resolves Apparent Family Splitting in Unequal-Mass Three-Body Orbits}
-
-\author{Yossi Eliaz}
-\affiliation{Incredibuild, Tel Aviv, Israel}
-\affiliation{Department of Computer Science, Holon Institute of Technology, Holon, Israel}
+Continuation Geometry Resolves Apparent Branch Splitting in Unequal-Mass Three-Body Orbits}
 
 \author{Ori Chemo}
 \affiliation{Incredibuild, Tel Aviv, Israel}
 
+\author{Yossi Eliaz}
+\email{eliazy@hit.ac.il}
+\affiliation{Incredibuild, Tel Aviv, Israel}
+\affiliation{Department of Computer Science, Holon Institute of Technology, Holon, Israel}
+
 \begin{abstract}
-This Supplemental Material records catalog conventions, continuation and
-projection-audit details, Floquet diagnostics, mixed-intersection coordinates,
-and the full-domain critical survey underlying the Letter.
-The Letter is self-contained; the material below is for reproduction and
-specialist use.
-No additional orbit integrations are reported here.
+This Supplemental Material records the catalog conventions, continuation and
+projection-audit details, physical Floquet diagnostics, mixed-intersection
+coordinates, and the full-domain critical survey underlying the Letter. The
+Letter is self-contained; the material below provides specialist detail and
+reproduction information. No new orbit integrations are introduced here.
 \end{abstract}
 
 \maketitle
@@ -43,37 +45,34 @@ No additional orbit integrations are reported here.
 
 The upstream table of Li, Li, and Liao contains $135{,}445$ unequal-mass
 non-hierarchical planar periodic orbits on the mass grid
-$m_1\in[0.8,1.1]$, $m_2\in[0.7,1.2]$ at $m_3=1$ with spacing $0.001$, of which
-$13{,}315$ samples are reported as linearly stable~\cite{li2021stable}.
-The archive used here accepts that table only at Git blob
-\texttt{79b2963df43e62201c35690bfc22bec166132427}~\cite{eliaz2026archive}.
-Newtonian gravity is taken with $G=1$.
-Scale-invariant coordinates are
+$m_1\in[0.8,1.1]$, $m_2\in[0.7,1.2]$ at $m_3=1$ with spacing $0.001$; the
+source reports $13{,}315$ samples as linearly stable \cite{li2021stable}. The
+archive used here accepts that table only at Git blob
+\texttt{79b2963df43e62201c35690bfc22bec166132427}
+\cite{eliaz2026archive}. Newtonian gravity is taken with $G=1$.
+
+The scale-invariant coordinates are
 \begin{equation}
-T_{\rm si}=T\,\lvert E\rvert^{3/2}M^{-5/2},\qquad
-L_{\rm si}=L\,\lvert E\rvert^{1/2}M^{-13/6},
+T_{\rm si}=T\lvert E\rvert^{3/2}M^{-5/2},\qquad
+L_{\rm si}=L\lvert E\rvert^{1/2}M^{-13/6},
 \end{equation}
-with $M=m_1+m_2+m_3$, matching the mass-corrected representation analyzed by
-Stan{\v c}evi{\'c} \emph{et al.}~\cite{stancevic2023moth}.
-The maps used in the Letter are
-$\Psi(m_1,m_2)=(T_{\rm si},L_{\rm si})$ and
-$\Phi(m_1,m_2)=(\alpha,\beta)$.
+with $M=m_1+m_2+m_3$. The two maps used in the Letter are
+\begin{equation}
+\Psi(m_1,m_2)=(T_{\rm si},L_{\rm si}),\qquad
+\Phi(m_1,m_2)=(a,b),
+\end{equation}
+where $(a,b)$ are the physical $4\times4$ Floquet trace invariants defined in
+Sec.~\ref{sec:floquet}.
 
-\section{Topological-word conventions}
+\section{Topological-word convention}
 
-Every catalog member is published with the syzygy word $bABabaBAba$.
-Removing the three binary-collision points from the shape sphere leaves a
-space whose fundamental group is free on two generators, so a collisionless
-periodic orbit determines a conjugacy class in $F_2$: a cyclic word modulo
-free reduction and rotation, with an uppercase letter denoting the inverse
-generator~\cite{montgomery1995geometricphase,moeckel2012regularization}.
+Every catalog member is published with the syzygy word $bABabaBAba$. Removing
+the three binary-collision points from the shape sphere leaves a space whose
+fundamental group is free on two generators; a collisionless periodic orbit
+therefore determines a conjugacy class in $F_2$ \cite{montgomery1995geometricphase,moeckel2012regularization}.
 The published word is already freely and cyclically reduced and rotates to
-$ABabaBAbab$.
-Letter count and collinear-crossing count are distinct quantities; the number
-of syzygies per period is not re-derived here.
-The word is catalog metadata.
-Component identity in this work is determined by continuation of periodic
-solutions~\cite{chenciner2000figureeight,li2025review}.
+$ABabaBAbab$. The word is catalog metadata. Component identity in the Letter is
+determined by continuation of periodic solutions.
 
 \section{Continuation algorithm and branch matching}
 
@@ -81,221 +80,212 @@ Published samples occupy the collinear shooting chart
 \begin{equation}
 \begin{aligned}
 \mathbf r_1&=(x_1,0),& \mathbf r_2&=(1,0),& \mathbf r_3&=(0,0),\\
-\mathbf v_1&=(0,v_1),& \mathbf v_2&=(0,v_2).
+\mathbf v_1&=(0,v_1),& \mathbf v_2&=(0,v_2),
 \end{aligned}
 \end{equation}
-with $\mathbf v_3$ fixed by vanishing total momentum.
-The shooting unknowns at fixed masses are $(x_1,v_1,v_2,T)$.
-The corrector is applied in eight-dimensional center-of-mass-reduced
-coordinates, which remove the translational kernel before the Newton step.
-A neighboring catalog point supplies the predictor.
-A connection is recorded when bidirectional continuation converges and the
-terminal shooting charts match.
+with $\mathbf v_3$ fixed by vanishing total momentum. The shooting unknowns at
+fixed masses are $(x_1,v_1,v_2,T)$. A neighboring catalog point supplies the
+predictor; the corrector restores periodicity in eight-dimensional
+center-of-mass-reduced coordinates. A connection is recorded when
+bidirectional continuation converges and the terminal shooting charts match.
 
-\section{Mass-adjacency graph and spanning tree}
+\section{Mass-adjacency graph and selected connections}
 
 The $135{,}445$ sampled solutions form a connected mass-adjacency graph with
 $270{,}087$ links of grid step $0.001$ and a spanning tree of $135{,}444$
-edges.
-Connectivity of that graph is the starting combinatorial fact; dynamical
-connectivity is the continuation of periodic solutions along selected links.
-
-\section{Selection and results of the 26 difficult connections}
-
-Twenty-six links were selected as the strongest available tests of branch
-separation:
+edges. Twenty-six connections were selected as the strongest available tests
+of branch separation:
 \begin{enumerate}
 \item five macroscopic bottlenecks of the spanning tree, including a cut
-separating about $40\%$ of the tree, with terminal normalized chart mismatch
-below $10^{-12}$ in both directions;
-\item the twenty globally largest chart discontinuities along the spanning
-tree, continued with $6$, $12$, $24$, and $48$ substeps as required, all
-passing;
-\item one long-range pair at $(m_1,m_2)=(1.072,1.066)$ and $(1.100,1.121)$,
-mass distance $0.061717$, chosen because the invariant images nearly coincide.
+separating approximately $40\%$ of the tree;
+\item the twenty largest chart discontinuities along the spanning tree,
+continued with $6$, $12$, $24$, or $48$ substeps as required;
+\item the long-range pair $(m_1,m_2)=(1.072,1.066)$ and $(1.100,1.121)$, whose
+mass distance is $0.061717$ and whose invariant images nearly coincide.
 \end{enumerate}
-Bidirectional continuation succeeded on all $26$ links.
-The rank-$5$ spanning-tree edge at $m_2=0.705$ required $24$ substeps;
-endpoint corrected residuals were $1.20\times10^{-9}$ and $1.13\times10^{-9}$.
-A $647$-point shooting-rank recensus, after re-correction of the $28$
-lowest-rank samples, left a minimum scaled rank ratio $1.08\times10^{-5}$ and
-maximum closure $1.80\times10^{-8}$.
+Bidirectional continuation succeeded on all $26$ connections. The most
+expensive spanning-tree link required $24$ substeps; its endpoint-corrected
+residuals were $1.20\times10^{-9}$ and $1.13\times10^{-9}$. A $647$-point
+shooting-rank recensus, after re-correction of the $28$ lowest-rank samples,
+left a minimum scaled rank ratio $1.08\times10^{-5}$ and maximum closure
+$1.80\times10^{-8}$.
 
 \section{Generic strict-periodic cross-check}
 
 The long-range pair was repeated in a translation-reduced strict-periodic
-formulation that does not impose the collinear-velocity ansatz.
-Both directions passed, with closure of order $10^{-9}$ and terminal matches
-of order $10^{-9}$.
-The remaining $25$ links were continued in the published collinear chart.
+formulation that does not impose the collinear-velocity ansatz. Both directions
+converged, with closure and terminal-match residuals of order $10^{-9}$. The
+remaining $25$ selected connections were continued in the published collinear
+chart.
 
 \section{Invariant-projection audit}
 
-Centered finite differences of $\Psi$ on the published grid produce $134{,}046$
-interior Jacobian estimates.
-The normalized determinant takes both signs: $113{,}514$ positive and
-$20{,}532$ negative.
-There are $590$ adjacent determinant-sign-change edges, and those nodes form
-one connected locus in the sampled mass plane.
-The smallest normalized singular-value ratio is about $1.39\times10^{-6}$.
-A neighbor search in the standardized $(T_{\rm si},L_{\rm si})$ plane finds
-$27{,}111$ rows whose nearest invariant neighbor is at least $0.05$ away in
-mass; $86$ of those far-mass pairs have standardized invariant distance below
-$10^{-4}$.
-The long-range pair of Sec.~V is one such near coincidence.
-These counts identify a singular locus of $\Psi$ and a many-to-one character
-of the sampled projection; they are a discrete audit of the published grid.
+Centered finite differences of $\Psi$ on the published grid produce
+$134{,}046$ interior Jacobian estimates. The normalized determinant takes both
+signs: $113{,}514$ positive and $20{,}532$ negative. There are $590$ adjacent
+determinant-sign-change edges, and their incident nodes form one connected
+locus in the sampled mass plane. The smallest normalized singular-value ratio
+is approximately $1.39\times10^{-6}$.
 
-\section{Floquet reduction and spectral invariants}
+A nearest-neighbor search in standardized $(T_{\rm si},L_{\rm si})$ coordinates
+finds $27{,}111$ rows whose nearest invariant neighbor is at least $0.05$ away
+in mass. Eighty-six of those far-mass pairs have standardized invariant
+distance below $10^{-4}$. The long-range pair above is one such near
+coincidence. These counts identify a singular locus and strong degeneracy of
+the sampled projection; they are a discrete audit of the published grid.
 
-The publication monodromy is computed in canonical Jacobi coordinates and
-reduced to the physical quotient $E^{\omega}/E$,
-$E=\mathrm{span}\{X_H,X_L\}$, yielding a $4\times 4$ symplectic matrix
-$M$~\cite{yakubovich1975,howard1987linear,frauenfelder2023symplectic,galan2002figureeight}.
-With $\alpha=\mathrm{tr}\,M$ and
-$\beta=\bigl((\mathrm{tr}\,M)^2-\mathrm{tr}(M^2)\bigr)/2$,
+\section{Physical Floquet reduction and spectral invariants}
+\label{sec:floquet}
+
+The variational equation is integrated in canonical Jacobi coordinates and
+reduced to the physical quotient $E^{\omega}/E$, with
+$E=\mathrm{span}\{X_H,X_L\}$. The result is a $4\times4$ symplectic return map
+$M_{\rm ph}$ \cite{yakubovich1975,howard1987linear,frauenfelder2023symplectic,galan2002figureeight}.
+Define
 \begin{equation}
-P(t)=t^2-(\alpha-4)t+\beta-4\alpha+8,\qquad t=\lambda+\lambda^{-1}.
+a=\operatorname{tr}M_{\rm ph},\qquad
+b=\frac{(\operatorname{tr}M_{\rm ph})^2-
+\operatorname{tr}(M_{\rm ph}^2)}{2}.
 \end{equation}
-Spectral stability of both reciprocal pairs is equivalent to both roots of
-$P$ lying in $[-2,2]$.
-The walls are $G_+=P(+2)$, $G_-=P(-2)$, and the discriminant $\Delta$ of $P$.
-The exact spectral vertices are $(0,-4)$ (double $-1$), $(4,4)$ (mixed
-$+1/-1$), and $(8,28)$ (double $+1$).
+Then
+\begin{equation}
+\chi(\lambda)=\lambda^4-a\lambda^3+b\lambda^2-a\lambda+1,
+\end{equation}
+and, with $t=\lambda+\lambda^{-1}$,
+\begin{equation}
+P(t)=t^2-at+b-2.
+\end{equation}
+Spectral stability is equivalent to both roots of $P$ lying in $[-2,2]$. The
+three physical boundaries are
+\begin{equation}
+G_+=b-2a+2,\qquad G_-=b+2a+2,\qquad
+\Delta=a^2-4b+8.
+\end{equation}
+Their exact vertices are $(-4,6)$ (double $-1$), $(0,-2)$ (mixed $+1/-1$),
+and $(4,6)$ (double $+1$).
 
-\section{High-precision $(+1)$ transition}
+The committed full-domain survey and Supplemental Fig.~S1 use the equivalent
+shifted eight-dimensional trace convention
+\begin{equation}
+\alpha=a+4,\qquad \beta=b+4a+6.
+\end{equation}
+In those coordinates
+\begin{equation}
+P(t)=t^2-(\alpha-4)t+\beta-4\alpha+8,
+\end{equation}
+and the same vertices are $(0,-4)$, $(4,4)$, and $(8,28)$. The labels
+$G_+$, $G_-$, and $\Delta$ therefore identify the same physical events in both
+coordinate conventions.
+
+\section{High-precision $+1$ transition}
 
 On the slice $m_1=0.8023446113666945$, $m_3=1$, an independent $60$-digit
-Verner integrator with the physical quotient encloses the lower transition by
-the $m_2$ bracket
+Verner integration with the physical quotient encloses the lower transition in
 \begin{equation}
-[0.7540187211922449,\,0.7540187227698909]
+m_2\in[0.7540187211922449,\,0.7540187227698909],
 \end{equation}
-of width $1.577646\times10^{-9}$, with a sign change of the $+1$ event
-function.
-The smaller-$m_2$ flank carries a real reciprocal pair
-$(\lambda,1/\lambda)\approx(0.9748,1.0258)$ and one elliptic pair.
-The larger-$m_2$ flank places the formerly real pair on the unit circle near
-$+1$ at $0.99968\pm 0.02547\,i$.
-Reduced closures are of order $10^{-21}$; physical symplectic defects are of
-order $10^{-19}$.
+a bracket of width $1.577646\times10^{-9}$ with a sign change of $G_+$. The
+smaller-$m_2$ flank carries a real reciprocal pair
+$(\lambda,\lambda^{-1})\approx(0.9748,1.0258)$ and one elliptic pair. The
+larger-$m_2$ flank places the formerly real pair on the unit circle near $+1$
+at $0.99968\pm0.02547i$. Reduced closures are of order $10^{-21}$ and physical
+symplectic defects are of order $10^{-19}$.
 
 \section{High-precision Hamiltonian--Hopf transition}
 
-On the slice $m_1=0.8022889780964406$, the upper transition is enclosed by
+On the slice $m_1=0.8022889780964406$, the upper transition is enclosed in
 \begin{equation}
-m_2\in[0.7592347034247101,\,0.7592347096924873]
+m_2\in[0.7592347034247101,\,0.7592347096924873],
 \end{equation}
-of width $6.267777\times10^{-9}$, with a sign change of $\Delta$.
-On the stable flank the two upper-half unit modes are
-$0.40876+0.91264\,i$ and $0.44163+0.89720\,i$, with Krein forms of opposite
-sign $+3.76\times10^{-3}$ and $-3.72\times10^{-3}$.
-On the unstable flank the spectrum is a reciprocal complex quartet with
-radius deviation $1.83\times10^{-2}$ and no remaining upper-half unit modes.
-Reduced closures are of order $10^{-22}$; physical symplectic defects are of
-order $10^{-20}$.
+a bracket of width $6.267777\times10^{-9}$ with a sign change of $\Delta$.
+On the stable flank the upper-half unit modes are
+$0.40876+0.91264i$ and $0.44163+0.89720i$, with Krein forms of opposite sign,
+$+3.76\times10^{-3}$ and $-3.72\times10^{-3}$. On the unstable flank the
+spectrum is a reciprocal complex quartet with radius deviation
+$1.83\times10^{-2}$. Reduced closures are of order $10^{-22}$ and physical
+symplectic defects are of order $10^{-20}$.
 
 \section{Three mixed spectral intersections}
 
 Newton solves of $G_+=G_-=0$ in the same $60$-digit implementation converge to
-the three mass points in Table~\ref{tab:mixed}.
-Each is a preimage of $(\alpha,\beta)=(4,4)$.
-Localization is by residual rather than by a one-dimensional sign-change
-bracket.
+the three mass points in Table~\ref{tab:mixed}. Each is a preimage of the
+physical vertex $(a,b)=(0,-2)$, equivalently $(\alpha,\beta)=(4,4)$ in the
+shifted convention. Localization is by simultaneous residual minimization.
 
-\begin{table}[t]
-\caption{\label{tab:mixed}Mixed $(+1/-1)$ intersections at $m_3=1$.}
-\begin{ruledtabular}
-\begin{tabular}{llll}
-Location & $m_1$ & $m_2$ & relative event \\
-\hline
-principal left  & $0.9292391921$ & $0.8853664625$ & $1.5\times10^{-13}$ \\
-secondary left  & $0.9967681995$ & $0.9560193602$ & $1.2\times10^{-14}$ \\
-principal right & $1.0495531867$ & $1.1294758073$ & $3.1\times10^{-14}$ \\
+\begin{table}[ht]
+\centering
+\caption{Mixed $+1/-1$ intersections at $m_3=1$.}
+\label{tab:mixed}
+\begin{tabular}{lccc}
+\toprule
+Location & $m_1$ & $m_2$ & Relative event residual \\
+\midrule
+Principal left  & $0.9292391921$ & $0.8853664625$ & $1.5\times10^{-13}$ \\
+Secondary left  & $0.9967681995$ & $0.9560193602$ & $1.2\times10^{-14}$ \\
+Principal right & $1.0495531867$ & $1.1294758073$ & $3.1\times10^{-14}$ \\
+\bottomrule
 \end{tabular}
-\end{ruledtabular}
 \end{table}
 
 \section{Full-domain critical survey}
 
-The published table contains $620$ adjacent cells whose linear-stability
-label changes.
-Each cell was localized once and assigned to a mechanism polyline:
-$198$ of type $G_+$, $168$ of type $G_-$, and $254$ of type $\Delta$.
-Six additional event-sign polylines from a full-domain sweep contribute $153$
-samples, giving a thirteen-edge assembly in mass space
-(Fig.~\ref{fig:graph}).
-Of the $620$ cells, $462$ rest on binary64 localization and $158$ on
-arbitrary-precision corroboration.
-The assembly is a survey of sampled event preimages, not a complete topology
-of every critical curve.
+The published table contains $620$ adjacent cells whose linear-stability label
+changes. Each cell was localized once and assigned to a mechanism polyline:
+$198$ of type $G_+$, $168$ of type $G_-$, and $254$ of type $\Delta$. Six
+additional event-sign polylines from a full-domain sweep contribute $153$
+samples, giving a thirteen-edge assembly in mass space. Of the $620$ published
+transition cells, $462$ rest on binary64 localization and $158$ on
+arbitrary-precision corroboration. The assembly is a survey of sampled event
+preimages, not an exhaustive topology of every critical curve.
 
 \input{figS1_critical_graph}
 
-Two finite-lattice ends of that survey remain unclassified, at
-$(0.892,0.75308)$ and $(1.042,0.85798)$.
-Orbits still close at those ends, with re-corrected closures
-$6.6\times10^{-8}$ and $3.9\times10^{-8}$.
-Continuing outward renders the event function non-finite after travel of
+Two finite-lattice ends of the survey remain unclassified, at
+$(0.892,0.75308)$ and $(1.042,0.85798)$. Orbits still close at those endpoints,
+with re-corrected closures $6.6\times10^{-8}$ and $3.9\times10^{-8}$.
+Continuing outward renders the event functional non-finite after travel of
 $1.4\times10^{-3}$ and $2.2\times10^{-3}$ in $m_2$.
-An existence-boundary classification was implemented with fail-closed
-criteria (divergence rather than a marginal miss, invariance under step
-refinement and two higher-precision paths, independent audit, and outward
-travel); on the present record it is awarded to neither end.
 
 \section{Numerical sensitivity of the full-domain survey}
 
-Across $775$ localized roots the largest absolute event value is
-$1.9898\times10^{-8}$.
-Re-deriving the monodromy through a coordinate rotation at identical
-tolerance moves the event by more than $2\times10^{-8}$ on $345$ of the $620$
-published cells and by more than $2\times10^{-7}$ on $144$ cells, concentrated
-in $G_+$ ($126/198$) and $\Delta$ ($217/254$), with $G_-$ ($2/168$) largely
-unaffected.
-On a seeded sample of $160$ roots, closures written from the screening
-integration (relative tolerance $2\times10^{-10}$) are optimistic relative to
-the event evaluation (relative tolerance $5\times10^{-13}$) by a median factor
-$48.6$.
-Arbitrary-precision escalation of sixteen binary64-failed cells returned four
-as $\Delta$ collisions where binary64 had recorded $G_+$.
-These observations motivate reporting the headline transitions from the
-independent $60$-digit calculation.
+The $620$ published transition cells and $153$ additional sweep samples give
+$773$ survey roots; adding the two headline representatives gives the $775$
+localized records used in the residual summary. The largest stored absolute
+event value is $1.9898\times10^{-8}$.
 
-A $C^1$ variational interval integrator was attempted at five seeds.
-Four attempts return no finite enclosure.
-The remaining enclosure excludes collision but bounds the Floquet invariants
-only at scales $\alpha\sim10^{12}$ and $\beta\sim10^{24}$, with a discriminant
-interval that includes both signs and a closure interval of width
-$3.1\times10^{-3}$.
-That record is retained as a negative validation experiment; it is not used
-as an existence proof.
+Re-deriving the monodromy through a coordinate rotation at identical tolerance
+moves the event by more than $2\times10^{-8}$ on $345$ of the $620$ published
+cells and by more than $2\times10^{-7}$ on $144$ cells. The changes concentrate
+in $G_+$ ($126/198$) and $\Delta$ ($217/254$); $G_-$ changes on $2/168$ cells.
+On a seeded sample of $160$ roots, closures stored from the screening
+integration are smaller than closures remeasured at the event-evaluation
+tolerance by a median factor $48.6$. Arbitrary-precision escalation of sixteen
+difficult cells returned four as $\Delta$ collisions where binary64 had
+recorded $G_+$. These observations motivate reporting the headline mechanisms
+from the independent $60$-digit calculation.
+
+A $C^1$ variational interval integrator was also tested at five seeds. Four
+attempts returned no finite enclosure. The remaining enclosure was too broad
+to distinguish the Floquet classifications and is retained only as a negative
+validation experiment.
 
 \section{Search and coverage diagnostics}
 
-A frozen raster over
-$m_1\in[0.997,0.999]\times m_2\in[0.993,1.012]$ at step $10^{-4}$ comprises
-$4011$ samples ($0.0253\%$ of the declared rectangle).
-An additional twelve-point off-grid screen occupies $0.002539\%$ of the
-rectangle.
-Even-order root pairs and tangencies are outside the reach of a sign-change
-survey at these resolutions.
-Sign-vector audits that require converged coverage of the full declared
-$m_2$ interval encounter a large non-existence region at small $m_2$, where
-periodic closure of this family fails with residuals many orders above
-$10^{-7}$.
-Those diagnostics bound the survey; they are not used as Letter claims.
+A raster over $m_1\in[0.997,0.999]$ and $m_2\in[0.993,1.012]$ at step
+$10^{-4}$ comprises $4011$ samples, or $0.0253\%$ of the declared mass
+rectangle. An additional twelve-point off-grid screen occupies $0.002539\%$ of
+the rectangle. Even-order root pairs and tangencies are outside the reach of a
+sign-change survey at these resolutions. These diagnostics bound the global
+survey and are not used as claims in the Letter.
 
 \section{Reproducibility and software environment}
 
-Python and Julia environments are pinned by lockfile and manifest in
-Ref.~\cite{eliaz2026archive}.
-The two representative transitions and the three mixed intersections are
-stored as JSON records
-\texttt{V1\_CANONICAL\_LOWER\_PLUS\_ONE\_2026-08-15.json},
-\texttt{V1\_CANONICAL\_UPPER\_COLLISION\_2026-08-15.json}, and
-\texttt{V1\_MIXED\_CANONICAL\_*\_2026-08-15.json}.
-Figures in the Letter are deterministic TikZ drawings from those records and
-from the connectivity/projection audit summarized above.
+The Python screening and continuation environment uses CPython~3.13 with the
+repository lockfile. The independent verifier uses Julia~1.11.9, BigFloat,
+Vern9, and GenericSchur. Frozen numerical records are stored under
+\texttt{research/evidence/}; the numerical state cited by the submission is
+repository commit \texttt{a3a138a}. The manuscript and figure sources are flat
+in \texttt{paper/submission/}.
 
 \bibliography{references}
 
