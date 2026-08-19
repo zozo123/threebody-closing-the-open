@@ -2,6 +2,10 @@
 \usepackage{booktabs}
 \usepackage{tikz}
 \usepackage{subcaption}
+\usepackage{microtype}
+\hyphenpenalty=750
+\tolerance=1200
+\emergencystretch=1.5em
 \tikzset{
   gplus/.style ={circle,fill=blue!70!black,inner sep=0.45pt},
   gminus/.style={circle,fill=red!70!black,inner sep=0.45pt},
@@ -131,20 +135,22 @@ $\pm7.5\times10^{24}$ and a closure interval $3.1\times10^{-3}$ wide against the
 enclosures admit every stability classification at once, and the enclosure record calls itself
 scaffolding and declines to be an existence proof.
 
-\begin{table}[t]
-\caption{\label{tab:objects}The five objects, each at the rung its own artifact declares.}
+\begin{table*}[t]
+\caption{\label{tab:objects}The five objects, each at the rung its own artifact declares. The two
+bracketed events are localized by a sign change of the event function; the three mixed roots are
+localized by Newton residual, which is the weaker of the two and is why they sit one rung lower.}
 \begin{ruledtabular}
-\begin{tabular}{lll}
-Object & Location & Rung \\
+\begin{tabular}{llll}
+Object & $m_1$ & Localization & Rung \\
 \hline
-$+1$ crossing & $m_1=0.80234461$, $\delta m_2=1.578\times10^{-9}$ & reproduced \\
-H--Hopf collision & $m_1=0.80228898$, $\delta m_2=6.268\times10^{-9}$ & reproduced \\
-Mixed root I & $(0.92923919,0.88536646)$ & supported \\
-Mixed root II & $(0.99676820,0.95601936)$ & supported \\
-Mixed root III & $(1.04955319,1.12947581)$ & supported \\
+$+1$ crossing              & $0.80234461$ & $m_2$ bracket of width $1.578\times10^{-9}$ & independently reproduced \\
+Hamiltonian--Hopf collision & $0.80228898$ & $m_2$ bracket of width $6.268\times10^{-9}$ & independently reproduced \\
+Mixed root, principal left  & $0.92923919$ & $m_2=0.88536646$, Newton residual            & high-precision supported \\
+Mixed root, secondary left  & $0.99676820$ & $m_2=0.95601936$, Newton residual            & high-precision supported \\
+Mixed root, principal right & $1.04955319$ & $m_2=1.12947581$, Newton residual            & high-precision supported \\
 \end{tabular}
 \end{ruledtabular}
-\end{table}
+\end{table*}
 
 \emph{The 620 cells.}---All $620$ published transition cells are localized once each, none left as a
 Newton failure, and each is assigned to exactly one of seven mechanism polylines: $198$ on $G_+$
