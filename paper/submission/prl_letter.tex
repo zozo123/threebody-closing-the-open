@@ -111,32 +111,31 @@ separation.
 \emph{Floquet stability.}---After the neutral symmetry directions are removed,
 each periodic orbit has four nontrivial Floquet multipliers forming two
 reciprocal pairs. Let $M_{\rm ph}$ be the corresponding $4\times4$ symplectic
-return map, and define its physical trace coefficients
+return map and define
 \begin{equation}
 a=\operatorname{tr}M_{\rm ph},\qquad
 b=\frac{(\operatorname{tr}M_{\rm ph})^2-
 \operatorname{tr}(M_{\rm ph}^2)}{2}.
 \end{equation}
-For direct comparison with the catalog convention, we use the shifted
-invariants
+Its characteristic polynomial is
 \begin{equation}
-\alpha=a+4,\qquad \beta=b+4a+6.
+\chi(\lambda)=\lambda^4-a\lambda^3+b\lambda^2-a\lambda+1.
 \end{equation}
 With $t=\lambda+\lambda^{-1}$, the two reciprocal pairs are determined by
 \begin{equation}
-P(t)=t^2-(\alpha-4)t+\beta-4\alpha+8.
+P(t)=t^2-at+b-2.
 \end{equation}
 Spectral stability requires both roots of $P$ to lie in $[-2,2]$. The three
 boundaries are
 \begin{align}
-G_+&=P(2)=\beta-6\alpha+20,\\
-G_-&=P(-2)=\beta-2\alpha+4,\\
-\Delta&=\alpha^2+8\alpha-16-4\beta.
+G_+&=P(2)=b-2a+2,\\
+G_-&=P(-2)=b+2a+2,\\
+\Delta&=a^2-4b+8.
 \end{align}
 The conditions $G_+=0$ and $G_-=0$ place a multiplier at $+1$ and $-1$,
 respectively; $\Delta=0$ marks a collision of the two reciprocal mode traces.
 The critical curves in mass space are preimages of these boundaries under
-$\Phi(m_1,m_2)=(\alpha,\beta)$
+$\Phi(m_1,m_2)=(a,b)$
 \cite{yakubovich1975,howard1987linear,frauenfelder2023symplectic}.
 
 Symplecticity pairs each nontrivial multiplier $\lambda$ with
@@ -162,11 +161,10 @@ Hamiltonian--Hopf transition. The independent $60$-digit calculation
 reproduces the critical location within an $m_2$ bracket of width
 $6.3\times10^{-9}$.
 
-The $+1$ and $-1$ boundaries meet at the shifted spectral vertex
-$(\alpha,\beta)=(4,4)$. Solving $G_+=G_-=0$ yields three mixed spectral
-intersections in the sampled mass domain. Their coordinates and residuals are
-listed in the Supplemental Material. All three were recomputed at $60$-digit
-precision.
+The $+1$ and $-1$ boundaries meet at the physical spectral vertex
+$(a,b)=(0,-2)$. Solving $G_+=G_-=0$ yields three mixed spectral intersections
+in the sampled mass domain. Their coordinates and residuals are listed in the
+Supplemental Material. All three were recomputed at $60$-digit precision.
 
 Direct continuation thus connects the two projected branches within one
 sampled component of the LLL periodic-orbit manifold. A singular locus of the
@@ -192,10 +190,10 @@ $2.3\times10^{-10}$ and terminal chart mismatch below $6\times10^{-13}$.
 \paragraph{Physical Floquet calculation.}
 The variational equation is integrated in canonical Jacobi coordinates. The
 Hamiltonian and angular-momentum symmetry directions are removed through the
-physical quotient $E^{\omega}/E$, leaving $M_{\rm ph}$. The shifted invariants
-$(\alpha,\beta)$ used in the Letter are related to the physical trace
-coefficients $(a,b)$ by the equations above; the physical mixed vertex
-$(a,b)=(0,-2)$ is therefore $(\alpha,\beta)=(4,4)$.
+physical quotient $E^{\omega}/E$, leaving $M_{\rm ph}$. The full-domain survey
+stores the equivalent shifted coordinates $\alpha=a+4$ and
+$\beta=b+4a+6$; the physical mixed vertex $(0,-2)$ is $(4,4)$ in that
+convention.
 
 \paragraph{High-precision verification.}
 An independent implementation uses $60$-digit arithmetic, a ninth-order
