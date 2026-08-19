@@ -23,5 +23,10 @@ paper/**/*.out
 paper/**/*.pdf
 paper/**/*Notes.bib
 
+# Exception: the two finished letters are deliverables, not build products, and
+# are tracked so the repository alone is enough to read and publish them.
+!paper/short/prl_letter.pdf
+!paper/short/main_short.pdf
+
 # Agent worktrees and session scratch (never part of the scientific record)
 .claude/

@@ -357,7 +357,10 @@ across the declared $m_2$ span and shows its coverage.  An unmeasured gap
 is not a clean interval.
 \item Do not promote any interior lattice end to a scientific node.
 \item Classify the physical-soft $+1$ daughter, or falsify it.  Do not call
-the secondary-left birth a fold: stationarity converges to $-30$, not $0$.
+the secondary-left birth a fold: stationarity is met, $\partial G/\partial m_2$ falling to
+$-6.1\times10^{-14}$ against a $10^{-6}$ gate, but the curvature is undetermined because
+$\partial^2G/\partial m_2^2$ diverges as $h^{-2}$ under stencil refinement, from
+$-3.9\times10^{8}$ at $h=8\times10^{-5}$ to $-2.5\times10^{10}$ at $h=10^{-5}$.
 \item Flip \texttt{release\_ready} only with
 \texttt{scripts/assemble\_critical\_graph.py}.
 \item Rerun the novelty search on the freeze day and run
