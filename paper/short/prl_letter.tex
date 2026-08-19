@@ -7,6 +7,7 @@
 in the Li--Li--Liao unequal-mass catalog}
 
 \author{Yossi Eliaz}
+\author{Ori Chemo}
 \affiliation{Incredibuild, incredibuild.com}
 \affiliation{islo.dev}
 \affiliation{Department of Computer Science, Holon Institute of Technology (HIT), Holon, Israel}
@@ -149,7 +150,15 @@ binary64-failed cells returned four as $\Delta$ collisions where binary64 had re
 \emph{What is not established.}---The critical graph is not closed. Of $26$ edge endpoints $24$ are
 attached; two finite-lattice sweep ends remain unclassified, at $(0.892,0.75308)$ and
 $(1.042,0.85798)$. The incidence splits into two components---the collision curve is still its
-own---and three declared nodes carry no incidence. Three classifications are explicitly not claimed.
+own---and three declared nodes carry no incidence. Both unclassified ends lie inside the
+non-existence region characterized below, and continuing outward from either drives the event
+functional to a non-finite value within $2\times10^{-3}$ in mass. Neither is therefore a catalog
+overlap, a declared-domain face, nor a closed loop, which are the only stops the continuation
+resolver admits; we have implemented a fourth, an existence-boundary terminus, whose award requires
+divergence rather than a marginal miss, invariance of the failure under step refinement and under two
+independent higher-precision paths, independent audit corroboration, and outward travel. Every one of
+those conditions can only refuse, and on the present evidence the class is awarded to neither end, so
+the two remain unclassified here. Three further classifications are explicitly not claimed.
 The secondary-left birth is not a certified nondegenerate fold: transversality is real, with
 $\partial G/\partial m_1=28.0456$ convergent under refinement, but the second-derivative
 stationarity test converges to $-30$ rather than to zero. The secondary-right terminus carries
