@@ -1,4 +1,12 @@
-\begin{thebibliography}{12}%
+%apsrev4-2.bst 2019-01-14 (MD) hand-edited version of apsrev4-1.bst
+%Control: key (0)
+%Control: author (8) initials jnrlst
+%Control: editor formatted (1) identically to author
+%Control: production of article title (0) allowed
+%Control: page (0) single
+%Control: year (1) truncated
+%Control: production of eprint (0) enabled
+\begin{thebibliography}{8}%
 \makeatletter
 \providecommand \@ifxundefined [1]{%
  \@ifx{#1\undefined}
@@ -37,7 +45,7 @@
 \providecommand \translation [1]{[#1]}%
 \providecommand \BibitemOpen [0]{}%
 \providecommand \bibitemStop [0]{}%
-\providecommand \bibitemNoStop [0]{.}%
+\providecommand \bibitemNoStop [0]{.\EOS\space}%
 \providecommand \EOS [0]{\spacefactor3000\relax}%
 \providecommand \BibitemShut  [1]{\csname bibitem#1\endcsname}%
 \let\auto@bib@innerbib\@empty
@@ -50,16 +58,17 @@
   {Montgomery}},\ }\bibfield  {title} {\bibinfo {title} {A remarkable periodic
   solution of the three-body problem in the case of equal masses},\ }\href@noop
   {} {\bibfield  {journal} {\bibinfo  {journal} {Annals of Mathematics}\
-  }\textbf {\bibinfo {volume} {152}},\ \bibinfo {pages} {881} (\bibinfo {year}
-  {2000})},\ \Eprint {https://arxiv.org/abs/math/0011268} {arXiv:math/0011268}
-  \BibitemShut {NoStop}%
+  }\bibinfo {series} {2},\ \textbf {\bibinfo {volume} {152}},\ \bibinfo {pages}
+  {881} (\bibinfo {year} {2000})},\ \Eprint
+  {https://arxiv.org/abs/math/0011268} {arXiv:math/0011268} \BibitemShut
+  {NoStop}%
 \bibitem [{\citenamefont {Gal{\'a}n}\ \emph {et~al.}(2002)\citenamefont
   {Gal{\'a}n}, \citenamefont {Mu{\~n}oz-Almaraz}, \citenamefont {Freire},
   \citenamefont {Doedel},\ and\ \citenamefont
   {Vanderbauwhede}}]{galan2002figureeight}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
-  {Gal{\'a}n}}, \bibinfo {author} {\bibfnamefont {F.~J.}~\bibnamefont
+  {Gal{\'a}n}}, \bibinfo {author} {\bibfnamefont {F.~J.}\ \bibnamefont
   {Mu{\~n}oz-Almaraz}}, \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
   {Freire}}, \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont {Doedel}},\
   and\ \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Vanderbauwhede}},\
@@ -69,19 +78,18 @@
   {\bibinfo  {journal} {Physical Review Letters}\ }\textbf {\bibinfo {volume}
   {88}},\ \bibinfo {pages} {241101} (\bibinfo {year} {2002})}\BibitemShut
   {NoStop}%
-\bibitem [{\citenamefont {Li}\ and\ \citenamefont
-  {Liao}(2025)}]{li2025review}%
+\bibitem [{\citenamefont {Li}\ and\ \citenamefont {Liao}(2025)}]{li2025review}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {X.}~\bibnamefont
   {Li}}\ and\ \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Liao}},\
   }\bibfield  {title} {\bibinfo {title} {A review on periodic orbits of the
   general planar three-body problem},\ }\href
   {https://doi.org/10.1007/s11433-024-2686-6} {\bibfield  {journal} {\bibinfo
-  {journal} {Science China Physics, Mechanics \& Astronomy}\ }\textbf
-  {\bibinfo {volume} {68}},\ \bibinfo {pages} {289501} (\bibinfo {year}
+  {journal} {Science China Physics, Mechanics \& Astronomy}\ }\textbf {\bibinfo
+  {volume} {68}},\ \bibinfo {pages} {289501} (\bibinfo {year}
   {2025})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Li}, \citenamefont {Li},\ and\ \citenamefont
-  {Liao}(2021)}]{li2021stable}%
+\bibitem [{\citenamefont {Li}\ \emph {et~al.}(2021)\citenamefont {Li},
+  \citenamefont {Li},\ and\ \citenamefont {Liao}}]{li2021stable}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {X.}~\bibnamefont
   {Li}}, \bibinfo {author} {\bibfnamefont {X.}~\bibnamefont {Li}},\ and\
@@ -89,26 +97,27 @@
   {title} {\bibinfo {title} {One family of 13315 stable periodic orbits of the
   non-hierarchical unequal-mass triple system},\ }\href
   {https://doi.org/10.1007/s11433-020-1624-7} {\bibfield  {journal} {\bibinfo
-  {journal} {Science China Physics, Mechanics \& Astronomy}\ }\textbf
-  {\bibinfo {volume} {64}},\ \bibinfo {pages} {219511} (\bibinfo {year}
-  {2021})},\ \Eprint {https://arxiv.org/abs/2007.10184} {arXiv:2007.10184}
+  {journal} {Science China Physics, Mechanics \& Astronomy}\ }\textbf {\bibinfo
+  {volume} {64}},\ \bibinfo {pages} {219511} (\bibinfo {year} {2021})},\
+  \Eprint {https://arxiv.org/abs/2007.10184} {arXiv:2007.10184 [nlin.CD]}
   \BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Stan{\v c}evi{\'c}}, \citenamefont
-  {Vasiljevi{\'c}},\ and\ \citenamefont
-  {Dmitra{\v s}inovi{\'c}}(2023)}]{stancevic2023moth}%
+\bibitem [{\citenamefont {Stan{\v c}evi{\'c}}\ \emph
+  {et~al.}(2023)\citenamefont {Stan{\v c}evi{\'c}}, \citenamefont
+  {Vasiljevi{\'c}},\ and\ \citenamefont {Dmitra{\v
+  s}inovi{\'c}}}]{stancevic2023moth}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.}~\bibnamefont
   {Stan{\v c}evi{\'c}}}, \bibinfo {author} {\bibfnamefont {V.}~\bibnamefont
   {Vasiljevi{\'c}}},\ and\ \bibinfo {author} {\bibfnamefont {V.}~\bibnamefont
-  {Dmitra{\v s}inovi{\'c}}},\ }\bibfield  {title} {\bibinfo {title} {The mass-,
-  period- and angular momentum dependences of the ``moth-i'' family of 3-body
-  orbits},\ }\href {https://doi.org/10.2139/ssrn.4603360} {\  (\bibinfo {year}
-  {2023})},\ \bibinfo {note} {SSRN preprint}\BibitemShut {NoStop}%
+  {Dmitra{\v s}inovi{\'c}}},\ }\href {https://doi.org/10.2139/ssrn.4603360}
+  {\bibinfo {title} {The mass-, period- and angular momentum dependences of the
+  ``moth-i'' family of 3-body orbits}},\ \bibinfo {howpublished} {SSRN
+  preprint} (\bibinfo {year} {2023})\BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Yakubovich}\ and\ \citenamefont
   {Starzhinskii}(1975)}]{yakubovich1975}%
   \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {V.~A.}~\bibnamefont
-  {Yakubovich}}\ and\ \bibinfo {author} {\bibfnamefont {V.~M.}~\bibnamefont
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {V.~A.}\ \bibnamefont
+  {Yakubovich}}\ and\ \bibinfo {author} {\bibfnamefont {V.~M.}\ \bibnamefont
   {Starzhinskii}},\ }\href@noop {} {\emph {\bibinfo {title} {Linear
   Differential Equations with Periodic Coefficients}}}\ (\bibinfo  {publisher}
   {Wiley},\ \bibinfo {address} {New York},\ \bibinfo {year} {1975})\BibitemShut
@@ -116,34 +125,24 @@
 \bibitem [{\citenamefont {Howard}\ and\ \citenamefont
   {MacKay}(1987)}]{howard1987linear}%
   \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.~E.}~\bibnamefont
-  {Howard}}\ and\ \bibinfo {author} {\bibfnamefont {R.~S.}~\bibnamefont
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.~E.}\ \bibnamefont
+  {Howard}}\ and\ \bibinfo {author} {\bibfnamefont {R.~S.}\ \bibnamefont
   {MacKay}},\ }\bibfield  {title} {\bibinfo {title} {Linear stability of
   symplectic maps},\ }\href {https://doi.org/10.1063/1.527544} {\bibfield
   {journal} {\bibinfo  {journal} {Journal of Mathematical Physics}\ }\textbf
   {\bibinfo {volume} {28}},\ \bibinfo {pages} {1036} (\bibinfo {year}
   {1987})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Frauenfelder}, \citenamefont {Koh},\ and\
-  \citenamefont {Moreno}(2023)}]{frauenfelder2023symplectic}%
+\bibitem [{\citenamefont {Frauenfelder}\ \emph {et~al.}(2023)\citenamefont
+  {Frauenfelder}, \citenamefont {Koh},\ and\ \citenamefont
+  {Moreno}}]{frauenfelder2023symplectic}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {U.}~\bibnamefont
   {Frauenfelder}}, \bibinfo {author} {\bibfnamefont {D.}~\bibnamefont {Koh}},\
   and\ \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Moreno}},\
   }\bibfield  {title} {\bibinfo {title} {Symplectic methods in the numerical
   search of orbits in real-life planetary systems},\ }\href
-  {https://doi.org/10.1137/22M1500459} {\bibfield  {journal} {\bibinfo  {journal}
-  {SIAM Journal on Applied Dynamical Systems}\ }\textbf {\bibinfo {volume}
-  {22}},\ \bibinfo {pages} {3284} (\bibinfo {year} {2023})}\BibitemShut
-  {NoStop}%
-\bibitem [{\citenamefont {Chamo}\ and\ \citenamefont
-  {Eliaz}(2026)}]{eliaz2026archive}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {O.}~\bibnamefont
-  {Chamo}}\ and\ \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont {Eliaz}},\
-  }\bibfield  {title} {\bibinfo {title} {Continuation geometry of unequal-mass
-  three-body periodic orbits: numerical data and software},\ }\href
-  {https://github.com/zozo123/threebody-closing-the-open} {\  (\bibinfo {year}
-  {2026})},\ \bibinfo {note} {Source repository and submission snapshot;
-  upstream catalog accepted only at Git blob
-  79b2963df43e62201c35690bfc22bec166132427}\BibitemShut {NoStop}%
+  {https://doi.org/10.1137/22M1500459} {\bibfield  {journal} {\bibinfo
+  {journal} {SIAM Journal on Applied Dynamical Systems}\ }\textbf {\bibinfo
+  {volume} {22}},\ \bibinfo {pages} {3284} (\bibinfo {year}
+  {2023})}\BibitemShut {NoStop}%
 \end{thebibliography}%
