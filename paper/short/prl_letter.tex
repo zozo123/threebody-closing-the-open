@@ -1,5 +1,15 @@
 \documentclass[aps,prl,reprint,amsmath,amssymb]{revtex4-2}
 \usepackage{booktabs}
+\usepackage{tikz}
+\tikzset{
+  gplus/.style ={circle,fill=blue!70!black,inner sep=0.45pt},
+  gminus/.style={circle,fill=red!70!black,inner sep=0.45pt},
+  delta/.style ={circle,fill=teal!75!black,inner sep=0.45pt},
+  unattached/.style={circle,draw=black,thick,inner sep=1.5pt},
+  sheet/.style ={circle,fill=gray!45,inner sep=0.28pt},
+  wall/.style  ={black,thick},
+  vertex/.style={rectangle,fill=black,inner sep=1.1pt},
+}
 
 \begin{document}
 
@@ -66,6 +76,9 @@ computed is the preimage $\Phi^{-1}(\partial\mathcal{D})$ on one catalog sheet, 
 $\Phi:(m_1,m_2)\mapsto(\alpha,\beta)$. The gain is that a transition acquires a mechanism---a $G_+$
 crossing, a $G_-$ crossing, or a $\Delta$ collision---with the $(4,4)$ vertex as the organizing
 preimage where a $G_+$ and a $G_-$ wall meet.
+Figure~\ref{fig:graph} shows both planes.
+
+\input{fig_critical_graph}
 
 Claims below carry the rung of the artifact that produced them. \emph{Screening} is binary64
 shooting and event localization at two gates never loosened in this work, maximum absolute event
@@ -229,6 +242,16 @@ therefore open, this Letter reports what is earned rather than a solution, and n
 made. Throughout, ``stable'' denotes spectral stability of the linearized return map for planar
 motion---not nonlinear or Lyapunov stability, not KAM, and not stability against non-planar
 perturbation. A spectrally stable Hamiltonian orbit can be nonlinearly unstable through resonance.
+
+\emph{Data and code availability.}---Every number above is read from a committed artifact in the
+repository that produced it, and each is mapped to its artifact and evidence rung in the
+accompanying claim ledger. The upstream catalog is not redistributed: it is fetched at run time and
+rejected unless its Git blob hash is exactly
+\texttt{79b2963df43e62201c35690bfc22bec166132427}. Python and Julia environments are pinned by
+lockfile and manifest, the release bit is writable only by the assembler, and the assembler
+reproduces the committed critical-graph artifact byte for byte. Figure~\ref{fig:graph} is generated
+from those artifacts by a standard-library script in the repository, so it carries no plotting
+dependency and its every mark is text-diffable.
 
 \begin{acknowledgments}
 The analysis pipeline, the claim-gating machinery and this manuscript were produced by AI coding
