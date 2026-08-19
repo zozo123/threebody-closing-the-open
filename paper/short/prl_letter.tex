@@ -108,7 +108,14 @@ a sign-change bracket. The same five objects, relocalized at $50$ and
 $60$ digits and re-derived through a canonical-Jacobi and physical-quotient layer, agree in mass to
 between $8.9\times10^{-27}$ and $5.7\times10^{-25}$; those two arbitrary-precision paths share their
 bracket-localization code, so this is precision invariance and not a second program. A $60$-digit bracket is a bracket, not
-an interval-arithmetic existence proof; a residual is weaker still.
+an interval-arithmetic existence proof; a residual is weaker still. That distinction is not
+rhetorical here. A rigorous validated-flow enclosure was attempted at five seeds with a $C^1$
+variational interval integrator; four fail outright, and the one returning a finite enclosure that
+excludes collision encloses the Floquet invariants only to $\alpha\in[-1.4,1.4]\times10^{12}$ and
+$\beta\in[-9.4\times10^{23},1.9\times10^{24}]$, with a discriminant interval straddling zero by
+$\pm7.5\times10^{24}$ and a closure interval $3.1\times10^{-3}$ wide against the $10^{-7}$ gate ---
+enclosures admitting every stability classification at once, and whose own record calls itself
+scaffolding and declines to be an existence proof.
 
 \begin{table}[t]
 \caption{\label{tab:objects}The five objects, each at the rung its own artifact declares.}
@@ -147,7 +154,14 @@ are written from the corrector's screening integration at relative tolerance $2\
 the event is evaluated at $5\times10^{-13}$, and on a seeded sample of $160$ roots the recorded
 closure is optimistic by a median factor $48.6$, four exceeding the $10^{-7}$ closure gate on
 re-measurement. Mechanism labels are not immune: arbitrary-precision escalation of sixteen
-binary64-failed cells returned four as $\Delta$ collisions where binary64 had recorded $G_+$.
+binary64-failed cells returned four as $\Delta$ collisions where binary64 had recorded $G_+$. The
+same gap appears as displacement rather than as chart dependence. At the three tip masses binary64
+screening returned events $+1.53\times10^{-8}$, $-1.02\times10^{-8}$ and $-3.82\times10^{-10}$, all
+inside the gate; re-evaluated at $60$ digits at those same masses the events are
+$-1.116\times10^{-6}$, $-1.131\times10^{-6}$ and $+4.298\times10^{-8}$, exceeding it by factors
+$55.8$, $56.6$ and $2.1$, and the bracketed roots lie $7.8\times10^{-7}$, $5.1\times10^{-7}$ and
+$5.2\times10^{-7}$ away in $m_2$. A binary64 event inside this gate is therefore not evidence that a
+root sits where binary64 placed it.
 
 \emph{What is not established.}---The critical graph is not closed. Of $26$ edge endpoints $24$ are
 attached; two finite-lattice sweep ends remain unclassified, at $(0.892,0.75308)$ and
@@ -156,7 +170,13 @@ own---and three declared nodes carry no incidence. Both unclassified ends sit ab
 non-existence frontier, not inside it: orbits still close at the ends themselves, with re-corrected
 closures $6.6\times10^{-8}$ and $3.9\times10^{-8}$ inside the $10^{-7}$ gate. What defeats them is
 that continuing outward drives the event functional non-finite after travelling only
-$1.4\times10^{-3}$ and $2.2\times10^{-3}$ in $m_2$. Neither is therefore a catalog
+$1.4\times10^{-3}$ and $2.2\times10^{-3}$ in $m_2$. The tips themselves are bracketed roots rather
+than proposals: at $60$ digits the event function changes sign across $m_2$ intervals of width
+$3.354856\times10^{-9}$, $3.877628\times10^{-9}$ and $3.865492\times10^{-9}$ about
+$(0.892,0.7530796)$, $(1.042,0.8579752)$ and $(1.046,1.1060303)$, with bracket-endpoint closures at
+or below $6.2\times10^{-21}$. What is unclassified at the two ends is therefore the continuation past
+them and not their existence; no mechanism is claimed for the three, their artifacts declining that
+rung. Neither is therefore a catalog
 overlap, a declared-domain face, nor a closed loop, which are the only stops the continuation
 resolver admits; we have implemented a fourth, an existence-boundary terminus, whose award requires
 divergence rather than a marginal miss, invariance of the failure under step refinement and under two
