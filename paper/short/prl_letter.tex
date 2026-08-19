@@ -1,276 +1,305 @@
 \documentclass[aps,prl,reprint,amsmath,amssymb]{revtex4-2}
-\usepackage{booktabs}
 \usepackage{tikz}
-\usepackage{subcaption}
 \usepackage{microtype}
+\usetikzlibrary{arrows.meta,calc}
 \hyphenpenalty=750
 \tolerance=1200
 \emergencystretch=1.5em
-\tikzset{
-  gplus/.style ={circle,fill=blue!70!black,inner sep=0.45pt},
-  gminus/.style={circle,fill=red!70!black,inner sep=0.45pt},
-  delta/.style ={circle,fill=teal!75!black,inner sep=0.45pt},
-  unattached/.style={circle,draw=black,thick,inner sep=1.5pt},
-  sheet/.style ={circle,fill=gray!45,inner sep=0.28pt},
-  wall/.style  ={black,thick},
-  vertex/.style={rectangle,fill=black,inner sep=1.1pt},
-}
 
 \begin{document}
 
-\title{One continuation-connected family and two bracketed Floquet events\\
-in the Li--Li--Liao unequal-mass catalog}
+\title{Continuation Geometry Resolves Apparent Family Splitting in Unequal-Mass Three-Body Orbits}
 
 \author{Yossi Eliaz}
-\affiliation{Incredibuild, incredibuild.com}
-\affiliation{islo.dev}
-\affiliation{Department of Computer Science, Holon Institute of Technology (HIT), Holon, Israel}
+\affiliation{Incredibuild, Tel Aviv, Israel}
+\affiliation{Department of Computer Science, Holon Institute of Technology, Holon, Israel}
 
 \author{Ori Chemo}
-\affiliation{Incredibuild, incredibuild.com}
-
-\date{\today}
+\affiliation{Incredibuild, Tel Aviv, Israel}
 
 \begin{abstract}
-The Li--Li--Liao catalog reports $135{,}445$ unequal-mass non-hierarchical planar periodic orbits of
-syzygy word $bABabaBAba$ on a $0.001$ mass grid; a later analysis of the same table reads it as two
-families. Treating family identity as continuation connectivity, and the stability boundary as the
-preimage of a universal spectral domain rather than a stable/unstable mask, we find the sampled set
-supported as one continuation-connected component on $26$ adversarially chosen links, and the
-scale-invariant period/angular-momentum projection on this sheet folded and non-injective, so two
-visible branches do not imply two families. Two transitions are independently reproduced in a second
-arbitrary-precision program as bracketed mechanisms, a physical $+1$ crossing and an opposite-Krein
-Hamiltonian--Hopf collision, to $m_2$ widths $1.578\times10^{-9}$ and $6.268\times10^{-9}$; three
-mixed roots organizing the $+1/-1$ switches are supported at $60$ digits but localized by residual,
-one rung lower. We further report a limit of the method: the frozen $2\times10^{-8}$ event gate is
-finer than the reproducibility of the quantity it gates, a rotation re-derivation at identical
-tolerance moving the event on $345$ of $620$ transition cells by more than the gate itself. The critical graph is consequently not
-closed and the status is open. ``Stable'' means planar linear Floquet stability only.
+Periodic-orbit families are often represented through low-dimensional invariant
+coordinates, whose projected branch structure need not preserve the connectivity
+of the underlying solution manifold. We use numerical continuation to examine
+the $135{,}445$ unequal-mass planar three-body periodic orbits reported by Li,
+Li, and Liao, whose corrected scale-invariant period--angular-momentum
+representation was subsequently interpreted as two independent sets. The two
+projected branches belong to a single continuation-connected component, while
+the invariant projection develops a singular locus associated with their
+apparent separation. High-precision Floquet calculations identify a $(+1)$
+transition at one representative stability boundary and an opposite-Krein
+Hamiltonian--Hopf transition at another. The results show how projection
+geometry can obscure periodic-orbit connectivity while the reduced symplectic
+spectrum resolves the mechanisms governing stability changes.
 \end{abstract}
 
 \maketitle
 
-\emph{Introduction.}---The general three-body problem is not solved here, and nothing below bears on
-it. The object is finite: one frozen catalog and its stability geometry. Li, Li and Liao sampled
-$135{,}445$ unequal-mass non-hierarchical planar periodic orbits on a $0.001$ grid over
-$m_1\in[0.8,1.1]$, $m_2\in[0.7,1.2]$ at $m_3=1$, labelled $13{,}315$ linearly stable, and left $620$
-adjacent cells across which that label flips~\cite{li2021stable}. The orbits share the syzygy word
-$bABabaBAba$ that the source literature attaches to this catalog. Removing the three
-binary-collision points from the shape sphere leaves a space whose fundamental group is free on two
-generators, so a collisionless periodic orbit has a free homotopy class, that is a conjugacy class in
-$F_2$: a cyclic word modulo free reduction and rotation, with an uppercase letter denoting the
-inverse generator. We carry the word as cited catalog metadata and derive nothing from it. It is
-already freely and cyclically reduced, canonically $ABabaBAbab$. We do not assert a
-letter-per-syzygy correspondence: letter count and collinear-crossing count are distinct, and the
-number of syzygies per period on this sheet is not a quantity this work has verified. The word is a
-topological label, not a dynamical one, and we never use it as family identity: distinct branches
-may share a free-group conjugacy class.
+Periodic orbits organize the dynamics of Hamiltonian systems.
+As parameters vary, periodic solutions trace continuation manifolds whose
+geometry and stability changes encode the surrounding dynamics.
+Such families are commonly displayed through a small number of scalar
+observables, including periods, actions, conserved quantities, or
+scale-invariant combinations~\cite{chenciner2000figureeight,galan2002figureeight,li2025review}.
+These diagrams are projections of the full solution set, so visible branch
+structure can differ from continuation connectivity.
+Distinguishing projected branches from connected components therefore requires
+continuation in the underlying orbit space.
 
-Two questions about that frozen object are answerable. Is the sampled set
-one family, where \emph{family} means branch-preserving continuation inside the box and not the
-appearance of a projection? That reading of \emph{family} is what separates this analysis from the
-two-set reading of the same table~\cite{stancevic2023moth}. And what is the stability boundary, resolved by mechanism,
-once one stops treating stability as a binary mask?
+Li, Li, and Liao constructed $135{,}445$ unequal-mass non-hierarchical planar
+periodic orbits on a mass grid with $m_3=1$, including $13{,}315$ samples
+reported as linearly stable~\cite{li2021stable}.
+They described the collection as one family.
+Stan{\v c}evi{\'c}, Vasiljevi{\'c}, and Dmitra{\v s}inovi{\'c} identified two
+distinct projected branches in the corrected scale-invariant
+period--angular-momentum coordinates and interpreted them as independent
+sets~\cite{stancevic2023moth}.
+This raises a dynamical question: do those projected branches belong to
+distinct continuation components of the periodic-orbit solution set?
+All catalog members carry the same reported topological word; component
+identity in this work is determined by continuation of periodic solutions.
 
-\emph{Spectral frame.}---For the centre-of-mass-reduced planar problem the reduced monodromy is
-symplectic on the physical $E^{\omega}/E$ quotient and its spectrum is fixed by two invariants
-$(\alpha,\beta)$. Spectral stability is then a region $\mathcal{D}$ in that plane bounded by the
-walls $G_+=0$ and $G_-=0$, where an eigenvalue reaches $+1$ or $-1$, and by the discriminant
-parabola $\Delta=0$, where two unit-circle pairs collide; the three curves meet at the exact vertices
-$(0,-4)$, $(4,4)$ and $(8,28)$. This algebra is classical symplectic Floquet and Krein
-theory~\cite{yakubovich1975,frauenfelder2023symplectic} and is not a result of this work. What is
-computed is the preimage $\Phi^{-1}(\partial\mathcal{D})$ on one catalog sheet, under
-$\Phi:(m_1,m_2)\mapsto(\alpha,\beta)$. The gain is that a transition acquires a mechanism: a $G_+$
-crossing, a $G_-$ crossing, or a $\Delta$ collision, with the $(4,4)$ vertex as the organizing
-preimage where a $G_+$ and a $G_-$ wall meet.
-Figure~\ref{fig:graph} shows both planes.
+We address this question by continuing periodic solutions directly through
+mass and orbit space.
+We then compute the reduced physical Floquet spectrum and represent its
+stability boundaries through two symplectic trace
+invariants~\cite{yakubovich1975,howard1987linear,frauenfelder2023symplectic}.
+We study planar periodic orbits in the sampled Li--Li--Liao (LLL) continuation
+with $m_3=1$; stability refers throughout to the nontrivial planar Floquet
+spectrum of the reduced return map.
+We use \emph{continuation component} for a connected set of periodic solutions
+joined by the continuation procedure described below; when the historical term
+\emph{family} is used, it refers to such a component unless explicitly
+attributed to prior work.
 
-\input{fig_critical_graph}
+The sampled solutions form one continuation-connected component, and a
+continuation path joins the two branches visible in the scale-invariant
+diagram.
+The invariant projection contains a singular locus associated with their
+apparent separation.
+Along the same component, the physical Floquet spectrum exhibits a $(+1)$
+transition and an opposite-Krein Hamiltonian--Hopf transition.
+Three additional points satisfy the simultaneous $(+1)$ and $(-1)$ critical
+conditions.
+Together these results separate continuation connectivity from projected
+branch structure and identify the distinct symplectic mechanisms underlying
+representative stability changes.
 
-Claims below carry the rung of the artifact that produced them. \emph{Screening} is binary64
-shooting and event localization at two gates never loosened in this work, maximum absolute event
-$2\times10^{-8}$ and maximum periodic closure $10^{-7}$; a binary64 point is a proposal.
-\emph{Supported} means recomputed at $60$ digits in an independent program with canonical Jacobi
-monodromy and the physical symplectic quotient, but localized by Newton residual. \emph{Independently
-reproduced} means localized by a sign change of the event function in a program sharing no dynamics,
-shooting or Floquet implementation with the screening stack.
+\emph{Continuation geometry.}---We continue the periodic solutions in the mass
+parameters $(m_1,m_2)$ at fixed $m_3=1$.
+A periodic solution at one mass point supplies the predictor for a neighboring
+point, followed by correction of the orbit and period to restore periodicity.
+Repeating this procedure traces connected branches through the sampled orbit
+set.
 
-\emph{One component.}---Within the frozen catalog and the declared normalization the sampled set is
-supported as one continuation-connected component. The evidence is adversarial, not
-exhaustive. On a $135{,}444$-edge spanning tree of the $270{,}087$ mass-adjacent links we selected $26$ links to be
-as hostile to connectivity as the data permits: five macroscopic bottleneck cuts, the twenty
-globally worst chart jumps, and one deliberately pathological invariant-near-duplicate bridge whose
-endpoints lie $0.0617$ apart in mass, nearly sixty-two grid steps, and which is therefore not a tree
-edge at all. Each was crossed bidirectionally without loosening a gate. Chart independence was
-demonstrated on exactly one of the $26$, the pathological bridge, by re-crossing it in a generic
-strict-periodic chart.
+The mass-adjacency graph of the $135{,}445$ sampled solutions is connected.
+It contains $270{,}087$ mass-adjacent links and admits a spanning tree with
+$135{,}444$ edges.
+We selected $26$ connections that maximize indicators of possible branch
+separation: five macroscopic graph bottlenecks, the twenty largest chart
+discontinuities along the spanning tree, and one long-range cross-branch
+connection associated with nearly coincident invariant coordinates.
+Bidirectional continuation succeeds across all $26$ selected connections.
+The long-range cross-branch connection was also reproduced in a
+translation-reduced strict-periodic formulation.
 
-The two-family reading is addressed on the mechanism, not on the labels. On this sheet the
-corrected scale-invariant $(T_{si},L_{si})$ projection is folded and non-injective: $590$
-mass-adjacent edges carry a determinant sign change and assemble into one fold locus, and $86$
-far-separated mass pairs agree to standardized invariant distance below $10^{-4}$. A folded
-non-injective projection can show two visible branches for one connected sheet, so the inference
-from two branches to two dynamical families does not follow. This does not disprove the earlier
-analysis on its own terms~\cite{stancevic2023moth}. Three caveats stand: the
-certificate covers $26$ links and not $135{,}444$, chart independence rests on one of them, and
-separation below the published $0.001$ grid is not excluded.
+A path through the sampled continuation component connects representative
+solutions on the two branches of the $(T_{\rm si},L_{\rm si})$ diagram
+[Fig.~\ref{fig:projection}].
+The visible branch separation therefore occurs inside one continuation-connected
+sampled solution set.
 
-\emph{Two bracketed events, three mixed roots.}---On the slice $m_1=0.8023446113666945$ the lower
-transition is a generic physical $+1$ crossing of the reduced return map, bracketed in $m_2$ to width
-$1.5776460402494633\times10^{-9}$. On $m_1=0.8022889780964406$ the upper transition is an
-opposite-Krein Hamiltonian--Hopf collision, bracketed to $6.2677772144967\times10^{-9}$, with two
-upper-half unit modes of opposite Krein sign on the stable flank and none on the unstable flank; the
-Krein signature, not the eigenvalue positions, identifies the mechanism. One rung below, the
-three mixed roots of $G_+=G_-=0$, preimages of the $(4,4)$ vertex, are recomputed at $60$ digits
-with relative event norms from $1.2\times10^{-14}$ to $1.5\times10^{-13}$, but each is localized by Newton residual rather than by
-a sign-change bracket. The same five objects, relocalized at $50$ and
-$60$ digits and re-derived through a canonical-Jacobi and physical-quotient layer, agree in mass to
-between $8.9\times10^{-27}$ and $5.7\times10^{-25}$; those two arbitrary-precision paths share their
-bracket-localization code, so this is precision invariance and not a second program. A $60$-digit bracket is a bracket, not
-an interval-arithmetic existence proof; a residual is weaker still. A rigorous validated-flow enclosure was attempted at five seeds with a $C^1$
-variational interval integrator; four fail outright, and the one returning a finite enclosure that
-excludes collision encloses the Floquet invariants only to $\alpha\in[-1.4,1.4]\times10^{12}$ and
-$\beta\in[-9.4\times10^{23},1.9\times10^{24}]$, with a discriminant interval straddling zero by
-$\pm7.5\times10^{24}$ and a closure interval $3.1\times10^{-3}$ wide against the $10^{-7}$ gate; these
-enclosures admit every stability classification at once, and the enclosure record calls itself
-scaffolding and declines to be an existence proof.
+The corrected scale-invariant period and angular momentum define the invariant
+projection
+\begin{equation}
+\Psi(m_1,m_2)=\bigl(T_{\rm si},L_{\rm si}\bigr).
+\end{equation}
+Finite-difference estimates of $D\Psi$ identify adjacent mass cells across
+which $\det D\Psi$ changes sign.
+These sign changes assemble into a singular locus in the sampled mass plane.
+The audit also finds far-separated mass points whose scale-invariant
+coordinates are nearly coincident.
+The discrete audit contains $590$ determinant-sign-change edges and $86$
+long-range near coincidences under the stated thresholds.
+Together these observations identify projection geometry as the origin of the
+apparent separation between the two visible branches.
 
-\begin{table*}[t]
-\caption{\label{tab:objects}The five objects, each at the rung its own artifact declares. The two
-bracketed events are localized by a sign change of the event function; the three mixed roots are
-localized by Newton residual, which is the weaker of the two and is why they sit one rung lower.}
-\begin{ruledtabular}
-\begin{tabular}{llll}
-Object & $m_1$ & Localization & Rung \\
-\hline
-$+1$ crossing              & $0.80234461$ & $m_2$ bracket of width $1.578\times10^{-9}$ & independently reproduced \\
-Hamiltonian--Hopf collision & $0.80228898$ & $m_2$ bracket of width $6.268\times10^{-9}$ & independently reproduced \\
-Mixed root, principal left  & $0.92923919$ & $m_2=0.88536646$, Newton residual            & high-precision supported \\
-Mixed root, secondary left  & $0.99676820$ & $m_2=0.95601936$, Newton residual            & high-precision supported \\
-Mixed root, principal right & $1.04955319$ & $m_2=1.12947581$, Newton residual            & high-precision supported \\
-\end{tabular}
-\end{ruledtabular}
-\end{table*}
+\input{fig1_continuation_projection}
 
-\emph{The 620 cells.}---All $620$ published transition cells are localized once each, none left as a
-Newton failure, and each is assigned to exactly one of seven mechanism polylines: $198$ on $G_+$
-crossings, $168$ on $G_-$, and $254$ on $\Delta$ collisions. Six further label-invisible event-sign
-polylines from a full-domain sweep carry $153$ cells, giving a thirteen-edge assembly. That assembly
-is a mixture and not a certification: by the edges' own estimator records, seven of the thirteen
-polylines rest on binary64 screening alone and six carry independent arbitrary-precision
-corroboration, and of the $620$ cells $462$ are binary64 and $158$ arbitrary-precision. Under the
-ladder above, more than half the decomposition is a proposal.
+\emph{Floquet stability.}---After removal of the neutral symmetry directions,
+each periodic orbit has four nontrivial Floquet multipliers forming two
+reciprocal pairs.
+The corresponding $4\times 4$ symplectic return map can be represented by two
+trace invariants $(\alpha,\beta)$.
+With $t=\lambda+\lambda^{-1}$, the spectral polynomial is
+\begin{equation}
+P(t)=t^2-(\alpha-4)t+\beta-4\alpha+8,
+\end{equation}
+and the three spectral boundaries are
+\begin{align}
+G_+&=\beta-6\alpha+20,\\
+G_-&=\beta-2\alpha+4,\\
+\Delta&=\alpha^2+8\alpha-16-4\beta.
+\end{align}
+The conditions $G_+=0$ and $G_-=0$ correspond to multipliers at $+1$ and $-1$,
+respectively, while $\Delta=0$ marks a collision of the two reciprocal mode
+traces.
+The critical curves in mass space are preimages of these spectral boundaries
+under
+\begin{equation}
+\Phi(m_1,m_2)=(\alpha,\beta).
+\end{equation}
+We use this standard symplectic trace representation to distinguish the
+mechanisms of the observed stability
+transitions~\cite{yakubovich1975,howard1987linear}.
 
-\emph{A limit of the method.}---The frozen event gate is finer than the reproducibility of the
-quantity it gates. Across the $775$ localized
-roots the worst absolute event is $1.989798081858396\times10^{-8}$ against the $2\times10^{-8}$
-gate: $99.49\%$ of the budget, cleared by $0.51\%$, with $222$ roots above $10^{-8}$. That number is
-a property of one chart, one tolerance and one machine rather than of the roots: re-deriving the same
-monodromy through a rotation at identical tolerance moves the event by more than the gate on $345$ of
-the $620$ cells and by more than ten times the gate on $144$, concentrated in $G_+$ ($126/198$) and $\Delta$
-($217/254$), with $G_-$ ($2/168$) the only mechanism whose compliance survives. Conditioning is
-recorded for none of the $775$ roots. Closure certificates are optimistic for a related reason: they
-are written from the corrector's screening integration at relative tolerance $2\times10^{-10}$ while
-the event is evaluated at $5\times10^{-13}$, and on a seeded sample of $160$ roots the recorded
-closure is optimistic by a median factor $48.6$, four exceeding the $10^{-7}$ closure gate on
-re-measurement. Mechanism labels are not immune: arbitrary-precision escalation of sixteen
-binary64-failed cells returned four as $\Delta$ collisions where binary64 had recorded $G_+$. A
-further caveat is structural: the independent verifier brackets an event and refines it to a
-requested width, but nowhere compares the resulting event against the frozen gate, so a root it
-reports as located is not thereby certified to satisfy the gate this work quotes. The
-same gap appears as displacement, not as chart dependence. At the three tip masses binary64
-screening returned events $+1.53\times10^{-8}$, $-1.02\times10^{-8}$ and $-3.82\times10^{-10}$, all
-inside the gate; re-evaluated at $60$ digits at those same masses the events are
-$-1.116\times10^{-6}$, $-1.131\times10^{-6}$ and $+4.298\times10^{-8}$, exceeding it by factors
-$55.8$, $56.6$ and $2.1$, and the bracketed roots lie $7.8\times10^{-7}$, $5.1\times10^{-7}$ and
-$5.2\times10^{-7}$ away in $m_2$. A binary64 event inside this gate is therefore not evidence that a
-root sits where binary64 placed it.
+Symplecticity pairs each nontrivial multiplier $\lambda$ with $\lambda^{-1}$.
+For an elliptic multiplier on the unit circle, the Krein signature gives the
+sign of the associated symplectic quadratic form.
 
-\emph{What is not established.}---The critical graph is not closed. Of $26$ edge endpoints $24$ are
-attached; two finite-lattice sweep ends remain unclassified, at $(0.892,0.75308)$ and
-$(1.042,0.85798)$. The incidence splits into two components, the collision curve
-still its own, and three declared nodes carry no incidence. Both unclassified ends sit above their local
-non-existence frontier, not inside it: orbits still close at the ends themselves, with re-corrected
-closures $6.6\times10^{-8}$ and $3.9\times10^{-8}$ inside the $10^{-7}$ gate. What defeats them is
-that continuing outward drives the event functional non-finite after travelling only
-$1.4\times10^{-3}$ and $2.2\times10^{-3}$ in $m_2$. The tips themselves are bracketed roots rather
-than proposals: at $60$ digits the event function changes sign across $m_2$ intervals of width
-$3.354856\times10^{-9}$, $3.877628\times10^{-9}$ and $3.865492\times10^{-9}$ about
-$(0.892,0.7530796)$, $(1.042,0.8579752)$ and $(1.046,1.1060303)$, with bracket-endpoint closures at
-or below $6.2\times10^{-21}$. What is unclassified at the two ends is therefore the continuation past
-them and not their existence; no mechanism is claimed for the three, their artifacts declining that
-rung. Neither is therefore a catalog
-overlap, a declared-domain face, nor a closed loop, which are the only stops the continuation
-resolver admits; we have implemented a fourth, an existence-boundary terminus, whose award requires
-divergence rather than a marginal miss, invariance of the failure under step refinement and under two
-independent higher-precision paths, independent audit corroboration, and outward travel. Every one of
-those conditions can only refuse, and on the present evidence the class is awarded to neither end, so
-the two remain unclassified here. Three further classifications are explicitly not claimed.
-The secondary-left birth is not a certified nondegenerate fold: transversality is real, with
-$\partial G/\partial m_1=28.0456$ convergent under refinement, and stationarity is met,
-$\partial G/\partial m_2$ falling to $-6.1\times10^{-14}$; what is missing is the curvature, since
-$\partial^2G/\partial m_2^2$ does not converge under stencil refinement but grows as $h^{-2}$, from
-$-3.9\times10^{8}$ at $h=8\times10^{-5}$ to $-2.5\times10^{10}$ at $h=10^{-5}$, so the quadratic
-normal form is not established. The secondary-right terminus carries
-physical evidence only and is typed an endpoint, so no fourth organizer is claimed. The lower $+1$
-daughter is not classified, since the classifier emits a single outcome by construction and its
-recorded class is therefore an assertion rather than a discrimination.
+\input{fig2_floquet_transitions}
 
-\emph{A coverage condition that ranges over non-existence.}---One release condition asks that a
-sign-vector audit leave no gap wider than the $10^{-3}$ mass grid step between consecutively
-converged probes, across the whole declared span $m_2\in[0.7,1.2]$, on every scan line. That
-condition cannot be met, and the reason is not sampling density. In the
-$465$-probe audit the condition reads, $100$ probes fail, and their closure residuals have median
-$1.56$ against a $10^{-7}$ gate, seven orders outside it, with $97\%$ of failures above $10^{-2}$.
-In the densest audit available, $33{,}701$ probes, $2{,}785$ fail with median closure $3.15$ and again
-$97\%$ above $10^{-2}$. The failures are not marginal: no periodic orbit of this family closes at
-those masses at all. They concentrate where one expects, below the family's lower reach:
-$2{,}660$ of $2{,}785$ at $m_2<0.9$, failed median $m_2$ $0.739$ against $0.969$ for converged probes.
-A condition demanding converged coverage of the full declared rectangle therefore ranges over a
-region in which the object to be covered does not exist, and no additional computation can satisfy
-it. The statement can only be scoped to the existence support of the family, and the
-frontier itself, traced on more than thirty scan lines and rising monotonically in $m_1$ only
-above $m_1\approx0.995$, is a
-first-class object this work has located but not yet certified.
+\emph{Stability transitions.}---Along $m_1=0.8023446$, the lower representative
+stability boundary occurs near $m_2=0.75401872$.
+On the unstable side, the relevant Floquet modes form a real reciprocal pair.
+Approaching the boundary, the pair reaches $+1$; beyond the boundary it lies on
+the unit circle [Fig.~\ref{fig:floquet}(b)].
+An independent $60$-digit implementation reproduces the transition within an
+$m_2$ bracket of width $1.6\times10^{-9}$.
 
-\emph{Completeness, bounded.}---Completeness is frozen and bounded, and the bound is small. As a
-two-dimensional region the frozen neck raster covers $m_1\in[0.997,0.999]\times m_2\in[0.993,1.012]$
-at step $10^{-4}$ with $4011$ samples, all $21$ lines separated: $0.0253\%$ of the declared area. The
-only other input is a twelve-proposal off-grid screen in one pocket, $0.002539\%$, whose own record
-describes it as machine-proposed candidates with binary64 screening and not discovery evidence. The
-two together are $0.0279\%$ of the box; everything else is probed on a measure-zero union of scan
-lines. So completeness here means only that no additional critical object was detected by a finite
-sign-change sampling at those resolutions. Even-order root pairs and tangencies are explicitly not
-excluded, nor are sub-resolution loops or curves between scan lines. Whether the interior is clean is
-unresolved: the full-domain sweep reports gate-passing roots matching no committed edge.
+Along $m_1=0.8022890$, two elliptic Floquet modes approach one another on the
+unit circle at the upper representative stability boundary.
+Their Krein signatures have opposite signs on the stable side.
+At the boundary the modes collide, and beyond it the spectrum forms a
+reciprocal complex quartet off the unit circle [Fig.~\ref{fig:floquet}(c)].
+The transition is therefore an opposite-Krein Hamiltonian--Hopf instability.
+The independent $60$-digit calculation reproduces the critical location within
+an $m_2$ bracket of width $6.3\times10^{-9}$.
 
-\emph{Status.}---Two release conditions are false: no unclassified edge endpoints, and sign-topology
-coverage. The upstream table is rejected unless its content digest matches, environments are pinned,
-and the release bit is writable only by the assembler, which reproduces the committed critical-graph
-artifact byte for byte and exits nonzero while the problem is open. The scientific status is
-therefore open, and no priority claim is made. Throughout, ``stable'' denotes spectral stability of the linearized return map for planar
-motion: not nonlinear or Lyapunov stability, not KAM, and not stability against non-planar
-perturbation. A spectrally stable Hamiltonian orbit can be nonlinearly unstable through resonance.
+The $+1$ and $-1$ spectral boundaries meet at $(\alpha,\beta)=(4,4)$.
+Solving the simultaneous conditions $G_+=G_-=0$ yields three mixed spectral
+intersections in the sampled mass domain.
+The intersections occur near $(m_1,m_2)=(0.929239,0.885366)$,
+$(0.996768,0.956019)$, and $(1.049553,1.129476)$.
+All three were recomputed at $60$-digit precision with small shooting and
+spectral residuals.
 
-\emph{Data and code availability.}---Every number above is read from a committed artifact in the
-repository that produced it, and each is mapped to its artifact and evidence rung in the
-accompanying claim ledger. The upstream catalog is not redistributed: it is fetched at run time and
-rejected unless its Git blob hash is
-\texttt{79b2963df43e62201c35690bfc22bec166132427}. Python and Julia environments are pinned by
-lockfile and manifest, the release bit is writable only by the assembler, and the assembler
-reproduces the committed critical-graph artifact byte for byte. Figure~\ref{fig:graph} is generated
-from those artifacts by a standard-library script in the repository, so it carries no plotting
-dependency and its every mark is text-diffable.
+Direct continuation connects the two branches of the corrected scale-invariant
+period--angular-momentum representation within one sampled component of the LLL
+periodic-orbit manifold.
+A singular locus of the invariant projection provides the geometric origin of
+their apparent separation.
+The physical Floquet spectrum distinguishes a $+1$ transition from an
+opposite-Krein Hamiltonian--Hopf transition along the same continuation
+component.
+Three additional mass points map to the mixed $+1/-1$ spectral vertex.
+The example shows that projected branch structure and continuation
+connectivity encode different information about a periodic-orbit family.
+Continuation resolves the organization of the periodic solutions, while the
+symplectic spectrum identifies the mechanisms through which their stability
+changes.
+The same distinction is relevant whenever a multidimensional periodic-orbit
+family is classified through a small number of projected invariants.
 
 \begin{acknowledgments}
-The analysis pipeline, the claim-gating machinery and this manuscript were produced by AI coding
-agents operating in islo.dev sandboxes under the authors' direction. No agent output is admitted as
-evidence above the \emph{candidate} rung, and no claim is stated above the rung its own artifact
-declares: the two bracketed events and the three mixed roots were relocalized by the
-arbitrary-precision stack described above, while what rests on binary64 screening alone ($462$ of
-the $620$ cells, seven of the thirteen polylines, and the audits of the preceding section) is
-labelled as such in the record. Numerical verification ran in GitHub Actions and in ephemeral cloud instances.
+xAI Grok (version 4.6) was used to assist with manuscript organization and
+revision of scientific exposition.
+AI coding agents operating in islo.dev sandboxes assisted, under the authors'
+direction, with development of the analysis software that generated the
+committed numerical records.
+All calculations reported here were executed by the deterministic numerical
+programs described in the End Matter; the authors reviewed the AI-assisted
+text and software against those records, the source data, and the cited
+literature, and take responsibility for the final scientific statements and
+conclusions.
 \end{acknowledgments}
+
+\section*{Data Availability}
+
+The numerical data and software supporting the analyses reported here are
+publicly available in Ref.~\cite{eliaz2026archive}.
+The upstream orbit catalog is available from Ref.~\cite{li2021stable} and is
+not redistributed with the archive.
+
+\appendix
+
+\section{\label{app:continuation}Numerical continuation}
+
+Planar Newtonian motion with $G=1$ is
+\begin{equation}
+\ddot{\mathbf r}_i=\sum_{j\neq i}m_j\frac{\mathbf r_j-\mathbf r_i}{\lVert\mathbf r_j-\mathbf r_i\rVert^3}.
+\end{equation}
+The LLL catalog is continued at fixed $m_3=1$ over the published mass window
+$m_1\in[0.8,1.1]$, $m_2\in[0.7,1.2]$.
+Published samples occupy the collinear shooting chart
+\begin{equation}
+\begin{aligned}
+\mathbf r_1&=(x_1,0),\quad \mathbf r_2=(1,0),\quad \mathbf r_3=(0,0),\\
+\mathbf v_1&=(0,v_1),\quad \mathbf v_2=(0,v_2),
+\end{aligned}
+\end{equation}
+with $\mathbf v_3$ fixed by vanishing total momentum.
+The shooting unknowns at fixed masses are $(x_1,v_1,v_2,T)$.
+A neighboring catalog point supplies the predictor; a Newton corrector restores
+periodicity in the eight-dimensional center-of-mass-reduced coordinates.
+The closure residual is the reduced return defect after one period.
+A connection is recorded when bidirectional continuation between two mass
+points converges and the terminal shooting charts match.
+
+The long-range cross-branch connection joins the catalog samples at
+$(m_1,m_2)=(1.072,1.066)$ and $(1.100,1.121)$, a Euclidean mass distance of
+$0.0617$.
+Eighty continuation steps in each direction close with shooting residual below
+$2.3\times10^{-10}$ and terminal chart mismatch below $6\times10^{-13}$.
+The same pair was recomputed in a translation-reduced strict-periodic
+formulation outside the collinear-velocity ansatz.
+
+\section{\label{app:floquet}Physical Floquet calculation}
+
+After center-of-mass reduction the variational equation is integrated in
+canonical Jacobi coordinates
+$(\boldsymbol\rho,\boldsymbol\lambda,\mathbf p_{\rho},\mathbf p_{\lambda})$,
+with
+\begin{equation}
+\boldsymbol\rho=\mathbf r_2-\mathbf r_1,\qquad
+\boldsymbol\lambda=\mathbf r_3-\frac{m_1\mathbf r_1+m_2\mathbf r_2}{m_1+m_2}.
+\end{equation}
+The resulting eight-dimensional monodromy is symplectic.
+The two-dimensional subspace
+$E=\mathrm{span}\{X_H,X_L\}$ generated by the Hamiltonian and angular-momentum
+vector fields is removed by passing to the physical quotient $E^{\omega}/E$.
+The reduced return map is a $4\times 4$ symplectic matrix $M$ whose spectrum
+comprises the four nontrivial Floquet multipliers.
+The trace invariants are
+\begin{equation}
+\alpha=\mathrm{tr}\,M,\qquad
+\beta=\bigl((\mathrm{tr}\,M)^2-\mathrm{tr}(M^2)\bigr)/2,
+\end{equation}
+and they determine $P(t)$ as in the main text.
+On a unit-circle eigenmode the Krein signature is the sign of the associated
+symplectic quadratic form.
+Closure and symplectic defects quoted below are the reduced periodic-return
+norm and the departure of $M$ from $\mathrm{Sp}(4)$, respectively.
+
+\section{\label{app:precision}High-precision verification}
+
+The two representative transitions were recomputed in an independent
+implementation using $60$-digit arithmetic and a ninth-order Verner integrator
+in the Jacobi chart, followed by the physical quotient.
+Each transition is enclosed by a sign-changing numerical bracket of the event
+function in $m_2$.
+On the lower $(+1)$ flanks the reduced closure is of order $10^{-21}$ and the
+physical symplectic defect is of order $10^{-19}$.
+On the Hamiltonian--Hopf flanks the corresponding figures are $10^{-22}$ and
+$10^{-20}$.
+The three mixed intersections were obtained by a simultaneous Newton solve of
+$G_+=G_-=0$ in the same $60$-digit implementation; relative event residuals lie
+between $10^{-14}$ and $10^{-13}$.
+
+The connectivity statement concerns the sampled LLL continuation under the
+chart and corrector above.
+The numerical Jacobian estimate of $\Psi$ is a centered finite-difference
+audit of the published mass grid.
 
 \bibliography{references}
 

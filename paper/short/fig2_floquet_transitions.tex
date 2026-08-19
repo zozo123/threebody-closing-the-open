@@ -1,0 +1,134 @@
+% Figure 2. Distinct Floquet mechanisms. Multiplier positions from the
+% committed 60-digit physical-quotient flanks. No new integrations.
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm,line cap=round,line join=round,
+  >=Stealth,
+  every node/.style={font=\footnotesize}]
+  % ============================================================
+  % Panel (a): symplectic trace plane
+  % α ∈ [-0.5,8.5] -> x = 0.62*α
+  % β ∈ [-8,30]    -> y = 0.105*(β+8)
+  % ============================================================
+  \begin{scope}[shift={(0,0)}]
+    \node[font=\small,anchor=south east] at (0.15,4.55) {(a)};
+    % axes
+    \draw[line width=0.7pt,->] (-0.3,0.84) -- (5.55,0.84)
+      node[below left,font=\small] {$\alpha$};
+    \draw[line width=0.7pt,->] (0,-0.2) -- (0,4.55)
+      node[above left,font=\small] {$\beta$};
+    % ticks
+    \foreach \a/\lab in {0/0, 2.48/4, 4.96/8}
+      \draw[line width=0.55pt] (\a,0.76) -- (\a,0.84) node[below=1pt] {$\lab$};
+    \foreach \b/\lab in {0.42/-4, 1.26/4, 2.10/12, 2.94/20, 3.78/28}
+      \draw[line width=0.55pt] (-0.08,\b) -- (0,\b) node[left=1pt] {$\lab$};
+
+    % stable domain (vertices (0,-4), (4,4), (8,28) in plot coords)
+    % plot: x=0.62 α, y=0.105(β+8)
+    % (0,-4)->(0,0.42); (4,4)->(2.48,1.26); (8,28)->(4.96,3.78)
+    % G- from (0,-4) to (4,4); G+ from (4,4) to (8,28);
+    % Δ parabola through all three.
+    \fill[black!8]
+      plot[smooth,tension=0.55] coordinates {
+        (0.00,0.42) (0.62,0.50) (1.24,0.67) (1.86,0.93) (2.48,1.26)
+        (3.10,1.68) (3.72,2.20) (4.34,2.82) (4.96,3.78)
+        (4.96,3.78) (2.48,1.26) (0.00,0.42)
+      };
+    % Δ = 0 (dash-dot), G- (dashed), G+ (solid)
+    \draw[line width=0.95pt,dash dot]
+      plot[smooth] coordinates {
+        (0.00,0.42) (0.62,0.50) (1.24,0.67) (1.86,0.93) (2.48,1.26)
+        (3.10,1.68) (3.72,2.20) (4.34,2.82) (4.96,3.78)
+      };
+    \draw[line width=0.95pt,dashed]
+      (-0.20,0.378) -- (3.10,1.470); % G-: β=2α-4
+    \draw[line width=1.05pt]
+      (1.984,0.756) -- (5.084,3.906); % G+: β=6α-20
+    % labels
+    \node[font=\scriptsize,anchor=west] at (3.55,3.55) {$G_+=0$};
+    \node[font=\scriptsize,anchor=west] at (0.15,1.15) {$G_-=0$};
+    \node[font=\scriptsize,anchor=west] at (3.85,2.35) {$\Delta=0$};
+    % (4,4)
+    \fill[black] (2.48,1.26) circle (1.7pt);
+    \node[font=\scriptsize,anchor=north west] at (2.55,1.18) {$(4,4)$};
+    % lower +1 event at α=5.706, β=14.24
+    % x=0.62*5.706=3.538, y=0.105*(14.24+8)=2.335
+    \fill[black] (3.538,2.335) circle (2.5pt);
+    \node[font=\scriptsize,anchor=east] at (3.40,2.55) {$+1$};
+    % upper HH at α=5.701, β=15.53
+    % x=0.62*5.701=3.535, y=0.105*(15.53+8)=2.471
+    \fill[black] (3.535,2.471) -- ++(0,0.20) -- ++(0.16,-0.28) -- ++(-0.32,0) -- cycle;
+    \node[font=\scriptsize,anchor=west] at (3.72,2.62) {HH};
+  \end{scope}
+
+  % ============================================================
+  % Panel (b): +1 transition in the multiplier plane
+  % ============================================================
+  \begin{scope}[shift={(6.55,0.15)}]
+    \node[font=\small,anchor=south east] at (-1.85,4.40) {(b)};
+    \draw[line width=0.55pt,black!25] (-1.85,0) -- (1.95,0);
+    \draw[line width=0.55pt,black!25] (0,-1.85) -- (0,1.95);
+    \draw[line width=0.85pt] (0,0) circle (1.55);
+    \node[font=\scriptsize] at (1.12,-1.72) {unit circle};
+    % unstable real pair: 0.975 and 1.026  (scale 1.55)
+    \fill[black] (1.511,0) circle (2.4pt);
+    \fill[black] (1.590,0) circle (2.4pt);
+    \draw[line width=0.8pt] (1.511,0) ++(-0.11,-0.11) rectangle ++(0.22,0.22);
+    \draw[line width=0.8pt] (1.590,0) ++(-0.11,-0.11) rectangle ++(0.22,0.22);
+    \node[font=\scriptsize,anchor=south] at (1.55,0.22) {unstable};
+    % +1
+    \fill[white] (1.55,0) circle (1.6pt);
+    \draw[line width=0.7pt] (1.55,0) circle (1.6pt);
+    \node[font=\scriptsize,anchor=south west] at (1.62,0.02) {$+1$};
+    % stable pair near +1: 0.99968 ± 0.02547 i
+    % angle 1.46 deg; r=1
+    \fill[black] (1.5495,0.0395) circle (2.4pt);
+    \fill[black] (1.5495,-0.0395) circle (2.4pt);
+    \node[font=\scriptsize,anchor=west] at (1.05,0.95) {stable};
+    \draw[line width=0.7pt,->] (0.95,0.85) -- (1.45,0.12);
+  \end{scope}
+
+  % ============================================================
+  % Panel (c): opposite-Krein Hamiltonian-Hopf
+  % ============================================================
+  \begin{scope}[shift={(11.55,0.15)}]
+    \node[font=\small,anchor=south east] at (-1.85,4.40) {(c)};
+    \draw[line width=0.55pt,black!25] (-1.85,0) -- (1.95,0);
+    \draw[line width=0.55pt,black!25] (0,-1.85) -- (0,1.95);
+    \draw[line width=0.85pt] (0,0) circle (1.55);
+    % stable elliptic pair, opposite Krein, angles 65.87 and 63.79 deg
+    % 65.87 deg: (0.635, 1.414) * wait radius 1.55
+    % 65.87*pi/180 = 1.1497; cos=0.409, sin=0.913
+    \coordinate (Kp) at (0.634,1.415);
+    \coordinate (Km) at (0.685,1.391);
+    \fill[black] (Kp) circle (2.5pt);
+    \draw[line width=0.9pt,black,fill=white] (Km) circle (2.3pt);
+    \node[font=\scriptsize,anchor=south] at ($(Kp)+(0.05,0.22)$) {$+$};
+    \node[font=\scriptsize,anchor=east] at ($(Km)+(-0.18,0.12)$) {$-$};
+    \node[font=\scriptsize,anchor=south west] at (-0.2,1.70) {stable};
+    % unstable quartet: r=0.982 and r=1.018 at ~64.8 deg
+    % 64.8 deg: cos=0.427, sin=0.904
+    \coordinate (Uin) at (0.650,1.375);  % 0.982*1.55*(cos,sin) wait
+    % r_plot = 1.55 * radius
+    % inner: 1.55*0.982=1.522 at 64.8 deg -> (0.650, 1.377)
+    % outer: 1.55*1.018=1.578 at 64.8 deg -> (0.674, 1.427)
+    \draw[line width=0.9pt,black] (0.650,1.377) ++(-0.11,-0.11) rectangle ++(0.22,0.22);
+    \draw[line width=0.9pt,black] (0.650,-1.377) ++(-0.11,-0.11) rectangle ++(0.22,0.22);
+    \fill[black] (0.674,1.427) -- ++(0.00,0.16) -- ++(0.13,-0.24) -- ++(-0.26,0) -- cycle;
+    \fill[black] (0.674,-1.427) -- ++(0.00,-0.16) -- ++(0.13,0.24) -- ++(-0.26,0) -- cycle;
+    \node[font=\scriptsize,anchor=west] at (1.05,0.55) {quartet};
+    \draw[line width=0.7pt,->] (1.00,0.48) -- (0.78,1.20);
+  \end{scope}
+\end{tikzpicture}
+\caption{\label{fig:floquet}Distinct Floquet mechanisms on the continuation component.
+(a)~Stability geometry in the symplectic trace plane. The boundaries $G_+=0$ (solid),
+$G_-=0$ (dashed), and $\Delta=0$ (dot-dashed) correspond to $+1$, $-1$, and
+mode-collision conditions, respectively. Filled circle: lower $(+1)$ transition.
+Filled triangle: upper Hamiltonian--Hopf transition. The mixed vertex $(4,4)$ is
+the simultaneous $+1/-1$ condition.
+(b)~At the lower boundary, a real reciprocal pair (squares) reaches $+1$ and enters
+the unit circle (filled circles).
+(c)~At the upper boundary, two unit-circle modes of opposite Krein signature
+(filled $+$, open $-$) collide and leave the unit circle as a reciprocal complex
+quartet, identifying an opposite-Krein Hamiltonian--Hopf transition.}
+\end{figure*}

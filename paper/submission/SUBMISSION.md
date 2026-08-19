@@ -1,63 +1,77 @@
-# arXiv submission package
+# arXiv / PRL submission package
 
-Everything here is the compiled-and-checked letter. Nothing in this directory is generated at
-submission time, so what you upload is what was reviewed.
+Flat directory: every TeX file and figure source needed to compile the
+preprint lives here. No files are generated at upload time.
 
-## Files to upload
+## Files to upload to arXiv
 
-Upload these four. arXiv compiles them itself; `prl_letter.pdf` is included for your own check and
-should **not** be uploaded alongside the sources (arXiv rejects a PDF plus sources in one package).
+Upload the sources. Do **not** upload a PDF together with sources
+(arXiv rejects that combination).
 
 | File | Role |
 |---|---|
-| `prl_letter.tex` | the manuscript |
-| `fig_critical_graph.tex` | Figure 1, `\input` by the manuscript; pure TikZ, no external image |
-| `references.bib` | bibliography source |
-| `prl_letter.bbl` | pre-built bibliography, so arXiv need not run BibTeX |
+| `prl_letter.tex` | Letter + End Matter |
+| `fig1_continuation_projection.tex` | Figure 1 (TikZ, `\input` by the Letter) |
+| `fig2_floquet_transitions.tex` | Figure 2 (TikZ, `\input` by the Letter) |
+| `references.bib` | bibliography |
+| `prl_letter.bbl` | pre-built bibliography (after local `latexmk`) |
 
-There are no image files. Figure 1 is TikZ, generated from committed artifacts by
-`scripts/plot_critical_graph_tikz.py`, so the figure has no binary dependency.
+Optional second arXiv article or “ancillary file” for the supplement:
+
+| File | Role |
+|---|---|
+| `supplemental.tex` | Supplemental Material |
+| `figS1_critical_graph.tex` | SI Figure S1 (TikZ) |
+
+Figures are pure TikZ. There are no PNG/PDF image dependencies.
 
 ## Form metadata
 
 **Title**
 
-    One continuation-connected family and two bracketed Floquet events
-    in the Li--Li--Liao unequal-mass catalog
+    Continuation Geometry Resolves Apparent Family Splitting
+    in Unequal-Mass Three-Body Orbits
 
 **Authors**
 
-    Yossi Eliaz (Incredibuild; islo.dev; Department of Computer Science,
-      Holon Institute of Technology (HIT), Holon, Israel)
-    Ori Chemo (Incredibuild)
+    Yossi Eliaz (Incredibuild, Tel Aviv, Israel;
+      Department of Computer Science, Holon Institute of Technology, Holon, Israel)
+    Ori Chemo (Incredibuild, Tel Aviv, Israel)
 
-**Abstract** — paste from `ABSTRACT.txt` (202 words, single paragraph).
+**Corresponding-author email** — add `\email{...}` under the relevant
+`\author` line before journal submission. It is intentionally omitted
+here rather than invented.
 
-**Primary category** — `math.DS` (Dynamical Systems).
-**Cross-list** — `nlin.CD` (Chaotic Dynamics). Consider `astro-ph.EP` only if you want the
-celestial-mechanics audience; the content is not astrophysical.
+**Abstract** — paste from `ABSTRACT.txt` (one paragraph, ~140 words).
 
-**Comments field** — suggested:
+**Primary category** — `nlin.CD` (Chaotic Dynamics).
+**Cross-list** — `math.DS` (Dynamical Systems). `astro-ph.EP` only if
+an astrophysical audience is desired; the content is Hamiltonian dynamics.
 
-    4 pages, 1 figure. Scientific status is open: two release conditions remain false and
-    release_ready is false. All numerical claims are mapped to committed artifacts and evidence
-    rungs in the accompanying repository. No priority claim is made.
+**Comments field**
 
-**License** — your choice; CC BY 4.0 is the usual pick for something whose whole point is that the
-evidence is auditable.
+    4 pages + End Matter, 2 figures. Supplemental Material included.
+    Data and software at https://github.com/zozo123/threebody-closing-the-open
 
-## Before you click submit
+**License** — CC BY 4.0 is the usual choice.
 
-- The letter states the scientific status is **open**, in the abstract and in the Status section.
-  That is deliberate and it is what the evidence supports.
-- No priority claim is made anywhere, also deliberate.
-- Two things are still yours to decide and are absent by choice: a corresponding-author email, and
-  whether to add a journal reference later.
-- If you want the email in, add `\email{...}` under the relevant `\author` line and recompile.
+**PRL 100-word justification** — `PRL_JUSTIFICATION.txt`
+
+**Cover letter** — `COVER_LETTER.txt`
+
+## Compile locally
+
+```bash
+latexmk -pdf -interaction=nonstopmode prl_letter.tex
+latexmk -pdf -interaction=nonstopmode supplemental.tex
+```
+
+Keep `prl_letter.bbl` in the upload so arXiv need not run BibTeX.
 
 ## Provenance
 
 - Repository: https://github.com/zozo123/threebody-closing-the-open
-- Claim ledger: `paper/short/CLAIMS.md`, every substantive claim mapped to artifact and rung
-- The upstream catalog is not redistributed; it is fetched at run time and rejected unless its Git
-  blob hash is `79b2963df43e62201c35690bfc22bec166132427`
+- Commit frozen for this preprint: `5f9ff9ab91b5380ba5fe78fc3b1131b85235ec04`
+- Upstream catalog Git blob: `79b2963df43e62201c35690bfc22bec166132427`
+- Canonical authoring copy of the Letter is this directory;
+  `paper/short/prl_letter.tex` is kept in sync.

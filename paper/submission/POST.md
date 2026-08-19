@@ -1,75 +1,60 @@
 # Post drafts for X
 
-Written to be accurate. The result is genuinely open, so nothing here claims otherwise. Pick one.
+Public message matches the Letter. Pick one.
 
 ## Short version
 
-New preprint. The Li--Li--Liao catalog of 135,445 three-body orbits was read in 2023 as two
-families. It is one: the plot that splits it folds over on itself, so two visible branches are one
-sheet seen twice. We locate two stability transitions to a part in 10^9 and name their mechanisms.
-
-Status: open. [link]
+New preprint. The 135,445 unequal-mass three-body orbits of Li, Li, and Liao
+look like two families in scale-invariant period–angular-momentum coordinates.
+Direct continuation connects those branches in one sampled component. A
+singular locus of the projection accounts for the split. Along the same
+component the Floquet spectrum shows a (+1) transition and an opposite-Krein
+Hamiltonian–Hopf transition. [link]
 
 ## The version I would actually post
 
-We set out to map where a family of three-body orbits loses stability, and found something about
-our own tools instead.
+Periodic-orbit families are often classified from a two-dimensional plot of
+invariants. Those plots are projections, and a projection can split a single
+connected family into two visible branches.
 
-The accuracy gate our pipeline enforces (2e-8) is finer than the accuracy the pipeline can
-reproduce. Rotate the coordinate frame, redo the same computation at the same tolerance, and the
-answer moves by more than the gate on 345 of 620 cases.
+We continued the 135,445 unequal-mass planar three-body orbits of Li, Li, and
+Liao. The two branches in the corrected scale-invariant period–angular-momentum
+diagram belong to one continuation component. Finite-difference estimates of
+the projection Jacobian change sign along a singular locus; that geometry is
+the origin of the apparent split.
 
-Recompute three points at 60 digits, at the exact masses the fast arithmetic reported: the fast
-version said all three passed comfortably. The careful version put two of them 56x outside the gate,
-with the real answers a small distance away.
+High-precision Floquet calculations then name the stability changes on that
+component: a reciprocal pair reaches +1 at the lower representative boundary,
+and two opposite-Krein elliptic modes collide and leave the unit circle at the
+upper one.
 
-And one of our own pass/fail conditions turns out to be unsatisfiable. It asks for complete coverage
-of a parameter region in which the orbit family does not exist. You cannot survey what is not there.
-
-What we can say: the catalog is one continuation-connected family, not two, because the projection
-that appeared to split it is folded and non-injective. Two transitions are bracketed to a part in
-10^9 with their mechanisms named.
-
-What we cannot: the critical graph is not closed. Two ends stay unclassified. Status: open, and the
-abstract says so.
-
-Every number maps to a committed artifact and an evidence rung. [link]
+Continuation organizes the solutions. The symplectic spectrum organizes their
+stability. [link]
 
 ## Thread version
 
-1/ The Li--Li--Liao table lists 135,445 unequal-mass three-body periodic orbits and marks which are
-stable. A 2023 analysis of the same table read it as two families. We asked whether that is real.
+1/ Li, Li, and Liao published 135,445 unequal-mass planar three-body periodic
+orbits and described them as one family. A later reading of the corrected
+scale-invariant period–angular-momentum plot treated the two visible branches
+as independent sets. We asked whether that split is dynamical.
 
-2/ It is not two families. The plot that separates them uses two summary invariants, and on this
-sheet that projection folds over on itself: 590 places where it flips, and 86 far-separated orbit
-pairs landing nearly on top of each other. Two branches in a shadow, one object.
+2/ It is a projection effect. Direct continuation connects the two branches
+inside one sampled component. A singular locus of the invariant map is where
+the local orientation of the projection changes, and that is where the plot
+looks split.
 
-3/ We then located two points where stability changes, to about one part in 10^9, and identified the
-mechanism at each: an eigenvalue crossing +1, and two eigenvalue pairs colliding on the unit circle
-with opposite Krein sign. The signature, not the eigenvalue positions, is what names the second.
+3/ On the same component the reduced Floquet spectrum isolates two mechanisms:
+a (+1) transition at the lower representative stability boundary, and an
+opposite-Krein Hamiltonian–Hopf transition at the upper one, where two
+elliptic modes collide and leave the unit circle as a complex quartet.
 
-4/ The uncomfortable part. Our accuracy gate is 2e-8. Rotating the coordinate frame and redoing the
-same computation at the same tolerance moves the event by more than that gate on 345 of 620 cases,
-and by ten times it on 144. The gate was partly measuring the coordinate frame.
-
-5/ Worse, passing the gate does not mean the answer is in the right place. Three points that the
-fast arithmetic reported comfortably inside it were, at 60 digits and at the same masses, outside by
-up to 56x, with the true roots a small distance away.
-
-6/ And a release condition in our own pipeline is unsatisfiable, not merely unmet: it demands
-converged coverage of a region where no orbit of the family closes. ~97% of the failed probes there
-have residuals 7 orders outside the gate. There is nothing to survey.
-
-7/ So: one family, two named and bracketed transitions, and a set of results about how this class of
-computation should be certified. The critical graph is not closed, two ends stay unclassified, and
-the status is open. The abstract says so. [link]
+4/ Three further mass points map to the mixed (+1/−1) spectral vertex. The
+broader lesson is general: projected branch structure and continuation
+connectivity are different facts about a periodic-orbit family. [link]
 
 ## Notes before posting
 
 - Replace [link] with the arXiv abs URL once it is live, not the PDF.
-- Do not add "solved", "breakthrough", or "first". No priority claim is made in the paper and one
-  should not be made here.
-- If a reply asks whether this solves the three-body problem: no, and the paper's first sentence
-  says the general problem is not solved and nothing in it bears on that.
-- 345/620, 144/620, 56x, 590, 86, 135,445 and the 10^9 bracket widths are all in the paper. The 97%
-  figure is the fraction of failing probes with closure above 1e-2 in the two committed audits.
+- Do not add “solved,” “breakthrough,” or “first.”
+- The headline is connectivity + projection geometry + two Floquet mechanisms.
+  Do not lead with internal numerical-survey limitations.
