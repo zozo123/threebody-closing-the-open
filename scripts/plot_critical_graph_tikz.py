@@ -89,7 +89,7 @@ def main() -> None:
         add(f"      {{\\node[{MARK[mode]}] at (\\x,\\y) {{}};}}")
     for i, (_eid, _side, m1, m2) in enumerate(unattached, start=1):
         add(f"    \\node[unattached,label={{[font=\\scriptsize,label distance=-1pt]"
-            f"{'below right' if i == 1 else 'above left'}:E{i}}}] at ({m1:.6f},{m2:.6f}) {{}};")
+            f"{'below=2pt' if i == 1 else 'right=3pt'}:E{i}}}] at ({m1:.6f},{m2:.6f}) {{}};")
     add(r"  \end{scope}")
     add(r"  \draw[gray!70] (0.8,0.7) rectangle (1.1,1.2);")
     add(r"  \foreach \v in {0.8,0.9,1.0,1.1}")
@@ -119,7 +119,7 @@ def main() -> None:
     add(r"    \draw[wall,dashed] plot coordinates {" + para + r"};")
     add(r"  \end{scope}")
     add(r"  \draw[gray!70] " + f"({amin},{bmin}) rectangle ({amax},{bmax});")
-    for a, b, lab, pos in ((0, -4, "(0,-4)", "below right"), (4, 4, "(4,4)", "above left"),
+    for a, b, lab, pos in ((0, -4, "(0,-4)", "below right"), (4, 4, "(4,4)", "below right"),
                            (8, 28, "(8,28)", "left")):
         add(f"  \\node[vertex,label={{[font=\\scriptsize,label distance=-1pt]{pos}:{lab}}}] "
             f"at ({a},{b}) {{}};")
