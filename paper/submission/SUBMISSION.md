@@ -10,7 +10,7 @@ This directory is intentionally flat. Every TeX source and figure source referen
 
 **Authors**
 
-1. Ori Chemo — Incredibuild, Tel Aviv, Israel
+1. Ori Chamo — Incredibuild, Tel Aviv, Israel
 2. Yossi Eliaz — Incredibuild, Tel Aviv, Israel; Department of Computer Science, Holon Institute of Technology, Holon, Israel
 
 **Corresponding author**
@@ -74,7 +74,7 @@ Paste the abstract from `ABSTRACT.txt`.
 ## Final manual checks
 
 - Confirm the corresponding-author email: `eliazy@hit.ac.il`.
-- Confirm author order: Ori Chemo, then Yossi Eliaz.
+- Confirm author order: Ori Chamo, then Yossi Eliaz.
 - Confirm both PDFs display the physical Floquet convention `(a,b)` in the Letter and explain the shifted `(alpha,beta)` convention used by older survey artifacts.
 - Confirm Figure 1 is labeled as a schematic invariant projection and Figure 2 uses the physical mixed vertex `(0,-2)`.
 - Confirm the source package contains no generated cache or auxiliary files beyond the two `.bbl` files.
