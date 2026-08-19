@@ -65,12 +65,12 @@ procedure; stability denotes the nontrivial planar Floquet spectrum of the
 reduced return map.
 
 The sampled solutions form one continuation-connected component, and a
-documented continuation path joins the two branches visible in the
-scale-invariant diagram. The invariant projection contains a singular locus
-associated with their apparent separation. Along the same component, the
-reduced Floquet spectrum exhibits a $+1$ transition and an opposite-Krein
-Hamiltonian--Hopf transition. Three additional mass points satisfy the
-simultaneous $+1$ and $-1$ spectral conditions.
+continuation connection joins the two branches visible in the scale-invariant
+diagram. The invariant projection contains a singular locus associated with
+their apparent separation. Along the same component, the reduced Floquet
+spectrum exhibits a $+1$ transition and an opposite-Krein Hamiltonian--Hopf
+transition. Three additional mass points satisfy the simultaneous $+1$ and
+$-1$ spectral conditions.
 
 \input{fig1_continuation_projection}
 
@@ -89,8 +89,8 @@ nearly coincident invariant images. Bidirectional continuation succeeds across
 all $26$ selected connections. The long-range connection was also reproduced
 in a translation-reduced strict-periodic formulation.
 
-The documented long-range connection joins representative solutions on the two
-branches of the $(T_{\rm si},L_{\rm si})$ diagram
+The documented long-range connection joins representative solutions on the
+two branches of the $(T_{\rm si},L_{\rm si})$ diagram
 [Fig.~\ref{fig:projection}]. The visible branch separation therefore occurs
 within one sampled continuation component.
 
@@ -98,7 +98,8 @@ The corrected scale-invariant period and angular momentum define
 \begin{equation}
 \Psi(m_1,m_2)=(T_{\rm si},L_{\rm si}),
 \end{equation}
-where $T_{\rm si}=T\lvert E\rvert^{3/2}M^{-5/2}$ and
+where
+$T_{\rm si}=T\lvert E\rvert^{3/2}M^{-5/2}$ and
 $L_{\rm si}=L\lvert E\rvert^{1/2}M^{-13/6}$, with
 $M=m_1+m_2+m_3$. Centered finite-difference estimates of $D\Psi$ identify a
 connected locus of adjacent mass cells across which $\det D\Psi$ changes sign.
@@ -190,10 +191,10 @@ $2.3\times10^{-10}$ and terminal chart mismatch below $6\times10^{-13}$.
 \paragraph{Physical Floquet calculation.}
 The variational equation is integrated in canonical Jacobi coordinates. The
 Hamiltonian and angular-momentum symmetry directions are removed through the
-physical quotient $E^{\omega}/E$, leaving $M_{\rm ph}$. The full-domain survey
-stores the equivalent shifted coordinates $\alpha=a+4$ and
-$\beta=b+4a+6$; the physical mixed vertex $(0,-2)$ is $(4,4)$ in that
-convention.
+physical quotient $E^{\omega}/E$, leaving $M_{\rm ph}$. The eight-dimensional
+trace convention used in parts of the numerical archive is related by
+$\alpha=a+4$ and $\beta=b+4a+6$; hence the physical mixed vertex $(0,-2)$ is
+$(4,4)$ in that convention.
 
 \paragraph{High-precision verification.}
 An independent implementation uses $60$-digit arithmetic, a ninth-order
@@ -204,15 +205,15 @@ $10^{-19}$--$10^{-20}$. The mixed-root event residuals range from $10^{-14}$ to
 $10^{-13}$.
 
 \begin{acknowledgments}
-OpenAI ChatGPT (GPT-5.6 Pro) and xAI Grok 4.6 assisted with manuscript editing,
-figure layout, and software review. The authors checked the resulting changes
-against the source code and numerical records and take responsibility for the
-manuscript and conclusions.
+OpenAI ChatGPT (GPT-5.6 Pro) and xAI Grok 4.6 assisted with manuscript
+editing, figure layout, and software review. The authors checked the resulting
+changes against the source code and numerical records and take responsibility
+for the manuscript and conclusions.
 \end{acknowledgments}
 
-\section*{Data Availability}
-Numerical records and source code are available in Ref.~\cite{eliaz2026archive};
-the upstream orbit catalog is available from Ref.~\cite{li2021stable}.
+\paragraph{Data availability.}
+Data and code are available in Ref.~\cite{chamoeliaz2026data}; the source orbit
+catalog is Ref.~\cite{li2021stable}.
 
 \bibliography{references}
 
