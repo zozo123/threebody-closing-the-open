@@ -31,12 +31,12 @@
         "workflow": ".github/workflows/active-learning.yml"
       },
       {
-        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "immutable": true,
         "line": 42,
         "local": false,
         "repository": "astral-sh/setup-uv",
-        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "workflow": ".github/workflows/active-learning.yml"
       },
       {
@@ -58,12 +58,12 @@
         "workflow": ".github/workflows/adversarial-connectivity-edges.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 42,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/adversarial-connectivity-edges.yml"
       },
       {
@@ -76,12 +76,12 @@
         "workflow": ".github/workflows/adversarial-connectivity-edges.yml"
       },
       {
-        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "immutable": true,
         "line": 62,
         "local": false,
         "repository": "astral-sh/setup-uv",
-        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "workflow": ".github/workflows/adversarial-connectivity-edges.yml"
       },
       {
@@ -103,12 +103,12 @@
         "workflow": ".github/workflows/bracket-criterion-comparison.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 41,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/bracket-criterion-comparison.yml"
       },
       {
@@ -265,12 +265,12 @@
         "workflow": ".github/workflows/connectivity-audit.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 40,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/connectivity-audit.yml"
       },
       {
@@ -283,12 +283,12 @@
         "workflow": ".github/workflows/connectivity-audit.yml"
       },
       {
-        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "immutable": true,
         "line": 54,
         "local": false,
         "repository": "astral-sh/setup-uv",
-        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "workflow": ".github/workflows/connectivity-audit.yml"
       },
       {
@@ -391,12 +391,12 @@
         "workflow": ".github/workflows/critical-massplane-screen.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 25,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/critical-massplane-screen.yml"
       },
       {
@@ -481,12 +481,12 @@
         "workflow": ".github/workflows/event-network-audit.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 19,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/event-network-audit.yml"
       },
       {
@@ -571,12 +571,12 @@
         "workflow": ".github/workflows/full-critical-root-localization.yml"
       },
       {
-        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "commit": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "immutable": true,
         "line": 95,
         "local": false,
         "repository": "actions/download-artifact",
-        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "uses": "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "workflow": ".github/workflows/full-critical-root-localization.yml"
       },
       {
@@ -589,12 +589,12 @@
         "workflow": ".github/workflows/full-critical-root-localization.yml"
       },
       {
-        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "commit": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "immutable": true,
         "line": 123,
         "local": false,
         "repository": "actions/download-artifact",
-        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "uses": "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "workflow": ".github/workflows/full-critical-root-localization.yml"
       },
       {
@@ -616,39 +616,39 @@
         "workflow": ".github/workflows/full-critical-root-localization.yml"
       },
       {
-        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "commit": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "immutable": true,
         "line": 244,
         "local": false,
         "repository": "actions/download-artifact",
-        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "uses": "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "workflow": ".github/workflows/full-critical-root-localization.yml"
       },
       {
-        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "commit": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "immutable": true,
         "line": 248,
         "local": false,
         "repository": "actions/download-artifact",
-        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "uses": "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "workflow": ".github/workflows/full-critical-root-localization.yml"
       },
       {
-        "commit": "4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
         "immutable": true,
         "line": 252,
         "local": false,
         "repository": "julia-actions/setup-julia",
-        "uses": "julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
         "workflow": ".github/workflows/full-critical-root-localization.yml"
       },
       {
-        "commit": "d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
         "immutable": true,
         "line": 255,
         "local": false,
         "repository": "julia-actions/cache",
-        "uses": "julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
         "workflow": ".github/workflows/full-critical-root-localization.yml"
       },
       {
@@ -670,21 +670,21 @@
         "workflow": ".github/workflows/full-critical-root-localization.yml"
       },
       {
-        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "commit": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "immutable": true,
         "line": 325,
         "local": false,
         "repository": "actions/download-artifact",
-        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "uses": "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "workflow": ".github/workflows/full-critical-root-localization.yml"
       },
       {
-        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "commit": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "immutable": true,
         "line": 329,
         "local": false,
         "repository": "actions/download-artifact",
-        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "uses": "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "workflow": ".github/workflows/full-critical-root-localization.yml"
       },
       {
@@ -760,12 +760,12 @@
         "workflow": ".github/workflows/full-domain-critical-sweep.yml"
       },
       {
-        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "commit": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "immutable": true,
         "line": 247,
         "local": false,
         "repository": "actions/download-artifact",
-        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "uses": "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "workflow": ".github/workflows/full-domain-critical-sweep.yml"
       },
       {
@@ -787,12 +787,12 @@
         "workflow": ".github/workflows/generic-bridge.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 33,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/generic-bridge.yml"
       },
       {
@@ -805,12 +805,12 @@
         "workflow": ".github/workflows/generic-bridge.yml"
       },
       {
-        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "immutable": true,
         "line": 47,
         "local": false,
         "repository": "astral-sh/setup-uv",
-        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "workflow": ".github/workflows/generic-bridge.yml"
       },
       {
@@ -832,12 +832,12 @@
         "workflow": ".github/workflows/generic-connectivity-edges.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 41,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/generic-connectivity-edges.yml"
       },
       {
@@ -850,12 +850,12 @@
         "workflow": ".github/workflows/generic-connectivity-edges.yml"
       },
       {
-        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "immutable": true,
         "line": 62,
         "local": false,
         "repository": "astral-sh/setup-uv",
-        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "workflow": ".github/workflows/generic-connectivity-edges.yml"
       },
       {
@@ -877,12 +877,12 @@
         "workflow": ".github/workflows/global-event-network.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 33,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/global-event-network.yml"
       },
       {
@@ -922,12 +922,12 @@
         "workflow": ".github/workflows/global-mixed-vertex-search.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 36,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/global-mixed-vertex-search.yml"
       },
       {
@@ -940,12 +940,12 @@
         "workflow": ".github/workflows/global-mixed-vertex-search.yml"
       },
       {
-        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "immutable": true,
         "line": 51,
         "local": false,
         "repository": "astral-sh/setup-uv",
-        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "workflow": ".github/workflows/global-mixed-vertex-search.yml"
       },
       {
@@ -1048,12 +1048,12 @@
         "workflow": ".github/workflows/invariant-bridge.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 24,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/invariant-bridge.yml"
       },
       {
@@ -1075,12 +1075,12 @@
         "workflow": ".github/workflows/invariant-projection-audit.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 19,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/invariant-projection-audit.yml"
       },
       {
@@ -1309,21 +1309,21 @@
         "workflow": ".github/workflows/julia-generic-daughter-verifier.yml"
       },
       {
-        "commit": "4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
         "immutable": true,
         "line": 53,
         "local": false,
         "repository": "julia-actions/setup-julia",
-        "uses": "julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
         "workflow": ".github/workflows/julia-generic-daughter-verifier.yml"
       },
       {
-        "commit": "d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
         "immutable": true,
         "line": 56,
         "local": false,
         "repository": "julia-actions/cache",
-        "uses": "julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
         "workflow": ".github/workflows/julia-generic-daughter-verifier.yml"
       },
       {
@@ -1345,21 +1345,21 @@
         "workflow": ".github/workflows/julia-mixed-canonical-verifier.yml"
       },
       {
-        "commit": "4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
         "immutable": true,
         "line": 61,
         "local": false,
         "repository": "julia-actions/setup-julia",
-        "uses": "julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
         "workflow": ".github/workflows/julia-mixed-canonical-verifier.yml"
       },
       {
-        "commit": "d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
         "immutable": true,
         "line": 64,
         "local": false,
         "repository": "julia-actions/cache",
-        "uses": "julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
         "workflow": ".github/workflows/julia-mixed-canonical-verifier.yml"
       },
       {
@@ -1444,21 +1444,21 @@
         "workflow": ".github/workflows/julia-remainder-cells.yml"
       },
       {
-        "commit": "4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
         "immutable": true,
         "line": 68,
         "local": false,
         "repository": "julia-actions/setup-julia",
-        "uses": "julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
         "workflow": ".github/workflows/julia-remainder-cells.yml"
       },
       {
-        "commit": "d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
         "immutable": true,
         "line": 71,
         "local": false,
         "repository": "julia-actions/cache",
-        "uses": "julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
         "workflow": ".github/workflows/julia-remainder-cells.yml"
       },
       {
@@ -1561,12 +1561,12 @@
         "workflow": ".github/workflows/julia-tip-extension-ladder.yml"
       },
       {
-        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "commit": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "immutable": true,
         "line": 78,
         "local": false,
         "repository": "actions/download-artifact",
-        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "uses": "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "workflow": ".github/workflows/julia-tip-extension-ladder.yml"
       },
       {
@@ -1678,12 +1678,12 @@
         "workflow": ".github/workflows/junction-organizer-continuation.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 45,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/junction-organizer-continuation.yml"
       },
       {
@@ -1696,12 +1696,12 @@
         "workflow": ".github/workflows/junction-organizer-continuation.yml"
       },
       {
-        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "immutable": true,
         "line": 77,
         "local": false,
         "repository": "astral-sh/setup-uv",
-        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "workflow": ".github/workflows/junction-organizer-continuation.yml"
       },
       {
@@ -1813,12 +1813,12 @@
         "workflow": ".github/workflows/lower-plus-one-branch-probe.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 37,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/lower-plus-one-branch-probe.yml"
       },
       {
@@ -1831,12 +1831,12 @@
         "workflow": ".github/workflows/lower-plus-one-branch-probe.yml"
       },
       {
-        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "immutable": true,
         "line": 51,
         "local": false,
         "repository": "astral-sh/setup-uv",
-        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "workflow": ".github/workflows/lower-plus-one-branch-probe.yml"
       },
       {
@@ -1858,12 +1858,12 @@
         "workflow": ".github/workflows/lower-plus-one-daughter-continuation.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 44,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/lower-plus-one-daughter-continuation.yml"
       },
       {
@@ -1876,12 +1876,12 @@
         "workflow": ".github/workflows/lower-plus-one-daughter-continuation.yml"
       },
       {
-        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "immutable": true,
         "line": 75,
         "local": false,
         "repository": "astral-sh/setup-uv",
-        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "workflow": ".github/workflows/lower-plus-one-daughter-continuation.yml"
       },
       {
@@ -2002,12 +2002,12 @@
         "workflow": ".github/workflows/numeric-serialization.yml"
       },
       {
-        "commit": "4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
         "immutable": true,
         "line": 42,
         "local": false,
         "repository": "julia-actions/setup-julia",
-        "uses": "julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
         "workflow": ".github/workflows/numeric-serialization.yml"
       },
       {
@@ -2020,12 +2020,12 @@
         "workflow": ".github/workflows/physical-sp4-audit.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 33,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/physical-sp4-audit.yml"
       },
       {
@@ -2038,12 +2038,12 @@
         "workflow": ".github/workflows/physical-sp4-audit.yml"
       },
       {
-        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "immutable": true,
         "line": 47,
         "local": false,
         "repository": "astral-sh/setup-uv",
-        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "workflow": ".github/workflows/physical-sp4-audit.yml"
       },
       {
@@ -2065,12 +2065,12 @@
         "workflow": ".github/workflows/precision-crosscheck.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 24,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/precision-crosscheck.yml"
       },
       {
@@ -2164,12 +2164,12 @@
         "workflow": ".github/workflows/refined-shooting-rank.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 31,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/refined-shooting-rank.yml"
       },
       {
@@ -2182,12 +2182,12 @@
         "workflow": ".github/workflows/refined-shooting-rank.yml"
       },
       {
-        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "immutable": true,
         "line": 43,
         "local": false,
         "repository": "astral-sh/setup-uv",
-        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "workflow": ".github/workflows/refined-shooting-rank.yml"
       },
       {
@@ -2263,12 +2263,12 @@
         "workflow": ".github/workflows/secondary-critical-loop.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 25,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/secondary-critical-loop.yml"
       },
       {
@@ -2290,12 +2290,12 @@
         "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 54,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
       },
       {
@@ -2308,12 +2308,12 @@
         "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
       },
       {
-        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "immutable": true,
         "line": 65,
         "local": false,
         "repository": "astral-sh/setup-uv",
-        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
       },
       {
@@ -2371,21 +2371,21 @@
         "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
       },
       {
-        "commit": "634f93cb2916e3fdff6788551b99b062d0335ce0",
+        "commit": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "immutable": true,
         "line": 151,
         "local": false,
         "repository": "actions/download-artifact",
-        "uses": "actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0",
+        "uses": "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
       },
       {
-        "commit": "634f93cb2916e3fdff6788551b99b062d0335ce0",
+        "commit": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "immutable": true,
         "line": 155,
         "local": false,
         "repository": "actions/download-artifact",
-        "uses": "actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0",
+        "uses": "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
       },
       {
@@ -2407,12 +2407,12 @@
         "workflow": ".github/workflows/secondary-minus-fold.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 19,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/secondary-minus-fold.yml"
       },
       {
@@ -2434,12 +2434,12 @@
         "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
       },
       {
-        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "immutable": true,
         "line": 58,
         "local": false,
         "repository": "astral-sh/setup-uv",
-        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
       },
       {
@@ -2461,30 +2461,30 @@
         "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
       },
       {
-        "commit": "634f93cb2916e3fdff6788551b99b062d0335ce0",
+        "commit": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "immutable": true,
         "line": 116,
         "local": false,
         "repository": "actions/download-artifact",
-        "uses": "actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0",
+        "uses": "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
       },
       {
-        "commit": "4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
         "immutable": true,
         "line": 120,
         "local": false,
         "repository": "julia-actions/setup-julia",
-        "uses": "julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
         "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
       },
       {
-        "commit": "d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
         "immutable": true,
         "line": 123,
         "local": false,
         "repository": "julia-actions/cache",
-        "uses": "julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
         "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
       },
       {
@@ -2506,12 +2506,12 @@
         "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
       },
       {
-        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "immutable": true,
         "line": 154,
         "local": false,
         "repository": "astral-sh/setup-uv",
-        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "workflow": ".github/workflows/secondary-right-mixed-organizer.yml"
       },
       {
@@ -2533,12 +2533,12 @@
         "workflow": ".github/workflows/shooting-jacobian-audit.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 33,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/shooting-jacobian-audit.yml"
       },
       {
@@ -2551,12 +2551,12 @@
         "workflow": ".github/workflows/shooting-jacobian-audit.yml"
       },
       {
-        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "immutable": true,
         "line": 45,
         "local": false,
         "repository": "astral-sh/setup-uv",
-        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "workflow": ".github/workflows/shooting-jacobian-audit.yml"
       },
       {
@@ -2614,12 +2614,12 @@
         "workflow": ".github/workflows/sign-topology-audit.yml"
       },
       {
-        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "commit": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "immutable": true,
         "line": 96,
         "local": false,
         "repository": "actions/download-artifact",
-        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "uses": "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "workflow": ".github/workflows/sign-topology-audit.yml"
       },
       {
@@ -2650,12 +2650,12 @@
         "workflow": ".github/workflows/sign-topology-audit.yml"
       },
       {
-        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "commit": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "immutable": true,
         "line": 153,
         "local": false,
         "repository": "actions/download-artifact",
-        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "uses": "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "workflow": ".github/workflows/sign-topology-audit.yml"
       },
       {
@@ -2677,12 +2677,12 @@
         "workflow": ".github/workflows/stability-neck-scan.yml"
       },
       {
-        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "immutable": true,
         "line": 70,
         "local": false,
         "repository": "astral-sh/setup-uv",
-        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "workflow": ".github/workflows/stability-neck-scan.yml"
       },
       {
@@ -2704,21 +2704,21 @@
         "workflow": ".github/workflows/stability-neck-scan.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 134,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/stability-neck-scan.yml"
       },
       {
-        "commit": "634f93cb2916e3fdff6788551b99b062d0335ce0",
+        "commit": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "immutable": true,
         "line": 137,
         "local": false,
         "repository": "actions/download-artifact",
-        "uses": "actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0",
+        "uses": "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "workflow": ".github/workflows/stability-neck-scan.yml"
       },
       {
@@ -2740,12 +2740,12 @@
         "workflow": ".github/workflows/transition-topology-audit.yml"
       },
       {
-        "commit": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
         "immutable": true,
         "line": 19,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
         "workflow": ".github/workflows/transition-topology-audit.yml"
       },
       {
@@ -2767,12 +2767,12 @@
         "workflow": ".github/workflows/uv-lock.yml"
       },
       {
-        "commit": "08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "immutable": true,
         "line": 23,
         "local": false,
         "repository": "astral-sh/setup-uv",
-        "uses": "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
         "workflow": ".github/workflows/uv-lock.yml"
       },
       {
@@ -2839,21 +2839,21 @@
         "workflow": ".github/workflows/v1-root-julia-cells.yml"
       },
       {
-        "commit": "4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
         "immutable": true,
         "line": 36,
         "local": false,
         "repository": "julia-actions/setup-julia",
-        "uses": "julia-actions/setup-julia@4c0cb0fce8556fdb04a90347310e5db8b1f98fb9",
+        "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
         "workflow": ".github/workflows/v1-root-julia-cells.yml"
       },
       {
-        "commit": "d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
         "immutable": true,
         "line": 39,
         "local": false,
         "repository": "julia-actions/cache",
-        "uses": "julia-actions/cache@d10a6fd8f31b12404a54613ebad242900567f2b9",
+        "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
         "workflow": ".github/workflows/v1-root-julia-cells.yml"
       },
       {
@@ -2920,12 +2920,12 @@
         "workflow": ".github/workflows/v1-root-ultra.yml"
       },
       {
-        "commit": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "commit": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "immutable": true,
         "line": 58,
         "local": false,
         "repository": "actions/download-artifact",
-        "uses": "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "uses": "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
         "workflow": ".github/workflows/v1-root-ultra.yml"
       },
       {
@@ -2966,11 +2966,11 @@
   "lockfiles": [
     {
       "path": "pyproject.toml",
-      "sha256": "cfa50642ddd7cfe535b2470a1bbd3e890c472e622039ca1917067f66bc440f02"
+      "sha256": "a657234ff6583ccd5128f93970315a80903d8f884abbc0fff4713ee895222c0a"
     },
     {
       "path": "uv.lock",
-      "sha256": "3aeae0d3f88d2edbce10cad8fbfd5a39574fdde1ac6166b5d93c888d9f9fef9b"
+      "sha256": "ffc20e00f6fb5ab43c4bb9e8984df66c0956e09f54fb6241e775cb7b6f3835bb"
     },
     {
       "path": "julia/Project.toml",
@@ -2985,7 +2985,7 @@
       "sha256": "85145b9e1b5c1034c80efa17ecd07eb679e523a572b9216b97a36b94bc474284"
     }
   ],
-  "manifest_sha256": "79b7ecbdfc301a6aae9aa1887a061faa23903220bd9381a4983b9a4332924abc",
+  "manifest_sha256": "a5569384028b7999b76b010fead1dabffa31bc46fbf201d5dfddee89fe25db47",
   "runner_selectors": {
     "ubuntu-latest": 109
   },
