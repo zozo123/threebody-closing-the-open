@@ -1,0 +1,41 @@
+cff-version: 1.2.0
+message: "If you use this code or its numerical records, please cite them as below."
+type: software
+title: "Three-Body Orbit Atlas (threebody-closing-the-open)"
+abstract: >-
+  Research code and numerical records behind the Letter manuscript
+  "Continuation Geometry Resolves Apparent Branch Splitting in Unequal-Mass
+  Three-Body Orbits": continuation and Floquet stability of unequal-mass planar
+  three-body periodic orbits from the Li, Li and Liao dataset. Work in progress.
+authors:
+  - given-names: Ori
+    family-names: Chamo
+    affiliation: "Incredibuild, Tel Aviv, Israel"
+  - given-names: Yossi
+    family-names: Eliaz
+    affiliation: "Incredibuild, Tel Aviv, Israel; Department of Computer Science, Holon Institute of Technology, Holon, Israel"
+repository-code: "https://github.com/zozo123/threebody-closing-the-open"
+keywords:
+  - three-body problem
+  - periodic orbits
+  - numerical continuation
+  - Floquet theory
+  - celestial mechanics
+references:
+  - type: article
+    title: "One family of 13315 stable periodic orbits of the non-hierarchical unequal-mass triple system"
+    authors:
+      - given-names: Xiaoming
+        family-names: Li
+      - given-names: Xiaochen
+        family-names: Li
+      - given-names: Shijun
+        family-names: Liao
+    journal: "Science China Physics, Mechanics & Astronomy"
+    volume: 64
+    start: 219511
+    year: 2021
+    doi: "10.1007/s11433-020-1624-7"
+    identifiers:
+      - type: other
+        value: "arXiv:2007.10184"

@@ -1,8 +1,10 @@
 # Three-Body Orbit Atlas
 
+Code and data behind the Letter manuscript *Continuation Geometry Resolves Apparent Branch Splitting in Unequal-Mass Three-Body Orbits* by Ori Chamo (Incredibuild) and Yossi Eliaz (Incredibuild; Holon Institute of Technology). It builds on the Li, Li & Liao dataset ([arXiv:2007.10184](https://arxiv.org/abs/2007.10184), [sjtu-liao/three-body](https://github.com/sjtu-liao/three-body)).
+
 Reproducible research infrastructure for systematically mapping stable periodic-orbit **families** in the non-hierarchical, unequal-mass planar Newtonian three-body problem.
 
-> **Scientific status: OPEN.** Gate C passed (the catalog is supported as one continuation-connected component). Gate A passed for the mechanism words the paper is allowed to use (physical `+1`, opposite-Krein Hamiltonian–Hopf, three mixed `(4,4)` roots). Gate B (mechanism-resolved Floquet critical graph on that sheet) and Gate D (solved freeze) are pending. All 620 published S/U cells are localized once and assigned to seven catalog polylines plus six label-invisible event-sign polylines (24 of 26 endpoints attached). Two finite-lattice ends remain unclassified, at (0.892, 0.75308) and (1.042, 0.85798); they are not `interior_lattice_terminus` nodes, so `release_ready` is false. Sign-topology coverage is withdrawn until an audit shows its $m_2$ coverage. The 2026-08-17 sweep still reports additional uningested components. "Completeness" is now frozen, but bounded, and the bound is small: the frozen neck raster (`research/evidence/V1_NECK_RASTER_2026-08-16.json`, m1 ∈ [0.997, 0.999] × m2 ∈ [0.993, 1.012] at step 1e-4, 4011 samples, all 21 lines separated) covers **0.0253%** of the declared mass domain, and the only other completeness input — the 12-proposal off-grid active-learning screen — is not a sample of the rest of that domain but one pocket at the principal lower transition, m1 ∈ [0.80005, 0.80276] × m2 ∈ [0.75266, 0.75407], **0.002539%** of the domain, self-described as "AI proposals plus float64 screening only; not scientific discovery evidence". Both figures come from `scripts/completeness_scope.py`, which cross-checks them against the committed raster. This is not a solution of the general three-body problem, and no priority claim is made. See `research/OPEN_PROBLEM.md`, `research/NOVELTY_AUDIT.md`, and `paper/main.tex`.
+> **Status: open, work in progress.** Direct continuation connects the two projected branches of the Li-Li-Liao unequal-mass dataset within one sampled continuation component. Two Floquet stability mechanisms (+1 and opposite-Krein Hamiltonian–Hopf) are independently reproduced in 60-digit arithmetic. Completeness is not claimed: the frozen completeness screens cover a small fraction of the declared mass domain (see [Completeness scope](#completeness-scope)). This is not a solution of the general three-body problem, and no priority claim is made. Full gate status: [`research/CLOSURE_STATUS_2026-08-15.md`](research/CLOSURE_STATUS_2026-08-15.md) and [`research/OPEN_PROBLEM.md`](research/OPEN_PROBLEM.md).
 
 ## Scientific target
 
@@ -29,6 +31,13 @@ candidate
 ```
 
 ML outputs stop at `candidate`. Float64 output stops at `screening`. The manuscript has explicit generated-result gates so prose cannot silently outrun the numerical evidence.
+
+## Completeness scope
+
+"Completeness" here is a frozen but bounded screen, and the bound is small. Both figures below come from `scripts/completeness_scope.py`, which cross-checks them against the committed artifacts.
+
+- The frozen neck raster (`research/evidence/V1_NECK_RASTER_2026-08-16.json`; m1 ∈ [0.997, 0.999] × m2 ∈ [0.993, 1.012] at step 1e-4, 4011 samples, all 21 lines separated) covers **0.0253%** of the declared mass domain.
+- The only other completeness input, the 12-proposal off-grid active-learning screen, is not a sample of the rest of that domain but one pocket at the principal lower transition: m1 ∈ [0.80005, 0.80276] × m2 ∈ [0.75266, 0.75407], **0.002539%** of the domain, self-described as "AI proposals plus float64 screening only; not scientific discovery evidence".
 
 ## Current v0.1 evidence status
 
