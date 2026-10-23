@@ -10,7 +10,7 @@
   },
   "github_actions": {
     "all_external_refs_immutable": true,
-    "count": 328,
+    "count": 329,
     "steps": [
       {
         "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
@@ -1437,7 +1437,7 @@
       {
         "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
         "immutable": true,
-        "line": 30,
+        "line": 33,
         "local": false,
         "repository": "actions/checkout",
         "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
@@ -1446,16 +1446,25 @@
       {
         "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
         "immutable": true,
-        "line": 67,
+        "line": 70,
         "local": false,
         "repository": "actions/checkout",
         "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
         "workflow": ".github/workflows/julia-remainder-cells.yml"
       },
       {
+        "commit": "20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "immutable": true,
+        "line": 72,
+        "local": false,
+        "repository": "astral-sh/setup-uv",
+        "uses": "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d",
+        "workflow": ".github/workflows/julia-remainder-cells.yml"
+      },
+      {
         "commit": "fa02766e078afaaf09b14210362cee14137e6a32",
         "immutable": true,
-        "line": 68,
+        "line": 78,
         "local": false,
         "repository": "julia-actions/setup-julia",
         "uses": "julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32",
@@ -1464,7 +1473,7 @@
       {
         "commit": "a7bed9df697e5d7309d68afe7542a87621a8b6c8",
         "immutable": true,
-        "line": 71,
+        "line": 81,
         "local": false,
         "repository": "julia-actions/cache",
         "uses": "julia-actions/cache@a7bed9df697e5d7309d68afe7542a87621a8b6c8",
@@ -1473,7 +1482,7 @@
       {
         "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
         "immutable": true,
-        "line": 115,
+        "line": 125,
         "local": false,
         "repository": "actions/upload-artifact",
         "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
@@ -2994,7 +3003,7 @@
       "sha256": "85145b9e1b5c1034c80efa17ecd07eb679e523a572b9216b97a36b94bc474284"
     }
   ],
-  "manifest_sha256": "2374ea445e9cb227d4ffc53d4f908938443915ba1f873730feb7dfb0fd707467",
+  "manifest_sha256": "6c2267b3efcc374aab6774cfedf6eb7680629ff47838ade7dcac4febac1ec240",
   "runner_selectors": {
     "ubuntu-latest": 109
   },
