@@ -34,7 +34,7 @@ ML outputs stop at `candidate`. Float64 output stops at `screening`. The manuscr
 
 ## Completeness scope
 
-"Completeness" here is a frozen but bounded screen, and the bound is small. Both figures below come from `scripts/completeness_scope.py`, which cross-checks them against the committed artifacts.
+"Completeness" here is a frozen but bounded screen, and the bound is small. Both figures below come from `scripts/completeness_scope.py`, which cross-checks them against the committed raster.
 
 - The frozen neck raster (`research/evidence/V1_NECK_RASTER_2026-08-16.json`; m1 ∈ [0.997, 0.999] × m2 ∈ [0.993, 1.012] at step 1e-4, 4011 samples, all 21 lines separated) covers **0.0253%** of the declared mass domain.
 - The only other completeness input, the 12-proposal off-grid active-learning screen, is not a sample of the rest of that domain but one pocket at the principal lower transition: m1 ∈ [0.80005, 0.80276] × m2 ∈ [0.75266, 0.75407], **0.002539%** of the domain, self-described as "AI proposals plus float64 screening only; not scientific discovery evidence".
