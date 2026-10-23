@@ -45,6 +45,7 @@ import argparse
 import importlib.util
 import json
 import platform
+import runpy
 import subprocess
 import sys
 import time
@@ -109,10 +110,15 @@ def known_missing_curves(paths: Sequence[str]) -> list[dict[str, Any]]:
 
 
 def committed_edges() -> list[Any]:
-    """Rebuild the committed polylines using the audit script's own geometry."""
+    """Rebuild the committed polylines using the audit script's own geometry.
+
+    Root sources come from the canonical assembly invocation, never from the
+    620-cell hybrid roots alone: the graph also references sweep-derived
+    supplemental roots (cell ids >= 10000), and supplemental ids are per-run
+    sequential indices.  See scripts/graph_root_sources.py.
+    """
     graph_path = ROOT / "research/evidence/V1_CRITICAL_GRAPH.json"
-    roots_path = ROOT / "research/evidence/V1_HYBRID_CRITICAL_ROOTS_2026-08-15.json"
-    if not (graph_path.exists() and roots_path.exists()):
+    if not graph_path.exists():
         return []
     spec = importlib.util.spec_from_file_location(
         "audit_sign_topology_for_criteria", ROOT / "scripts/audit_sign_topology.py"
@@ -122,8 +128,8 @@ def committed_edges() -> list[Any]:
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     graph = json.loads(graph_path.read_text(encoding="utf-8"))
-    roots = json.loads(roots_path.read_text(encoding="utf-8"))
-    return module.edges_from_graph(graph, roots["roots"])
+    resolver = runpy.run_path(str(ROOT / "scripts/graph_root_sources.py"))
+    return module.edges_from_graph(graph, resolver["load_roots"]())
 
 
 def nearest_committed_edge(edges: Sequence[Any], mechanism: str, m1: float, m2: float):

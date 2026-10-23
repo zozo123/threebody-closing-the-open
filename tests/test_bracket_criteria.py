@@ -417,3 +417,22 @@ def test_localizer_certifies_the_interior_root():
     assert point.residual_norm <= MAX_CLOSURE
     assert INTERIOR_CELL[0] < point.masses[1] < INTERIOR_CELL[1]
     assert point.masses[0] == pytest.approx(0.925, abs=1e-12)
+
+
+def test_committed_edges_read_the_assemblers_root_sources():
+    """The nearest-edge cross-check must resolve every committed cell id.
+
+    The committed graph also references sweep-derived supplemental roots (cell
+    ids >= 10000) that are absent from the 620-cell hybrid roots, so reading
+    that file alone raised KeyError before any comparison was written.
+    """
+    import json
+    import runpy
+
+    graph = json.loads((ROOT / "research/evidence/V1_CRITICAL_GRAPH.json").read_text())
+    polylines = [e for e in graph["edges"] if e.get("kind") == "mechanism_polyline"]
+    assert any(int(cell) >= 10000 for e in polylines for cell in e.get("cell_ids", ()))
+
+    namespace = runpy.run_path(str(ROOT / "scripts/audit_bracket_criteria.py"))
+    edges = namespace["committed_edges"]()
+    assert sorted(e.edge_id for e in edges) == sorted(str(e["id"]) for e in polylines)
