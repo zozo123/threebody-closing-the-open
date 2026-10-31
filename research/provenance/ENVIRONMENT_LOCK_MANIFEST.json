@@ -2984,7 +2984,7 @@
   "lockfiles": [
     {
       "path": "pyproject.toml",
-      "sha256": "a657234ff6583ccd5128f93970315a80903d8f884abbc0fff4713ee895222c0a"
+      "sha256": "a54841fe12eef79a765716bf37a742c53bb8308ac556e14243eed47bff46c7b3"
     },
     {
       "path": "uv.lock",
@@ -3003,7 +3003,7 @@
       "sha256": "85145b9e1b5c1034c80efa17ecd07eb679e523a572b9216b97a36b94bc474284"
     }
   ],
-  "manifest_sha256": "6c2267b3efcc374aab6774cfedf6eb7680629ff47838ade7dcac4febac1ec240",
+  "manifest_sha256": "ad7166bbcbe6389ec88c08127a18440e91ef4fed7b4b1acff6f4c469cbf35a23",
   "runner_selectors": {
     "ubuntu-latest": 109
   },
