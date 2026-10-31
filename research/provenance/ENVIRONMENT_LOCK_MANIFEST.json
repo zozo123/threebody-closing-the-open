@@ -58,12 +58,12 @@
         "workflow": ".github/workflows/adversarial-connectivity-edges.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 42,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/adversarial-connectivity-edges.yml"
       },
       {
@@ -103,12 +103,12 @@
         "workflow": ".github/workflows/bracket-criterion-comparison.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 41,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/bracket-criterion-comparison.yml"
       },
       {
@@ -265,12 +265,12 @@
         "workflow": ".github/workflows/connectivity-audit.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 40,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/connectivity-audit.yml"
       },
       {
@@ -391,12 +391,12 @@
         "workflow": ".github/workflows/critical-massplane-screen.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 25,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/critical-massplane-screen.yml"
       },
       {
@@ -481,12 +481,12 @@
         "workflow": ".github/workflows/event-network-audit.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 19,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/event-network-audit.yml"
       },
       {
@@ -796,12 +796,12 @@
         "workflow": ".github/workflows/generic-bridge.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 33,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/generic-bridge.yml"
       },
       {
@@ -841,12 +841,12 @@
         "workflow": ".github/workflows/generic-connectivity-edges.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 41,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/generic-connectivity-edges.yml"
       },
       {
@@ -886,12 +886,12 @@
         "workflow": ".github/workflows/global-event-network.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 33,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/global-event-network.yml"
       },
       {
@@ -931,12 +931,12 @@
         "workflow": ".github/workflows/global-mixed-vertex-search.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 36,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/global-mixed-vertex-search.yml"
       },
       {
@@ -1057,12 +1057,12 @@
         "workflow": ".github/workflows/invariant-bridge.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 24,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/invariant-bridge.yml"
       },
       {
@@ -1084,12 +1084,12 @@
         "workflow": ".github/workflows/invariant-projection-audit.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 19,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/invariant-projection-audit.yml"
       },
       {
@@ -1696,12 +1696,12 @@
         "workflow": ".github/workflows/junction-organizer-continuation.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 45,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/junction-organizer-continuation.yml"
       },
       {
@@ -1831,12 +1831,12 @@
         "workflow": ".github/workflows/lower-plus-one-branch-probe.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 37,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/lower-plus-one-branch-probe.yml"
       },
       {
@@ -1876,12 +1876,12 @@
         "workflow": ".github/workflows/lower-plus-one-daughter-continuation.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 44,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/lower-plus-one-daughter-continuation.yml"
       },
       {
@@ -2038,12 +2038,12 @@
         "workflow": ".github/workflows/physical-sp4-audit.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 33,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/physical-sp4-audit.yml"
       },
       {
@@ -2083,12 +2083,12 @@
         "workflow": ".github/workflows/precision-crosscheck.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 24,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/precision-crosscheck.yml"
       },
       {
@@ -2182,12 +2182,12 @@
         "workflow": ".github/workflows/refined-shooting-rank.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 31,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/refined-shooting-rank.yml"
       },
       {
@@ -2281,12 +2281,12 @@
         "workflow": ".github/workflows/secondary-critical-loop.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 25,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/secondary-critical-loop.yml"
       },
       {
@@ -2308,12 +2308,12 @@
         "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 54,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/secondary-minus-fold-geometry.yml"
       },
       {
@@ -2425,12 +2425,12 @@
         "workflow": ".github/workflows/secondary-minus-fold.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 19,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/secondary-minus-fold.yml"
       },
       {
@@ -2551,12 +2551,12 @@
         "workflow": ".github/workflows/shooting-jacobian-audit.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 33,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/shooting-jacobian-audit.yml"
       },
       {
@@ -2722,12 +2722,12 @@
         "workflow": ".github/workflows/stability-neck-scan.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 134,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/stability-neck-scan.yml"
       },
       {
@@ -2758,12 +2758,12 @@
         "workflow": ".github/workflows/transition-topology-audit.yml"
       },
       {
-        "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "immutable": true,
         "line": 19,
         "local": false,
         "repository": "actions/setup-python",
-        "uses": "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "uses": "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
         "workflow": ".github/workflows/transition-topology-audit.yml"
       },
       {
@@ -3003,7 +3003,7 @@
       "sha256": "85145b9e1b5c1034c80efa17ecd07eb679e523a572b9216b97a36b94bc474284"
     }
   ],
-  "manifest_sha256": "6c2267b3efcc374aab6774cfedf6eb7680629ff47838ade7dcac4febac1ec240",
+  "manifest_sha256": "03add394fb5fdb9451dbd5f54f2d5368f8636e6e39d877bc8c85141a17533364",
   "runner_selectors": {
     "ubuntu-latest": 109
   },
