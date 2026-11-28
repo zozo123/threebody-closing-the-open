@@ -66,7 +66,7 @@ jobs:
             data/raw/non-hierarchical-3b-supplementary_data.txt \
             artifacts/published-transition-brackets.tsv
           test "$(($(wc -l < artifacts/published-transition-brackets.tsv) - 1))" -eq 620
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: published-transition-brackets-${{ github.sha }}
           path: artifacts/published-transition-brackets.tsv
@@ -106,7 +106,7 @@ jobs:
             --max-iterations 20 \
             --m2-tolerance 1e-12 \
             --allow-misses
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: critical-root-chunk-${{ matrix.chunk }}-${{ github.sha }}
@@ -219,7 +219,7 @@ jobs:
               'complete': complete,
           }, indent=2))
           PY
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: full-critical-roots-${{ github.sha }}
@@ -305,7 +305,7 @@ jobs:
         run: |
           printf '%s\n' '{"implementation":"independent Julia BigFloat + Vern9 published-cell localizer","localized_cells":0,"missed_cells":0,"failed_cell_ids":[],"results":[],"claim_status":"no float64 misses assigned to this escalation chunk"}' \
             > "artifacts/julia-escalation-${{ matrix.chunk }}.json"
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: julia-escalation-${{ matrix.chunk }}-${{ github.sha }}
@@ -353,7 +353,7 @@ jobs:
             artifacts/census/full-critical-roots.json \
             artifacts/hybrid-critical-roots.json \
             "${ARGS[@]}"
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: hybrid-critical-roots-${{ github.sha }}
