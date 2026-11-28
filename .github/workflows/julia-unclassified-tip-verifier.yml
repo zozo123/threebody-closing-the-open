@@ -101,7 +101,7 @@ jobs:
             "experiments/unclassified_tip_cell${CELL}.tsv" \
             "artifacts/unclassified-tip-cell${CELL}-bigfloat.json" \
             "$DPS" "$TOL_EXP" "$CLOSURE_EXP" "$WIDTH_EXP" 5 4
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: unclassified-tip-cell${{ matrix.cell }}-${{ github.sha }}

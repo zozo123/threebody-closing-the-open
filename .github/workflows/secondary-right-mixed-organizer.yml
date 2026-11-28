@@ -96,7 +96,7 @@ jobs:
             --m2-min 1.0 --m2-max 1.07 \
             --max-m2-jump 0.004 \
             --direct-max-nfev 250
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: secondary-right-screen-${{ github.sha }}
@@ -135,7 +135,7 @@ jobs:
             artifacts/secondary-right-mixed-screen.json \
             artifacts/secondary-right-death-class.json \
             --canonical artifacts/secondary-right-mixed-canonical.json
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: secondary-right-canonical-${{ github.sha }}
@@ -196,7 +196,7 @@ jobs:
                   raise SystemExit(f"germ closure gate missed: {row}")
           print('verified_germs=', len(keys))
           PY
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: secondary-right-germs-${{ github.sha }}
